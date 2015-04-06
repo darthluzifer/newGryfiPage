@@ -758,7 +758,7 @@ class OC_Util {
 	public static function checkDataDirectoryPermissions($dataDirectory) {
 		$l = \OC::$server->getL10N('lib');
 		$errors = array();
-		if (self::runningOnWindows()) {
+		if (self::runningOnWindows() || true) {
 			//TODO: permissions checks for windows hosts
 		} else {
 			$permissionsModHint = $l->t('Please change the permissions to 0770 so that the directory'
