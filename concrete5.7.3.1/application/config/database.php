@@ -8,7 +8,7 @@ return array(
             'server' => 'localhost',
             'database' => 'concrete',
             'username' => 'root',
-            'password' => 'keines',
+            'password' => 'root',
             'charset' => 'utf8'
         )
     )

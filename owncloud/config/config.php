@@ -15,6 +15,6 @@ $CONFIG = array (
   'dbhost' => 'localhost',
   'dbtableprefix' => 'oc_',
   'dbuser' => 'root',
-  'dbpassword' => 'keines',
+  'dbpassword' => 'root',
   'installed' => true,
 );
