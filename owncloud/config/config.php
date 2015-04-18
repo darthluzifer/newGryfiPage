@@ -7,14 +7,14 @@ $CONFIG = array (
   array (
     0 => 'localhost',
   ),
-  'datadirectory' => '/mnt/Windows7_OS/wamp/www2/newGryfiPage/owncloud/data',
+  'datadirectory' => '/var/www/html/newGryfiPage/owncloud/data',
   'overwrite.cli.url' => 'http://localhost/newGryfiPage/owncloud',
   'dbtype' => 'mysql',
   'version' => '8.0.2.0',
   'dbname' => 'owncloud',
   'dbhost' => 'localhost',
   'dbtableprefix' => 'oc_',
-  'dbuser' => 'oc_admin',
-  'dbpassword' => 'him7wrp0ac4c8zea6apjhfeyukqi31',
+  'dbuser' => 'root',
+  'dbpassword' => 'keines',
   'installed' => true,
 );

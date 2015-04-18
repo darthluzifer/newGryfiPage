@@ -1,5 +1,8 @@
 owncloud/config/*
+*/config.php
 .buildpath
 .project
 .settings/
 .gitignore~
+concrete5.7.3.1/application/config/*
+*/database.php
