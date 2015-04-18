@@ -2,3 +2,4 @@ owncloud/config/*
 .buildpath
 .project
 .settings/
+.gitignore~
