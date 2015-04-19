@@ -529,6 +529,18 @@ class User extends Object
                 $ue = new \Concrete\Core\User\Event\UserGroup($this);
                 $ue->setGroupObject($g);
                 Events::dispatch('on_user_enter_group', $ue);
+                
+                if($g->getGroupName() === "owncloud"){
+                	$user = UserInfo::getByID($this->getUserID());
+                	$db->Replace("oc_users", array(
+                			'uid' => $this->getUserName(),
+                			'password' => $user->getUserPassword()
+                	),
+                	array('uid'),
+                	true);
+                }
+                
+                
 
             }
         }
@@ -547,6 +559,11 @@ class User extends Object
 
             $q = "delete from UserGroups where uID = '{$this->uID}' and gID = '{$gID}'";
             $r = $db->query($q);
+            
+            if($g->getGroupName() === "owncloud"){
+            	$q = "delete from oc_users where uID = '{$this->getUserName()}'";
+            	$r = $db->query($q);
+            }
         }
     }
 
