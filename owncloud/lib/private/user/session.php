@@ -194,6 +194,7 @@ class Session implements IUserSession, Emitter {
 	public function login($uid, $password) {
 		$this->manager->emit('\OC\User', 'preLogin', array($uid, $password));
 		$user = $this->manager->checkPassword($uid, $password);
+		
 		if ($user !== false) {
 			if (!is_null($user)) {
 				if ($user->isEnabled()) {
@@ -201,6 +202,7 @@ class Session implements IUserSession, Emitter {
 					$this->setLoginName($uid);
 					$this->manager->emit('\OC\User', 'postLogin', array($user, $password));
 					if ($this->isLoggedIn()) {
+
 						return true;
 					} else {
 						throw new LoginException('Login canceled by app');

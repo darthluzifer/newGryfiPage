@@ -151,6 +151,7 @@ class OC_User {
 		foreach ($backends as $i => $config) {
 			$class = $config['class'];
 			$arguments = $config['arguments'];
+			OC::$loader->load("OC_User_Concrete5");
 			if (class_exists($class)) {
 				if (array_search($i, self::$_setupedBackends) === false) {
 					// make a reflection object
@@ -214,7 +215,9 @@ class OC_User {
 	public static function login($loginname, $password) {
 		session_regenerate_id(true);
 		$result = self::getUserSession()->login($loginname, $password);
+
 		if ($result) {
+		
 			//we need to pass the user name, which may differ from login name
 			OC_Util::setupFS(self::getUserSession()->getUser()->getUID());
 		}

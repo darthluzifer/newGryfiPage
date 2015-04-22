@@ -59,11 +59,14 @@ class OC_Util {
 	 * @description configure the initial filesystem based on the configuration
 	 */
 	public static function setupFS($user = '') {
+		
+			
+		
 		//setting up the filesystem twice can only lead to trouble
 		if (self::$fsSetup) {
 			return false;
 		}
-
+		
 		\OC::$server->getEventLogger()->start('setup_fs', 'Setup filesystem');
 
 		// If we are not forced to load a specific user we load the one that is logged in
