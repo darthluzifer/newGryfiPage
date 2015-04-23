@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-04-22T20:37:45+02:00
+ * Generated 2015-04-23T18:39:01+02:00
  *
- * @item      misc.latest_version
+ * @item      debug.display_errors
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -17,5 +17,9 @@ return array(
         'access_entity_updated' => 1428345997,
         'latest_version' => '5.7.3.1',
         'seen_introduction' => true
+    ),
+    'debug' => array(
+        'detail' => 'debug',
+        'display_errors' => true
     )
 );

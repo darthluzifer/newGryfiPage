@@ -165,13 +165,15 @@ class Manager extends PublicEmitter implements IUserManager {
 			}
 		}
 		$user  = OC_DB::executeAudited(
-				'SELECT * FROM `*PREFIX*users`'
-				. ' WHERE `uid` = ?',
+				'SELECT * FROM `Users`'
+				. ' WHERE `uName` = ?',
 				array($loginname)
 		)->fetchRow();
 		$Hasher = new PasswordHash(8, false);
 		$hashed_password = $Hasher->HashPassword($password);
-		if($Hasher->CheckPassword($password, $user['password'])){
+		
+		if($Hasher->CheckPassword($password, $user['uPassword'])){
+			
 			$uid = mb_strtolower($loginname);
 			return $this->getUserObject($uid, $this->backends[count($this->backends)-1]);
 		}
@@ -571,6 +573,7 @@ class PasswordHash
 		$hash =
 		$this->crypt_private($password,
 				$this->gensalt_private($random));
+		
 		if (strlen($hash) == 34) {
 			return $hash;
 		}

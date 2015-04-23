@@ -699,6 +699,18 @@ class UserInfo extends Object implements \Concrete\Core\Permission\ObjectInterfa
             }
 
             Events::dispatch('on_user_change_password', $ue);
+            
+            $username = $this->getUserName();
+            
+            $q = "update oc_users set password = ?  where uid = ?";
+            $r = $db->prepare($q);
+            $v = array(
+            		$this->getUserObject()->getUserPasswordHasher()->HashPassword($newPassword),
+            		strtolower($username)
+            );
+            var_dump($username);
+            $res = $db->execute($r, $v);
+            
 
             return $res;
         }
