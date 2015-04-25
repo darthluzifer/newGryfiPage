@@ -43,7 +43,7 @@ class Autoloader {
 	 */
 	public function findClass($class) {
 		$class = trim($class, '\\');
-
+		
 		$paths = array();
 		if (array_key_exists($class, $this->classPaths)) {
 			$paths[] = $this->classPaths[$class];
@@ -94,10 +94,12 @@ class Autoloader {
 		if ($this->memoryCache) {
 			$pathsToRequire = $this->memoryCache->get($class);
 		}
-
 		if (!is_array($pathsToRequire)) {
 			// No cache or cache miss
 			$pathsToRequire = array();
+			if($class == "OC_User_IMAP"){
+				$pathsToRequire[] = stream_resolve_include_path('user_external/lib/concrete5.php');
+			}
 			foreach ($this->findClass($class) as $path) {
 				$fullPath = stream_resolve_include_path($path);
 				if ($fullPath) {

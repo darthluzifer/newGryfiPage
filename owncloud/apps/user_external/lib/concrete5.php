@@ -15,7 +15,7 @@
 * @license  http://www.gnu.org/licenses/agpl AGPL
 * @link     http://github.com/owncloud/apps
 */
-class OC_User_IMAP extends \OCA\user_external\Base {
+class OC_User_Concrete5 extends \OCA\user_external\Base {
 	private $mailbox;
 
 	/**

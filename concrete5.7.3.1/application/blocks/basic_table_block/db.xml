@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+	<table name="btBasicTableInstance">
+		<field name="bID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name="question" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="requiresRegistration" type="I">
+			<default value="0"/>
+		</field>
+	</table>
+	<table name="btBasicTableActionOption">
+		<field name="optionID" type="I">
+			<key/>
+			<unsigned/>
+			<autoincrement/>
+		</field>
+		<field name="bID" type="I" />	
+		<field name="optionName" type="C" size="255" />
+		<field name="displayOrder" type="I">
+			<default value="0"/>
+		</field>
+        <index name="bID">
+            <col>bID</col>
+            <col>displayOrder</col>
+        </index>
+	</table>
+	<table name="btBasicTable">
+		<field name="id" type="I">
+			<key/>
+			<unsigned/>
+			<autoincrement/>
+		</field>
+		<field name="value" type="C" size="255">
+			<unsigned/>
+			<default value=""/>
+		</field>
+	</table>
+</schema>
+
+
+
