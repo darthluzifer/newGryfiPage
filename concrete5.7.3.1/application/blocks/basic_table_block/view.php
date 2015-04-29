@@ -49,40 +49,41 @@ $show_graph = (count($optionNamesAbbrev) && !$_GET['dontGraphPoll'] && $totalVot
 
 
 <script type="text/javascript">
-$(function() {
 
-	var $db = $('div[data-discussion-block-id=<?php echo $b->getBlockID()?>]'),
-		$dialog = $db.find('div[data-form=discussion]'),
-		$addTopic = $db.find('button[data-action=add-conversation]'),
-		$orderBy = $db.find('select[data-select=order]');
+// $(function() {
 
-	$orderBy.on('change', function() {
+//	var $db = $('div[data-discussion-block-id=<?php// echo $b->getBlockID()?>]'),
+// 		$dialog = $db.find('div[data-form=discussion]'),
+// 		$addTopic = $db.find('button[data-action=add-conversation]'),
+// 		$orderBy = $db.find('select[data-select=order]');
 
-		window.location.href = $(this).find('option:selected').attr('data-sort-url');
-	});
-	$('form[data-form=composer]').ccmcomposer({
-		onExit: function() {
-			$dialog.dialog('close');
-		},
-		autoSaveEnabled: false,
-		publishReturnMethod: 'ajax',
-		onPublish: function(r) {
-			window.location.href = r.redirectURL;
-		}
-	});
+// 	$orderBy.on('change', function() {
 
-	$addTopic.on('click', function() {
-		$dialog.dialog({
-			modal: true,
-			width: 400,
-			height: 540,
-			title: '<?php echo t("Add Topic")?>',
-			open: function() {
-				var $buttons = $dialog.find('.dialog-buttons').hide().clone(true,true);
-				$(this).dialog('option', 'buttons', [{}]);
-				$(this).closest('.ui-dialog').find('.ui-dialog-buttonset').html('').append($buttons.show());
-			}
-		});
-	});
-});
+// 		window.location.href = $(this).find('option:selected').attr('data-sort-url');
+// 	});
+// 	$('form[data-form=composer]').ccmcomposer({
+// 		onExit: function() {
+// 			$dialog.dialog('close');
+// 		},
+// 		autoSaveEnabled: false,
+// 		publishReturnMethod: 'ajax',
+// 		onPublish: function(r) {
+// 			window.location.href = r.redirectURL;
+// 		}
+// 	});
+
+// 	$addTopic.on('click', function() {
+// 		$dialog.dialog({
+// 			modal: true,
+// 			width: 400,
+// 			height: 540,
+//			title: '<?php// echo t("Add Topic")?>',
+// 			open: function() {
+// 				var $buttons = $dialog.find('.dialog-buttons').hide().clone(true,true);
+// 				$(this).dialog('option', 'buttons', [{}]);
+// 				$(this).closest('.ui-dialog').find('.ui-dialog-buttonset').html('').append($buttons.show());
+// 			}
+// 		});
+// 	});
+// });*/
 </script>

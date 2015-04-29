@@ -2,24 +2,28 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-04-23T20:44:17+02:00
+ * Generated 2015-04-29T23:20:12+02:00
  *
- * @item      misc.latest_version
+ * @item      i18n.choose_language_login
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
  */
 return array(
-    'locale' => 'de_DE',
+    'locale' => 'en_US',
     'site' => 'newgryfipage',
     'version_installed' => '5.7.3.1',
     'misc' => array(
         'access_entity_updated' => 1428345997,
         'latest_version' => '5.7.3.1',
-        'seen_introduction' => true
+        'seen_introduction' => true,
+        'do_page_reindex_check' => false
     ),
     'debug' => array(
         'detail' => 'debug',
         'display_errors' => true
+    ),
+    'i18n' => array(
+        'choose_language_login' => null
     )
 );

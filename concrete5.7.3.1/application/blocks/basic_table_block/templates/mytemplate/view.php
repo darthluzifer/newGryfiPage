@@ -1,5 +1,5 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
-
+/*
 $c = Page::getCurrentPage();
 if (is_object($f)) {
     $tag = Core::make('html/div', array($f, true))->getTag();
@@ -9,7 +9,8 @@ if (is_object($f)) {
     
 
     print '<a title="'.$title.'" class="magnific-popup-image" href="' .$large->src . '">';
-    print $tag;
+   	echo $controller->displayTable();
+     
     print '</a>';
 
 } else if ($c->isEditMode()) { ?>
@@ -17,3 +18,5 @@ if (is_object($f)) {
     <div class="ccm-edit-mode-disabled-item"><?php echo t('Empty Image Block.')?></div>
 
 <?php } ?>
+*/
+echo "<div>hi</div>";
