@@ -4,7 +4,7 @@
 
 $(document).ready(function() {
     $('a.magnific-popup-image').magnificPopup({
-        type:'text',
+        type:'image',
         gallery:{enabled:true}
     });
 });
