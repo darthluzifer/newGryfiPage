@@ -9,7 +9,7 @@ if (is_object($f)) {
     
 
     print '<a title="'.$title.'" class="magnific-popup-image" href="' .$large->src . '">';
-   	echo $controller->displayTable();
+   	//echo $controller->displayTable();
      
     print '</a>';
 

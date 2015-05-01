@@ -5,6 +5,14 @@ $u = new User();
 $uID = $u->getUserID();
 $c = Page::getCurrentPage();
 
+$canAccessComposer = false;
+if (is_object($composer)) {
+	$ccp = new Permissions($composer);
+	if ($ccp->canAccessComposer()) {
+		$canAccessComposer = true;
+	}
+}
+
 //available chart colors are duplicated in content/surveys.php
 
 $options = $controller->getPollOptions();
@@ -50,40 +58,40 @@ $show_graph = (count($optionNamesAbbrev) && !$_GET['dontGraphPoll'] && $totalVot
 
 <script type="text/javascript">
 
-// $(function() {
+$(function() {
 
-//	var $db = $('div[data-discussion-block-id=<?php// echo $b->getBlockID()?>]'),
-// 		$dialog = $db.find('div[data-form=discussion]'),
-// 		$addTopic = $db.find('button[data-action=add-conversation]'),
-// 		$orderBy = $db.find('select[data-select=order]');
+	var $db = $('div[data-discussion-block-id=<?php echo $b->getBlockID()?>]'),
+		$dialog = $db.find('div[data-form=discussion]'),
+		$addTopic = $db.find('button[data-action=add-conversation]'),
+		$orderBy = $db.find('select[data-select=order]');
 
-// 	$orderBy.on('change', function() {
+	$orderBy.on('change', function() {
 
-// 		window.location.href = $(this).find('option:selected').attr('data-sort-url');
-// 	});
-// 	$('form[data-form=composer]').ccmcomposer({
-// 		onExit: function() {
-// 			$dialog.dialog('close');
-// 		},
-// 		autoSaveEnabled: false,
-// 		publishReturnMethod: 'ajax',
-// 		onPublish: function(r) {
-// 			window.location.href = r.redirectURL;
-// 		}
-// 	});
+		window.location.href = $(this).find('option:selected').attr('data-sort-url');
+	});
+	$('form[data-form=composer]').ccmcomposer({
+		onExit: function() {
+			$dialog.dialog('close');
+		},
+		autoSaveEnabled: false,
+		publishReturnMethod: 'ajax',
+		onPublish: function(r) {
+			window.location.href = r.redirectURL;
+		}
+	});
 
-// 	$addTopic.on('click', function() {
-// 		$dialog.dialog({
-// 			modal: true,
-// 			width: 400,
-// 			height: 540,
-//			title: '<?php// echo t("Add Topic")?>',
-// 			open: function() {
-// 				var $buttons = $dialog.find('.dialog-buttons').hide().clone(true,true);
-// 				$(this).dialog('option', 'buttons', [{}]);
-// 				$(this).closest('.ui-dialog').find('.ui-dialog-buttonset').html('').append($buttons.show());
-// 			}
-// 		});
-// 	});
-// });*/
+	$addTopic.on('click', function() {
+		$dialog.dialog({
+			modal: true,
+			width: 400,
+			height: 540,
+			title: '<?php echo t("Add Topic")?>',
+			open: function() {
+				var $buttons = $dialog.find('.dialog-buttons').hide().clone(true,true);
+				$(this).dialog('option', 'buttons', [{}]);
+				$(this).closest('.ui-dialog').find('.ui-dialog-buttonset').html('').append($buttons.show());
+			}
+		});
+	});
+});
 </script>
