@@ -18,7 +18,13 @@ class Controller extends BlockController
 			"value" => "text"
 	);
 	
+	
 	protected $tableName = "btBasicTable";
+	
+	protected $executed = false;
+	
+	protected $isFormview = false;
+	
     
     
     function __construct($obj = null)
@@ -85,6 +91,7 @@ class Controller extends BlockController
 
     function action_save_new_row()
     {
+    	$this->isFormview = false;
         $u = new User();
         $db = Loader::db();
         $bo = $this->getBlockObject();
@@ -115,7 +122,8 @@ class Controller extends BlockController
                 $ip = $iph->getRequestIP();
                 $ip = ($ip === false)?(''):($ip->getIp($ip::FORMAT_IP_STRING));
                 $v = array(
-                    $_REQUEST['text']
+                	$_REQUEST['id'],	
+                    $_REQUEST['value']
                 );
                 $q = $this->createInsertString();
                 
@@ -124,6 +132,16 @@ class Controller extends BlockController
                 $this->redirect($c->getCollectionPath());
            	}
         
+    }
+    
+    
+    function action_add_new_row_form(){
+    	$this->isFormview = true;
+    	
+    }
+    
+    function displayForm(){
+    	return $this->isFormview;
     }
     
     function createInsertString(){
@@ -223,29 +241,25 @@ class Controller extends BlockController
 		
 		$r = $db->query($q);
 		
+		$tabledata = array();
+		while ($row = $r->fetchRow()) {
+			$tabledata[]=$row;
+		}
 		
-		
-        $chart_options = '<table class="table"><tbody>';
-        $chart_options.= '<tr>';
-        //draw table header
-        foreach($this->fields as $fieldname => $type){
-        	$chart_options.= '<th>'.$fieldname.'</th>';
-        }
-        $chart_options.='</tr>';
+		return $tabledata;
         
-        
-        
-        
-         while ($row = $r->fetchRow()) {
-         	$chart_options .= '<tr>';
-        	foreach ($row as $col){
-        		$chart_options .= '<td>'.$col.'</td>';
-        	}
-        	
-        }
-        $chart_options .= '</tbody></table>';
-        $this->set('chart_options', $chart_options);
-        return $chart_options;
+    }
+    
+    public function getFields(){
+    	return $this->fields;
+    }
+    
+    public function setExecuted(){
+    	$this->executed = true;
+    }
+    
+    public function isExecuted(){
+    	return $this->executed;
     }
 
 }

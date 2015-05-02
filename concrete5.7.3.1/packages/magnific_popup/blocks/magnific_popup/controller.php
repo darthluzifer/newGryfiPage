@@ -42,6 +42,28 @@ class Controller extends BlockController {
 		$this->addFooterItem( $html->javascript( $bv->getBlockURL() . '/magnific/magnific-combined-1.0.0.min.js', array( 'minify' => true ) ) );
 		$this->pageviewrun = true;
 	}
+	
+	
+	public function on_start()
+	{
+		$html = Loader::helper( 'html' );
+		$bv   = new BlockView();
+		$bv->setBlockObject( $this->getBlockObject() );
+		$al = \Concrete\Core\Asset\AssetList::getInstance();
+		$al->register(
+				'javascript', 'mediaelement', $bv->getBlockURL() . '/magnific/magnific-combined-1.0.0.min.js',
+				array('version' => '2.16.3', 'minify' => false, 'combine' => true)
+		);
+		$al->registerGroup('mediaelement', array(
+				array('javascript', 'jquery'),
+				array('javascript', 'mediaelement')
+		));
+	}
+	
+	public function registerViewAssets()
+	{
+		$this->requireAsset('mediaelement');
+	}
 
 	// JavaScript form validation strings
 	// these are used in the add and edit dialog window
