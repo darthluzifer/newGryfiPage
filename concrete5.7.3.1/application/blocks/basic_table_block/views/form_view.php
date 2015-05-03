@@ -1,12 +1,18 @@
 
 <div class="form-group">
-	<form action=<?php echo $this->action('save_new_row') ?>>
+	<form action=<?php echo $this->action('save_row') ?>>
 	
 	<?php 
 	$fields = $controller->getFields();
+	$rowValues = $controller->getRowValues();
 	foreach($fields as $field => $value){
-		echo "<span>$field</span>";
-		echo $form->text($field, array('title' => $field));
+		echo "<label for='$field'>$field</label>";
+		echo $form->text($field, array('title' => $field,
+										 'value' => $rowValues[$field],
+										 'id' => $field
+				
+										)
+				);
 		
 	
 	}

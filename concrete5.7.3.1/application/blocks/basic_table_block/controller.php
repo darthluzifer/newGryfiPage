@@ -139,6 +139,13 @@ class Controller extends BlockController
     	$this->isFormview = true;
     	
     }
+
+    function action_edit_row_form(){
+    	var_dump($_POST);
+    	if(isset($_POST['submit'])){
+    		var_dump($_POST);
+    	}
+    }
     
     function displayForm(){
     	return $this->isFormview;
