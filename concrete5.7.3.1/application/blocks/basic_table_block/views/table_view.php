@@ -23,7 +23,7 @@
         	if($fieldname == 'id'){
         		
         	?>
-        	<th><?php echo t('Aktion'); ?></th>
+        	<th width='15%'><?php echo t('Aktion'); ?></th>
         	<?php }else{?>
         	<th><?php echo $fieldname ?></th>
         <?php 
