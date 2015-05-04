@@ -25,6 +25,10 @@ class Controller extends BlockController
 	
 	protected $isFormview = false;
 	
+	protected $editKey = null;
+	
+	protected $bID = null;
+	
     
     
     function __construct($obj = null)
@@ -51,6 +55,10 @@ class Controller extends BlockController
                     $this->options[] = $opt;
                 }
             }
+        }
+        
+        if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
+        	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
     }
 
@@ -89,8 +97,9 @@ class Controller extends BlockController
         parent::delete();
     }
 
-    function action_save_new_row()
+    function action_save_row()
     {
+    	
     	$this->isFormview = false;
         $u = new User();
         $db = Loader::db();
@@ -121,13 +130,26 @@ class Controller extends BlockController
                 $iph = Core::make('helper/validation/ip');
                 $ip = $iph->getRequestIP();
                 $ip = ($ip === false)?(''):($ip->getIp($ip::FORMAT_IP_STRING));
-                $v = array(
-                	$_REQUEST['id'],	
-                    $_REQUEST['value']
-                );
-                $q = $this->createInsertString();
+                $v = array();
+                foreach($this->getFields() as $key => $value){
+                	if($key == 'id'){}
+                	else{
+                		$v[]=$_REQUEST[$key];
+                	}
+                }
                 
+                if($this->editKey == null){
+                	$q = $this->createInsertString();
+                }else{
+                	$q = $this->createUpdateString();
+                	$v[]=$this->editKey;
+                }
+            
                 $db->query($q, $v);
+                
+                if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
+                	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+                }
                 //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
                 $this->redirect($c->getCollectionPath());
            	}
@@ -141,9 +163,35 @@ class Controller extends BlockController
     }
 
     function action_edit_row_form(){
-    	var_dump($_POST);
-    	if(isset($_POST['submit'])){
-    		var_dump($_POST);
+    	if ($this->requiresRegistration()) {
+    		if (!$u->isRegistered()) {
+    			$this->redirect('/login');
+    		}
+    	}
+    	$this->editKey = $_POST['rowid'];
+    	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
+    	
+    	if($_POST['action'] == 'edit'){
+    		$this->prepareFormEdit();
+    	}else{
+    		$this->deleteRow();
+    	}
+    }
+    
+    public function prepareFormEdit(){
+    	$this->isFormview = true;
+    }
+    
+    public function deleteRow(){
+
+    	$db = Loader::db();
+    	$q = "DELETE FROM ".$this->tableName." WHERE id=?";
+    	$v = array($this->editKey);
+    	$r = $db->query($q,$v);
+    	if($r){
+    		return true;
+    	}else{
+    		return false;
     	}
     }
     
@@ -163,14 +211,14 @@ class Controller extends BlockController
     			$second = false;
     			$sql.= $fieldname;
     			if($type === 'text'){
-    				$sqlmiddle.= "'?'";
+    				$sqlmiddle.= "?";
     			}else{
     				$sqlmiddle.= "?";
     			}
     		}else{
     			$sql.= ','.$fieldname;
     			if($type === 'text'){
-    				$sqlmiddle.= ",'?'";
+    				$sqlmiddle.= ",?";
     			}else{
     				$sqlmiddle.= ",?";
     			}
@@ -180,6 +228,29 @@ class Controller extends BlockController
     	return $sql.$sqlmiddle.')';
     	
     	
+    }
+    
+    function createUpdateString(){
+    	$sql = "UPDATE ".$this->tableName." SET ";
+    	$first = true;
+    	$second = true;
+    	foreach($this->fields as $fieldname => $type){
+    		if($first){
+    			$first = false;
+    		}elseif ($second){
+    			$second = false;
+    			$sql.= $fieldname."=?";
+    			
+    		}else{
+    			$sql.= ', '.$fieldname."=?";
+    			
+    		}
+    	}
+    	$sql.= "WHERE id=?";
+    	 
+    	return $sql;
+    	 
+    	 
     }
 
     function requiresRegistration()
@@ -267,6 +338,35 @@ class Controller extends BlockController
     
     public function isExecuted(){
     	return $this->executed;
+    }
+    
+    public function getRowValues(){
+    	$db = Loader::db();
+    	$q = "SELECT * FROM ".$this->tableName." WHERE id=?";
+    	$v = array($this->editKey);
+    	
+    	$r = $db->query($q, $v);
+    	
+    	$returnArray = array();
+    	if($r){
+    		$values = $r->fetchRow();
+    		foreach($this->getFields() as $key => $value){
+    			if($key == 'id'){}
+    			else{
+    				$returnArray[$key]=$values[$key];
+    			}
+    		}
+    	}else{
+    	
+    	//dummy function because we have no values
+	    	foreach($this->getFields() as $key => $value){
+	    		if($key == 'id'){}
+	    		else{
+	    			$returnArray[$key]="";
+	    		}
+	    	}
+    	}
+    	return $returnArray;
     }
 
 }

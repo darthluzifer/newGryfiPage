@@ -23,7 +23,7 @@
         	if($fieldname == 'id'){
         		
         	?>
-        	<th width='15%'><?php echo t('Aktion'); ?></th>
+        	<th width='20%'><?php echo t('Aktion'); ?></th>
         	<?php }else{?>
         	<th><?php echo $fieldname ?></th>
         <?php 
@@ -43,9 +43,9 @@
         			<form method="post" action="<?php  echo $this->action('edit_row_form'); ?>">
         						<input type='hidden' name='rowid' value='<?php echo $col;?>'/>
         						<input type='hidden' name='action' value='edit' id='action_<?php  echo $col;?>'>
-        						<button type='submit' value = 'edit' class='btn inlinebtn' onclick="$('#action_<?php  echo $col;?>').val('edit');"><i class ='fa fa-pencil'> </i> </button>
+        						<button type='submit' value = 'edit' class='btn inlinebtn actionbutton edit' onclick="$('#action_<?php  echo $col;?>').val('edit');"><i class ='fa fa-pencil'> </i> </button>
         						<input type='hidden' name='rowid' value='<?php echo $col;?>'/>
-        						<button type='submit' value='delete' class='btn inlinebtn' onclick="$('#action_<?php  echo $col;?>').val('delete');"><i class ='fa fa-trash-o'> </i></button>
+        						<button type='submit' value='delete' class='btn inlinebtn actionbutton delete'  onclick="$('#action_<?php  echo $col;?>').val('delete');"><i class ='fa fa-trash-o'> </i></button>
         					</form>
         			</td>
         			<?php
@@ -61,7 +61,7 @@
         
        <form method="post" action="<?php  echo $this->action('add_new_row_form'); ?>">
 			
-			<?php  echo "<button type='submit' value='' class='btn inlinebtn'><i class ='fa fa-plus'> </i></button>"?>
+			<?php  echo "<button type='submit' value='' class='btn inlinebtn actionbutton add'><i class ='fa fa-plus'> </i></button>"?>
 		</form>
         
 
