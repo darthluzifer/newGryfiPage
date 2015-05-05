@@ -29,6 +29,8 @@ class Controller extends BlockController
 	
 	protected $bID = null;
 	
+	
+	
     
     
     function __construct($obj = null)
@@ -61,10 +63,10 @@ class Controller extends BlockController
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
     }
-
-    /**
-     * Used for localization. If we want to localize the name/description we have to include this
-     */
+	
+    function getBasicTablePath(){
+    	return __DIR__;
+    }
     public function getBlockTypeDescription()
     {
         return t("Show a simple Table with Data to create, edit, delete");

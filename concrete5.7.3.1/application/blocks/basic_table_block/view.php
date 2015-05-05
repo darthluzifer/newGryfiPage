@@ -15,12 +15,13 @@ if (is_object($composer)) {
 if(!$controller->isExecuted()){
 	
 	if($controller->displayForm()){
-		$this->inc('views/form_view.php');
+		include($controller->getBasicTablePath().'/views/form_view.php');
 	}else{
-		$this->inc('views/table_view.php');
+		include($controller->getBasicTablePath().'/views/table_view.php');
 		$controller->setExecuted();
 	}
 }
+
 
 ?>
 
