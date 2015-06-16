@@ -6,6 +6,7 @@ use Loader;
 use Page;
 use User;
 use Core;
+use Application\Block\BasicTableBlock\Field as Field;
 
 class Controller extends BlockController
 {
@@ -13,10 +14,7 @@ class Controller extends BlockController
     public $options = array();
     protected $btTable = 'btBasicTableInstance';
     protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBasicTable'/*name of the table where the data is stored*/);
-	protected $fields = array(
-			"id" => "int",
-			"value" => "text"
-	);
+	protected $fields = array();
 	
 	
 	protected $tableName = "btBasicTable";
@@ -29,13 +27,27 @@ class Controller extends BlockController
 	
 	protected $bID = null;
 	
-	
-	
+	protected $postFieldMap = array();
     
+	protected $errorMsg = array();
     
     function __construct($obj = null)
     {
         parent::__construct($obj);
+        
+        $this->fields=array(
+        		"id" => new Field("id", "ID", "nr"),
+        		"value" => new Field("value", "Value", "wert"),
+        );
+        
+        $this->postFieldMap = array(
+        		"nr" => $this->fields['id'],
+        		"wert" => $this->fields['value']
+        		
+        );
+        
+        
+        
         $c = Page::getCurrentPage();
 
         if (is_object($c)) {
@@ -76,16 +88,24 @@ class Controller extends BlockController
     {
         return t("BasicTable");
     }
-
-    function getQuestion()
-    {
-        return $this->question;
+    
+    function getActions($object, $row = array()){
+    	$string="
+    	<td>
+    	<form method='post' action='".$object->action('edit_row_form')."'>
+    		<input type='hidden' name='rowid' value='".$row['id']."'/>
+    		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>
+    		
+    		<button type='submit' value = 'edit' class='btn inlinebtn actionbutton edit' onclick=\"$('#action_".$row['id']."').val('edit');'\"><i class ='fa fa-pencil'> </i> </button>
+    			<input type='hidden' name='rowid' value='".$row['id']."'/>
+    		<button type='submit' value='delete' class='btn inlinebtn actionbutton delete'  onclick=\"$('#action_".$row['id']."').val('delete');\"><i class ='fa fa-trash-o'> </i></button>
+    	</form>
+    	</td>";
+    	return $string;
     }
 
-    function getPollOptions()
-    {
-        return $this->options;
-    }
+    
+
 
     function delete()
     {
@@ -133,11 +153,25 @@ class Controller extends BlockController
                 $ip = $iph->getRequestIP();
                 $ip = ($ip === false)?(''):($ip->getIp($ip::FORMAT_IP_STRING));
                 $v = array();
+//TODO: Validation
+                $error = false;
+                $errormsg = "";
                 foreach($this->getFields() as $key => $value){
                 	if($key == 'id'){}
                 	else{
-                		$v[]=$_REQUEST[$key];
+                		$field = $this->postFieldMap[$value->getPostName()];
+                		if($value->validatePost($_REQUEST[$value->getPostName()])){
+                			$v[]=$_REQUEST[$value->getPostName()];
+                		}else{
+                			$error = true;
+                			$this->errorMsg[] = $field->getErrorMsg();
+                		}
                 	}
+                }
+                if($error){
+                	$this->prepareFormEdit();
+                	$_SESSION['BasicTableFormData'][$this->bID]['inputValues']=$_REQUEST;
+                	return false;
                 }
                 
                 if($this->editKey == null){
@@ -248,7 +282,7 @@ class Controller extends BlockController
     			
     		}
     	}
-    	$sql.= "WHERE id=?";
+    	$sql.= " WHERE id=?";
     	 
     	return $sql;
     	 
@@ -260,10 +294,7 @@ class Controller extends BlockController
         return $this->requiresRegistration;
     }
 
-    function hasVoted()
-    {
-        return false;
-    }
+    
 
     function duplicate($newBID)
     {
@@ -334,6 +365,8 @@ class Controller extends BlockController
     	return $this->fields;
     }
     
+    
+    
     public function setExecuted(){
     	$this->executed = true;
     }
@@ -343,32 +376,46 @@ class Controller extends BlockController
     }
     
     public function getRowValues(){
-    	$db = Loader::db();
-    	$q = "SELECT * FROM ".$this->tableName." WHERE id=?";
-    	$v = array($this->editKey);
-    	
-    	$r = $db->query($q, $v);
-    	
+
     	$returnArray = array();
-    	if($r){
-    		$values = $r->fetchRow();
-    		foreach($this->getFields() as $key => $value){
-    			if($key == 'id'){}
-    			else{
-    				$returnArray[$key]=$values[$key];
-    			}
+    	if(isset($_SESSION['BasicTableFormData'][$this->bID]['inputValues'])){
+    		foreach($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value){
+    			
+    			$returnArray[$this->postFieldMap[$key]->getSQLFieldName()]=$value;
+    			unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
     		}
     	}else{
-    	
-    	//dummy function because we have no values
-	    	foreach($this->getFields() as $key => $value){
-	    		if($key == 'id'){}
-	    		else{
-	    			$returnArray[$key]="";
+	    	
+	    	$db = Loader::db();
+	    	$q = "SELECT * FROM ".$this->tableName." WHERE id=?";
+	    	$v = array($this->editKey);
+	    	
+	    	$r = $db->query($q, $v);
+	    	
+	    	if($r){
+	    		$values = $r->fetchRow();
+	    		foreach($this->getFields() as $key => $value){
+	    			if($key == 'id'){}
+	    			else{
+	    				$returnArray[$key]=$values[$key];
+	    			}
 	    		}
+	    	}else{
+	    	
+	    	//dummy function because we have no values
+		    	foreach($this->getFields() as $key => $value){
+		    		if($key == 'id'){}
+		    		else{
+		    			$returnArray[$key]="";
+		    		}
+		    	}
 	    	}
     	}
-    	return $returnArray;
+	    return $returnArray;
+    }
+    
+    function getErrorMessages(){
+    	return $this->errorMsg;
     }
 
 }

@@ -1,22 +1,20 @@
 
 <div class="form-group">
+	
 	<form action=<?php echo $this->action('save_row') ?> method='POST'>
 	
 	<?php 
 	$fields = $controller->getFields();
 	$rowValues = $controller->getRowValues();
-	foreach($fields as $field => $value){
+	
+	foreach($fields as $field => $FieldObject){
 		if($field == 'id'){
 			
 		}else{
+			$FieldObject->setValue($rowValues[$FieldObject->getSQLFieldName()]);
 			
-			echo "<label for='$field'>$field</label>";
-			echo $form->text($field, $rowValues[$field],array('title' => $field,
-											 'value' => $rowValues[$field],
-											 'id' => $field
-					
-											)
-					);
+			echo $FieldObject->getFormView($form);
+			
 		}	
 	
 	}
