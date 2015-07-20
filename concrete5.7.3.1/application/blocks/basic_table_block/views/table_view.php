@@ -40,7 +40,7 @@
         	
         	foreach ($row as $colname => $col){
         		if($colname == 'id'){
-					echo $controller->getActions( $this, $row);
+					echo $controller->getActions( $view, $row);
         			
         		}else{
         			$fields[$colname]->setValue($col);

@@ -8,6 +8,9 @@ use User;
 use Core;
 use Application\Block\BasicTableBlock\Field as Field;
 
+
+use Application\Block\BasicTableBlock\Test as Test;
+
 class Controller extends BlockController
 {
 
@@ -74,6 +77,10 @@ class Controller extends BlockController
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
+        if(isset($_SESSION['prepareFormEdit'])){
+        	$this->isFormview = $_SESSION['prepareFormEdit'];
+        }
+        var_dump($_SESSION['prepareFormEdit']);
     }
 	
     function getBasicTablePath(){
@@ -89,7 +96,12 @@ class Controller extends BlockController
         return t("BasicTable");
     }
     
+    public function getJavaScriptStrings() {
+    	return array('file-required' => t('You must select a file.'));
+    }
+    
     function getActions($object, $row = array()){
+    	//".$object->action('edit_row_form')."
     	$string="
     	<td>
     	<form method='post' action='".$object->action('edit_row_form')."'>
@@ -154,6 +166,7 @@ class Controller extends BlockController
                 $ip = ($ip === false)?(''):($ip->getIp($ip::FORMAT_IP_STRING));
                 $v = array();
 //TODO: Validation
+
                 $error = false;
                 $errormsg = "";
                 foreach($this->getFields() as $key => $value){
@@ -187,6 +200,7 @@ class Controller extends BlockController
                 	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
                 }
                 //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
+                $_SESSION['prepareFormEdit'] = false;
                 $this->redirect($c->getCollectionPath());
            	}
         
@@ -194,7 +208,7 @@ class Controller extends BlockController
     
     
     function action_add_new_row_form(){
-    	$this->isFormview = true;
+    	$this->prepareFormEdit();
     	
     }
 
@@ -206,7 +220,6 @@ class Controller extends BlockController
     	}
     	$this->editKey = $_POST['rowid'];
     	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
-    	
     	if($_POST['action'] == 'edit'){
     		$this->prepareFormEdit();
     	}else{
@@ -215,6 +228,7 @@ class Controller extends BlockController
     }
     
     public function prepareFormEdit(){
+    	$_SESSION['prepareFormEdit'] = true;
     	$this->isFormview = true;
     }
     
@@ -224,6 +238,7 @@ class Controller extends BlockController
     	$q = "DELETE FROM ".$this->tableName." WHERE id=?";
     	$v = array($this->editKey);
     	$r = $db->query($q,$v);
+    	$_SESSION['prepareFormEdit'] = false;
     	if($r){
     		return true;
     	}else{

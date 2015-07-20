@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-06-16T16:36:28+02:00
+ * Generated 2015-07-20T10:33:10+02:00
  *
- * @item      misc.latest_version
+ * @item      misc.do_page_reindex_check
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -25,5 +25,17 @@ return array(
     ),
     'i18n' => array(
         'choose_language_login' => null
+    ),
+    'cache' => array(
+        'blocks' => false,
+        'assets' => false,
+        'theme_css' => true,
+        'overrides' => false,
+        'pages' => '0',
+        'full_page_lifetime' => 'default',
+        'full_page_lifetime_value' => null
+    ),
+    'theme' => array(
+        'compress_preprocessor_output' => true
     )
 );
