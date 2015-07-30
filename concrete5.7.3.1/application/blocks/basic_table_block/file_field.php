@@ -11,7 +11,7 @@ use File;
 use Concrete\Controller\SinglePage\Dashboard\Blocks\Permissions as Permissions;
 use Concrete\Core\Block\View\BlockView as View;
 
-class Test extends Field{
+class FileField extends Field{
 	
 	public function __construct($sqlFieldname,$label, $postName){
 		parent::__construct($sqlFieldname, $label, $postName);
@@ -44,13 +44,13 @@ class Test extends Field{
 	public function getFormView($form){
 		$al = Loader::helper('concrete/asset_library');
 		$bf = null;
-		if ($this->getFileID() > 0) {
+		if ($this->getValue() > 0) {
 			$bf = $this->getFileObject();
 		}
 		$returnString = "
 		<div class=\"form-group\">
-		".$form->label('fID', t('File'))."
-		".$al->file('ccm-b-file', 'fID', t('Choose File'), $bf)."
+		".$form->label($this->getPostName(), t('File'))."
+		".$al->file($this->getPostName(), $this->getPostName(), t('Choose File'), $bf)."
 		</div>";
 		
 		return $returnString;
@@ -72,6 +72,9 @@ class Test extends Field{
 	
 
 	function getFileObject() {
+		if(is_null($this->value)){
+			return false;
+		}
 		return File::getByID($this->value);
 	}
 	

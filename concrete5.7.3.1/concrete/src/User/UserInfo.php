@@ -197,13 +197,7 @@ class UserInfo extends Object implements \Concrete\Core\Permission\ObjectInterfa
                 $ue->setUserPassword($data['uPassword']);
                 Events::dispatch('on_user_add', $ue);
             }
-			
-            
-            
-            //TO DO: INSERT into owncloud oauth table
-            
-            
-            
+
             return $ui;
         }
     }
@@ -714,7 +708,6 @@ class UserInfo extends Object implements \Concrete\Core\Permission\ObjectInterfa
             		$this->getUserObject()->getUserPasswordHasher()->HashPassword($newPassword),
             		strtolower($username)
             );
-            var_dump($username);
             $res = $db->execute($r, $v);
             
 

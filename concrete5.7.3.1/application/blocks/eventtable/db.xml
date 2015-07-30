@@ -60,6 +60,20 @@
 			<default value=""/>
 		</field>
 	</table>
+	<table name="btContentFile">
+		<field name="bID" type="I">
+			<key />
+			<unsigned />
+		</field>
+		<field name="fID" type="I">
+			<unsigned />
+		</field>
+		<field name="fileLinkText" type="C" size="255"/>
+		<field name="filePassword" type="C" size="255"/>
+        <index name="fID">
+            <col>fID</col>
+        </index>
+	</table>
 </schema>
 
 

@@ -1,12 +1,13 @@
 <?php
-use Application\Block\BasicTableBlock\Controller as Controller;
+//use Application\Block\BasicTableBlock\Controller as Controller;
 
 defined('C5_EXECUTE') or die("Access Denied.");
 // basically a stub that includes some other files
 $u = new User();
 $uID = $u->getUserID();
 $c = Page::getCurrentPage();
-$controller = new Controller();
+//$controller = new Controller();
+
 
 $canAccessComposer = false;
 if (is_object($composer)) {

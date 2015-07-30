@@ -9,7 +9,7 @@ use User;
 use Core;
 use Application\Block\BasicTableBlock\Field as Field;
 use Aws\S3\Enum\Permission as Permission;
-//use Application\Block\BasicTableBlock\Test as Test;
+use Application\Block\BasicTableBlock\FileField as FileField;
 
 class Controller extends BasicTableBlockController
 {
@@ -39,7 +39,6 @@ class Controller extends BasicTableBlockController
     	
     	parent::__construct($obj);
     	
-    	
     	$this->fields=array(
     			"id" => new Field("id", "ID", "nr"),
     			"date_from" => new Field("date_from", "Datum von", "dateFrom"),
@@ -48,8 +47,8 @@ class Controller extends BasicTableBlockController
     			"time_to" => new Field("time_to", "Zeit bis", "timeTo"),
     			"title" => new Field("title", "Titel", "titleEvent"),
     			"description" => new Field("description", "Beschreibung", "descEvent"),
-    			"infofile" => new Field("infofile", "Info Datei", "eventFile"),
-    			"registerfile" => new Field("registerfile", "Anmelde Formular", "registerFile"),
+    			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
+    			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
     	);
     	
     	$this->postFieldMap = array(
