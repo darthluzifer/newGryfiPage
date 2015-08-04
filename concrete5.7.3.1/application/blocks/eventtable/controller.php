@@ -11,6 +11,7 @@ use Application\Block\BasicTableBlock\Field as Field;
 use Aws\S3\Enum\Permission as Permission;
 use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
+use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLinkField;
 
 class Controller extends BasicTableBlockController
 {
@@ -51,9 +52,16 @@ class Controller extends BasicTableBlockController
     			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
     			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
+    			"testlink" => new DropdownLinkField("testlink", "Test Link", "testlink"),
     	);
     	
     	$this->fields['testselect']->setOptions(array(""=>"","a" => "somevalue", "b" => "someothervalue"));
+    	
+    	$this->fields['testlink']->setLinkTable("Groups");
+    	$this->fields['testlink']->setShowColumn("gName");
+    	$this->fields['testlink']->setIdField("gID");
+    	 
+    	 
     	
     	$this->postFieldMap = array(
     			"nr" => $this->fields['id'],
@@ -66,6 +74,7 @@ class Controller extends BasicTableBlockController
     			"eventFile" => $this->fields['infofile'],
     			"registerFile" => $this->fields['registerfile'],
     			"testSelect" => $this->fields['testselect'],
+    			"testlink" => $this->fields['testlink'],
     			
     	);
         

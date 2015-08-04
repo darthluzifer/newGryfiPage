@@ -28,6 +28,11 @@ class DropdownField extends Field{
 	public function setOptions (array $options){
 		$this->options = $options;
 	}
+	
+	
+	public function getOptions(){
+		return $this->options;
+	}
 
 	
 	public function setValue($value){
@@ -36,12 +41,13 @@ class DropdownField extends Field{
 	}
 
 	public function getTableView(){
-		return $this->options[$this->getValue()];
+		$options = $this->getOptions();
+		return $options[$this->getValue()];
 	}
 
 
 	public function getFormView($form){
-		return $form->select($this->getPostName(), $this->options,$this->getValue());
+		return $form->select($this->getPostName(), $this->getOptions(),$this->getValue());
 	}
 
 
@@ -55,7 +61,7 @@ class DropdownField extends Field{
 
 
 	public function validatePost($value){
-		$values = array_keys($this->options);
+		$values = array_keys($this->getOptions());
 		if(in_array($value, $values, true)){
 			return true;
 		}else{

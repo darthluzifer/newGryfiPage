@@ -63,6 +63,8 @@
 			
 		</field>
 	</table>
+	
+	
 	<table name="btContentFile">
 		<field name="bID" type="I">
 			<key />
