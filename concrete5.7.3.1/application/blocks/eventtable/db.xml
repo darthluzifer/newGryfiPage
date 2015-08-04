@@ -59,6 +59,9 @@
 		<field name="registerfile" type="C" size="255">
 			<default value=""/>
 		</field>
+		<field name="testselect" type="C" size="255">
+			
+		</field>
 	</table>
 	<table name="btContentFile">
 		<field name="bID" type="I">

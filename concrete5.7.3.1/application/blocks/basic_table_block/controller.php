@@ -7,7 +7,7 @@ use Page;
 use User;
 use Core;
 use Application\Block\BasicTableBlock\Field as Field;
-use Application\Block\BasicTableBlock\FileField as FileField;
+use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
 
 
 use Application\Block\BasicTableBlock\Test as Test;

@@ -9,7 +9,8 @@ use User;
 use Core;
 use Application\Block\BasicTableBlock\Field as Field;
 use Aws\S3\Enum\Permission as Permission;
-use Application\Block\BasicTableBlock\FileField as FileField;
+use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
+use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
 
 class Controller extends BasicTableBlockController
 {
@@ -49,7 +50,10 @@ class Controller extends BasicTableBlockController
     			"description" => new Field("description", "Beschreibung", "descEvent"),
     			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
+    			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
     	);
+    	
+    	$this->fields['testselect']->setOptions(array(""=>"","a" => "somevalue", "b" => "someothervalue"));
     	
     	$this->postFieldMap = array(
     			"nr" => $this->fields['id'],
@@ -61,6 +65,7 @@ class Controller extends BasicTableBlockController
     			"description" => $this->fields['descEvent'],
     			"eventFile" => $this->fields['infofile'],
     			"registerFile" => $this->fields['registerfile'],
+    			"testSelect" => $this->fields['testselect'],
     			
     	);
         

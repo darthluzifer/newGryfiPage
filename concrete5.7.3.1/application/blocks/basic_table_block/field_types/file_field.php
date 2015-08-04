@@ -1,5 +1,5 @@
 <?php
-namespace Application\Block\BasicTableBlock;
+namespace Application\Block\BasicTableBlock\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
 use Application\Block\BasicTableBlock\Field as Field;
