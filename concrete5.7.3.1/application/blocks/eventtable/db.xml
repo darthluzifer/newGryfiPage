@@ -62,6 +62,9 @@
 		<field name="testselect" type="C" size="255">
 			
 		</field>
+		<field name="testlink" type="C" size="255">
+			
+		</field>
 	</table>
 	
 	

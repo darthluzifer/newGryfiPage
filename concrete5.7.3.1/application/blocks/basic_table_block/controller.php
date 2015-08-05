@@ -78,8 +78,8 @@ class Controller extends BlockController
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
-        if(isset($_SESSION['prepareFormEdit'])){
-        	$this->isFormview = $_SESSION['prepareFormEdit'];
+        if(isset($_SESSION[$this->tableName]['prepareFormEdit'])){
+        	$this->isFormview = $_SESSION[$this->tableName]['prepareFormEdit'];
         }
         
     }
@@ -201,7 +201,7 @@ class Controller extends BlockController
                 	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
                 }
                 //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
-                $_SESSION['prepareFormEdit'] = false;
+                $_SESSION[$this->tableName]['prepareFormEdit'] = false;
                 $this->redirect($c->getCollectionPath());
            	}
         
@@ -229,7 +229,7 @@ class Controller extends BlockController
     }
     
     public function prepareFormEdit(){
-    	$_SESSION['prepareFormEdit'] = true;
+    	$_SESSION[$this->tableName]['prepareFormEdit'] = true;
     	$this->isFormview = true;
     }
     
@@ -239,7 +239,7 @@ class Controller extends BlockController
     	$q = "DELETE FROM ".$this->tableName." WHERE id=?";
     	$v = array($this->editKey);
     	$r = $db->query($q,$v);
-    	$_SESSION['prepareFormEdit'] = false;
+    	$_SESSION[$this->tableName]['prepareFormEdit'] = false;
     	if($r){
     		return true;
     	}else{
@@ -395,11 +395,13 @@ class Controller extends BlockController
 
     	$returnArray = array();
     	if(isset($_SESSION['BasicTableFormData'][$this->bID]['inputValues'])){
+    		
     		foreach($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value){
-    			
-    			$returnArray[$this->postFieldMap[$key]->getSQLFieldName()]=$value;
-    			unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
+    			if(is_object($this->postFieldMap[$key])){
+    				$returnArray[$this->postFieldMap[$key]->getSQLFieldName()]=$value;
+    			}
     		}
+
     	}else{
 	    	
 	    	$db = Loader::db();

@@ -93,12 +93,14 @@ class DropdownLinkField extends DropdownField{
 			
 			$tabledata = array();
 			while ($row = $r->fetchRow()) {
-				$options[$row['id']]=$row[$this->showcolumn];
+				$options[$row[$this->getIdField()]]=$row[$this->showcolumn];
 			}
+		}else{
+			return $this->options;
 		}
 		
 		if($this->getNullable()){
-			$options = array(""=>"")+$this->options;
+			$options = array(""=>"")+$options;
 		}
 		$this->setOptions($options);
 		return $this->options;

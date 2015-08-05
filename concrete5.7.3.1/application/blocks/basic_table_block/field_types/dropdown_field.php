@@ -47,7 +47,9 @@ class DropdownField extends Field{
 
 
 	public function getFormView($form){
-		return $form->select($this->getPostName(), $this->getOptions(),$this->getValue());
+		$html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
+		$html .=$form->select($this->getPostName(), $this->getOptions(),$this->getValue());
+		return $html;
 	}
 
 
@@ -62,7 +64,7 @@ class DropdownField extends Field{
 
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
-		if(in_array($value, $values, true)){
+		if(in_array($value, $values)){
 			return true;
 		}else{
 			return false;
