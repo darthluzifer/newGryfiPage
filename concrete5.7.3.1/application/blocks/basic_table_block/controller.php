@@ -435,5 +435,10 @@ class Controller extends BlockController
     function getErrorMessages(){
     	return $this->errorMsg;
     }
+    
+    function action_myAction(){
+    	echo json_encode(array('hi' => 'test'));
+    	exit();
+    }
 
 }

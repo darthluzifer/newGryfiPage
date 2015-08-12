@@ -82,6 +82,15 @@
             <col>fID</col>
         </index>
 	</table>
+	
+	<table name ='btEventInGroup'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+		</field>
+		<field name='eventID' type='I'></field>
+		<field name='groupID' type='I'></field>
+	</table>
 </schema>
 
 

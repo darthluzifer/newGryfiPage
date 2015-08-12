@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-08-04T23:11:43+02:00
+ * Generated 2015-08-12T19:29:05+02:00
  *
- * @item      misc.latest_version
+ * @item      misc.do_page_reindex_check
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ return array(
     'site' => 'newgryfipage',
     'version_installed' => '5.7.3.1',
     'misc' => array(
-        'access_entity_updated' => 1428345997,
+        'access_entity_updated' => 1438808448,
         'latest_version' => '5.7.3.1',
         'seen_introduction' => true,
         'do_page_reindex_check' => false
@@ -37,5 +37,8 @@ return array(
     ),
     'theme' => array(
         'compress_preprocessor_output' => true
+    ),
+    'permissions' => array(
+        'model' => 'normal'
     )
 );

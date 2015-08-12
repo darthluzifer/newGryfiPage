@@ -27,8 +27,27 @@ if(!$controller->isExecuted()){
 
 
 ?>
+<script type="text/javascript">
+$(document).ready(function(e){
+		$.ajax({
+		      type: "POST",
+		      url: "<?php echo $this->action('myAction') ?>",
+		      dataType: 'json',
+		      data:{test: 'test'
+			      },
+		      success: function(j){
+					console.log(j);
+	
+			      }
+	
+		});
+	
+});
 
+<!--
 
+//-->
+</script>
 
 
 

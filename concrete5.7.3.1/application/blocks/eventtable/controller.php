@@ -12,6 +12,7 @@ use Aws\S3\Enum\Permission as Permission;
 use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLinkField;
+use Application\Block\BasicTableBlock\FieldTypes\DropdownMultilinkField as DropdownMultilinkField;
 
 class Controller extends BasicTableBlockController
 {
@@ -53,6 +54,7 @@ class Controller extends BasicTableBlockController
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
     			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
     			"testlink" => new DropdownLinkField("testlink", "Test Link", "testlink"),
+    			"testmultiLink" => new DropdownMultilinkField("testmultilink", "Test Multi Link", "testmultilink"),
     	);
     	
     	$this->fields['testselect']->setOptions(array(""=>"","a" => "somevalue", "b" => "someothervalue"));
@@ -60,6 +62,16 @@ class Controller extends BasicTableBlockController
     	$this->fields['testlink']->setLinkTable("Groups");
     	$this->fields['testlink']->setShowColumn("gName");
     	$this->fields['testlink']->setIdField("gID");
+    	
+    	$this->fields['testmultiLink']->setLinkTable("Groups");
+    	$this->fields['testmultiLink']->setShowColumn("gName");
+    	$this->fields['testmultiLink']->setIdField("gID");
+    	$this->fields['testmultiLink']->setNtoMTable('btEventInGroup');
+    	$this->fields['testmultiLink']->setLinkFieldSelf('eventID');
+    	$this->fields['testmultiLink']->setLinkFieldExt('groupID');
+    	$this->fields['testmultiLink']->setIdFieldSelf('id');
+    	$this->fields['testmultiLink']->setIdFieldExt('gID');
+    	$this->fields['testmultiLink']->setRowId($_SESSION[$this->tableName.$this->bID."rowid"]);
     	 
     	 
     	
@@ -75,6 +87,7 @@ class Controller extends BasicTableBlockController
     			"registerFile" => $this->fields['registerfile'],
     			"testSelect" => $this->fields['testselect'],
     			"testlink" => $this->fields['testlink'],
+    			"testmultilink" => $this->fields['testmultilink'],
     			
     	);
         
