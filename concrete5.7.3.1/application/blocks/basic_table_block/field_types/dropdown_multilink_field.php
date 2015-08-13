@@ -12,8 +12,9 @@ use Core;
 use File;
 use Concrete\Controller\SinglePage\Dashboard\Blocks\Permissions as Permissions;
 use Concrete\Core\Block\View\BlockView as View;
+use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 
-class DropdownMultilinkField extends DropdownLinkField{
+class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterface{
 	protected $linktable;
 	protected $ntomtable;
 	protected $sqlfilter = " 1=1 ";
@@ -63,6 +64,10 @@ class DropdownMultilinkField extends DropdownLinkField{
 		$this->idfieldself = $colname;
 	}
 	
+	public function getIdFieldSelf(){
+		return $this->idfieldself;
+	}
+	
 	/**
 	 * set the colname id Field in the linktable
 	 * @param String $colname
@@ -77,6 +82,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 	 */
 	public function setRowId( $id){
 		$this->rowid = $id;
+		$this->values = array();
 	}
 	
 	public function setAllowAdd($isAllowed = true){
@@ -136,12 +142,22 @@ class DropdownMultilinkField extends DropdownLinkField{
 	
 	
 	public function validatePost($value){
-		$values = array_keys($this->getOptions());
-		if(in_array($value, $values)){
+		if($this->allowAdd){
 			return true;
-		}else{
-			return false;
 		}
+		
+		$postvalues = explode(",", $value);
+		
+		$values = $this->getOptions();
+		
+		foreach($postvalues as $num => $postvalue){	
+			if(in_array($postvalue, $values)){
+				
+			}else{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -154,7 +170,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 			
 			
 			$db = Loader::db();
-			$sql = "SELECT l.".$this->idfieldext." as key,l.".$this->showcolumn." as value FROM 
+			$sql = "SELECT l.".$this->idfieldext." as schluessel,l.".$this->showcolumn." as value FROM 
 					".$this->linktable." l
 					JOIN ".$this->ntomtable." nm ON l.".$this->idfieldext." = nm.".$this->linkfieldext."
 					WHERE nm.".$this->linkfieldself." = ?	
@@ -166,13 +182,96 @@ class DropdownMultilinkField extends DropdownLinkField{
 			if(count($this->sqlvars)>0){
 				$filtervalues+=$this->sqlvars;
 			}
-			$r = $db->query($sql, $this->rowid);
+			$r = $db->query($sql, array($this->rowid));
 			
 			while ($row = $r->fetchRow()) {
-				$this->values[$row['key']]=$row['value'];
+				$this->values[$row['schluessel']]=$row['value'];
 			}
 		}
 		return $this->values;
+	}
+	
+	
+	public function saveValues($value= null){
+		$db = Loader::db();
+		
+		if($this->rowid == null){
+			//throw some exception or so
+			return;
+		}
+		
+		//if no insert value
+		if($value == null){
+			$value = $this->value;
+		}
+		
+		//if no value property is set
+		if($value == null){
+			$db->delete($this->ntomtable, array(
+					$this->linkfieldself => $this->rowid
+			));
+			return;
+		}
+		//first compare the possible, posted and db values
+		
+		
+		
+		$postvalues = explode(",", $value);
+		
+		$options = $this->getOptions();
+		
+		$currentdbvalues = $this->getValues();
+		
+		$flippedoptions = array_flip($options);
+		
+		$checkedoptions = array();
+		$checkedoptionids = array();
+		foreach($currentdbvalues as $key => $value){
+			$checkedoptions[$value]= 0;
+			$checkedoptions[$value]= $key;
+		}
+
+		foreach($postvalues as $num => $postvalue){
+			$insert = false;
+			$id = null;
+			
+			//check if the option is already in db
+			if(isset($checkedoptions[$postvalue])){
+				$checkedoptions[$postvalue]=1;
+			}elseif(in_array($postvalue, $options)){
+				//option is possible
+				
+				$id = $flippedoptions[$postvalue];
+				$insert = true;
+				
+			}else if($this->allowAdd){
+				
+				//not existing, but adding allowed, insert new linktable row and then insert
+				$aff=$db->insert($this->linktable, array($this->showcolumn => $postvalue));
+				if($aff > 0){
+					$id = $db->lastInsertId();
+					$insert = true;
+				}
+			}
+			if($insert){
+				$aff = $db->insert($this->ntomtable, array(
+						$this->linkfieldself => $this->rowid,
+						$this->linkfieldext => $id
+				));
+				var_dump($aff);
+				exit;
+				//if error, do error logging, throw exception, dunno
+			}
+		}
+		//delete the options that are no longer here
+		foreach($checkedoptions as $key => $value){
+			if($value == 0){
+				$db->delete($this->ntomtable, array(
+						$this->linkfieldself => $this->rowid,
+						$this->linkfieldext => $checkedoptionids[$key]
+				));
+			}
+		}
 	}
 	
 	

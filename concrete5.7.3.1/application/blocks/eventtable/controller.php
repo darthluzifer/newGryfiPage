@@ -13,6 +13,7 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownMultilinkField as DropdownMultilinkField;
+use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 
 class Controller extends BasicTableBlockController
 {

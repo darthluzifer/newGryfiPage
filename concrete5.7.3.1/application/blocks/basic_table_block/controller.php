@@ -8,6 +8,7 @@ use User;
 use Core;
 use Application\Block\BasicTableBlock\Field as Field;
 use Application\Block\BasicTableBlock\FieldTypes\FileField as FileField;
+use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 
 
 use Application\Block\BasicTableBlock\Test as Test;
@@ -170,11 +171,20 @@ class Controller extends BlockController
 
                 $error = false;
                 $errormsg = "";
+                
+                $selfsavefields = array();
+                
                 foreach($this->getFields() as $key => $value){
                 	if($key == 'id'){}
                 	else{
                 		$field = $this->postFieldMap[$value->getPostName()];
-                		if($value->validatePost($_REQUEST[$value->getPostName()])){
+                		if($value instanceof SelfSaveInterface){
+                			if($value->validatePost($_REQUEST[$value->getPostName()])){
+	                			$value->setValue($_REQUEST[$value->getPostName()]);
+	                			$selfsavefields[]=$value;
+                			}
+                		
+                		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
                 			$v[]=$_REQUEST[$value->getPostName()];
                 		}else{
                 			$error = true;
@@ -190,12 +200,18 @@ class Controller extends BlockController
                 
                 if($this->editKey == null){
                 	$q = $this->createInsertString();
+                	$this->editKey = $db->lastInsertId();
                 }else{
                 	$q = $this->createUpdateString();
                 	$v[]=$this->editKey;
                 }
             
                 $db->query($q, $v);
+                
+                foreach($selfsavefields as $num => $selfsavefield){
+                	$selfsavefield->setRowId($this->editKey);
+                	$selfsavefield->saveValues();
+                }
                 
                 if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
                 	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
@@ -257,23 +273,27 @@ class Controller extends BlockController
     	$first = true;
     	$second = true;
     	foreach($this->fields as $fieldname => $type){
-    		if($first){
-    			$first = false;
-    		}elseif ($second){
-    			$second = false;
-    			$sql.= $fieldname;
-    			if($type === 'text'){
-    				$sqlmiddle.= "?";
-    			}else{
-    				$sqlmiddle.= "?";
-    			}
-    		}else{
-    			$sql.= ','.$fieldname;
-    			if($type === 'text'){
-    				$sqlmiddle.= ",?";
-    			}else{
-    				$sqlmiddle.= ",?";
-    			}
+    		//instances if SelfSaveInterface save their values by themselfes.
+    		
+    		if(!($type instanceof SelfSaveInterface)){
+	    		if($first){
+	    			$first = false;
+	    		}elseif ($second){
+	    			$second = false;
+	    			$sql.= $fieldname;
+	    			if($type === 'text'){
+	    				$sqlmiddle.= "?";
+	    			}else{
+	    				$sqlmiddle.= "?";
+	    			}
+	    		}else{
+	    			$sql.= ','.$fieldname;
+	    			if($type === 'text'){
+	    				$sqlmiddle.= ",?";
+	    			}else{
+	    				$sqlmiddle.= ",?";
+	    			}
+	    		}
     		}
     	}
     	
@@ -286,20 +306,24 @@ class Controller extends BlockController
     	$sql = "UPDATE ".$this->tableName." SET ";
     	$first = true;
     	$second = true;
+    	
     	foreach($this->fields as $fieldname => $type){
-    		if($first){
-    			$first = false;
-    		}elseif ($second){
-    			$second = false;
-    			$sql.= $fieldname."=?";
-    			
-    		}else{
-    			$sql.= ', '.$fieldname."=?";
-    			
+    	
+    		if(!($type instanceof SelfSaveInterface)){
+	    		if($first){
+	    			$first = false;
+	    		}elseif ($second){
+	    			$second = false;
+	    			$sql.= $fieldname."=?";
+	    			
+	    		}else{
+	    			$sql.= ', '.$fieldname."=?";
+	    			
+	    		}
     		}
     	}
     	$sql.= " WHERE id=?";
-    	 
+
     	return $sql;
     	 
     	 
@@ -414,6 +438,9 @@ class Controller extends BlockController
 	    		$values = $r->fetchRow();
 	    		foreach($this->getFields() as $key => $value){
 	    			if($key == 'id'){}
+	    			elseif($type instanceof SelfSaveInterface){
+	    				$returnArray[$key]=$value->getValues();
+	    			}
 	    			else{
 	    				$returnArray[$key]=$values[$key];
 	    			}

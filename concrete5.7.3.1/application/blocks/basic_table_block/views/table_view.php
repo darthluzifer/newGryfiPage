@@ -1,4 +1,6 @@
-
+<?php 
+use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
+?>
 
 <div class="poll">
  
@@ -38,13 +40,19 @@
         foreach ($tabledata as  $row) {
         	echo '<tr>';
         	
-        	foreach ($row as $colname => $col){
+        	foreach ($fields as $colname => $field){
         		if($colname == 'id'){
 					echo $controller->getActions( $view, $row);
         			
         		}else{
-        			$fields[$colname]->setValue($col);
-        			echo '<td>'.$fields[$colname]->getTableView().'</td>';
+        			
+        			if($fields[$colname] instanceof SelfSaveInterface){
+        				$field->setRowId($row['id']);
+        			}else{
+        				$field->setValue($row[$colname]);
+        			}
+        			//var_dump($field);
+        			echo '<td>'.$field->getTableView().'</td>';
         		}
         	}
         	 
