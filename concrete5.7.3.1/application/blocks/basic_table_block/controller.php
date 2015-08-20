@@ -84,6 +84,10 @@ class Controller extends BlockController
         }
         
     }
+    
+    function getHTMLId(){
+    	return $this->tableName.$this->bID;
+    }
 	
     function getBasicTablePath(){
     	return __DIR__;
@@ -105,7 +109,7 @@ class Controller extends BlockController
     function getActions($object, $row = array()){
     	//".$object->action('edit_row_form')."
     	$string="
-    	<td>
+    	<td class='actioncell'>
     	<form method='post' action='".$object->action('edit_row_form')."'>
     		<input type='hidden' name='rowid' value='".$row['id']."'/>
     		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>
@@ -138,6 +142,8 @@ class Controller extends BlockController
     	
     	$this->isFormview = false;
         $u = new User();
+        
+        
         $db = Loader::db();
         $bo = $this->getBlockObject();
         if ($this->post('rcID')) {
@@ -147,6 +153,16 @@ class Controller extends BlockController
             $c = $this->getCollectionObject();
         }
 
+        if(isset($_POST['cancel'])){
+        	if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
+        		unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+        	}
+        	//setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
+        	$_SESSION[$this->tableName]['prepareFormEdit'] = false;
+        	$this->redirect($c->getCollectionPath());
+        	return;
+        }
+        
         if ($this->requiresRegistration()) {
             if (!$u->isRegistered()) {
                 $this->redirect('/login');

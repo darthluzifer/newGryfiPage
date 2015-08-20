@@ -19,7 +19,8 @@
 	
 	}
 	
-	echo $form->submit('submit', "speichern");
+	echo $form->submit('submit', t("speichern"));
+	echo $form->submit('cancel', t("abbrechen"));
 	?>
 	
 	
