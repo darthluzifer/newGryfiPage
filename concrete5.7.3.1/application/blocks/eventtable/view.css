@@ -25,3 +25,7 @@
 .btn.actionbutton.add{
 	color: green;
 }
+
+.bootstrap-tagsinput{
+	display:block !important;
+}
