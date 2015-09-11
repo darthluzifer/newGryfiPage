@@ -122,7 +122,8 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 						$('#".$this->getPostName()."').tagsinput({
 						  freeInput: $allowadd,
 						  typeahead: {
-						    source: [$sourcetext]
+						    source: [$sourcetext],
+						    showHintOnFocus:true
 						  }
 						});
 					});

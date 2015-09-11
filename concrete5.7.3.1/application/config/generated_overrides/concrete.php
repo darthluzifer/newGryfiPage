@@ -2,7 +2,11 @@
 
 /**
  * -----------------------------------------------------------------------------
+<<<<<<< HEAD
  * Generated 2015-09-09T22:19:38+02:00
+=======
+ * Generated 2015-08-20T22:29:47+02:00
+>>>>>>> branch 'master' of git@gitlab.com:BacLuc/newGryfiPage.git
  *
  * @item      misc.do_page_reindex_check
  * @group     concrete
