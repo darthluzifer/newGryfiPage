@@ -1,6 +1,7 @@
 <?php
 namespace Application\Block\eventTable;
 
+use Application\Block\BasicTableBlock\FieldTypes\DateField;
 use Concrete\Core\Block\BlockController;
 use Application\Block\BasicTableBlock\Controller as BasicTableBlockController;
 use Loader;
@@ -45,7 +46,7 @@ class Controller extends BasicTableBlockController
     	
     	$this->fields=array(
     			"id" => new Field("id", "ID", "nr"),
-    			"date_from" => new Field("date_from", "Datum von", "dateFrom"),
+    			"date_from" => new DateField("date_from", "Datum von", "dateFrom"),
     			"date_to" => new Field("date_to", "Datum bis", "dateTo"),
     			"time_from" => new Field("time_from", "Zeit von", "timeFrom"),
     			"time_to" => new Field("time_to", "Zeit bis", "timeTo"),

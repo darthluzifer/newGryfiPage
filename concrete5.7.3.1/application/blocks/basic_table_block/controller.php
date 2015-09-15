@@ -400,7 +400,10 @@ class Controller extends BlockController
         
     }
 
-    public function displayTable()
+	/**
+	 * @return array
+     */
+	public function displayTable()
     {
         // Prepare the database query
         $db = Loader::db();
