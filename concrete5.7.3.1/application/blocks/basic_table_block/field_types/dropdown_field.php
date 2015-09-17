@@ -65,7 +65,7 @@ class DropdownField extends Field{
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
 		if(in_array($value, $values)){
-			return true;
+			return parent::validatePost($value);
 		}else{
 			return false;
 		}

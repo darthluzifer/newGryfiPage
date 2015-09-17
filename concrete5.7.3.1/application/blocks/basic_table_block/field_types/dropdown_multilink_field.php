@@ -144,7 +144,8 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 	
 	public function validatePost($value){
 		if($this->allowAdd){
-			return true;
+			
+			return parent::validatePost($value);
 		}
 		
 		$postvalues = explode(",", $value);
@@ -158,7 +159,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 				return false;
 			}
 		}
-		return true;
+		return parent::validatePost($value);
 	}
 	
 	/**

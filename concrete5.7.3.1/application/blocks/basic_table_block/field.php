@@ -14,6 +14,7 @@ class Field{
 	protected $value;
 	protected $postName;
 	protected $errMsg="";
+	protected $isSQLValue = false;
 	
 	public function __construct($sqlFieldname,$label, $postName){
 		
@@ -23,11 +24,21 @@ class Field{
 	}
 	
 	public function setValue($value){
+		$this->isSQLValue = false;
 		$this->value = $value;
 	}
 	
-	public function getTableView(){
+	public function setSQLValue($value){
+		$this->isSQLValue = true;
+		$this->value = $value;
+	}
+	
+	public function getSQLValue(){
 		return $this->value;
+	}
+	
+	public function getTableView(){
+		return $this->getValue();
 	}
 	
 	
@@ -59,6 +70,7 @@ class Field{
 	}
 	
 	public function validatePost($value){
+		$this->setValue($value);
 		return true;
 	}
 	

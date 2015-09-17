@@ -66,9 +66,7 @@ class FileField extends Field{
 	
 	
 	
-	public function validatePost($value){
-		return true;
-	}
+	
 	
 
 	function getFileObject() {

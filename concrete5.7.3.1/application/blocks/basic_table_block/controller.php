@@ -196,12 +196,12 @@ class Controller extends BlockController
                 		$field = $this->postFieldMap[$value->getPostName()];
                 		if($value instanceof SelfSaveInterface){
                 			if($value->validatePost($_REQUEST[$value->getPostName()])){
-	                			$value->setValue($_REQUEST[$value->getPostName()]);
-	                			$selfsavefields[]=$value;
+	                			//$value->setValue($_REQUEST[$value->getPostName()]);
+	                			$selfsavefields[]=$value->getSQLValue();
                 			}
                 		
                 		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
-                			$v[]=$_REQUEST[$value->getPostName()];
+                			$v[]=$value->getSQLValue();
                 		}else{
                 			$error = true;
                 			$this->errorMsg[] = $field->getErrorMsg();
@@ -458,7 +458,8 @@ class Controller extends BlockController
 	    				$returnArray[$key]=$value->getValues();
 	    			}
 	    			else{
-	    				$returnArray[$key]=$values[$key];
+	    				$value->setSQLValue($values[$key]);
+	    				$returnArray[$key]=$value->getValue();
 	    			}
 	    		}
 	    	}else{
