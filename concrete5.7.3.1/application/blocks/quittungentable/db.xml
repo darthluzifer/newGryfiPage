@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+	<table name="btBasicTableInstance">
+		<field name="bID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name="question" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="requiresRegistration" type="I">
+			<default value="0"/>
+		</field>
+	</table>
+	<table name="btBasicTableActionOption">
+		<field name="optionID" type="I">
+			<key/>
+			<unsigned/>
+			<autoincrement/>
+		</field>
+		<field name="bID" type="I" />	
+		<field name="optionName" type="C" size="255" />
+		<field name="displayOrder" type="I">
+			<default value="0"/>
+		</field>
+        <index name="bID">
+            <col>bID</col>
+            <col>displayOrder</col>
+        </index>
+	</table>
+	<table name="btQuittungen">
+		<field name="id" type="I">
+			<key/>
+			<unsigned/>
+			<autoincrement/>
+		</field>
+		<field name="date" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="description" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="price" type="D" size="255">
+		</field>
+		<field name="quittungfoto" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="groupID" type="I" size="255">
+			
+		</field>
+		<field name="budget" type="I" size="255">
+			
+		</field>
+		<field name="budgetposten" type="I" size="255">
+			
+		</field>
+	</table>
+	
+	
+	<table name="btContentFile">
+		<field name="bID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name="fID" type="I">
+			<unsigned />
+		</field>
+		<field name="fileLinkText" type="C" size="255"/>
+		<field name="filePassword" type="C" size="255"/>
+        <index name="fID">
+            <col>fID</col>
+        </index>
+	</table>
+	
+	<table name ='btQuittungInGroup'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name='quittungID' type='I'></field>
+		<field name='groupID' type='I'></field>
+	</table>
+	<table name ='btQUittunginBudget'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name='quittungID' type='I'></field>
+		<field name='budgetID' type='I'></field>
+	</table>
+	
+	<table name="btBudget">
+		<field name="id" type="I">
+			<key/>
+			<unsigned/>
+			<autoincrement/>
+		</field>
+		<field name="date" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="description" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="price" type="D" size="255">
+		</field>
+		<field name="quittungfoto" type="C" size="255">
+			<default value=""/>
+		</field>
+		<field name="groupID" type="I" size="255">
+			
+		</field>
+		<field name="budget" type="I" size="255">
+			
+		</field>
+		<field name="budgetposten" type="I" size="255">
+			
+		</field>
+	</table>
+	
+</schema>
+
+
+
