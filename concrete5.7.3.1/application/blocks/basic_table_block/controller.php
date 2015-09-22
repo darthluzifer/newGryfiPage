@@ -196,16 +196,15 @@ class Controller extends BlockController
                 		$field = $this->postFieldMap[$value->getPostName()];
                 		if($value instanceof SelfSaveInterface){
                 			if($value->validatePost($_REQUEST[$value->getPostName()])){
-	                			$value->setValue($_REQUEST[$value->getPostName()]);
-	                			$selfsavefields[]=$value;
+	                			//$value->setValue($_REQUEST[$value->getPostName()]);
+	                			$selfsavefields[]=$value->getSQLValue();
                 			}
                 		
                 		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
-							$value->setValue($_REQUEST[$value->getPostName()]);
-                			$v[]=$value->getValue();
+                			$v[]=$value->getSQLValue();
                 		}else{
                 			$error = true;
-                			$this->errorMsg[] = $value->getErrorMsg();
+                			$this->errorMsg[] = $field->getErrorMsg();
                 		}
                 	}
                 }
@@ -222,6 +221,7 @@ class Controller extends BlockController
                 	$q = $this->createUpdateString();
                 	$v[]=$this->editKey;
                 }
+            
                 $db->query($q, $v);
                 
                 foreach($selfsavefields as $num => $selfsavefield){
@@ -400,10 +400,7 @@ class Controller extends BlockController
         
     }
 
-	/**
-	 * @return array
-     */
-	public function displayTable()
+    public function displayTable()
     {
         // Prepare the database query
         $db = Loader::db();
@@ -461,7 +458,8 @@ class Controller extends BlockController
 	    				$returnArray[$key]=$value->getValues();
 	    			}
 	    			else{
-	    				$returnArray[$key]=$values[$key];
+	    				$value->setSQLValue($values[$key]);
+	    				$returnArray[$key]=$value->getValue();
 	    			}
 	    		}
 	    	}else{
