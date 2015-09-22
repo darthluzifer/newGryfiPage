@@ -201,10 +201,11 @@ class Controller extends BlockController
                 			}
                 		
                 		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
-                			$v[]=$_REQUEST[$value->getPostName()];
+							$value->setValue($_REQUEST[$value->getPostName()]);
+                			$v[]=$value->getValue();
                 		}else{
                 			$error = true;
-                			$this->errorMsg[] = $field->getErrorMsg();
+                			$this->errorMsg[] = $value->getErrorMsg();
                 		}
                 	}
                 }
@@ -221,7 +222,6 @@ class Controller extends BlockController
                 	$q = $this->createUpdateString();
                 	$v[]=$this->editKey;
                 }
-            
                 $db->query($q, $v);
                 
                 foreach($selfsavefields as $num => $selfsavefield){

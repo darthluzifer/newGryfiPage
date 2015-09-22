@@ -130,16 +130,18 @@ class DateField extends Field{
 	
 	public function getFormView($form){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
-		$returnString = '
-				<div class="well">
-				<div id="dpYears" class="input-append date" data-date-format="dd.mm.yyyy" data-date="'.$this->getTableView().'">
-				<input class="span2" type="text" value="'.$this->getTableView().'" size="16">
-				<span class="add-on">
-				<i class="icon-calendar"></i>
-				</span>
+		$returnString .= '
+				<div  class="input-append date datepickerdiv" data-date-format="dd.mm.yyyy" data-date="' . $this->getTableView() . '">
+				<input id="'.$this->getPostName().'" name="'.$this->getPostName().'"  type="text" value="' . $this->getTableView() . '" size="16">
+
 				</div>
-				</div>
-				
+				<script>
+					$(function(e){
+						$("#'.$this->getPostName().'").datepicker({format:"dd.mm.yyyy"});
+
+					});
+
+				</script>
 				';
 		return $returnString;
 	}
@@ -151,6 +153,7 @@ class DateField extends Field{
 			if($this->isNullable){
 				return true;
 			}else{
+				$this->errMsg = t("Das Datum muss angegeben werden");
 				return false;
 			}
 		}
@@ -162,25 +165,24 @@ class DateField extends Field{
 			$this->errMsg = self::$formatErrorMessage;
 			return false;
 		}
-		
 		for($i = 0; $i < count($explodeValue);$i++){
 			switch ($explodePattern[$i]){
 				case 'd':
-					if(!(is_int($explodeValue[$i])
+					if(!(is_int($explodeValue[$i]+0)
 						 && $explodeValue[$i]+0<= 31) ){
 						$this->errMsg = t(self::$formatErrorMessage);
 						return false;
 					}
 				break;
 				case 'm':
-					if(!(is_int($explodeValue[$i])
+					if(!(is_int($explodeValue[$i]+0)
 						&& $explodeValue[$i]+0<= 12) ){
 						$this->errMsg = t(self::$formatErrorMessage);
 						return false;
 					}
 					break;
 				case 'Y':
-					if(!(is_int($explodeValue[$i])
+					if(!(is_int($explodeValue[$i]+0)
 					&& strlen($explodeValue[$i]) <= 4
 					)){
 						$this->errMsg = t(self::$formatErrorMessage);

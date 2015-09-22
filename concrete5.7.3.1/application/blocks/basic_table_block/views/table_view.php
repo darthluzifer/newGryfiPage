@@ -56,7 +56,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
         			}else{
         				$field->setValue($row[$colname]);
         			}
-        			//var_dump($field);
+					var_dump($row[$colname]);
         			echo '<td>'.$field->getTableView().'</td>';
         		}
         	}
@@ -77,6 +77,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 </div>
 
 <script type='text/javascript'>
+
 if(window.actioncellhtml == undefined){
 	window.actioncellhtml = {};
 }
