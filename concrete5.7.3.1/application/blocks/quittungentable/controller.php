@@ -53,6 +53,9 @@ class Controller extends BasicTableBlockController
     			"groupID" => new DropdownLinkField("groupID", "Gruppe", "gruppe"),
     			"budgetID" => new DropdownLinkField("budgetID", "Budget", "budget"),
     			"budgetposten" => new DropdownLinkField("budgetposten", "Budgetposten", "budgetposten"),
+    			"userID" => new DropdownLinkField("userID", "User", "user"),
+    			 
+    			
     	);
     	
     	
@@ -74,6 +77,12 @@ class Controller extends BasicTableBlockController
     	$this->fields['budgetposten']->setSQLFilter(" parentBudgetId IS NOT NULL AND NOT parentBudgetId = ? ", array(''));
     	$this->fields['budgetposten']->setNullable(true);
     	 
+    	$this->fields['userID']->setLinkTable("Users");
+    	$this->fields['userID']->setShowColumn("uName");
+    	$this->fields['userID']->setIdField("uID");
+    	$this->fields['userID']->setNullable(false);
+    	 
+    	
     	
     	$this->postFieldMap = array(
     			"nr" => $this->fields['id'],
@@ -84,6 +93,7 @@ class Controller extends BasicTableBlockController
     			"gruppe" => $this->fields['groupID'],
     			"budget" => $this->fields['budgetID'],
     			"budgetposten" => $this->fields['budgetposten'],
+    			"user" => $this->fields['user'],
     			//"testmultilink" => $this->fields['testmultilink'],
     			
     	);

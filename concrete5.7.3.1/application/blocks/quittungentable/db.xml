@@ -55,6 +55,9 @@
 		<field name="budgetposten" type="I" size="255">
 			
 		</field>
+		<field name="userID" type="I" size="255">
+			
+		</field>
 	</table>
 	
 	
