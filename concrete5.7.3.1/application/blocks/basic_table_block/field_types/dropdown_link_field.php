@@ -33,7 +33,7 @@ class DropdownLinkField extends DropdownField{
 	 * @param String $sqlfilter
 	 * @param array $sqlvars
 	 */
-	public function setSQLFilter( $sqlfilter, array $sqlvars){
+	public function setSQLFilter( $sqlfilter, array $sqlvars = array()){
 		$this->sqlfilter = $sqlfilter;
 		$this->sqlvars = $sqlvars;
 	}

@@ -14,7 +14,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
         <?php
         
         $tabledata = $controller->displayTable();
-        
+        //var_dump($tabledata);
         ?>
         <table class="table"><tbody>
         
@@ -49,7 +49,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
         			if($fields[$colname] instanceof SelfSaveInterface){
         				$field->setRowId($row['id']);
         			}else{
-        				$field->setValue($row[$colname]);
+        				$field->setSQLValue($row[$colname]);
         			}
         			//var_dump($field);
         			echo '<td>'.$field->getTableView().'</td>';

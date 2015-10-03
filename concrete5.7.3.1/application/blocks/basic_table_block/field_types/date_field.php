@@ -55,6 +55,7 @@ class DateField extends Field{
 	}
 	
 	public function setValue($value){
+		//var_dump($value);
 		if($value == '' OR $value == null){
 			$this->value = null;
 			return;
@@ -63,19 +64,31 @@ class DateField extends Field{
 			$this->value = $value;
 		}else{
 			$explodeValue = explode(self::$seperator, $value);
+			//var_dump($explodeValue);
+			/*
+			var_dump(strlen($explodeValue[2])<=4);
+			var_dump(strlen($explodeValue[2])>=2);
+			var_dump(is_numeric($explodeValue[2]));
+			var_dump(is_numeric($explodeValue[1]));
+			var_dump($explodeValue[1]+0 <= 12);
+			var_dump($explodeValue[1]+0 >= 1);
+			var_dump(is_numeric($explodeValue[0]));
+			var_dump($explodeValue[0]+0 <= 31);
+			var_dump($explodeValue[0]+0 >= 1);
+			*/
 			
 			//check if Y m d
 			if(strlen($explodeValue[0])<=4
 				&& strlen($explodeValue[0])>=2
-				&& is_int($explodeValue[1])
+				&& is_numeric($explodeValue[1])
 				&& $explodeValue[1]+0 <= 12
 				&& $explodeValue[1]+0 >= 1
-				&& is_int($explodeValue[2])
+				&& is_numeric($explodeValue[2])
 				&& $explodeValue[2]+0 <= 31
 				&& $explodeValue[2]+0 >= 1){
 				try{
 					$this->value=(
-							new DateTime($explodeValue[0]."-".$explodeValue[1]."-".$explodeValue[2])
+							new \DateTime($explodeValue[0]."-".$explodeValue[1]."-".$explodeValue[2])
 							)->format('Y-m-d');
 				}catch(Exception $e){
 					
@@ -83,16 +96,16 @@ class DateField extends Field{
 			//check if d m Y
 			}elseif(strlen($explodeValue[2])<=4
 				&& strlen($explodeValue[2])>=2
-				&& is_int($explodeValue[2])
-				&& is_int($explodeValue[1])
+				&& is_numeric($explodeValue[2])
+				&& is_numeric($explodeValue[1])
 				&& $explodeValue[1]+0 <= 12
 				&& $explodeValue[1]+0 >= 1
-				&& is_int($explodeValue[0])
+				&& is_numeric($explodeValue[0])
 				&& $explodeValue[0]+0 <= 31
 				&& $explodeValue[0]+0 >= 1){
 				try{
 					$this->value=(
-					new DateTime($explodeValue[2]."-".$explodeValue[1]."-".$explodeValue[0])
+					new \DateTime($explodeValue[2]."-".$explodeValue[1]."-".$explodeValue[0])
 							)->format('Y-m-d');
 				}catch(Exception $e){
 
@@ -100,16 +113,16 @@ class DateField extends Field{
 			//check if m d Y
 			}elseif(strlen($explodeValue[2])<=4
 				&& strlen($explodeValue[2])>=2
-				&& is_int($explodeValue[2])
-				&& is_int($explodeValue[0])
+				&& is_numeric($explodeValue[2])
+				&& is_numeric($explodeValue[0])
 				&& $explodeValue[0]+0 <= 12
 				&& $explodeValue[0]+0 >= 1
-				&& is_int($explodeValue[1])
+				&& is_numeric($explodeValue[1])
 				&& $explodeValue[1]+0 <= 31
 				&& $explodeValue[1]+0 >= 1){
 				try{
 					$this->value=(
-					new DateTime($explodeValue[2]."-".$explodeValue[0]."-".$explodeValue[1])
+					new \DateTime($explodeValue[2]."-".$explodeValue[0]."-".$explodeValue[1])
 							)->format('Y-m-d');
 				}catch(Exception $e){
 
@@ -172,21 +185,21 @@ class DateField extends Field{
 		for($i = 0; $i < count($explodeValue);$i++){
 			switch ($explodePattern[$i]){
 				case 'd':
-					if(!(is_int($explodeValue[$i]+0)
+					if(!(is_numeric($explodeValue[$i]+0)
 						 && $explodeValue[$i]+0<= 31) ){
 						$this->errMsg = t(self::$formatErrorMessage);
 						return false;
 					}
 				break;
 				case 'm':
-					if(!(is_int($explodeValue[$i]+0)
+					if(!(is_numeric($explodeValue[$i]+0)
 						&& $explodeValue[$i]+0<= 12) ){
 						$this->errMsg = t(self::$formatErrorMessage);
 						return false;
 					}
 					break;
 				case 'Y':
-					if(!(is_int($explodeValue[$i]+0)
+					if(!(is_numeric($explodeValue[$i]+0)
 					&& strlen($explodeValue[$i]) <= 4
 					)){
 						$this->errMsg = t(self::$formatErrorMessage);
@@ -196,8 +209,10 @@ class DateField extends Field{
 					
 			}
 		}
-		
+		//var_dump($value);
 		$this->setValue($value);
+		//var_dump($this->value);
+		//exit();
 		return true;
 	}
 	

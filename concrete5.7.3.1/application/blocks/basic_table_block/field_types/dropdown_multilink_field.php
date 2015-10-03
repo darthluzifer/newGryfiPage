@@ -260,8 +260,8 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 						$this->linkfieldself => $this->rowid,
 						$this->linkfieldext => $id
 				));
-				var_dump($aff);
-				exit;
+				//var_dump($aff);
+				//exit;
 				//if error, do error logging, throw exception, dunno
 			}
 		}

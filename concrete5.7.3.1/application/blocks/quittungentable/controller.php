@@ -1,5 +1,5 @@
 <?php
-namespace Application\Block\eventTable;
+namespace Application\Block\Quittungentable;
 
 use Concrete\Core\Block\BlockController;
 use Application\Block\BasicTableBlock\Controller as BasicTableBlockController;
@@ -14,18 +14,19 @@ use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownMultilinkField as DropdownMultilinkField;
 use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
+use Application\Block\BasicTableBlock\FieldTypes\DateField as DateField;
 
 class Controller extends BasicTableBlockController
 {
 
     public $options = array();
     protected $btTable = 'btBasicTableInstance';
-    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btEvents'/*name of the table where the data is stored*/);
+    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btQuittungen'/*name of the table where the data is stored*/);
 	protected $fields = array();
 	
 	
 	
-	protected $tableName = "btEvents";
+	protected $tableName = "btQuittungen";
 	
 	protected $executed = false;
 	
@@ -45,56 +46,52 @@ class Controller extends BasicTableBlockController
     	
     	$this->fields=array(
     			"id" => new Field("id", "ID", "nr"),
-    			"date_from" => new Field("date_from", "Datum von", "dateFrom"),
-    			"date_to" => new Field("date_to", "Datum bis", "dateTo"),
-    			"time_from" => new Field("time_from", "Zeit von", "timeFrom"),
-    			"time_to" => new Field("time_to", "Zeit bis", "timeTo"),
-    			"title" => new Field("title", "Titel", "titleEvent"),
-    			"description" => new Field("description", "Beschreibung", "descEvent"),
-    			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
-    			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
-    			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
-    			"testlink" => new DropdownLinkField("testlink", "Test Link", "testlink"),
-    			"testmultiLink" => new DropdownMultilinkField("testmultilink", "Test Multi Link", "testmultilink"),
+    			"date" => new DateField("date", "Datum", "date"),
+    			"description" => new Field("description", "Beschreibung", "description"),
+    			"price" => new Field("price", "Summe", "price"),
+    			"quittungfoto" => new FileField("quittungfoto", "Foto", "quittungfoto"),
+    			"groupID" => new DropdownLinkField("groupID", "Gruppe", "gruppe"),
+    			"budgetID" => new DropdownLinkField("budgetID", "Budget", "budget"),
+    			"budgetposten" => new DropdownLinkField("budgetposten", "Budgetposten", "budgetposten"),
     	);
     	
-    	$this->fields['testselect']->setOptions(array(""=>"","a" => "somevalue", "b" => "someothervalue"));
     	
-    	$this->fields['testlink']->setLinkTable("Groups");
-    	$this->fields['testlink']->setShowColumn("gName");
-    	$this->fields['testlink']->setIdField("gID");
-    	
-    	$this->fields['testmultiLink']->setLinkTable("Groups");
-    	$this->fields['testmultiLink']->setShowColumn("gName");
-    	$this->fields['testmultiLink']->setIdField("gID");
-    	$this->fields['testmultiLink']->setNtoMTable('btEventInGroup');
-    	$this->fields['testmultiLink']->setLinkFieldSelf('eventID');
-    	$this->fields['testmultiLink']->setLinkFieldExt('groupID');
-    	$this->fields['testmultiLink']->setIdFieldSelf('id');
-    	$this->fields['testmultiLink']->setIdFieldExt('gID');
-    	$this->fields['testmultiLink']->setRowId($_SESSION[$this->tableName.$this->bID."rowid"]);
+    	$this->fields['groupID']->setLinkTable("Groups");
+    	$this->fields['groupID']->setShowColumn("gName");
+    	$this->fields['groupID']->setIdField("gID");
+    	$this->fields['groupID']->setNullable(false);
     	 
+    	
+    	$this->fields['budgetID']->setLinkTable("btBudget");
+    	$this->fields['budgetID']->setShowColumn("name");
+    	$this->fields['budgetID']->setIdField("id");
+    	$this->fields['budgetID']->setSQLFilter(" parentBudgetId IS NULL OR parentBudgetId = ? ", array(''));
+    	$this->fields['budgetID']->setNullable(true);    	 
+    	
+    	$this->fields['budgetposten']->setLinkTable("btBudget");
+    	$this->fields['budgetposten']->setShowColumn("name");
+    	$this->fields['budgetposten']->setIdField("id");
+    	$this->fields['budgetposten']->setSQLFilter(" parentBudgetId IS NOT NULL AND NOT parentBudgetId = ? ", array(''));
+    	$this->fields['budgetposten']->setNullable(true);
     	 
     	
     	$this->postFieldMap = array(
     			"nr" => $this->fields['id'],
-    			"dateFrom" => $this->fields['datum_from'],
-    			"dateTo" => $this->fields['date_to'],
-    			"timeFrom" => $this->fields['time_from'],
-    			"timeTo" => $this->fields['time_to'],
-    			"titleEvent" => $this->fields['title'],
-    			"description" => $this->fields['descEvent'],
-    			"eventFile" => $this->fields['infofile'],
-    			"registerFile" => $this->fields['registerfile'],
-    			"testSelect" => $this->fields['testselect'],
-    			"testlink" => $this->fields['testlink'],
-    			"testmultilink" => $this->fields['testmultilink'],
+    			"date" => $this->fields['date'],
+    			"description" => $this->fields['description'],
+    			"price" => $this->fields['price'],
+    			"quittungfoto" => $this->fields['quittungfoto'],
+    			"gruppe" => $this->fields['groupID'],
+    			"budget" => $this->fields['budgetID'],
+    			"budgetposten" => $this->fields['budgetposten'],
+    			//"testmultilink" => $this->fields['testmultilink'],
     			
     	);
         
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
+        //var_dump($this->editKey);
     }
 
     /**
@@ -102,12 +99,12 @@ class Controller extends BasicTableBlockController
      */
     public function getBlockTypeDescription()
     {
-        return t("Show a simple Table width Data of Events");
+        return t("Store and show bills");
     }
 
     public function getBlockTypeName()
     {
-        return t("BasicEvent");
+        return t("BasicQuittungen");
     }
 
 }

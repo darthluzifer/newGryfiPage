@@ -75,7 +75,6 @@ class Controller extends BlockController
                 }
             }
         }
-        
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
@@ -203,12 +202,15 @@ class Controller extends BlockController
                 		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
                 			$v[]=$value->getSQLValue();
                 		}else{
+                			var_dump($value->getPostName());
                 			$error = true;
                 			$this->errorMsg[] = $field->getErrorMsg();
                 		}
                 	}
                 }
+                
                 if($error){
+                	var_dump($this->errorMsg);
                 	$this->prepareFormEdit();
                 	$_SESSION['BasicTableFormData'][$this->bID]['inputValues']=$_REQUEST;
                 	return false;
@@ -233,6 +235,7 @@ class Controller extends BlockController
                 	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
                 }
                 //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
+                
                 $_SESSION[$this->tableName]['prepareFormEdit'] = false;
                 $this->redirect($c->getCollectionPath());
            	}

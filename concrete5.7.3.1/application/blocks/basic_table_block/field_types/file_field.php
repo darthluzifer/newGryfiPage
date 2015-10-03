@@ -67,6 +67,7 @@ class FileField extends Field{
 	
 	
 	public function validatePost($value){
+		$this->value = $value;
 		return true;
 	}
 	

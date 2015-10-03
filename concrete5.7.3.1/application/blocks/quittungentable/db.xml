@@ -41,7 +41,7 @@
 		<field name="description" type="C" size="255">
 			<default value=""/>
 		</field>
-		<field name="price" type="D" size="255">
+		<field name="price" type="F" size="255">
 		</field>
 		<field name="quittungfoto" type="C" size="255">
 			<default value=""/>
@@ -49,7 +49,7 @@
 		<field name="groupID" type="I" size="255">
 			
 		</field>
-		<field name="budget" type="I" size="255">
+		<field name="budgetID" type="I" size="255">
 			
 		</field>
 		<field name="budgetposten" type="I" size="255">
@@ -74,24 +74,7 @@
         </index>
 	</table>
 	
-	<table name ='btQuittungInGroup'>
-		<field name="ID" type="I">
-			<key />
-			<unsigned />
-			<autoincrement/>
-		</field>
-		<field name='quittungID' type='I'></field>
-		<field name='groupID' type='I'></field>
-	</table>
-	<table name ='btQUittunginBudget'>
-		<field name="ID" type="I">
-			<key />
-			<unsigned />
-			<autoincrement/>
-		</field>
-		<field name='quittungID' type='I'></field>
-		<field name='budgetID' type='I'></field>
-	</table>
+	
 	
 	<table name="btBudget">
 		<field name="id" type="I">
@@ -99,7 +82,7 @@
 			<unsigned/>
 			<autoincrement/>
 		</field>
-		<field name="date" type="C" size="255">
+		<field name="name" type="C" size="255">
 			<default value=""/>
 		</field>
 		<field name="description" type="C" size="255">
@@ -107,19 +90,34 @@
 		</field>
 		<field name="price" type="D" size="255">
 		</field>
-		<field name="quittungfoto" type="C" size="255">
-			<default value=""/>
-		</field>
-		<field name="groupID" type="I" size="255">
-			
-		</field>
-		<field name="budget" type="I" size="255">
-			
-		</field>
-		<field name="budgetposten" type="I" size="255">
+		
+		<field name="parentBudgetId" type="I" size="255">
 			
 		</field>
 	</table>
+	
+	<table name ='btQUittunginBudgetPosten'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name='quittungID' type='I'></field>
+		<field name='budgetPostenID' type='I'></field>
+	</table>
+	
+	
+	<table name ='btBudgetPosten'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name='name' type='C' size="255"></field>
+		<field name='budget' type='I'></field>
+	</table>
+	
+	
 	
 </schema>
 
