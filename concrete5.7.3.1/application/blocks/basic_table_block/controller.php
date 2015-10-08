@@ -35,6 +35,8 @@ class Controller extends BlockController
 	protected $postFieldMap = array();
     
 	protected $errorMsg = array();
+	
+	protected $SQLFilter = " parentBudgetId IS NULL";
     
     function __construct($obj = null)
     {
@@ -114,7 +116,6 @@ class Controller extends BlockController
     		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>
     		
     		<button type='submit' value = 'edit' class='btn inlinebtn actionbutton edit' onclick=\"$('#action_".$row['id']."').val('edit');'\"><i class ='fa fa-pencil'> </i> </button>
-    			<input type='hidden' name='rowid' value='".$row['id']."'/>
     		<button type='submit' value='delete' class='btn inlinebtn actionbutton delete'  onclick=\"$('#action_".$row['id']."').val('delete');\"><i class ='fa fa-trash-o'> </i></button>
     	</form>
     	</td>";
