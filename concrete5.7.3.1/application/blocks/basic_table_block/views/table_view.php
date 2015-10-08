@@ -82,20 +82,8 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
 
 <script type='text/javascript'>
       
-if(window.actioncellhtml == undefined){
-	window.actioncellhtml = {};
-}
-if(window.actioncellhtmltemp == undefined){
-	window.actioncellhtmltemp = {};
-}
-window.actioncellhtml['<?php echo $controller->getHTMLId();?>'] = [];
-window.actioncellhtmltemp['<?php echo $controller->getHTMLId();?>'] = [];
 $(document).ready(function(e){ 
 	
-	$('#<?php echo $controller->getHTMLId();?> .actioncell').each(function(e){
-			window.actioncellhtml['<?php echo $controller->getHTMLId();?>'].push($(this).html());
-			
-		});
 	
 	
 	$('#<?php echo $controller->getHTMLId();?>').bootgrid({
@@ -103,20 +91,10 @@ $(document).ready(function(e){
 				rowCount:-1,
 				formatters : {
 						commands: function(column, row){
-								var html = window.actioncellhtml['<?php echo $controller->getHTMLId();?>'].pop();
-								window.actioncellhtmltemp['<?php echo $controller->getHTMLId();?>'].push(html);
-								if(window.actioncellhtml['<?php echo $controller->getHTMLId();?>'].length == 0){
-										$(window.actioncellhtmltemp['<?php echo $controller->getHTMLId();?>']).each(function(e){
-												window.actioncellhtml['<?php echo $controller->getHTMLId();?>'].push(window.actioncellhtmltemp['<?php echo $controller->getHTMLId();?>'].pop());
-											});
-										window.actioncellhtmltemp['<?php echo $controller->getHTMLId();?>'] = [];
-									}
-								return html;
+								return row[column.id];
 							},
 
 						FileField: function(column, row){
-								console.log(row);
-								console.log(column);
 								return row[column.id];
 							}
 					}

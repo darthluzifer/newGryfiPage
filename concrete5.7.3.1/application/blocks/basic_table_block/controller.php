@@ -113,13 +113,37 @@ class Controller extends BlockController
     	<td class='actioncell'>
     	<form method='post' action='".$object->action('edit_row_form')."'>
     		<input type='hidden' name='rowid' value='".$row['id']."'/>
-    		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>
+    		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>";
+    	$string.= $this->getEditActionIcon($row);
+    	$string.=$this->getDeleteActionIcon($row);	
     		
-    		<button type='submit' value = 'edit' class='btn inlinebtn actionbutton edit' onclick=\"$('#action_".$row['id']."').val('edit');'\"><i class ='fa fa-pencil'> </i> </button>
-    		<button type='submit' value='delete' class='btn inlinebtn actionbutton delete'  onclick=\"$('#action_".$row['id']."').val('delete');\"><i class ='fa fa-trash-o'> </i></button>
-    	</form>
+    		
+    	$string.="</form>
     	</td>";
     	return $string;
+    }
+    
+    
+    function getEditActionIcon($row){
+    	return "<button type='submit' 
+    					value = 'edit' 
+    					class='btn inlinebtn actionbutton edit' 
+    					onclick=\"
+    								$('#action_".$row['id']."').val('edit');
+    			\">
+    								<i class ='fa fa-pencil'> </i>
+    			 </button>";
+    }
+    
+    function getDeleteActionIcon($row){
+    	return "<button type='submit'
+    					value = 'delete'
+    					class='btn inlinebtn actionbutton delete'
+    					onclick=\"
+    								$('#action_".$row['id']."').val('delete');
+    			\">
+    								<i class ='fa fa-trash-o'> </i>
+    			 </button>";
     }
 
     
@@ -276,6 +300,9 @@ class Controller extends BlockController
     	$v = array($this->editKey);
     	$r = $db->query($q,$v);
     	$_SESSION[$this->tableName]['prepareFormEdit'] = false;
+    	if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
+    		unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+    	}
     	if($r){
     		return true;
     	}else{
