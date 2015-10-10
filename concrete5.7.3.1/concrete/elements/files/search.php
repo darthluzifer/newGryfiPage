@@ -11,7 +11,24 @@ $req = $flr->getSearchRequest();
 
 <script type="text/template" data-template="search-form">
 <form role="form" data-search-form="files" action="<?php echo URL::to('/ccm/system/search/files/submit')?>" class="form-inline ccm-search-fields">
-    <div class="ccm-search-fields-row">
+    <div class="ccm-search-fields-row row">
+		<div class="form-group">
+       		 <ul class="ccm-search-form-advanced list-inline">
+				<?php
+	        	    $fp = FilePermissions::getGlobal();
+	        	    if ($fp->canAddFile()) { ?>
+            	    <li class="ccm-file-manager-upload"><a href="javascript:void"><button type='submit' value='' class='btn inlinebtn actionbutton add'><i class ='fa fa-plus'> </i></button><input type="file" name="files[]" multiple="multiple" /></a></li>
+            	<?php } ?>
+       		     <li><a href="#" data-search-toggle="advanced"><?php echo t('Advanced Search')?></a>
+            	<li><a href="#" data-search-toggle="customize" data-search-column-customize-url="<?php echo URL::to('/ccm/system/dialogs/file/search/customize')?>"><?php echo t('Customize Results')?></a>
+            	
+
+        		</ul>
+		</div>
+	</div>
+	<div class="ccm-search-fields-row row"></div>
+	<div class="ccm-search-fields-row row">
+		
         <div class="form-group">
             <select data-bulk-action="files" disabled class="ccm-search-bulk-action form-control">
                 <option value=""><?php echo t('Items Selected')?></option>
@@ -32,16 +49,7 @@ $req = $flr->getSearchRequest();
                 <button type="submit" class="ccm-search-field-hidden-submit" tabindex="-1"><?php echo t('Search')?></button>
             </div>
         </div>
-        <ul class="ccm-search-form-advanced list-inline">
-            <li><a href="#" data-search-toggle="advanced"><?php echo t('Advanced Search')?></a>
-            <li><a href="#" data-search-toggle="customize" data-search-column-customize-url="<?php echo URL::to('/ccm/system/dialogs/file/search/customize')?>"><?php echo t('Customize Results')?></a>
-            <?php
-            $fp = FilePermissions::getGlobal();
-            if ($fp->canAddFile()) { ?>
-                <li class="ccm-file-manager-upload"><a href="javascript:void"><?php echo t('Upload Files')?><input type="file" name="files[]" multiple="multiple" /></a></li>
-            <?php } ?>
-
-        </ul>
+		
     </div>
     <?php
     $s1 = FileSet::getMySets();
