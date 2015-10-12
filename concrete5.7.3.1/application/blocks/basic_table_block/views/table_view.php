@@ -16,6 +16,9 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         $tabledata = $controller->displayTable();
         
         ?>
+        <div>
+        <?php echo $controller->getHeader($view);?>
+        </div>
         <form method="post" action="<?php  echo $this->action('add_new_row_form'); ?>">
 			
 			<?php  echo "<button type='submit' value='' class='btn inlinebtn actionbutton add'><i class ='fa fa-plus'> </i></button>"?>

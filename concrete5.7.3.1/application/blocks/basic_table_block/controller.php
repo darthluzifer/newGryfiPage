@@ -36,7 +36,12 @@ class Controller extends BlockController
     
 	protected $errorMsg = array();
 	
-	protected $SQLFilter = " parentBudgetId IS NULL";
+	protected $header = "BasicTable";
+	
+
+	protected $SQLFilter = " 1=1";
+	
+	protected $addFields = array();
     
     function __construct($obj = null)
     {
@@ -83,6 +88,8 @@ class Controller extends BlockController
         if(isset($_SESSION[$this->tableName]['prepareFormEdit'])){
         	$this->isFormview = $_SESSION[$this->tableName]['prepareFormEdit'];
         }
+        
+        $this->header = t($this->header);
         
     }
     
@@ -211,6 +218,10 @@ class Controller extends BlockController
 
                 $error = false;
                 $errormsg = "";
+                $savevalues = $_REQUEST;
+				foreach($this->addFields as $key => $value){
+					$savevalues[$key]=$value;
+				}
                 
                 $selfsavefields = array();
                 
@@ -219,12 +230,12 @@ class Controller extends BlockController
                 	else{
                 		$field = $this->postFieldMap[$value->getPostName()];
                 		if($value instanceof SelfSaveInterface){
-                			if($value->validatePost($_REQUEST[$value->getPostName()])){
+                			if($value->validatePost($savevalues[$value->getPostName()])){
 	                			//$value->setValue($_REQUEST[$value->getPostName()]);
 	                			$selfsavefields[]=$value->getSQLValue();
                 			}
                 		
-                		}elseif($value->validatePost($_REQUEST[$value->getPostName()])){
+                		}elseif($value->validatePost($savevalues[$value->getPostName()])){
                 			$v[]=$value->getSQLValue();
                 		}else{
                 			var_dump($value->getPostName());
@@ -435,7 +446,7 @@ class Controller extends BlockController
     {
         // Prepare the database query
         $db = Loader::db();
-		$q = "SELECT * from ".$this->tableName;
+		$q = "SELECT * from ".$this->tableName." WHERE ".$this->SQLFilter;
 		
 		$r = $db->query($q);
 		
@@ -514,6 +525,10 @@ class Controller extends BlockController
     function action_myAction(){
     	echo json_encode(array('hi' => 'test'));
     	exit();
+    }
+    
+    function getHeader(){
+    	return $this->header;
     }
 
 }

@@ -36,7 +36,10 @@ class Controller extends BasicTableBlockController
 	
 	protected $bID = null;
 	
-    
+
+	protected $SQLFilter = " parentBudgetId IS NULL";
+	
+    protected $parentId = null;
     
     function __construct($obj = null)
     {
@@ -70,6 +73,14 @@ class Controller extends BasicTableBlockController
         
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
+        	
+        }
+        
+        if(isset($_SESSION[$this->tableName.$this->bID."parentid"])){
+        	$this->parentId = $_SESSION[$this->tableName.$this->bID."parentid"];
+        	$this->SQLFilter = ' parentBudgetId = '.$this->parentId;
+        	 
+        	$this->addFields['parentBudgetId']=$this->parentId;
         }
         //var_dump($this->editKey);
     }
@@ -85,6 +96,143 @@ class Controller extends BasicTableBlockController
     public function getBlockTypeName()
     {
         return t("BasicBudget");
+    }
+    
+    function getActions($object, $row = array()){
+    	//".$object->action('edit_row_form')."
+    	$string="
+    	<td class='actioncell'>
+    	<form method='post' action='".$object->action('edit_row_form')."'>
+    		<input type='hidden' name='rowid' value='".$row['id']."'/>
+    		<input type='hidden' name='action' value='edit' id='action_".$row['id']."'>";
+    	$string.= $this->getEditActionIcon($row);
+    	$string.=$this->getDetailsActionIcon($row); 
+    	$string.=$this->getDeleteActionIcon($row);
+    	
+    
+    	$string.="</form>
+    	</td>";
+    	return $string;
+    }
+    
+
+    function getDetailsActionIcon($row){
+    	return "<button type='submit'
+    					value = 'detail'
+    					class='btn inlinebtn actionbutton details'
+    					onclick=\"
+    								$('#action_".$row['id']."').val('detail');
+    			\">
+    								<i class ='fa fa-bars'> </i>
+    			 </button>";
+    }
+    
+    
+    function action_edit_row_form(){
+    	if ($this->requiresRegistration()) {
+    		if (!$u->isRegistered()) {
+    			$this->redirect('/login');
+    		}
+    	}
+    	$this->editKey = $_POST['rowid'];
+    	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
+    	if($_POST['action'] == 'edit'){
+    		$this->prepareFormEdit();
+    	}if($_POST['action'] == 'detail'){
+    		$this->prepareDetails();
+    	}else{
+    		$this->deleteRow();
+    	}
+    }
+    
+    function getParents(){
+    	$db = Loader::db();
+    	//hole id (um höhere stufe anzuzeigen
+    	//name für anzeige
+    	//parentbudgetid falls noch mehr parents
+    	$parents = array();
+    	
+    	if($this->parentId != null){
+	    	$sql = "SELECT count(id) as count FROM ".$this->tableName." WHERE id = ?";
+	    	$r = $db->query($sql, array($this->parentId));
+		    $row = $r->fetchRow();
+	    	if($row['count']>0){
+	    		$sql = "SELECT id,name, parentBudgetId FROM ".$this->tableName." WHERE id = ?";
+		    	 
+		    	
+		    	$r = $db->query($sql, array($this->parentId));
+		    	$name = "";
+		    	
+		    	while ($row = $r->fetchRow()) {
+		    		//array soll folgende reihenfolge haben
+		    		//topelement/subelement/..../parent of current
+		    		
+		    		$parents[] =
+		    			array('id' => $row['id'],
+		    				'name' => $row['name'],
+		    				);
+	    		
+		    		if($row['parentBudgetId'] != null){
+		    			$r = $db->query($sql, array($row['parentBudgetId']));
+		    		}
+		    	}
+	    	}
+    	}
+    	$parents[] = array('id' => '',
+		    				'name' => t("Hauptebene")
+		    			);
+		    				
+		    		
+    	return $parents;
+    }
+    
+    function getHeader($object){
+    	$parents = $this->getParents();
+    	
+    	$html = "";
+    	if(count($parents)>0){
+	    	$html = "<form method='post' action='".$object->action('edit_row_form')."'>
+	    		<input type='hidden' name='rowid' value=''/>
+	    		<input type='hidden' name='action' value='detail' id='action_".$this->editKey."'>";
+	    	$first = true;
+	    	for($i = count($parents)-1; $i >=0; $i--){
+	    		$value = $parents[$i];
+	    		if($first){
+	    			$first=false;
+	    		}else{
+	    			$html .= "/";
+	    		}
+	    		if(!isset($value['id'])){
+	    			var_dump($parents);
+	    			continue;
+	    		}
+	    		$html.="<button type='submit'
+	    					value = 'detail'
+	    					class='btn inlinebtn actionbutton'
+	    					onclick=\"
+	    								$('#action_".$value['id']."').val('detail');
+	    			\">
+	    								".$value['name']."
+	    			 </button>";
+	    	}
+	    	$html.="</form>";
+    	}
+    	return $html;
+    }
+    
+    
+    function prepareDetails(){
+    	//hole budgetNamen
+	    $this->parentId = $_POST['rowid'];
+    	
+    	if($this->parentId == ''){
+	    	$this->parentId = null;
+	    	unset($_SESSION[$this->tableName.$this->bID."parentId"]);
+	    	$this->SQLFilter = ' parentBudgetId IS NULL ';
+	    }else{	
+	    	//verändere Filter
+	    	$this->SQLFilter = ' parentBudgetId = '.$this->editKey;
+	    }
     }
 
 }

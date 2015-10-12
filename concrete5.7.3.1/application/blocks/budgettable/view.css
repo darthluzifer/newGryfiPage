@@ -26,6 +26,10 @@
 	color: green;
 }
 
+.btn.actionbutton.details{
+	color: blue;
+}
+
 .bootstrap-tagsinput{
 	display:block !important;
 }
