@@ -52,7 +52,7 @@ class Controller extends BasicTableBlockController
     			"name" => new Field("name", "Name", "name"),
     			"description" => new Field("description", "Beschreibung", "description"),
     			"price" => new Field("price", "Summe", "price"),
-    			
+    			"parentBudgetId" => new Field("parentBudgetId", "BudgetId", "parentBudgetId", false, false),
     			 
     			
     	);
@@ -66,7 +66,7 @@ class Controller extends BasicTableBlockController
     			"name" => $this->fields['name'],
     			"description" => $this->fields['description'],
     			"price" => $this->fields['price'],
-    			
+    			"parentBudgetId" => $this->fields['parentBudgetId'],
     			//"testmultilink" => $this->fields['testmultilink'],
     			
     	);
@@ -80,8 +80,7 @@ class Controller extends BasicTableBlockController
         	$this->parentId = $_SESSION[$this->tableName.$this->bID."parentid"];
         	$this->SQLFilter = ' parentBudgetId = '.$this->parentId;
         	 
-        	$this->addFields['parentBudgetId']=$this->parentId;
-        }
+        	$this->addFields['parentBudgetId']=$this->parentId;        }
         //var_dump($this->editKey);
     }
 
@@ -134,13 +133,17 @@ class Controller extends BasicTableBlockController
     			$this->redirect('/login');
     		}
     	}
-    	$this->editKey = $_POST['rowid'];
-    	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
     	if($_POST['action'] == 'edit'){
+
+    		$this->editKey = $_POST['rowid'];
+    		$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
     		$this->prepareFormEdit();
-    	}if($_POST['action'] == 'detail'){
+    	}elseif($_POST['action'] == 'detail'){
     		$this->prepareDetails();
-    	}else{
+    	}elseif($_POST['action'] == 'delete'){
+
+    		$this->editKey = $_POST['rowid'];
+    		$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
     		$this->deleteRow();
     	}
     }
@@ -192,8 +195,8 @@ class Controller extends BasicTableBlockController
     	$html = "";
     	if(count($parents)>0){
 	    	$html = "<form method='post' action='".$object->action('edit_row_form')."'>
-	    		<input type='hidden' name='rowid' value=''/>
-	    		<input type='hidden' name='action' value='detail' id='action_".$this->editKey."'>";
+	    		<input type='hidden' name='rowid' id='detailid' value=''/>
+	    		<input type='hidden' name='action' value='detail' >";
 	    	$first = true;
 	    	for($i = count($parents)-1; $i >=0; $i--){
 	    		$value = $parents[$i];
@@ -210,7 +213,7 @@ class Controller extends BasicTableBlockController
 	    					value = 'detail'
 	    					class='btn inlinebtn actionbutton'
 	    					onclick=\"
-	    								$('#action_".$value['id']."').val('detail');
+	    								$('#detailid').val('".$value['id']."');
 	    			\">
 	    								".$value['name']."
 	    			 </button>";
@@ -227,11 +230,12 @@ class Controller extends BasicTableBlockController
     	
     	if($this->parentId == ''){
 	    	$this->parentId = null;
-	    	unset($_SESSION[$this->tableName.$this->bID."parentId"]);
+	    	unset($_SESSION[$this->tableName.$this->bID."parentid"]);
 	    	$this->SQLFilter = ' parentBudgetId IS NULL ';
 	    }else{	
 	    	//verändere Filter
-	    	$this->SQLFilter = ' parentBudgetId = '.$this->editKey;
+	    	$_SESSION[$this->tableName.$this->bID."parentid"] = $this->parentId;
+	    	$this->SQLFilter = ' parentBudgetId = '.$this->parentId;
 	    }
     }
 

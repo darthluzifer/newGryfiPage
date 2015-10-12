@@ -12,9 +12,11 @@
 		if($field == 'id'){
 			
 		}else{
-			$FieldObject->setSQLValue($rowValues[$FieldObject->getSQLFieldName()]);
-			
-			echo $FieldObject->getFormView($form);
+			if($FieldObject->showInForm()){
+				$FieldObject->setSQLValue($rowValues[$FieldObject->getSQLFieldName()]);
+				
+				echo $FieldObject->getFormView($form);
+			}
 			
 		}	
 	

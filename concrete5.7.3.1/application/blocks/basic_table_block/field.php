@@ -15,12 +15,17 @@ class Field{
 	protected $postName;
 	protected $errMsg="";
 	protected $isSQLValue = false;
+	protected $showInForm = true;
+	protected $showInTable = true;
 	
-	public function __construct($sqlFieldname,$label, $postName){
+	public function __construct($sqlFieldname,$label, $postName, $showInTable = true, $showInForm = true){
 		
 		$this->sqlFieldname = $sqlFieldname;
 		$this->label = $label;
 		$this->postName = $postName;
+		$this->showInTable = $showInTable;
+		$this->showInForm = $showInForm;
+		
 	}
 	
 	public function setValue($value){
@@ -78,6 +83,13 @@ class Field{
 		return $this->errorMsg;
 	}
 	
+	public function showInForm(){
+		return $this->showInForm;
+	}
+	
+	public function showInTable(){
+		return $this->showInTable;
+	}
 	
 	
 	

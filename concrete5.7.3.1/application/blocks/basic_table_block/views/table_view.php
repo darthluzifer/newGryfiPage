@@ -36,9 +36,13 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
 	        	<th width='20%'  data-column-id="commands" data-formatter="commands" data-sortable="false"><?php echo t('Aktion'); ?></th>
 	        
 	        	
-	        	<?php }else{?>
-	        	<th data-column-id='<?php echo $type->getPostName();?>' data-formatter="<?php echo (new ReflectionClass($type))->getShortName();?>"><?php echo $type->getLabel(); ?></th>
+	        	<?php }else{
+	        		if($type->showInTable()){
+	        		?>
+	        	
+	        		<th data-column-id='<?php echo $type->getPostName();?>' data-formatter="<?php echo (new ReflectionClass($type))->getShortName();?>"><?php echo $type->getLabel(); ?></th>
 	        <?php 
+	        		}
 	        	}
 	        }?>
 	        
@@ -57,14 +61,15 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
 					echo $controller->getActions( $view, $row);
         			
         		}else{
-        			
-        			if($fields[$colname] instanceof SelfSaveInterface){
-        				$field->setRowId($row['id']);
-        			}else{
-        				$field->setSQLValue($row[$colname]);
+        			if($field->showInTable()){
+	        			if($fields[$colname] instanceof SelfSaveInterface){
+	        				$field->setRowId($row['id']);
+	        			}else{
+	        				$field->setSQLValue($row[$colname]);
+	        			}
+	        			//var_dump($field);
+	        			echo '<td>'.$field->getTableView().'</td>';
         			}
-        			//var_dump($field);
-        			echo '<td>'.$field->getTableView().'</td>';
         		}
         	}
         	 
