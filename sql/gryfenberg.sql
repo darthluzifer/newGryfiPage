@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 20. Aug 2015 um 22:33
+-- Erstellungszeit: 12. Okt 2015 um 22:25
 -- Server Version: 5.5.44-MariaDB-1ubuntu0.14.04.1
 -- PHP-Version: 5.5.9-1ubuntu4.11
 
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `AreaLayoutColumns`;
-CREATE TABLE IF NOT EXISTS `AreaLayoutColumns` (
+CREATE TABLE `AreaLayoutColumns` (
   `arLayoutColumnID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `arLayoutID` int(10) unsigned NOT NULL DEFAULT '0',
   `arLayoutColumnIndex` int(10) unsigned NOT NULL DEFAULT '0',
@@ -94,7 +94,7 @@ INSERT INTO `AreaLayoutColumns` (`arLayoutColumnID`, `arLayoutID`, `arLayoutColu
 --
 
 DROP TABLE IF EXISTS `AreaLayoutCustomColumns`;
-CREATE TABLE IF NOT EXISTS `AreaLayoutCustomColumns` (
+CREATE TABLE `AreaLayoutCustomColumns` (
   `arLayoutColumnID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `arLayoutColumnWidth` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`arLayoutColumnID`)
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `AreaLayoutCustomColumns` (
 --
 
 DROP TABLE IF EXISTS `AreaLayoutPresets`;
-CREATE TABLE IF NOT EXISTS `AreaLayoutPresets` (
+CREATE TABLE `AreaLayoutPresets` (
   `arLayoutPresetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `arLayoutID` int(10) unsigned NOT NULL DEFAULT '0',
   `arLayoutPresetName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `AreaLayoutPresets` (
 --
 
 DROP TABLE IF EXISTS `AreaLayouts`;
-CREATE TABLE IF NOT EXISTS `AreaLayouts` (
+CREATE TABLE `AreaLayouts` (
   `arLayoutID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `arLayoutSpacing` int(10) unsigned NOT NULL DEFAULT '0',
   `arLayoutIsCustom` tinyint(1) NOT NULL DEFAULT '0',
@@ -163,7 +163,7 @@ INSERT INTO `AreaLayouts` (`arLayoutID`, `arLayoutSpacing`, `arLayoutIsCustom`, 
 --
 
 DROP TABLE IF EXISTS `AreaLayoutThemeGridColumns`;
-CREATE TABLE IF NOT EXISTS `AreaLayoutThemeGridColumns` (
+CREATE TABLE `AreaLayoutThemeGridColumns` (
   `arLayoutColumnID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `arLayoutColumnSpan` int(10) unsigned DEFAULT '0',
   `arLayoutColumnOffset` int(10) unsigned DEFAULT '0',
@@ -225,7 +225,7 @@ INSERT INTO `AreaLayoutThemeGridColumns` (`arLayoutColumnID`, `arLayoutColumnSpa
 --
 
 DROP TABLE IF EXISTS `AreaPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `AreaPermissionAssignments` (
+CREATE TABLE `AreaPermissionAssignments` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `arHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -242,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `AreaPermissionAssignments` (
 --
 
 DROP TABLE IF EXISTS `AreaPermissionBlockTypeAccessList`;
-CREATE TABLE IF NOT EXISTS `AreaPermissionBlockTypeAccessList` (
+CREATE TABLE `AreaPermissionBlockTypeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `AreaPermissionBlockTypeAccessList` (
 --
 
 DROP TABLE IF EXISTS `AreaPermissionBlockTypeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `AreaPermissionBlockTypeAccessListCustom` (
+CREATE TABLE `AreaPermissionBlockTypeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `btID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `AreaPermissionBlockTypeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `Areas`;
-CREATE TABLE IF NOT EXISTS `Areas` (
+CREATE TABLE `Areas` (
   `arID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `arHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -286,7 +286,7 @@ CREATE TABLE IF NOT EXISTS `Areas` (
   KEY `cID` (`cID`),
   KEY `arHandle` (`arHandle`),
   KEY `arParentID` (`arParentID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=375 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=395 ;
 
 --
 -- Daten für Tabelle `Areas`
@@ -630,7 +630,27 @@ INSERT INTO `Areas` (`arID`, `cID`, `arHandle`, `arOverrideCollectionPermissions
 (371, 210, 'Footer Social', 0, 0, 1, 0),
 (372, 210, 'Footer Legal', 0, 0, 1, 0),
 (373, 210, 'Footer Navigation', 0, 0, 1, 0),
-(374, 210, 'Footer Contact', 0, 0, 1, 0);
+(374, 210, 'Footer Contact', 0, 0, 1, 0),
+(375, 212, 'Header Site Title', 0, 0, 1, 0),
+(376, 212, 'Header Navigation', 0, 0, 1, 0),
+(377, 212, 'Header Search', 0, 0, 1, 0),
+(378, 212, 'Main', 0, 0, 0, 0),
+(379, 212, 'Page Footer', 0, 0, 0, 0),
+(380, 212, 'Footer Site Title', 0, 0, 1, 0),
+(381, 212, 'Footer Social', 0, 0, 1, 0),
+(382, 212, 'Footer Legal', 0, 0, 1, 0),
+(383, 212, 'Footer Navigation', 0, 0, 1, 0),
+(384, 212, 'Footer Contact', 0, 0, 1, 0),
+(385, 213, 'Header Site Title', 0, 0, 1, 0),
+(386, 213, 'Header Navigation', 0, 0, 1, 0),
+(387, 213, 'Header Search', 0, 0, 1, 0),
+(388, 213, 'Main', 0, 0, 0, 0),
+(389, 213, 'Page Footer', 0, 0, 0, 0),
+(390, 213, 'Footer Site Title', 0, 0, 1, 0),
+(391, 213, 'Footer Social', 0, 0, 1, 0),
+(392, 213, 'Footer Legal', 0, 0, 1, 0),
+(393, 213, 'Footer Navigation', 0, 0, 1, 0),
+(394, 213, 'Footer Contact', 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -639,7 +659,7 @@ INSERT INTO `Areas` (`arID`, `cID`, `arHandle`, `arOverrideCollectionPermissions
 --
 
 DROP TABLE IF EXISTS `atAddress`;
-CREATE TABLE IF NOT EXISTS `atAddress` (
+CREATE TABLE `atAddress` (
   `avID` int(10) unsigned NOT NULL DEFAULT '0',
   `address1` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `address2` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -657,7 +677,7 @@ CREATE TABLE IF NOT EXISTS `atAddress` (
 --
 
 DROP TABLE IF EXISTS `atAddressCustomCountries`;
-CREATE TABLE IF NOT EXISTS `atAddressCustomCountries` (
+CREATE TABLE `atAddressCustomCountries` (
   `atAddressCustomCountryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `country` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
@@ -672,7 +692,7 @@ CREATE TABLE IF NOT EXISTS `atAddressCustomCountries` (
 --
 
 DROP TABLE IF EXISTS `atAddressSettings`;
-CREATE TABLE IF NOT EXISTS `atAddressSettings` (
+CREATE TABLE `atAddressSettings` (
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `akHasCustomCountries` tinyint(1) NOT NULL DEFAULT '0',
   `akDefaultCountry` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -696,7 +716,7 @@ INSERT INTO `atAddressSettings` (`akID`, `akHasCustomCountries`, `akDefaultCount
 --
 
 DROP TABLE IF EXISTS `atBoolean`;
-CREATE TABLE IF NOT EXISTS `atBoolean` (
+CREATE TABLE `atBoolean` (
   `avID` int(10) unsigned NOT NULL,
   `value` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`avID`)
@@ -760,7 +780,9 @@ INSERT INTO `atBoolean` (`avID`, `value`) VALUES
 (231, 1),
 (232, 1),
 (233, 1),
-(234, 1);
+(234, 1),
+(265, 0),
+(266, 0);
 
 -- --------------------------------------------------------
 
@@ -769,7 +791,7 @@ INSERT INTO `atBoolean` (`avID`, `value`) VALUES
 --
 
 DROP TABLE IF EXISTS `atBooleanSettings`;
-CREATE TABLE IF NOT EXISTS `atBooleanSettings` (
+CREATE TABLE `atBooleanSettings` (
   `akID` int(10) unsigned NOT NULL,
   `akCheckedByDefault` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`akID`)
@@ -796,7 +818,7 @@ INSERT INTO `atBooleanSettings` (`akID`, `akCheckedByDefault`) VALUES
 --
 
 DROP TABLE IF EXISTS `atDateTime`;
-CREATE TABLE IF NOT EXISTS `atDateTime` (
+CREATE TABLE `atDateTime` (
   `avID` int(10) unsigned NOT NULL,
   `value` datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`avID`)
@@ -809,7 +831,7 @@ CREATE TABLE IF NOT EXISTS `atDateTime` (
 --
 
 DROP TABLE IF EXISTS `atDateTimeSettings`;
-CREATE TABLE IF NOT EXISTS `atDateTimeSettings` (
+CREATE TABLE `atDateTimeSettings` (
   `akID` int(10) unsigned NOT NULL,
   `akDateDisplayMode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`akID`)
@@ -822,7 +844,7 @@ CREATE TABLE IF NOT EXISTS `atDateTimeSettings` (
 --
 
 DROP TABLE IF EXISTS `atDefault`;
-CREATE TABLE IF NOT EXISTS `atDefault` (
+CREATE TABLE `atDefault` (
   `avID` int(10) unsigned NOT NULL,
   `value` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`avID`)
@@ -958,7 +980,7 @@ INSERT INTO `atDefault` (`avID`, `value`) VALUES
 --
 
 DROP TABLE IF EXISTS `atFile`;
-CREATE TABLE IF NOT EXISTS `atFile` (
+CREATE TABLE `atFile` (
   `avID` int(10) unsigned NOT NULL,
   `fID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`avID`),
@@ -987,7 +1009,7 @@ INSERT INTO `atFile` (`avID`, `fID`) VALUES
 --
 
 DROP TABLE IF EXISTS `atNumber`;
-CREATE TABLE IF NOT EXISTS `atNumber` (
+CREATE TABLE `atNumber` (
   `avID` int(10) unsigned NOT NULL,
   `value` decimal(14,4) DEFAULT '0.0000',
   PRIMARY KEY (`avID`)
@@ -1038,7 +1060,7 @@ INSERT INTO `atNumber` (`avID`, `value`) VALUES
 --
 
 DROP TABLE IF EXISTS `atSelectedTopics`;
-CREATE TABLE IF NOT EXISTS `atSelectedTopics` (
+CREATE TABLE `atSelectedTopics` (
   `avID` int(10) unsigned NOT NULL,
   `TopicNodeID` int(11) NOT NULL,
   PRIMARY KEY (`avID`,`TopicNodeID`),
@@ -1067,7 +1089,7 @@ INSERT INTO `atSelectedTopics` (`avID`, `TopicNodeID`) VALUES
 --
 
 DROP TABLE IF EXISTS `atSelectOptions`;
-CREATE TABLE IF NOT EXISTS `atSelectOptions` (
+CREATE TABLE `atSelectOptions` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `akID` int(10) unsigned DEFAULT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1113,7 +1135,7 @@ INSERT INTO `atSelectOptions` (`ID`, `akID`, `value`, `displayOrder`, `isEndUser
 --
 
 DROP TABLE IF EXISTS `atSelectOptionsSelected`;
-CREATE TABLE IF NOT EXISTS `atSelectOptionsSelected` (
+CREATE TABLE `atSelectOptionsSelected` (
   `avID` int(10) unsigned NOT NULL,
   `atSelectOptionID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`avID`,`atSelectOptionID`),
@@ -1156,7 +1178,7 @@ INSERT INTO `atSelectOptionsSelected` (`avID`, `atSelectOptionID`) VALUES
 --
 
 DROP TABLE IF EXISTS `atSelectSettings`;
-CREATE TABLE IF NOT EXISTS `atSelectSettings` (
+CREATE TABLE `atSelectSettings` (
   `akID` int(10) unsigned NOT NULL,
   `akSelectAllowMultipleValues` tinyint(1) NOT NULL DEFAULT '0',
   `akSelectOptionDisplayOrder` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'display_asc',
@@ -1181,7 +1203,7 @@ INSERT INTO `atSelectSettings` (`akID`, `akSelectAllowMultipleValues`, `akSelect
 --
 
 DROP TABLE IF EXISTS `atSocialLinks`;
-CREATE TABLE IF NOT EXISTS `atSocialLinks` (
+CREATE TABLE `atSocialLinks` (
   `avsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `avID` int(10) unsigned NOT NULL DEFAULT '0',
   `service` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1197,7 +1219,7 @@ CREATE TABLE IF NOT EXISTS `atSocialLinks` (
 --
 
 DROP TABLE IF EXISTS `atTextareaSettings`;
-CREATE TABLE IF NOT EXISTS `atTextareaSettings` (
+CREATE TABLE `atTextareaSettings` (
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `akTextareaDisplayMode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `akTextareaDisplayModeCustomOptions` text COLLATE utf8_unicode_ci,
@@ -1222,7 +1244,7 @@ INSERT INTO `atTextareaSettings` (`akID`, `akTextareaDisplayMode`, `akTextareaDi
 --
 
 DROP TABLE IF EXISTS `atTopicSettings`;
-CREATE TABLE IF NOT EXISTS `atTopicSettings` (
+CREATE TABLE `atTopicSettings` (
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `akTopicParentNodeID` int(11) DEFAULT NULL,
   `akTopicTreeID` int(11) DEFAULT NULL,
@@ -1245,7 +1267,7 @@ INSERT INTO `atTopicSettings` (`akID`, `akTopicParentNodeID`, `akTopicTreeID`) V
 --
 
 DROP TABLE IF EXISTS `AttributeKeyCategories`;
-CREATE TABLE IF NOT EXISTS `AttributeKeyCategories` (
+CREATE TABLE `AttributeKeyCategories` (
   `akCategoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `akCategoryHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `akCategoryAllowSets` smallint(6) NOT NULL DEFAULT '0',
@@ -1271,7 +1293,7 @@ INSERT INTO `AttributeKeyCategories` (`akCategoryID`, `akCategoryHandle`, `akCat
 --
 
 DROP TABLE IF EXISTS `AttributeKeys`;
-CREATE TABLE IF NOT EXISTS `AttributeKeys` (
+CREATE TABLE `AttributeKeys` (
   `akID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `akHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `akName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1330,7 +1352,7 @@ INSERT INTO `AttributeKeys` (`akID`, `akHandle`, `akName`, `akIsSearchable`, `ak
 --
 
 DROP TABLE IF EXISTS `AttributeSetKeys`;
-CREATE TABLE IF NOT EXISTS `AttributeSetKeys` (
+CREATE TABLE `AttributeSetKeys` (
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `asID` int(10) unsigned NOT NULL DEFAULT '0',
   `displayOrder` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1370,7 +1392,7 @@ INSERT INTO `AttributeSetKeys` (`akID`, `asID`, `displayOrder`) VALUES
 --
 
 DROP TABLE IF EXISTS `AttributeSets`;
-CREATE TABLE IF NOT EXISTS `AttributeSets` (
+CREATE TABLE `AttributeSets` (
   `asID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `asName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `asHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1402,7 +1424,7 @@ INSERT INTO `AttributeSets` (`asID`, `asName`, `asHandle`, `akCategoryID`, `pkgI
 --
 
 DROP TABLE IF EXISTS `AttributeTypeCategories`;
-CREATE TABLE IF NOT EXISTS `AttributeTypeCategories` (
+CREATE TABLE `AttributeTypeCategories` (
   `atID` int(10) unsigned NOT NULL DEFAULT '0',
   `akCategoryID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`atID`,`akCategoryID`),
@@ -1448,7 +1470,7 @@ INSERT INTO `AttributeTypeCategories` (`atID`, `akCategoryID`) VALUES
 --
 
 DROP TABLE IF EXISTS `AttributeTypes`;
-CREATE TABLE IF NOT EXISTS `AttributeTypes` (
+CREATE TABLE `AttributeTypes` (
   `atID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `atHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `atName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1482,7 +1504,7 @@ INSERT INTO `AttributeTypes` (`atID`, `atHandle`, `atName`, `pkgID`) VALUES
 --
 
 DROP TABLE IF EXISTS `AttributeValues`;
-CREATE TABLE IF NOT EXISTS `AttributeValues` (
+CREATE TABLE `AttributeValues` (
   `avID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `akID` int(10) unsigned DEFAULT NULL,
   `avDateAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1492,7 +1514,7 @@ CREATE TABLE IF NOT EXISTS `AttributeValues` (
   KEY `akID` (`akID`),
   KEY `uID` (`uID`),
   KEY `atID` (`atID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=265 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=267 ;
 
 --
 -- Daten für Tabelle `AttributeValues`
@@ -1734,7 +1756,9 @@ INSERT INTO `AttributeValues` (`avID`, `akID`, `avDateAdded`, `uID`, `atID`) VAL
 (233, 5, '2015-05-11 21:34:39', 1, 3),
 (234, 5, '2015-08-05 22:17:21', 1, 3),
 (263, 19, '2015-08-05 22:36:46', 1, 2),
-(264, 18, '2015-08-05 22:36:46', 1, 8);
+(264, 18, '2015-08-05 22:36:46', 1, 8),
+(265, 12, '2015-10-08 22:30:52', 1, 3),
+(266, 13, '2015-10-08 22:30:52', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -1743,7 +1767,7 @@ INSERT INTO `AttributeValues` (`avID`, `akID`, `avDateAdded`, `uID`, `atID`) VAL
 --
 
 DROP TABLE IF EXISTS `AuthenticationTypes`;
-CREATE TABLE IF NOT EXISTS `AuthenticationTypes` (
+CREATE TABLE `AuthenticationTypes` (
   `authTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `authTypeHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `authTypeName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -1773,7 +1797,7 @@ INSERT INTO `AuthenticationTypes` (`authTypeID`, `authTypeHandle`, `authTypeName
 --
 
 DROP TABLE IF EXISTS `authTypeConcreteCookieMap`;
-CREATE TABLE IF NOT EXISTS `authTypeConcreteCookieMap` (
+CREATE TABLE `authTypeConcreteCookieMap` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `token` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `uID` int(11) DEFAULT NULL,
@@ -1790,7 +1814,7 @@ CREATE TABLE IF NOT EXISTS `authTypeConcreteCookieMap` (
 --
 
 DROP TABLE IF EXISTS `BannedWords`;
-CREATE TABLE IF NOT EXISTS `BannedWords` (
+CREATE TABLE `BannedWords` (
   `bwID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bannedWord` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`bwID`)
@@ -1813,7 +1837,7 @@ INSERT INTO `BannedWords` (`bwID`, `bannedWord`) VALUES
 --
 
 DROP TABLE IF EXISTS `BasicWorkflowPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `BasicWorkflowPermissionAssignments` (
+CREATE TABLE `BasicWorkflowPermissionAssignments` (
   `wfID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1829,7 +1853,7 @@ CREATE TABLE IF NOT EXISTS `BasicWorkflowPermissionAssignments` (
 --
 
 DROP TABLE IF EXISTS `BasicWorkflowProgressData`;
-CREATE TABLE IF NOT EXISTS `BasicWorkflowProgressData` (
+CREATE TABLE `BasicWorkflowProgressData` (
   `wpID` int(10) unsigned NOT NULL DEFAULT '0',
   `uIDStarted` int(10) unsigned NOT NULL DEFAULT '0',
   `uIDCompleted` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1846,7 +1870,7 @@ CREATE TABLE IF NOT EXISTS `BasicWorkflowProgressData` (
 --
 
 DROP TABLE IF EXISTS `BlockFeatureAssignments`;
-CREATE TABLE IF NOT EXISTS `BlockFeatureAssignments` (
+CREATE TABLE `BlockFeatureAssignments` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1889,7 +1913,7 @@ INSERT INTO `BlockFeatureAssignments` (`cID`, `cvID`, `bID`, `faID`) VALUES
 --
 
 DROP TABLE IF EXISTS `BlockPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `BlockPermissionAssignments` (
+CREATE TABLE `BlockPermissionAssignments` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1908,7 +1932,7 @@ CREATE TABLE IF NOT EXISTS `BlockPermissionAssignments` (
 --
 
 DROP TABLE IF EXISTS `BlockRelations`;
-CREATE TABLE IF NOT EXISTS `BlockRelations` (
+CREATE TABLE `BlockRelations` (
   `brID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
   `originalBID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1937,7 +1961,7 @@ INSERT INTO `BlockRelations` (`brID`, `bID`, `originalBID`, `relationType`) VALU
 --
 
 DROP TABLE IF EXISTS `Blocks`;
-CREATE TABLE IF NOT EXISTS `Blocks` (
+CREATE TABLE `Blocks` (
   `bID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bName` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
   `bDateAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1950,7 +1974,7 @@ CREATE TABLE IF NOT EXISTS `Blocks` (
   PRIMARY KEY (`bID`),
   KEY `btID` (`btID`),
   KEY `uID` (`uID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=198 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=200 ;
 
 --
 -- Daten für Tabelle `Blocks`
@@ -2142,7 +2166,9 @@ INSERT INTO `Blocks` (`bID`, `bName`, `bDateAdded`, `bDateModified`, `bFilename`
 (194, '', '2015-08-20 22:25:26', '2015-08-20 22:25:26', NULL, '0', 12, 1, NULL),
 (195, '', '2015-08-20 22:25:40', '2015-08-20 22:25:40', NULL, '0', 12, 1, NULL),
 (196, '', '2015-08-20 22:25:55', '2015-08-20 22:25:55', NULL, '0', 12, 1, NULL),
-(197, '', '2015-08-20 22:29:29', '2015-08-20 22:29:29', NULL, '0', 44, 1, NULL);
+(197, '', '2015-08-20 22:29:29', '2015-08-20 22:29:29', NULL, '0', 44, 1, NULL),
+(198, '', '2015-10-08 22:28:42', '2015-10-08 22:28:42', NULL, '0', 45, 1, NULL),
+(199, '', '2015-10-08 22:59:02', '2015-10-08 22:59:02', NULL, '0', 46, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -2151,7 +2177,7 @@ INSERT INTO `Blocks` (`bID`, `bName`, `bDateAdded`, `bDateModified`, `bFilename`
 --
 
 DROP TABLE IF EXISTS `BlockTypePermissionBlockTypeAccessList`;
-CREATE TABLE IF NOT EXISTS `BlockTypePermissionBlockTypeAccessList` (
+CREATE TABLE `BlockTypePermissionBlockTypeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -2166,7 +2192,7 @@ CREATE TABLE IF NOT EXISTS `BlockTypePermissionBlockTypeAccessList` (
 --
 
 DROP TABLE IF EXISTS `BlockTypePermissionBlockTypeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `BlockTypePermissionBlockTypeAccessListCustom` (
+CREATE TABLE `BlockTypePermissionBlockTypeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `btID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -2182,7 +2208,7 @@ CREATE TABLE IF NOT EXISTS `BlockTypePermissionBlockTypeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `BlockTypes`;
-CREATE TABLE IF NOT EXISTS `BlockTypes` (
+CREATE TABLE `BlockTypes` (
   `btID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `btHandle` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `btName` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
@@ -2201,7 +2227,7 @@ CREATE TABLE IF NOT EXISTS `BlockTypes` (
   UNIQUE KEY `btHandle` (`btHandle`),
   KEY `btDisplayOrder` (`btDisplayOrder`,`btName`,`btID`),
   KEY `pkgID` (`pkgID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=45 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=47 ;
 
 --
 -- Daten für Tabelle `BlockTypes`
@@ -2247,7 +2273,9 @@ INSERT INTO `BlockTypes` (`btID`, `btHandle`, `btName`, `btDescription`, `btCopy
 (37, 'video', 'Video Player', 'Embeds uploaded video into a web page. Supports WebM, Ogg, and Quicktime/MPEG4 formats.', 0, 0, 0, 0, 0, 0, 19, 320, 270, 0),
 (38, 'youtube', 'YouTube Video', 'Embeds a YouTube Video in your web page.', 0, 0, 0, 0, 0, 0, 31, 400, 430, 0),
 (40, 'basic_table_block', 'BasicTable', 'Show a simple Table with Data to create, edit, delete', 0, 0, 0, 0, 0, 0, 2, 400, 400, 0),
-(44, 'eventtable', 'BasicEvent', 'Show a simple Table width Data of Events', 0, 0, 0, 0, 0, 0, 1, 400, 400, 0);
+(44, 'eventtable', 'BasicEvent', 'Show a simple Table width Data of Events', 0, 0, 0, 0, 0, 0, 1, 400, 400, 0),
+(45, 'quittungentable', 'BasicQuittungen', 'Store and show bills', 0, 0, 0, 0, 0, 0, 0, 400, 400, 0),
+(46, 'budgettable', 'BasicBudget', 'Store and show bills', 0, 0, 0, 0, 0, 0, 0, 400, 400, 0);
 
 -- --------------------------------------------------------
 
@@ -2256,7 +2284,7 @@ INSERT INTO `BlockTypes` (`btID`, `btHandle`, `btName`, `btDescription`, `btCopy
 --
 
 DROP TABLE IF EXISTS `BlockTypeSetBlockTypes`;
-CREATE TABLE IF NOT EXISTS `BlockTypeSetBlockTypes` (
+CREATE TABLE `BlockTypeSetBlockTypes` (
   `btID` int(10) unsigned NOT NULL DEFAULT '0',
   `btsID` int(10) unsigned NOT NULL DEFAULT '0',
   `displayOrder` int(10) unsigned NOT NULL DEFAULT '0',
@@ -2306,7 +2334,7 @@ INSERT INTO `BlockTypeSetBlockTypes` (`btID`, `btsID`, `displayOrder`) VALUES
 --
 
 DROP TABLE IF EXISTS `BlockTypeSets`;
-CREATE TABLE IF NOT EXISTS `BlockTypeSets` (
+CREATE TABLE `BlockTypeSets` (
   `btsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `btsName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `btsHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -2336,7 +2364,7 @@ INSERT INTO `BlockTypeSets` (`btsID`, `btsName`, `btsHandle`, `pkgID`, `btsDispl
 --
 
 DROP TABLE IF EXISTS `btBasicTable`;
-CREATE TABLE IF NOT EXISTS `btBasicTable` (
+CREATE TABLE `btBasicTable` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   PRIMARY KEY (`id`)
@@ -2366,7 +2394,7 @@ INSERT INTO `btBasicTable` (`id`, `value`) VALUES
 --
 
 DROP TABLE IF EXISTS `btBasicTableActionOption`;
-CREATE TABLE IF NOT EXISTS `btBasicTableActionOption` (
+CREATE TABLE `btBasicTableActionOption` (
   `optionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(11) DEFAULT NULL,
   `optionName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2382,12 +2410,12 @@ CREATE TABLE IF NOT EXISTS `btBasicTableActionOption` (
 --
 
 DROP TABLE IF EXISTS `btBasicTableInstance`;
-CREATE TABLE IF NOT EXISTS `btBasicTableInstance` (
+CREATE TABLE `btBasicTableInstance` (
   `bID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `question` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `requiresRegistration` int(11) DEFAULT '0',
   PRIMARY KEY (`bID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=198 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=200 ;
 
 --
 -- Daten für Tabelle `btBasicTableInstance`
@@ -2402,7 +2430,51 @@ INSERT INTO `btBasicTableInstance` (`bID`, `question`, `requiresRegistration`) V
 (189, '', 0),
 (190, '', 0),
 (191, '', 0),
-(197, '', 0);
+(197, '', 0),
+(198, '', 0),
+(199, '', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `btBudget`
+--
+
+DROP TABLE IF EXISTS `btBudget`;
+CREATE TABLE `btBudget` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `price` double DEFAULT NULL,
+  `parentBudgetId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=23 ;
+
+--
+-- Daten für Tabelle `btBudget`
+--
+
+INSERT INTO `btBudget` (`id`, `name`, `description`, `price`, `parentBudgetId`) VALUES
+(17, 'test', 'test', 300, NULL),
+(18, 'test2', 'test2', 212, NULL),
+(19, 'terst', 'test', 312, 17),
+(20, 'asdf', 'asdf', 300, 19),
+(21, 'asdf', 'asdf', 3132, 18),
+(22, 'test', 'test', 213, 21);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `btBudgetPosten`
+--
+
+DROP TABLE IF EXISTS `btBudgetPosten`;
+CREATE TABLE `btBudgetPosten` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `budget` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2411,7 +2483,7 @@ INSERT INTO `btBasicTableInstance` (`bID`, `question`, `requiresRegistration`) V
 --
 
 DROP TABLE IF EXISTS `btContentFile`;
-CREATE TABLE IF NOT EXISTS `btContentFile` (
+CREATE TABLE `btContentFile` (
   `bID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fID` int(10) unsigned DEFAULT NULL,
   `fileLinkText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2427,7 +2499,7 @@ CREATE TABLE IF NOT EXISTS `btContentFile` (
 --
 
 DROP TABLE IF EXISTS `btContentImage`;
-CREATE TABLE IF NOT EXISTS `btContentImage` (
+CREATE TABLE `btContentImage` (
   `bID` int(10) unsigned NOT NULL,
   `fID` int(10) unsigned DEFAULT '0',
   `fOnstateID` int(10) unsigned DEFAULT '0',
@@ -2461,7 +2533,7 @@ INSERT INTO `btContentImage` (`bID`, `fID`, `fOnstateID`, `maxWidth`, `maxHeight
 --
 
 DROP TABLE IF EXISTS `btContentLocal`;
-CREATE TABLE IF NOT EXISTS `btContentLocal` (
+CREATE TABLE `btContentLocal` (
   `bID` int(10) unsigned NOT NULL,
   `content` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`bID`)
@@ -2533,7 +2605,7 @@ INSERT INTO `btContentLocal` (`bID`, `content`) VALUES
 --
 
 DROP TABLE IF EXISTS `btCoreAreaLayout`;
-CREATE TABLE IF NOT EXISTS `btCoreAreaLayout` (
+CREATE TABLE `btCoreAreaLayout` (
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
   `arLayoutID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`bID`),
@@ -2571,7 +2643,7 @@ INSERT INTO `btCoreAreaLayout` (`bID`, `arLayoutID`) VALUES
 --
 
 DROP TABLE IF EXISTS `btCoreConversation`;
-CREATE TABLE IF NOT EXISTS `btCoreConversation` (
+CREATE TABLE `btCoreConversation` (
   `bID` int(10) unsigned NOT NULL,
   `cnvID` int(11) DEFAULT NULL,
   `enablePosting` int(11) DEFAULT '1',
@@ -2608,7 +2680,7 @@ INSERT INTO `btCoreConversation` (`bID`, `cnvID`, `enablePosting`, `paginate`, `
 --
 
 DROP TABLE IF EXISTS `btCorePageTypeComposerControlOutput`;
-CREATE TABLE IF NOT EXISTS `btCorePageTypeComposerControlOutput` (
+CREATE TABLE `btCorePageTypeComposerControlOutput` (
   `bID` int(10) unsigned NOT NULL,
   `ptComposerOutputControlID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`bID`),
@@ -2632,7 +2704,7 @@ INSERT INTO `btCorePageTypeComposerControlOutput` (`bID`, `ptComposerOutputContr
 --
 
 DROP TABLE IF EXISTS `btCoreScrapbookDisplay`;
-CREATE TABLE IF NOT EXISTS `btCoreScrapbookDisplay` (
+CREATE TABLE `btCoreScrapbookDisplay` (
   `bID` int(10) unsigned NOT NULL,
   `bOriginalID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`bID`),
@@ -2646,7 +2718,7 @@ CREATE TABLE IF NOT EXISTS `btCoreScrapbookDisplay` (
 --
 
 DROP TABLE IF EXISTS `btCoreStackDisplay`;
-CREATE TABLE IF NOT EXISTS `btCoreStackDisplay` (
+CREATE TABLE `btCoreStackDisplay` (
   `bID` int(10) unsigned NOT NULL,
   `stID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`bID`),
@@ -2660,7 +2732,7 @@ CREATE TABLE IF NOT EXISTS `btCoreStackDisplay` (
 --
 
 DROP TABLE IF EXISTS `btDashboardNewsflowLatest`;
-CREATE TABLE IF NOT EXISTS `btDashboardNewsflowLatest` (
+CREATE TABLE `btDashboardNewsflowLatest` (
   `bID` int(10) unsigned NOT NULL,
   `slot` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`bID`)
@@ -2682,7 +2754,7 @@ INSERT INTO `btDashboardNewsflowLatest` (`bID`, `slot`) VALUES
 --
 
 DROP TABLE IF EXISTS `btDateNavigation`;
-CREATE TABLE IF NOT EXISTS `btDateNavigation` (
+CREATE TABLE `btDateNavigation` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `filterByParent` tinyint(1) DEFAULT '0',
@@ -2707,7 +2779,7 @@ INSERT INTO `btDateNavigation` (`bID`, `title`, `filterByParent`, `redirectToRes
 --
 
 DROP TABLE IF EXISTS `btEventInGroup`;
-CREATE TABLE IF NOT EXISTS `btEventInGroup` (
+CREATE TABLE `btEventInGroup` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `eventID` int(11) DEFAULT NULL,
   `groupID` int(11) DEFAULT NULL,
@@ -2736,7 +2808,7 @@ INSERT INTO `btEventInGroup` (`ID`, `eventID`, `groupID`) VALUES
 --
 
 DROP TABLE IF EXISTS `btEvents`;
-CREATE TABLE IF NOT EXISTS `btEvents` (
+CREATE TABLE `btEvents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `date_to` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
@@ -2749,16 +2821,17 @@ CREATE TABLE IF NOT EXISTS `btEvents` (
   `testselect` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `testlink` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=14 ;
 
 --
 -- Daten für Tabelle `btEvents`
 --
 
 INSERT INTO `btEvents` (`id`, `date_from`, `date_to`, `time_from`, `time_to`, `title`, `description`, `infofile`, `registerfile`, `testselect`, `testlink`) VALUES
-(9, '1', '', '', '', '', '', '0', '0', '', '3'),
+(9, '16.09.2015', '', '', '', '', '', '0', '0', '', '3'),
 (10, '', '', '', '', '', '', '0', '0', '', '3'),
-(11, 'test', '', '', '', '', '', '0', '0', '', '3');
+(11, NULL, '', '', '', '', '', '0', '0', '', '3'),
+(13, NULL, '', '', '', '', '', '0', '0', '', '3');
 
 -- --------------------------------------------------------
 
@@ -2767,7 +2840,7 @@ INSERT INTO `btEvents` (`id`, `date_from`, `date_to`, `time_from`, `time_to`, `t
 --
 
 DROP TABLE IF EXISTS `btExternalForm`;
-CREATE TABLE IF NOT EXISTS `btExternalForm` (
+CREATE TABLE `btExternalForm` (
   `bID` int(10) unsigned NOT NULL,
   `filename` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`bID`)
@@ -2780,7 +2853,7 @@ CREATE TABLE IF NOT EXISTS `btExternalForm` (
 --
 
 DROP TABLE IF EXISTS `btFaq`;
-CREATE TABLE IF NOT EXISTS `btFaq` (
+CREATE TABLE `btFaq` (
   `bID` int(10) unsigned NOT NULL,
   `blockTitle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`bID`)
@@ -2800,7 +2873,7 @@ INSERT INTO `btFaq` (`bID`, `blockTitle`) VALUES
 --
 
 DROP TABLE IF EXISTS `btFaqEntries`;
-CREATE TABLE IF NOT EXISTS `btFaqEntries` (
+CREATE TABLE `btFaqEntries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(10) unsigned DEFAULT NULL,
   `linkTitle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2826,7 +2899,7 @@ INSERT INTO `btFaqEntries` (`id`, `bID`, `linkTitle`, `title`, `sortOrder`, `des
 --
 
 DROP TABLE IF EXISTS `btFeature`;
-CREATE TABLE IF NOT EXISTS `btFeature` (
+CREATE TABLE `btFeature` (
   `bID` int(10) unsigned NOT NULL,
   `icon` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2862,7 +2935,7 @@ INSERT INTO `btFeature` (`bID`, `icon`, `title`, `paragraph`, `externalLink`, `i
 --
 
 DROP TABLE IF EXISTS `btForm`;
-CREATE TABLE IF NOT EXISTS `btForm` (
+CREATE TABLE `btForm` (
   `bID` int(10) unsigned NOT NULL,
   `questionSetId` int(10) unsigned DEFAULT '0',
   `surveyName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2890,7 +2963,7 @@ INSERT INTO `btForm` (`bID`, `questionSetId`, `surveyName`, `thankyouMsg`, `noti
 --
 
 DROP TABLE IF EXISTS `btFormAnswers`;
-CREATE TABLE IF NOT EXISTS `btFormAnswers` (
+CREATE TABLE `btFormAnswers` (
   `aID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `asID` int(10) unsigned DEFAULT '0',
   `msqID` int(10) unsigned DEFAULT '0',
@@ -2908,7 +2981,7 @@ CREATE TABLE IF NOT EXISTS `btFormAnswers` (
 --
 
 DROP TABLE IF EXISTS `btFormAnswerSet`;
-CREATE TABLE IF NOT EXISTS `btFormAnswerSet` (
+CREATE TABLE `btFormAnswerSet` (
   `asID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `questionSetId` int(10) unsigned DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2925,7 +2998,7 @@ CREATE TABLE IF NOT EXISTS `btFormAnswerSet` (
 --
 
 DROP TABLE IF EXISTS `btFormQuestions`;
-CREATE TABLE IF NOT EXISTS `btFormQuestions` (
+CREATE TABLE `btFormQuestions` (
   `qID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `msqID` int(10) unsigned DEFAULT '0',
   `bID` int(10) unsigned DEFAULT '0',
@@ -2961,7 +3034,7 @@ INSERT INTO `btFormQuestions` (`qID`, `msqID`, `bID`, `questionSetId`, `question
 --
 
 DROP TABLE IF EXISTS `btGoogleMap`;
-CREATE TABLE IF NOT EXISTS `btGoogleMap` (
+CREATE TABLE `btGoogleMap` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `location` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2988,7 +3061,7 @@ INSERT INTO `btGoogleMap` (`bID`, `title`, `location`, `latitude`, `longitude`, 
 --
 
 DROP TABLE IF EXISTS `btImageSlider`;
-CREATE TABLE IF NOT EXISTS `btImageSlider` (
+CREATE TABLE `btImageSlider` (
   `bID` int(10) unsigned NOT NULL,
   `navigationType` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`bID`)
@@ -3014,7 +3087,7 @@ INSERT INTO `btImageSlider` (`bID`, `navigationType`) VALUES
 --
 
 DROP TABLE IF EXISTS `btImageSliderEntries`;
-CREATE TABLE IF NOT EXISTS `btImageSliderEntries` (
+CREATE TABLE `btImageSliderEntries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(10) unsigned DEFAULT NULL,
   `cID` int(10) unsigned DEFAULT '0',
@@ -3060,7 +3133,7 @@ INSERT INTO `btImageSliderEntries` (`id`, `bID`, `cID`, `fID`, `linkURL`, `inter
 --
 
 DROP TABLE IF EXISTS `btNavigation`;
-CREATE TABLE IF NOT EXISTS `btNavigation` (
+CREATE TABLE `btNavigation` (
   `bID` int(10) unsigned NOT NULL,
   `orderBy` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'alpha_asc',
   `displayPages` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'top',
@@ -3088,7 +3161,7 @@ INSERT INTO `btNavigation` (`bID`, `orderBy`, `displayPages`, `displayPagesCID`,
 --
 
 DROP TABLE IF EXISTS `btNextPrevious`;
-CREATE TABLE IF NOT EXISTS `btNextPrevious` (
+CREATE TABLE `btNextPrevious` (
   `bID` int(10) unsigned NOT NULL,
   `nextLabel` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `previousLabel` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3113,7 +3186,7 @@ INSERT INTO `btNextPrevious` (`bID`, `nextLabel`, `previousLabel`, `parentLabel`
 --
 
 DROP TABLE IF EXISTS `btPageAttributeDisplay`;
-CREATE TABLE IF NOT EXISTS `btPageAttributeDisplay` (
+CREATE TABLE `btPageAttributeDisplay` (
   `bID` int(10) unsigned NOT NULL,
   `attributeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `attributeTitleText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3142,7 +3215,7 @@ INSERT INTO `btPageAttributeDisplay` (`bID`, `attributeHandle`, `attributeTitleT
 --
 
 DROP TABLE IF EXISTS `btPageList`;
-CREATE TABLE IF NOT EXISTS `btPageList` (
+CREATE TABLE `btPageList` (
   `bID` int(10) unsigned NOT NULL,
   `num` smallint(5) unsigned NOT NULL,
   `orderBy` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3193,7 +3266,7 @@ INSERT INTO `btPageList` (`bID`, `num`, `orderBy`, `cParentID`, `cThis`, `useBut
 --
 
 DROP TABLE IF EXISTS `btPageTitle`;
-CREATE TABLE IF NOT EXISTS `btPageTitle` (
+CREATE TABLE `btPageTitle` (
   `bID` int(10) unsigned NOT NULL,
   `useCustomTitle` int(10) unsigned DEFAULT '0',
   `titleText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3220,11 +3293,45 @@ INSERT INTO `btPageTitle` (`bID`, `useCustomTitle`, `titleText`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `btQuittungen`
+--
+
+DROP TABLE IF EXISTS `btQuittungen`;
+CREATE TABLE `btQuittungen` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `price` double DEFAULT NULL,
+  `quittungfoto` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `groupID` int(11) DEFAULT NULL,
+  `budgetID` int(11) DEFAULT NULL,
+  `budgetposten` int(11) DEFAULT NULL,
+  `userID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `btQUittunginBudgetPosten`
+--
+
+DROP TABLE IF EXISTS `btQUittunginBudgetPosten`;
+CREATE TABLE `btQUittunginBudgetPosten` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `quittungID` int(11) DEFAULT NULL,
+  `budgetPostenID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `btRssDisplay`
 --
 
 DROP TABLE IF EXISTS `btRssDisplay`;
-CREATE TABLE IF NOT EXISTS `btRssDisplay` (
+CREATE TABLE `btRssDisplay` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3242,7 +3349,7 @@ CREATE TABLE IF NOT EXISTS `btRssDisplay` (
 --
 
 DROP TABLE IF EXISTS `btSearch`;
-CREATE TABLE IF NOT EXISTS `btSearch` (
+CREATE TABLE `btSearch` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `buttonText` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3267,7 +3374,7 @@ INSERT INTO `btSearch` (`bID`, `title`, `buttonText`, `baseSearchPath`, `postTo_
 --
 
 DROP TABLE IF EXISTS `btShareThisPage`;
-CREATE TABLE IF NOT EXISTS `btShareThisPage` (
+CREATE TABLE `btShareThisPage` (
   `btShareThisPageID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(10) unsigned DEFAULT '0',
   `service` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3292,7 +3399,7 @@ INSERT INTO `btShareThisPage` (`btShareThisPageID`, `bID`, `service`, `displayOr
 --
 
 DROP TABLE IF EXISTS `btSocialLinks`;
-CREATE TABLE IF NOT EXISTS `btSocialLinks` (
+CREATE TABLE `btSocialLinks` (
   `btSocialLinkID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(10) unsigned DEFAULT '0',
   `slID` int(10) unsigned DEFAULT '0',
@@ -3318,7 +3425,7 @@ INSERT INTO `btSocialLinks` (`btSocialLinkID`, `bID`, `slID`, `displayOrder`) VA
 --
 
 DROP TABLE IF EXISTS `btSurvey`;
-CREATE TABLE IF NOT EXISTS `btSurvey` (
+CREATE TABLE `btSurvey` (
   `bID` int(10) unsigned NOT NULL,
   `question` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `requiresRegistration` int(11) DEFAULT '0',
@@ -3339,7 +3446,7 @@ INSERT INTO `btSurvey` (`bID`, `question`, `requiresRegistration`) VALUES
 --
 
 DROP TABLE IF EXISTS `btSurveyOptions`;
-CREATE TABLE IF NOT EXISTS `btSurveyOptions` (
+CREATE TABLE `btSurveyOptions` (
   `optionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `bID` int(11) DEFAULT NULL,
   `optionName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3363,7 +3470,7 @@ INSERT INTO `btSurveyOptions` (`optionID`, `bID`, `optionName`, `displayOrder`) 
 --
 
 DROP TABLE IF EXISTS `btSurveyResults`;
-CREATE TABLE IF NOT EXISTS `btSurveyResults` (
+CREATE TABLE `btSurveyResults` (
   `resultID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `optionID` int(10) unsigned DEFAULT '0',
   `uID` int(10) unsigned DEFAULT '0',
@@ -3392,7 +3499,7 @@ INSERT INTO `btSurveyResults` (`resultID`, `optionID`, `uID`, `bID`, `cID`, `ipA
 --
 
 DROP TABLE IF EXISTS `btSwitchLanguage`;
-CREATE TABLE IF NOT EXISTS `btSwitchLanguage` (
+CREATE TABLE `btSwitchLanguage` (
   `bID` int(10) unsigned NOT NULL,
   `label` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   PRIMARY KEY (`bID`)
@@ -3405,7 +3512,7 @@ CREATE TABLE IF NOT EXISTS `btSwitchLanguage` (
 --
 
 DROP TABLE IF EXISTS `btTags`;
-CREATE TABLE IF NOT EXISTS `btTags` (
+CREATE TABLE `btTags` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `targetCID` int(11) DEFAULT NULL,
@@ -3421,7 +3528,7 @@ CREATE TABLE IF NOT EXISTS `btTags` (
 --
 
 DROP TABLE IF EXISTS `btTestimonial`;
-CREATE TABLE IF NOT EXISTS `btTestimonial` (
+CREATE TABLE `btTestimonial` (
   `bID` int(10) unsigned NOT NULL,
   `fID` int(10) unsigned DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3457,7 +3564,7 @@ INSERT INTO `btTestimonial` (`bID`, `fID`, `name`, `position`, `company`, `compa
 --
 
 DROP TABLE IF EXISTS `btTopicList`;
-CREATE TABLE IF NOT EXISTS `btTopicList` (
+CREATE TABLE `btTopicList` (
   `bID` int(10) unsigned NOT NULL,
   `mode` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'S',
   `topicAttributeKeyHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -3483,7 +3590,7 @@ INSERT INTO `btTopicList` (`bID`, `mode`, `topicAttributeKeyHandle`, `topicTreeI
 --
 
 DROP TABLE IF EXISTS `btVideo`;
-CREATE TABLE IF NOT EXISTS `btVideo` (
+CREATE TABLE `btVideo` (
   `bID` int(10) unsigned NOT NULL,
   `webmfID` int(10) unsigned DEFAULT '0',
   `oggfID` int(10) unsigned DEFAULT '0',
@@ -3501,7 +3608,7 @@ CREATE TABLE IF NOT EXISTS `btVideo` (
 --
 
 DROP TABLE IF EXISTS `btVividStoreProduct`;
-CREATE TABLE IF NOT EXISTS `btVividStoreProduct` (
+CREATE TABLE `btVividStoreProduct` (
   `bID` int(10) unsigned NOT NULL,
   `productLocation` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pID` int(11) DEFAULT NULL,
@@ -3526,7 +3633,7 @@ CREATE TABLE IF NOT EXISTS `btVividStoreProduct` (
 --
 
 DROP TABLE IF EXISTS `btVividStoreProductList`;
-CREATE TABLE IF NOT EXISTS `btVividStoreProductList` (
+CREATE TABLE `btVividStoreProductList` (
   `bID` int(10) unsigned NOT NULL,
   `sortOrder` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gID` int(10) unsigned DEFAULT NULL,
@@ -3547,7 +3654,7 @@ CREATE TABLE IF NOT EXISTS `btVividStoreProductList` (
 --
 
 DROP TABLE IF EXISTS `btVividUtilityLinks`;
-CREATE TABLE IF NOT EXISTS `btVividUtilityLinks` (
+CREATE TABLE `btVividUtilityLinks` (
   `bID` int(10) unsigned NOT NULL,
   `showCartItems` int(11) DEFAULT NULL,
   `showSignIn` int(11) DEFAULT NULL,
@@ -3563,7 +3670,7 @@ CREATE TABLE IF NOT EXISTS `btVividUtilityLinks` (
 --
 
 DROP TABLE IF EXISTS `btYouTube`;
-CREATE TABLE IF NOT EXISTS `btYouTube` (
+CREATE TABLE `btYouTube` (
   `bID` int(10) unsigned NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `videoURL` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3580,7 +3687,7 @@ CREATE TABLE IF NOT EXISTS `btYouTube` (
 --
 
 DROP TABLE IF EXISTS `CollectionAttributeValues`;
-CREATE TABLE IF NOT EXISTS `CollectionAttributeValues` (
+CREATE TABLE `CollectionAttributeValues` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -3810,7 +3917,7 @@ INSERT INTO `CollectionAttributeValues` (`cID`, `cvID`, `akID`, `avID`) VALUES
 --
 
 DROP TABLE IF EXISTS `Collections`;
-CREATE TABLE IF NOT EXISTS `Collections` (
+CREATE TABLE `Collections` (
   `cID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cDateAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `cDateModified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -3819,7 +3926,7 @@ CREATE TABLE IF NOT EXISTS `Collections` (
   KEY `cIDDateModified` (`cID`,`cDateModified`),
   KEY `cDateModified` (`cDateModified`),
   KEY `cDateAdded` (`cDateAdded`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=212 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=214 ;
 
 --
 -- Daten für Tabelle `Collections`
@@ -4026,7 +4133,9 @@ INSERT INTO `Collections` (`cID`, `cDateAdded`, `cDateModified`, `cHandle`) VALU
 (208, '2015-08-05 22:56:30', '2015-08-20 22:22:57', ''),
 (209, '2015-08-05 22:59:04', '2015-08-20 19:59:41', ''),
 (210, '2015-08-05 22:59:19', '2015-08-20 20:36:01', ''),
-(211, '2015-08-05 22:59:31', '2015-08-05 22:59:31', '');
+(211, '2015-08-05 22:59:31', '2015-08-05 22:59:31', ''),
+(212, '2015-10-08 22:27:54', '2015-10-08 22:28:48', ''),
+(213, '2015-10-08 22:58:45', '2015-10-08 22:59:08', '');
 
 -- --------------------------------------------------------
 
@@ -4035,7 +4144,7 @@ INSERT INTO `Collections` (`cID`, `cDateAdded`, `cDateModified`, `cHandle`) VALU
 --
 
 DROP TABLE IF EXISTS `CollectionSearchIndexAttributes`;
-CREATE TABLE IF NOT EXISTS `CollectionSearchIndexAttributes` (
+CREATE TABLE `CollectionSearchIndexAttributes` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `ak_meta_title` longtext COLLATE utf8_unicode_ci,
   `ak_meta_description` longtext COLLATE utf8_unicode_ci,
@@ -4207,7 +4316,9 @@ INSERT INTO `CollectionSearchIndexAttributes` (`cID`, `ak_meta_title`, `ak_meta_
 (208, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL),
 (209, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL),
 (210, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL),
-(211, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
+(211, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL),
+(212, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL),
+(213, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -4216,7 +4327,7 @@ INSERT INTO `CollectionSearchIndexAttributes` (`cID`, `ak_meta_title`, `ak_meta_
 --
 
 DROP TABLE IF EXISTS `CollectionVersionAreaStyles`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionAreaStyles` (
+CREATE TABLE `CollectionVersionAreaStyles` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `arHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -4256,7 +4367,7 @@ INSERT INTO `CollectionVersionAreaStyles` (`cID`, `cvID`, `arHandle`, `issID`) V
 --
 
 DROP TABLE IF EXISTS `CollectionVersionBlocks`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionBlocks` (
+CREATE TABLE `CollectionVersionBlocks` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -4790,7 +4901,9 @@ INSERT INTO `CollectionVersionBlocks` (`cID`, `cvID`, `bID`, `arHandle`, `cbDisp
 (209, 2, 188, 'Main', 0, 1, 0, 0, 0),
 (209, 3, 188, 'Main', 1, 0, 0, 0, 0),
 (209, 3, 189, 'Main', 0, 1, 0, 0, 0),
-(210, 2, 191, 'Main', 0, 1, 0, 0, 0);
+(210, 2, 191, 'Main', 0, 1, 0, 0, 0),
+(212, 2, 198, 'Main', 0, 1, 0, 0, 0),
+(213, 2, 199, 'Main', 0, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -4799,7 +4912,7 @@ INSERT INTO `CollectionVersionBlocks` (`cID`, `cvID`, `bID`, `arHandle`, `cbDisp
 --
 
 DROP TABLE IF EXISTS `CollectionVersionBlocksCacheSettings`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionBlocksCacheSettings` (
+CREATE TABLE `CollectionVersionBlocksCacheSettings` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -4827,7 +4940,7 @@ INSERT INTO `CollectionVersionBlocksCacheSettings` (`cID`, `cvID`, `bID`, `arHan
 --
 
 DROP TABLE IF EXISTS `CollectionVersionBlocksOutputCache`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionBlocksOutputCache` (
+CREATE TABLE `CollectionVersionBlocksOutputCache` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -4845,7 +4958,7 @@ CREATE TABLE IF NOT EXISTS `CollectionVersionBlocksOutputCache` (
 --
 
 DROP TABLE IF EXISTS `CollectionVersionBlockStyles`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionBlockStyles` (
+CREATE TABLE `CollectionVersionBlockStyles` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `bID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -4976,7 +5089,7 @@ INSERT INTO `CollectionVersionBlockStyles` (`cID`, `cvID`, `bID`, `arHandle`, `i
 --
 
 DROP TABLE IF EXISTS `CollectionVersionFeatureAssignments`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionFeatureAssignments` (
+CREATE TABLE `CollectionVersionFeatureAssignments` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `faID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5017,7 +5130,7 @@ INSERT INTO `CollectionVersionFeatureAssignments` (`cID`, `cvID`, `faID`) VALUES
 --
 
 DROP TABLE IF EXISTS `CollectionVersionRelatedEdits`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionRelatedEdits` (
+CREATE TABLE `CollectionVersionRelatedEdits` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '0',
   `cRelationID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5032,7 +5145,7 @@ CREATE TABLE IF NOT EXISTS `CollectionVersionRelatedEdits` (
 --
 
 DROP TABLE IF EXISTS `CollectionVersions`;
-CREATE TABLE IF NOT EXISTS `CollectionVersions` (
+CREATE TABLE `CollectionVersions` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `cvName` text COLLATE utf8_unicode_ci,
@@ -5302,7 +5415,11 @@ INSERT INTO `CollectionVersions` (`cID`, `cvID`, `cvName`, `cvHandle`, `cvDescri
 (209, 3, 'Biber', 'biber', '', '2015-08-05 22:59:04', '2015-08-20 19:59:29', 'Version 3', 1, 0, 1, 1, 1, 6, NULL),
 (210, 1, 'Wölf', 'wolf', '', '2015-08-05 22:59:19', '2015-08-05 22:59:19', 'Initial Version', 0, 0, 1, 1, 1, 6, NULL),
 (210, 2, 'Wölf', 'wolf', '', '2015-08-05 22:59:19', '2015-08-20 20:35:44', 'Version 2', 1, 0, 1, 1, 1, 6, NULL),
-(211, 1, 'Pfadi', 'pfadi', '', '2015-08-05 22:59:31', '2015-08-05 22:59:31', 'Initial Version', 1, 0, 1, 1, 1, 6, NULL);
+(211, 1, 'Pfadi', 'pfadi', '', '2015-08-05 22:59:31', '2015-08-05 22:59:31', 'Initial Version', 1, 0, 1, 1, 1, 6, NULL),
+(212, 1, 'Quittungen', 'quittungen', '', '2015-10-08 22:27:54', '2015-10-08 22:27:54', 'Initial Version', 0, 0, 1, 1, 1, 6, NULL),
+(212, 2, 'Quittungen', 'quittungen', '', '2015-10-08 22:27:54', '2015-10-08 22:28:42', 'Version 2', 1, 0, 1, 1, 1, 6, NULL),
+(213, 1, 'Budgets verwalten', 'budgets-verwalten', '', '2015-10-08 22:58:45', '2015-10-08 22:58:45', 'Initial Version', 0, 0, 1, 1, 1, 6, NULL),
+(213, 2, 'Budgets verwalten', 'budgets-verwalten', '', '2015-10-08 22:58:45', '2015-10-08 22:59:02', 'Version 2', 1, 0, 1, 1, 1, 6, NULL);
 
 -- --------------------------------------------------------
 
@@ -5311,7 +5428,7 @@ INSERT INTO `CollectionVersions` (`cID`, `cvID`, `cvName`, `cvHandle`, `cvDescri
 --
 
 DROP TABLE IF EXISTS `CollectionVersionThemeCustomStyles`;
-CREATE TABLE IF NOT EXISTS `CollectionVersionThemeCustomStyles` (
+CREATE TABLE `CollectionVersionThemeCustomStyles` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `cvID` int(10) unsigned NOT NULL DEFAULT '1',
   `pThemeID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5331,7 +5448,7 @@ CREATE TABLE IF NOT EXISTS `CollectionVersionThemeCustomStyles` (
 --
 
 DROP TABLE IF EXISTS `Config`;
-CREATE TABLE IF NOT EXISTS `Config` (
+CREATE TABLE `Config` (
   `configNamespace` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `configGroup` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `configItem` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -5362,7 +5479,7 @@ INSERT INTO `Config` (`configNamespace`, `configGroup`, `configItem`, `configVal
 --
 
 DROP TABLE IF EXISTS `ConfigStore`;
-CREATE TABLE IF NOT EXISTS `ConfigStore` (
+CREATE TABLE `ConfigStore` (
   `cfKey` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cfValue` longtext COLLATE utf8_unicode_ci,
@@ -5379,7 +5496,7 @@ CREATE TABLE IF NOT EXISTS `ConfigStore` (
 
 INSERT INTO `ConfigStore` (`cfKey`, `timestamp`, `cfValue`, `uID`, `pkgID`) VALUES
 ('DISABLED_HELP_NOTIFICATIONS', '2015-04-19 21:49:16', 'all', 1, 0),
-('NEWSFLOW_LAST_VIEWED', '2015-04-06 18:46:35', '1440101990', 1, 0);
+('NEWSFLOW_LAST_VIEWED', '2015-04-06 18:46:35', '1444678549', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -5388,7 +5505,7 @@ INSERT INTO `ConfigStore` (`cfKey`, `timestamp`, `cfValue`, `uID`, `pkgID`) VALU
 --
 
 DROP TABLE IF EXISTS `ConversationDiscussions`;
-CREATE TABLE IF NOT EXISTS `ConversationDiscussions` (
+CREATE TABLE `ConversationDiscussions` (
   `cnvDiscussionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvDiscussionDateCreated` datetime NOT NULL,
   `cID` int(10) unsigned DEFAULT NULL,
@@ -5403,7 +5520,7 @@ CREATE TABLE IF NOT EXISTS `ConversationDiscussions` (
 --
 
 DROP TABLE IF EXISTS `ConversationEditors`;
-CREATE TABLE IF NOT EXISTS `ConversationEditors` (
+CREATE TABLE `ConversationEditors` (
   `cnvEditorID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvEditorHandle` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `cnvEditorName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -5429,7 +5546,7 @@ INSERT INTO `ConversationEditors` (`cnvEditorID`, `cnvEditorHandle`, `cnvEditorN
 --
 
 DROP TABLE IF EXISTS `ConversationFeatureDetailAssignments`;
-CREATE TABLE IF NOT EXISTS `ConversationFeatureDetailAssignments` (
+CREATE TABLE `ConversationFeatureDetailAssignments` (
   `faID` int(10) unsigned NOT NULL DEFAULT '0',
   `cnvID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`faID`),
@@ -5454,7 +5571,7 @@ INSERT INTO `ConversationFeatureDetailAssignments` (`faID`, `cnvID`) VALUES
 --
 
 DROP TABLE IF EXISTS `ConversationFlaggedMessages`;
-CREATE TABLE IF NOT EXISTS `ConversationFlaggedMessages` (
+CREATE TABLE `ConversationFlaggedMessages` (
   `cnvMessageID` int(10) unsigned NOT NULL,
   `cnvMessageFlagTypeID` int(11) DEFAULT NULL,
   PRIMARY KEY (`cnvMessageID`),
@@ -5468,7 +5585,7 @@ CREATE TABLE IF NOT EXISTS `ConversationFlaggedMessages` (
 --
 
 DROP TABLE IF EXISTS `ConversationFlaggedMessageTypes`;
-CREATE TABLE IF NOT EXISTS `ConversationFlaggedMessageTypes` (
+CREATE TABLE `ConversationFlaggedMessageTypes` (
   `cnvMessageFlagTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvMessageFlagTypeHandle` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`cnvMessageFlagTypeID`),
@@ -5489,7 +5606,7 @@ INSERT INTO `ConversationFlaggedMessageTypes` (`cnvMessageFlagTypeID`, `cnvMessa
 --
 
 DROP TABLE IF EXISTS `ConversationMessageAttachments`;
-CREATE TABLE IF NOT EXISTS `ConversationMessageAttachments` (
+CREATE TABLE `ConversationMessageAttachments` (
   `cnvMessageAttachmentID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvMessageID` int(11) DEFAULT NULL,
   `fID` int(11) DEFAULT NULL,
@@ -5505,7 +5622,7 @@ CREATE TABLE IF NOT EXISTS `ConversationMessageAttachments` (
 --
 
 DROP TABLE IF EXISTS `ConversationMessageRatings`;
-CREATE TABLE IF NOT EXISTS `ConversationMessageRatings` (
+CREATE TABLE `ConversationMessageRatings` (
   `cnvMessageRatingID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvMessageID` int(10) unsigned DEFAULT NULL,
   `cnvRatingTypeID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5525,7 +5642,7 @@ CREATE TABLE IF NOT EXISTS `ConversationMessageRatings` (
 --
 
 DROP TABLE IF EXISTS `ConversationMessages`;
-CREATE TABLE IF NOT EXISTS `ConversationMessages` (
+CREATE TABLE `ConversationMessages` (
   `cnvMessageID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvID` int(10) unsigned NOT NULL DEFAULT '0',
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5560,7 +5677,7 @@ INSERT INTO `ConversationMessages` (`cnvMessageID`, `cnvID`, `uID`, `cnvEditorID
 --
 
 DROP TABLE IF EXISTS `ConversationPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `ConversationPermissionAssignments` (
+CREATE TABLE `ConversationPermissionAssignments` (
   `cnvID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5590,7 +5707,7 @@ INSERT INTO `ConversationPermissionAssignments` (`cnvID`, `pkID`, `paID`) VALUES
 --
 
 DROP TABLE IF EXISTS `ConversationRatingTypes`;
-CREATE TABLE IF NOT EXISTS `ConversationRatingTypes` (
+CREATE TABLE `ConversationRatingTypes` (
   `cnvRatingTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cnvRatingTypeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `cnvRatingTypeName` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -5616,7 +5733,7 @@ INSERT INTO `ConversationRatingTypes` (`cnvRatingTypeID`, `cnvRatingTypeHandle`,
 --
 
 DROP TABLE IF EXISTS `Conversations`;
-CREATE TABLE IF NOT EXISTS `Conversations` (
+CREATE TABLE `Conversations` (
   `cnvID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(10) unsigned DEFAULT '0',
   `cnvDateCreated` datetime NOT NULL,
@@ -5654,7 +5771,7 @@ INSERT INTO `Conversations` (`cnvID`, `cID`, `cnvDateCreated`, `cnvDateLastMessa
 --
 
 DROP TABLE IF EXISTS `DownloadStatistics`;
-CREATE TABLE IF NOT EXISTS `DownloadStatistics` (
+CREATE TABLE `DownloadStatistics` (
   `dsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fID` int(10) unsigned NOT NULL,
   `fvID` int(10) unsigned NOT NULL,
@@ -5684,7 +5801,7 @@ INSERT INTO `DownloadStatistics` (`dsID`, `fID`, `fvID`, `uID`, `rcID`, `timesta
 --
 
 DROP TABLE IF EXISTS `FeatureAssignments`;
-CREATE TABLE IF NOT EXISTS `FeatureAssignments` (
+CREATE TABLE `FeatureAssignments` (
   `faID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `feID` int(10) unsigned DEFAULT NULL,
   `fcID` int(10) unsigned DEFAULT NULL,
@@ -5719,7 +5836,7 @@ INSERT INTO `FeatureAssignments` (`faID`, `feID`, `fcID`, `fdObject`) VALUES
 --
 
 DROP TABLE IF EXISTS `FeatureCategories`;
-CREATE TABLE IF NOT EXISTS `FeatureCategories` (
+CREATE TABLE `FeatureCategories` (
   `fcID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fcHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkgID` int(10) unsigned DEFAULT NULL,
@@ -5743,7 +5860,7 @@ INSERT INTO `FeatureCategories` (`fcID`, `fcHandle`, `pkgID`) VALUES
 --
 
 DROP TABLE IF EXISTS `Features`;
-CREATE TABLE IF NOT EXISTS `Features` (
+CREATE TABLE `Features` (
   `feID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `feHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `feScore` int(11) NOT NULL DEFAULT '1',
@@ -5775,7 +5892,7 @@ INSERT INTO `Features` (`feID`, `feHandle`, `feScore`, `feHasCustomClass`, `pkgI
 --
 
 DROP TABLE IF EXISTS `FileAttributeValues`;
-CREATE TABLE IF NOT EXISTS `FileAttributeValues` (
+CREATE TABLE `FileAttributeValues` (
   `fID` int(10) unsigned NOT NULL DEFAULT '0',
   `fvID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5830,7 +5947,7 @@ INSERT INTO `FileAttributeValues` (`fID`, `fvID`, `akID`, `avID`) VALUES
 --
 
 DROP TABLE IF EXISTS `FileImageThumbnailTypes`;
-CREATE TABLE IF NOT EXISTS `FileImageThumbnailTypes` (
+CREATE TABLE `FileImageThumbnailTypes` (
   `ftTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ftTypeHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `ftTypeName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -5858,7 +5975,7 @@ INSERT INTO `FileImageThumbnailTypes` (`ftTypeID`, `ftTypeHandle`, `ftTypeName`,
 --
 
 DROP TABLE IF EXISTS `FilePermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `FilePermissionAssignments` (
+CREATE TABLE `FilePermissionAssignments` (
   `fID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5887,7 +6004,7 @@ INSERT INTO `FilePermissionAssignments` (`fID`, `pkID`, `paID`) VALUES
 --
 
 DROP TABLE IF EXISTS `FilePermissionFileTypes`;
-CREATE TABLE IF NOT EXISTS `FilePermissionFileTypes` (
+CREATE TABLE `FilePermissionFileTypes` (
   `extension` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `fsID` int(10) unsigned NOT NULL DEFAULT '0',
   `gID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5904,7 +6021,7 @@ CREATE TABLE IF NOT EXISTS `FilePermissionFileTypes` (
 --
 
 DROP TABLE IF EXISTS `Files`;
-CREATE TABLE IF NOT EXISTS `Files` (
+CREATE TABLE `Files` (
   `fID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fDateAdded` datetime DEFAULT NULL,
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -5948,7 +6065,7 @@ INSERT INTO `Files` (`fID`, `fDateAdded`, `uID`, `fslID`, `ocID`, `fOverrideSetP
 --
 
 DROP TABLE IF EXISTS `FileSearchIndexAttributes`;
-CREATE TABLE IF NOT EXISTS `FileSearchIndexAttributes` (
+CREATE TABLE `FileSearchIndexAttributes` (
   `fID` int(10) unsigned NOT NULL DEFAULT '0',
   `ak_width` decimal(14,4) DEFAULT '0.0000',
   `ak_height` decimal(14,4) DEFAULT '0.0000',
@@ -5985,7 +6102,7 @@ INSERT INTO `FileSearchIndexAttributes` (`fID`, `ak_width`, `ak_height`, `ak_dur
 --
 
 DROP TABLE IF EXISTS `FileSetFiles`;
-CREATE TABLE IF NOT EXISTS `FileSetFiles` (
+CREATE TABLE `FileSetFiles` (
   `fsfID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fID` int(10) unsigned NOT NULL,
   `fsID` int(10) unsigned NOT NULL,
@@ -6010,7 +6127,7 @@ INSERT INTO `FileSetFiles` (`fsfID`, `fID`, `fsID`, `timestamp`, `fsDisplayOrder
 --
 
 DROP TABLE IF EXISTS `FileSetPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `FileSetPermissionAssignments` (
+CREATE TABLE `FileSetPermissionAssignments` (
   `fsID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6041,7 +6158,7 @@ INSERT INTO `FileSetPermissionAssignments` (`fsID`, `pkID`, `paID`) VALUES
 --
 
 DROP TABLE IF EXISTS `FileSetPermissionFileTypeAccessList`;
-CREATE TABLE IF NOT EXISTS `FileSetPermissionFileTypeAccessList` (
+CREATE TABLE `FileSetPermissionFileTypeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -6056,7 +6173,7 @@ CREATE TABLE IF NOT EXISTS `FileSetPermissionFileTypeAccessList` (
 --
 
 DROP TABLE IF EXISTS `FileSetPermissionFileTypeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `FileSetPermissionFileTypeAccessListCustom` (
+CREATE TABLE `FileSetPermissionFileTypeAccessListCustom` (
   `extension` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6071,7 +6188,7 @@ CREATE TABLE IF NOT EXISTS `FileSetPermissionFileTypeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `FileSets`;
-CREATE TABLE IF NOT EXISTS `FileSets` (
+CREATE TABLE `FileSets` (
   `fsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fsName` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6097,7 +6214,7 @@ INSERT INTO `FileSets` (`fsID`, `fsName`, `uID`, `fsType`, `fsOverrideGlobalPerm
 --
 
 DROP TABLE IF EXISTS `FileSetSavedSearches`;
-CREATE TABLE IF NOT EXISTS `FileSetSavedSearches` (
+CREATE TABLE `FileSetSavedSearches` (
   `fsID` int(10) unsigned NOT NULL DEFAULT '0',
   `fsSearchRequest` text COLLATE utf8_unicode_ci,
   `fsResultColumns` text COLLATE utf8_unicode_ci,
@@ -6111,7 +6228,7 @@ CREATE TABLE IF NOT EXISTS `FileSetSavedSearches` (
 --
 
 DROP TABLE IF EXISTS `FileStorageLocations`;
-CREATE TABLE IF NOT EXISTS `FileStorageLocations` (
+CREATE TABLE `FileStorageLocations` (
   `fslID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fslName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fslConfiguration` longtext COLLATE utf8_unicode_ci NOT NULL,
@@ -6133,7 +6250,7 @@ INSERT INTO `FileStorageLocations` (`fslID`, `fslName`, `fslConfiguration`, `fsl
 --
 
 DROP TABLE IF EXISTS `FileStorageLocationTypes`;
-CREATE TABLE IF NOT EXISTS `FileStorageLocationTypes` (
+CREATE TABLE `FileStorageLocationTypes` (
   `fslTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fslTypeHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fslTypeName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -6158,7 +6275,7 @@ INSERT INTO `FileStorageLocationTypes` (`fslTypeID`, `fslTypeHandle`, `fslTypeNa
 --
 
 DROP TABLE IF EXISTS `FileVersionLog`;
-CREATE TABLE IF NOT EXISTS `FileVersionLog` (
+CREATE TABLE `FileVersionLog` (
   `fvlID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fID` int(10) unsigned NOT NULL DEFAULT '0',
   `fvID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6213,7 +6330,7 @@ INSERT INTO `FileVersionLog` (`fvlID`, `fID`, `fvID`, `fvUpdateTypeID`, `fvUpdat
 --
 
 DROP TABLE IF EXISTS `FileVersions`;
-CREATE TABLE IF NOT EXISTS `FileVersions` (
+CREATE TABLE `FileVersions` (
   `fID` int(10) unsigned NOT NULL DEFAULT '0',
   `fvID` int(10) unsigned NOT NULL DEFAULT '0',
   `fvFilename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -6267,7 +6384,7 @@ INSERT INTO `FileVersions` (`fID`, `fvID`, `fvFilename`, `fvPrefix`, `fvGenericT
 --
 
 DROP TABLE IF EXISTS `gaPage`;
-CREATE TABLE IF NOT EXISTS `gaPage` (
+CREATE TABLE `gaPage` (
   `gaiID` int(10) unsigned NOT NULL,
   `cID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`gaiID`),
@@ -6281,7 +6398,7 @@ CREATE TABLE IF NOT EXISTS `gaPage` (
 --
 
 DROP TABLE IF EXISTS `GatheringConfiguredDataSources`;
-CREATE TABLE IF NOT EXISTS `GatheringConfiguredDataSources` (
+CREATE TABLE `GatheringConfiguredDataSources` (
   `gcsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gaID` int(10) unsigned DEFAULT NULL,
   `gasID` int(10) unsigned DEFAULT NULL,
@@ -6298,7 +6415,7 @@ CREATE TABLE IF NOT EXISTS `GatheringConfiguredDataSources` (
 --
 
 DROP TABLE IF EXISTS `GatheringDataSources`;
-CREATE TABLE IF NOT EXISTS `GatheringDataSources` (
+CREATE TABLE `GatheringDataSources` (
   `gasID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gasName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gasHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -6326,7 +6443,7 @@ INSERT INTO `GatheringDataSources` (`gasID`, `gasName`, `gasHandle`, `pkgID`, `g
 --
 
 DROP TABLE IF EXISTS `GatheringItemFeatureAssignments`;
-CREATE TABLE IF NOT EXISTS `GatheringItemFeatureAssignments` (
+CREATE TABLE `GatheringItemFeatureAssignments` (
   `gafaID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gaiID` int(10) unsigned DEFAULT NULL,
   `faID` int(10) unsigned DEFAULT NULL,
@@ -6342,7 +6459,7 @@ CREATE TABLE IF NOT EXISTS `GatheringItemFeatureAssignments` (
 --
 
 DROP TABLE IF EXISTS `GatheringItems`;
-CREATE TABLE IF NOT EXISTS `GatheringItems` (
+CREATE TABLE `GatheringItems` (
   `gaiID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gaID` int(10) unsigned DEFAULT NULL,
   `gasID` int(10) unsigned DEFAULT NULL,
@@ -6368,7 +6485,7 @@ CREATE TABLE IF NOT EXISTS `GatheringItems` (
 --
 
 DROP TABLE IF EXISTS `GatheringItemSelectedTemplates`;
-CREATE TABLE IF NOT EXISTS `GatheringItemSelectedTemplates` (
+CREATE TABLE `GatheringItemSelectedTemplates` (
   `gaiID` int(10) unsigned NOT NULL DEFAULT '0',
   `gatID` int(10) unsigned NOT NULL DEFAULT '0',
   `gatTypeID` int(10) unsigned DEFAULT '0',
@@ -6385,7 +6502,7 @@ CREATE TABLE IF NOT EXISTS `GatheringItemSelectedTemplates` (
 --
 
 DROP TABLE IF EXISTS `GatheringItemTemplateFeatures`;
-CREATE TABLE IF NOT EXISTS `GatheringItemTemplateFeatures` (
+CREATE TABLE `GatheringItemTemplateFeatures` (
   `gfeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gatID` int(10) unsigned DEFAULT NULL,
   `feID` int(10) unsigned DEFAULT NULL,
@@ -6473,7 +6590,7 @@ INSERT INTO `GatheringItemTemplateFeatures` (`gfeID`, `gatID`, `feID`) VALUES
 --
 
 DROP TABLE IF EXISTS `GatheringItemTemplates`;
-CREATE TABLE IF NOT EXISTS `GatheringItemTemplates` (
+CREATE TABLE `GatheringItemTemplates` (
   `gatID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gatHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `gatName` text COLLATE utf8_unicode_ci,
@@ -6524,7 +6641,7 @@ INSERT INTO `GatheringItemTemplates` (`gatID`, `gatHandle`, `gatName`, `gatHasCu
 --
 
 DROP TABLE IF EXISTS `GatheringItemTemplateTypes`;
-CREATE TABLE IF NOT EXISTS `GatheringItemTemplateTypes` (
+CREATE TABLE `GatheringItemTemplateTypes` (
   `gatTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gatTypeHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `pkgID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6548,7 +6665,7 @@ INSERT INTO `GatheringItemTemplateTypes` (`gatTypeID`, `gatTypeHandle`, `pkgID`)
 --
 
 DROP TABLE IF EXISTS `GatheringPermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `GatheringPermissionAssignments` (
+CREATE TABLE `GatheringPermissionAssignments` (
   `gaID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6564,7 +6681,7 @@ CREATE TABLE IF NOT EXISTS `GatheringPermissionAssignments` (
 --
 
 DROP TABLE IF EXISTS `Gatherings`;
-CREATE TABLE IF NOT EXISTS `Gatherings` (
+CREATE TABLE `Gatherings` (
   `gaID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gaDateCreated` datetime NOT NULL,
   `gaDateLastUpdated` datetime NOT NULL,
@@ -6579,7 +6696,7 @@ CREATE TABLE IF NOT EXISTS `Gatherings` (
 --
 
 DROP TABLE IF EXISTS `Groups`;
-CREATE TABLE IF NOT EXISTS `Groups` (
+CREATE TABLE `Groups` (
   `gID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gName` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `gDescription` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -6603,7 +6720,7 @@ CREATE TABLE IF NOT EXISTS `Groups` (
   KEY `gBadgeFID` (`gBadgeFID`),
   KEY `pkgID` (`pkgID`),
   KEY `gPath` (`gPath`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
 
 --
 -- Daten für Tabelle `Groups`
@@ -6614,7 +6731,8 @@ INSERT INTO `Groups` (`gID`, `gName`, `gDescription`, `gUserExpirationIsEnabled`
 (2, 'Registered Users', 'The registered users group represents all user accounts.', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/Registered Users', 0),
 (3, 'Administrators', '', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/Administrators', 0),
 (4, 'owncloud', 'Benutzer, die auch zugriff auf die owncloud haben', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/owncloud', 0),
-(5, 'Store Customer', 'Registered Customer in your store', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/Store Customer', 0);
+(5, 'Store Customer', 'Registered Customer in your store', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/Store Customer', 0),
+(6, 'Leiter', '', 0, NULL, NULL, 0, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, '/Leiter', 0);
 
 -- --------------------------------------------------------
 
@@ -6623,7 +6741,7 @@ INSERT INTO `Groups` (`gID`, `gName`, `gDescription`, `gUserExpirationIsEnabled`
 --
 
 DROP TABLE IF EXISTS `GroupSetGroups`;
-CREATE TABLE IF NOT EXISTS `GroupSetGroups` (
+CREATE TABLE `GroupSetGroups` (
   `gID` int(10) unsigned NOT NULL DEFAULT '0',
   `gsID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`gID`,`gsID`),
@@ -6637,7 +6755,7 @@ CREATE TABLE IF NOT EXISTS `GroupSetGroups` (
 --
 
 DROP TABLE IF EXISTS `GroupSets`;
-CREATE TABLE IF NOT EXISTS `GroupSets` (
+CREATE TABLE `GroupSets` (
   `gsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gsName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pkgID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6653,7 +6771,7 @@ CREATE TABLE IF NOT EXISTS `GroupSets` (
 --
 
 DROP TABLE IF EXISTS `Jobs`;
-CREATE TABLE IF NOT EXISTS `Jobs` (
+CREATE TABLE `Jobs` (
   `jID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `jName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `jDescription` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -6696,7 +6814,7 @@ INSERT INTO `Jobs` (`jID`, `jName`, `jDescription`, `jDateInstalled`, `jDateLast
 --
 
 DROP TABLE IF EXISTS `JobSetJobs`;
-CREATE TABLE IF NOT EXISTS `JobSetJobs` (
+CREATE TABLE `JobSetJobs` (
   `jsID` int(10) unsigned NOT NULL DEFAULT '0',
   `jID` int(10) unsigned NOT NULL DEFAULT '0',
   `jRunOrder` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6722,7 +6840,7 @@ INSERT INTO `JobSetJobs` (`jsID`, `jID`, `jRunOrder`) VALUES
 --
 
 DROP TABLE IF EXISTS `JobSets`;
-CREATE TABLE IF NOT EXISTS `JobSets` (
+CREATE TABLE `JobSets` (
   `jsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `jsName` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `pkgID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -6749,7 +6867,7 @@ INSERT INTO `JobSets` (`jsID`, `jsName`, `pkgID`, `jDateLastRun`, `isScheduled`,
 --
 
 DROP TABLE IF EXISTS `JobsLog`;
-CREATE TABLE IF NOT EXISTS `JobsLog` (
+CREATE TABLE `JobsLog` (
   `jlID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `jID` int(10) unsigned NOT NULL,
   `jlMessage` longtext COLLATE utf8_unicode_ci NOT NULL,
@@ -6773,7 +6891,7 @@ INSERT INTO `JobsLog` (`jlID`, `jID`, `jlMessage`, `jlTimestamp`, `jlError`) VAL
 --
 
 DROP TABLE IF EXISTS `Logs`;
-CREATE TABLE IF NOT EXISTS `Logs` (
+CREATE TABLE `Logs` (
   `logID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `channel` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `time` int(10) unsigned NOT NULL,
@@ -6783,7 +6901,7 @@ CREATE TABLE IF NOT EXISTS `Logs` (
   PRIMARY KEY (`logID`),
   KEY `channel` (`channel`),
   KEY `uID` (`uID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=108 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=117 ;
 
 --
 -- Daten für Tabelle `Logs`
@@ -6896,7 +7014,16 @@ INSERT INTO `Logs` (`logID`, `channel`, `time`, `message`, `uID`, `level`) VALUE
 (104, 'exceptions', 1439492559, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:91 An exception occurred while executing ''INSERT INTO btEventInGroup (eventID, groupID) VALUES (?, ?)'' with params ["1", 3]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry ''0'' for key ''PRIMARY'' (0)\n', 1, 600),
 (105, 'exceptions', 1439492705, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:91 An exception occurred while executing ''INSERT INTO btEventInGroup (eventID, groupID) VALUES (?, ?)'' with params ["1", 3]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry ''0'' for key ''PRIMARY'' (0)\n', 1, 600),
 (106, 'exceptions', 1439493644, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/vendor/doctrine/dbal/lib/Doctrine/DBAL/ConnectionException.php:42 There is no active transaction. (0)\n', 0, 600),
-(107, 'exceptions', 1440011549, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/controller.php:147 Call to a member function getCollectionPath() on a non-object (1)\n', 0, 600);
+(107, 'exceptions', 1440011549, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/controller.php:147 Call to a member function getCollectionPath() on a non-object (1)\n', 0, 600),
+(108, 'exceptions', 1442268812, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/field_types/date_field.php:74 syntax error, unexpected ''$explodeValue'' (T_VARIABLE) (4)\n', 0, 600),
+(109, 'exceptions', 1442268875, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/field_types/date_field.php:129 syntax error, unexpected ''$this'' (T_VARIABLE) (4)\n', 0, 600),
+(110, 'exceptions', 1442351045, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/field_types/date_field.php:134 syntax error, unexpected ''"'' (4)\n', 0, 600),
+(111, 'exceptions', 1442352008, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/controller.php:207 Call to a member function getErrorMsg() on a non-object (1)\n', 0, 600),
+(112, 'exceptions', 1442352498, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/controller.php:212 Call to undefined function Application\\Block\\BasicTableBlock\\dpa() (1)\n', 0, 600),
+(113, 'exceptions', 1444337791, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/src/Block/BlockType/BlockTypeList.php:95 Class ''\\Application\\Block\\Budgettable\\Controller'' not found (1)\n', 1, 600),
+(114, 'exceptions', 1444337807, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/src/Block/BlockType/BlockTypeList.php:95 Class ''\\Application\\Block\\Budgettable\\Controller'' not found (1)\n', 1, 600),
+(115, 'exceptions', 1444678562, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/concrete/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:91 An exception occurred while executing ''SELECT * from btBudget WHERE  parentBudgetId = '':\n\nSQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '''' at line 1 (0)\n', 1, 600),
+(116, 'exceptions', 1444679704, 'Exception Occurred: /var/www/html/newGryfiPage/concrete5.7.3.1/application/blocks/basic_table_block/field.php:26 Cannot access empty property (1)\n', 1, 600);
 
 -- --------------------------------------------------------
 
@@ -6905,7 +7032,7 @@ INSERT INTO `Logs` (`logID`, `channel`, `time`, `message`, `uID`, `level`) VALUE
 --
 
 DROP TABLE IF EXISTS `MailImporters`;
-CREATE TABLE IF NOT EXISTS `MailImporters` (
+CREATE TABLE `MailImporters` (
   `miID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `miHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `miServer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -6936,7 +7063,7 @@ INSERT INTO `MailImporters` (`miID`, `miHandle`, `miServer`, `miUsername`, `miPa
 --
 
 DROP TABLE IF EXISTS `MailValidationHashes`;
-CREATE TABLE IF NOT EXISTS `MailValidationHashes` (
+CREATE TABLE `MailValidationHashes` (
   `mvhID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `miID` int(10) unsigned NOT NULL DEFAULT '0',
   `email` varchar(254) COLLATE utf8_unicode_ci NOT NULL,
@@ -6956,7 +7083,7 @@ CREATE TABLE IF NOT EXISTS `MailValidationHashes` (
 --
 
 DROP TABLE IF EXISTS `MultilingualPageRelations`;
-CREATE TABLE IF NOT EXISTS `MultilingualPageRelations` (
+CREATE TABLE `MultilingualPageRelations` (
   `mpRelationID` int(10) unsigned NOT NULL DEFAULT '0',
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `mpLanguage` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -6971,7 +7098,7 @@ CREATE TABLE IF NOT EXISTS `MultilingualPageRelations` (
 --
 
 DROP TABLE IF EXISTS `MultilingualSections`;
-CREATE TABLE IF NOT EXISTS `MultilingualSections` (
+CREATE TABLE `MultilingualSections` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `msLanguage` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `msCountry` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -6985,7 +7112,7 @@ CREATE TABLE IF NOT EXISTS `MultilingualSections` (
 --
 
 DROP TABLE IF EXISTS `MultilingualTranslations`;
-CREATE TABLE IF NOT EXISTS `MultilingualTranslations` (
+CREATE TABLE `MultilingualTranslations` (
   `mtID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `mtSectionID` int(10) unsigned NOT NULL DEFAULT '0',
   `msgid` text COLLATE utf8_unicode_ci NOT NULL,
@@ -7005,7 +7132,7 @@ CREATE TABLE IF NOT EXISTS `MultilingualTranslations` (
 --
 
 DROP TABLE IF EXISTS `OauthUserMap`;
-CREATE TABLE IF NOT EXISTS `OauthUserMap` (
+CREATE TABLE `OauthUserMap` (
   `user_id` int(10) unsigned NOT NULL,
   `namespace` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `binding` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -7020,7 +7147,7 @@ CREATE TABLE IF NOT EXISTS `OauthUserMap` (
 --
 
 DROP TABLE IF EXISTS `oc_activity`;
-CREATE TABLE IF NOT EXISTS `oc_activity` (
+CREATE TABLE `oc_activity` (
   `activity_id` int(11) NOT NULL AUTO_INCREMENT,
   `timestamp` int(11) NOT NULL DEFAULT '0',
   `priority` int(11) NOT NULL DEFAULT '0',
@@ -7047,7 +7174,7 @@ CREATE TABLE IF NOT EXISTS `oc_activity` (
 --
 
 DROP TABLE IF EXISTS `oc_activity_mq`;
-CREATE TABLE IF NOT EXISTS `oc_activity_mq` (
+CREATE TABLE `oc_activity_mq` (
   `mail_id` int(11) NOT NULL AUTO_INCREMENT,
   `amq_timestamp` int(11) NOT NULL DEFAULT '0',
   `amq_latest_send` int(11) NOT NULL DEFAULT '0',
@@ -7069,7 +7196,7 @@ CREATE TABLE IF NOT EXISTS `oc_activity_mq` (
 --
 
 DROP TABLE IF EXISTS `oc_appconfig`;
-CREATE TABLE IF NOT EXISTS `oc_appconfig` (
+CREATE TABLE `oc_appconfig` (
   `appid` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
   `configkey` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `configvalue` longtext COLLATE utf8_bin,
@@ -7154,7 +7281,7 @@ INSERT INTO `oc_appconfig` (`appid`, `configkey`, `configvalue`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_filecache`;
-CREATE TABLE IF NOT EXISTS `oc_filecache` (
+CREATE TABLE `oc_filecache` (
   `fileid` int(11) NOT NULL AUTO_INCREMENT,
   `storage` int(11) NOT NULL DEFAULT '0',
   `path` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
@@ -7201,7 +7328,7 @@ INSERT INTO `oc_filecache` (`fileid`, `storage`, `path`, `path_hash`, `parent`, 
 --
 
 DROP TABLE IF EXISTS `oc_files_trash`;
-CREATE TABLE IF NOT EXISTS `oc_files_trash` (
+CREATE TABLE `oc_files_trash` (
   `auto_id` int(11) NOT NULL AUTO_INCREMENT,
   `id` varchar(250) COLLATE utf8_bin NOT NULL DEFAULT '',
   `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7222,7 +7349,7 @@ CREATE TABLE IF NOT EXISTS `oc_files_trash` (
 --
 
 DROP TABLE IF EXISTS `oc_file_map`;
-CREATE TABLE IF NOT EXISTS `oc_file_map` (
+CREATE TABLE `oc_file_map` (
   `logic_path` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT '',
   `logic_path_hash` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
   `physic_path` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7238,7 +7365,7 @@ CREATE TABLE IF NOT EXISTS `oc_file_map` (
 --
 
 DROP TABLE IF EXISTS `oc_groups`;
-CREATE TABLE IF NOT EXISTS `oc_groups` (
+CREATE TABLE `oc_groups` (
   `gid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   PRIMARY KEY (`gid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -7257,7 +7384,7 @@ INSERT INTO `oc_groups` (`gid`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_group_admin`;
-CREATE TABLE IF NOT EXISTS `oc_group_admin` (
+CREATE TABLE `oc_group_admin` (
   `gid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `uid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   PRIMARY KEY (`gid`,`uid`),
@@ -7271,7 +7398,7 @@ CREATE TABLE IF NOT EXISTS `oc_group_admin` (
 --
 
 DROP TABLE IF EXISTS `oc_group_user`;
-CREATE TABLE IF NOT EXISTS `oc_group_user` (
+CREATE TABLE `oc_group_user` (
   `gid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `uid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   PRIMARY KEY (`gid`,`uid`)
@@ -7291,7 +7418,7 @@ INSERT INTO `oc_group_user` (`gid`, `uid`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_jobs`;
-CREATE TABLE IF NOT EXISTS `oc_jobs` (
+CREATE TABLE `oc_jobs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `class` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `argument` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7316,7 +7443,7 @@ INSERT INTO `oc_jobs` (`id`, `class`, `argument`, `last_run`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_locks`;
-CREATE TABLE IF NOT EXISTS `oc_locks` (
+CREATE TABLE `oc_locks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `owner` varchar(100) COLLATE utf8_bin DEFAULT NULL,
@@ -7336,7 +7463,7 @@ CREATE TABLE IF NOT EXISTS `oc_locks` (
 --
 
 DROP TABLE IF EXISTS `oc_mimetypes`;
-CREATE TABLE IF NOT EXISTS `oc_mimetypes` (
+CREATE TABLE `oc_mimetypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mimetype` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -7363,7 +7490,7 @@ INSERT INTO `oc_mimetypes` (`id`, `mimetype`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_preferences`;
-CREATE TABLE IF NOT EXISTS `oc_preferences` (
+CREATE TABLE `oc_preferences` (
   `userid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `appid` varchar(32) COLLATE utf8_bin NOT NULL DEFAULT '',
   `configkey` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7387,7 +7514,7 @@ INSERT INTO `oc_preferences` (`userid`, `appid`, `configkey`, `configvalue`) VAL
 --
 
 DROP TABLE IF EXISTS `oc_privatedata`;
-CREATE TABLE IF NOT EXISTS `oc_privatedata` (
+CREATE TABLE `oc_privatedata` (
   `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `app` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7403,7 +7530,7 @@ CREATE TABLE IF NOT EXISTS `oc_privatedata` (
 --
 
 DROP TABLE IF EXISTS `oc_properties`;
-CREATE TABLE IF NOT EXISTS `oc_properties` (
+CREATE TABLE `oc_properties` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `propertypath` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7420,7 +7547,7 @@ CREATE TABLE IF NOT EXISTS `oc_properties` (
 --
 
 DROP TABLE IF EXISTS `oc_share`;
-CREATE TABLE IF NOT EXISTS `oc_share` (
+CREATE TABLE `oc_share` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `share_type` smallint(6) NOT NULL DEFAULT '0',
   `share_with` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -7450,7 +7577,7 @@ CREATE TABLE IF NOT EXISTS `oc_share` (
 --
 
 DROP TABLE IF EXISTS `oc_share_external`;
-CREATE TABLE IF NOT EXISTS `oc_share_external` (
+CREATE TABLE `oc_share_external` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `remote` varchar(512) COLLATE utf8_bin NOT NULL COMMENT 'Url of the remove owncloud instance',
   `remote_id` int(11) NOT NULL DEFAULT '-1',
@@ -7474,7 +7601,7 @@ CREATE TABLE IF NOT EXISTS `oc_share_external` (
 --
 
 DROP TABLE IF EXISTS `oc_storages`;
-CREATE TABLE IF NOT EXISTS `oc_storages` (
+CREATE TABLE `oc_storages` (
   `id` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `numeric_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`numeric_id`),
@@ -7497,7 +7624,7 @@ INSERT INTO `oc_storages` (`id`, `numeric_id`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_users`;
-CREATE TABLE IF NOT EXISTS `oc_users` (
+CREATE TABLE `oc_users` (
   `uid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `displayname` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7519,7 +7646,7 @@ INSERT INTO `oc_users` (`uid`, `displayname`, `password`) VALUES
 --
 
 DROP TABLE IF EXISTS `oc_vcategory`;
-CREATE TABLE IF NOT EXISTS `oc_vcategory` (
+CREATE TABLE `oc_vcategory` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
   `type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7537,7 +7664,7 @@ CREATE TABLE IF NOT EXISTS `oc_vcategory` (
 --
 
 DROP TABLE IF EXISTS `oc_vcategory_to_object`;
-CREATE TABLE IF NOT EXISTS `oc_vcategory_to_object` (
+CREATE TABLE `oc_vcategory_to_object` (
   `objid` int(10) unsigned NOT NULL DEFAULT '0',
   `categoryid` int(10) unsigned NOT NULL DEFAULT '0',
   `type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -7552,7 +7679,7 @@ CREATE TABLE IF NOT EXISTS `oc_vcategory_to_object` (
 --
 
 DROP TABLE IF EXISTS `Packages`;
-CREATE TABLE IF NOT EXISTS `Packages` (
+CREATE TABLE `Packages` (
   `pkgID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pkgName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkgHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
@@ -7572,7 +7699,7 @@ CREATE TABLE IF NOT EXISTS `Packages` (
 --
 
 DROP TABLE IF EXISTS `PageFeeds`;
-CREATE TABLE IF NOT EXISTS `PageFeeds` (
+CREATE TABLE `PageFeeds` (
   `pfID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cParentID` int(10) unsigned NOT NULL DEFAULT '1',
   `pfTitle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -7602,7 +7729,7 @@ INSERT INTO `PageFeeds` (`pfID`, `cParentID`, `pfTitle`, `pfHandle`, `pfDescript
 --
 
 DROP TABLE IF EXISTS `PagePaths`;
-CREATE TABLE IF NOT EXISTS `PagePaths` (
+CREATE TABLE `PagePaths` (
   `ppID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(10) unsigned DEFAULT '0',
   `cPath` text COLLATE utf8_unicode_ci NOT NULL,
@@ -7611,7 +7738,7 @@ CREATE TABLE IF NOT EXISTS `PagePaths` (
   KEY `cID` (`cID`),
   KEY `ppIsCanonical` (`ppIsCanonical`),
   KEY `cPath` (`cPath`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=200 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=202 ;
 
 --
 -- Daten für Tabelle `PagePaths`
@@ -7807,7 +7934,9 @@ INSERT INTO `PagePaths` (`ppID`, `cID`, `cPath`, `ppIsCanonical`) VALUES
 (196, 208, '/stufen', '1'),
 (197, 209, '/stufen/biber', '1'),
 (198, 210, '/stufen/wolf', '1'),
-(199, 211, '/stufen/pfadi', '1');
+(199, 211, '/stufen/pfadi', '1'),
+(200, 212, '/administration/quittungen', '1'),
+(201, 213, '/administration/quittungen/budgets-verwalten', '1');
 
 -- --------------------------------------------------------
 
@@ -7816,7 +7945,7 @@ INSERT INTO `PagePaths` (`ppID`, `cID`, `cPath`, `ppIsCanonical`) VALUES
 --
 
 DROP TABLE IF EXISTS `PagePermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `PagePermissionAssignments` (
+CREATE TABLE `PagePermissionAssignments` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -7894,7 +8023,7 @@ INSERT INTO `PagePermissionAssignments` (`cID`, `pkID`, `paID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PagePermissionPageTypeAccessList`;
-CREATE TABLE IF NOT EXISTS `PagePermissionPageTypeAccessList` (
+CREATE TABLE `PagePermissionPageTypeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -7910,7 +8039,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionPageTypeAccessList` (
 --
 
 DROP TABLE IF EXISTS `PagePermissionPageTypeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `PagePermissionPageTypeAccessListCustom` (
+CREATE TABLE `PagePermissionPageTypeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `ptID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -7926,7 +8055,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionPageTypeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `PagePermissionPropertyAccessList`;
-CREATE TABLE IF NOT EXISTS `PagePermissionPropertyAccessList` (
+CREATE TABLE `PagePermissionPropertyAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `name` tinyint(1) DEFAULT '0',
@@ -7947,7 +8076,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionPropertyAccessList` (
 --
 
 DROP TABLE IF EXISTS `PagePermissionPropertyAttributeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `PagePermissionPropertyAttributeAccessListCustom` (
+CREATE TABLE `PagePermissionPropertyAttributeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -7963,7 +8092,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionPropertyAttributeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `PagePermissionThemeAccessList`;
-CREATE TABLE IF NOT EXISTS `PagePermissionThemeAccessList` (
+CREATE TABLE `PagePermissionThemeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -7978,7 +8107,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionThemeAccessList` (
 --
 
 DROP TABLE IF EXISTS `PagePermissionThemeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `PagePermissionThemeAccessListCustom` (
+CREATE TABLE `PagePermissionThemeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `pThemeID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -7994,7 +8123,7 @@ CREATE TABLE IF NOT EXISTS `PagePermissionThemeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `Pages`;
-CREATE TABLE IF NOT EXISTS `Pages` (
+CREATE TABLE `Pages` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `ptID` int(10) unsigned NOT NULL DEFAULT '0',
   `cIsTemplate` tinyint(1) NOT NULL DEFAULT '0',
@@ -8226,7 +8355,7 @@ INSERT INTO `Pages` (`cID`, `ptID`, `cIsTemplate`, `uID`, `cIsCheckedOut`, `cChe
 (187, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 7, 1, 0, 1, -1, '0', 0, 0),
 (188, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 8, 1, 0, 1, -1, '0', 0, 0),
 (189, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 0, 0, 18, 127, 0, 1, -1, '0', 0, 1),
-(190, 5, 0, 1, 0, NULL, NULL, NULL, 0, 190, 'OVERRIDE', NULL, 0, NULL, 0, 1, 0, 9, 1, 0, 1, -1, '0', 0, 0),
+(190, 5, 0, 1, 0, NULL, NULL, NULL, 0, 190, 'OVERRIDE', NULL, 0, NULL, 0, 1, 1, 9, 1, 0, 1, -1, '0', 0, 0),
 (199, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 1, 10, 1, 1, 0, -1, '0', 0, 0),
 (200, 11, 1, NULL, 0, NULL, NULL, NULL, 1, 200, 'OVERRIDE', NULL, 0, NULL, 0, 1, 0, 0, 0, 0, 0, -1, '0', 0, 0),
 (201, 11, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 0, 199, 1, 0, -1, '0', 0, 0),
@@ -8237,7 +8366,9 @@ INSERT INTO `Pages` (`cID`, `ptID`, `cIsTemplate`, `uID`, `cIsCheckedOut`, `cChe
 (208, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 3, 3, 1, 0, 1, -1, '0', 0, 0),
 (209, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 8, 208, 0, 208, -1, '0', 0, 0),
 (210, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 9, 208, 0, 208, -1, '0', 0, 0),
-(211, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 10, 208, 0, 208, -1, '0', 0, 0);
+(211, 5, 0, 1, 0, NULL, NULL, NULL, 1, 1, 'PARENT', NULL, 0, NULL, 0, 1, 0, 10, 208, 0, 208, -1, '0', 0, 0),
+(212, 5, 0, 1, 0, NULL, NULL, NULL, 1, 150, 'TEMPLATE', NULL, 0, NULL, 0, 1, 1, 8, 190, 0, 190, -1, '0', 0, 0),
+(213, 5, 0, 1, 0, NULL, NULL, NULL, 1, 150, 'PARENT', NULL, 0, NULL, 0, 1, 0, 8, 212, 0, 212, -1, '0', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -8246,7 +8377,7 @@ INSERT INTO `Pages` (`cID`, `ptID`, `cIsTemplate`, `uID`, `cIsCheckedOut`, `cChe
 --
 
 DROP TABLE IF EXISTS `PageSearchIndex`;
-CREATE TABLE IF NOT EXISTS `PageSearchIndex` (
+CREATE TABLE `PageSearchIndex` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `content` longtext COLLATE utf8_unicode_ci,
   `cName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8375,6 +8506,8 @@ INSERT INTO `PageSearchIndex` (`cID`, `content`, `cName`, `cDescription`, `cPath
 (128, '', 'Stacks', '', '/!stacks', '2015-04-06 20:45:38', '2015-04-06 20:45:39', NULL, 0),
 (131, '', 'My Account', '', '/account', '2015-04-06 20:45:38', '2015-04-06 20:45:39', NULL, 0),
 (1, ' Uebung Biber   Uebung Wölf   Uebung Pfadi  ', 'Home', '', NULL, '2015-04-06 20:44:38', '2015-08-20 22:29:17', NULL, 0),
+(212, '', 'Quittungen', '', '/administration/quittungen', '2015-10-08 22:27:54', '2015-10-08 22:29:09', NULL, 0),
+(213, '', 'Budgets verwalten', '', '/administration/quittungen/budgets-verwalten', '2015-10-08 22:58:45', '2015-10-08 22:59:11', NULL, 0),
 (201, '', 'test', NULL, '/product-detail/test', '2015-08-05 22:17:20', '2015-08-05 22:17:21', NULL, 0),
 (211, '', 'Pfadi', '', '/stufen/pfadi', '2015-08-05 22:59:31', '2015-08-05 23:01:52', NULL, 0),
 (151, 'Our Expertise Quality Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales non leo id aliquet. Design Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales non leo id aliquet. Development Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales non leo id aliquet. Security Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales non leo id aliquet. Awesome Features Curabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. Sed consequat eleifend metus, vitae malesuada eros elementum sed.  Guide Books Fusce risus felis, viverra et dignissim at, lobortis non est. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sit amet consectetur lacus. Vestibulum neque lectus, egestas non cursus vitae, aliquam at magna. Etiam aliquam, justo et varius eleifend, dui lectus egestas nunc, vel malesuada nisl purus nec metus.  Admin Accounts Fusce risus felis, viverra et dignissim at, lobortis non est. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sit amet consectetur lacus. Vestibulum neque lectus, egestas non cursus vitae, aliquam at magna. Etiam aliquam, justo et varius eleifend, dui lectus egestas nunc, vel malesuada nisl purus nec metus.   Support Curabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. Sed consequat eleifend metus, vitae malesuada eros elementum sed.  Additional Options Fusce risus felis, viverra et dignissim at, lobortis non est. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sit amet consectetur lacus. Vestibulum neque lectus, egestas non cursus vitae, aliquam at magna.   Etiam aliquam, justo et varius eleifend, dui lectus egestas nunc, vel malesuada nisl purus nec metus. In gravida turpis a pharetra commodo. Donec non turpis vulputate, faucibus metus a, consectetur nunc. Morbi tortor nisi, hendrerit sed laoreet eget, fermentum et justo. Suspendisse potenti.  What Clients Are Saying About Us  Franz Maruna\nconcrete5\nCurabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. John Doe\nCompanyCo\nCurabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. Andrew Embler\nconcrete5\nCurabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. Jane Doe\nCompanyCo\nCurabitur sagittis elementum felis at sodales. Nullam fermentum at urna quis accumsan. Nam bibendum leo nisi, lacinia molestie arcu consequat quis. Morbi at suscipit risus. ', 'Services', '', '/services', '2015-04-06 20:46:00', '2015-05-02 17:07:34', NULL, 0),
@@ -8423,7 +8556,7 @@ INSERT INTO `PageSearchIndex` (`cID`, `content`, `cName`, `cDescription`, `cPath
 --
 
 DROP TABLE IF EXISTS `PageStatistics`;
-CREATE TABLE IF NOT EXISTS `PageStatistics` (
+CREATE TABLE `PageStatistics` (
   `pstID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `date` date DEFAULT NULL,
@@ -8442,7 +8575,7 @@ CREATE TABLE IF NOT EXISTS `PageStatistics` (
 --
 
 DROP TABLE IF EXISTS `PageTemplates`;
-CREATE TABLE IF NOT EXISTS `PageTemplates` (
+CREATE TABLE `PageTemplates` (
   `pTemplateID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pTemplateHandle` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `pTemplateIcon` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8475,7 +8608,7 @@ INSERT INTO `PageTemplates` (`pTemplateID`, `pTemplateHandle`, `pTemplateIcon`, 
 --
 
 DROP TABLE IF EXISTS `PageThemeCustomStyles`;
-CREATE TABLE IF NOT EXISTS `PageThemeCustomStyles` (
+CREATE TABLE `PageThemeCustomStyles` (
   `pThemeID` int(10) unsigned NOT NULL DEFAULT '0',
   `scvlID` int(10) unsigned DEFAULT '0',
   `preset` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8492,7 +8625,7 @@ CREATE TABLE IF NOT EXISTS `PageThemeCustomStyles` (
 --
 
 DROP TABLE IF EXISTS `PageThemes`;
-CREATE TABLE IF NOT EXISTS `PageThemes` (
+CREATE TABLE `PageThemes` (
   `pThemeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pThemeHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `pThemeName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8518,7 +8651,7 @@ INSERT INTO `PageThemes` (`pThemeID`, `pThemeHandle`, `pThemeName`, `pThemeDescr
 --
 
 DROP TABLE IF EXISTS `PageTypeComposerControlTypes`;
-CREATE TABLE IF NOT EXISTS `PageTypeComposerControlTypes` (
+CREATE TABLE `PageTypeComposerControlTypes` (
   `ptComposerControlTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ptComposerControlTypeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ptComposerControlTypeName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8544,7 +8677,7 @@ INSERT INTO `PageTypeComposerControlTypes` (`ptComposerControlTypeID`, `ptCompos
 --
 
 DROP TABLE IF EXISTS `PageTypeComposerFormLayoutSetControls`;
-CREATE TABLE IF NOT EXISTS `PageTypeComposerFormLayoutSetControls` (
+CREATE TABLE `PageTypeComposerFormLayoutSetControls` (
   `ptComposerFormLayoutSetControlID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ptComposerFormLayoutSetID` int(10) unsigned DEFAULT '0',
   `ptComposerControlTypeID` int(10) unsigned DEFAULT '0',
@@ -8604,7 +8737,7 @@ INSERT INTO `PageTypeComposerFormLayoutSetControls` (`ptComposerFormLayoutSetCon
 --
 
 DROP TABLE IF EXISTS `PageTypeComposerFormLayoutSets`;
-CREATE TABLE IF NOT EXISTS `PageTypeComposerFormLayoutSets` (
+CREATE TABLE `PageTypeComposerFormLayoutSets` (
   `ptComposerFormLayoutSetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ptID` int(10) unsigned DEFAULT '0',
   `ptComposerFormLayoutSetName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8638,7 +8771,7 @@ INSERT INTO `PageTypeComposerFormLayoutSets` (`ptComposerFormLayoutSetID`, `ptID
 --
 
 DROP TABLE IF EXISTS `PageTypeComposerOutputBlocks`;
-CREATE TABLE IF NOT EXISTS `PageTypeComposerOutputBlocks` (
+CREATE TABLE `PageTypeComposerOutputBlocks` (
   `ptComposerOutputBlockID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `arHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8665,7 +8798,7 @@ INSERT INTO `PageTypeComposerOutputBlocks` (`ptComposerOutputBlockID`, `cID`, `a
 --
 
 DROP TABLE IF EXISTS `PageTypeComposerOutputControls`;
-CREATE TABLE IF NOT EXISTS `PageTypeComposerOutputControls` (
+CREATE TABLE `PageTypeComposerOutputControls` (
   `ptComposerOutputControlID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pTemplateID` int(10) unsigned DEFAULT '0',
   `ptID` int(10) unsigned DEFAULT '0',
@@ -8693,7 +8826,7 @@ INSERT INTO `PageTypeComposerOutputControls` (`ptComposerOutputControlID`, `pTem
 --
 
 DROP TABLE IF EXISTS `PageTypePageTemplateDefaultPages`;
-CREATE TABLE IF NOT EXISTS `PageTypePageTemplateDefaultPages` (
+CREATE TABLE `PageTypePageTemplateDefaultPages` (
   `pTemplateID` int(10) unsigned NOT NULL DEFAULT '0',
   `ptID` int(10) unsigned NOT NULL DEFAULT '0',
   `cID` int(10) unsigned DEFAULT '0',
@@ -8725,7 +8858,7 @@ INSERT INTO `PageTypePageTemplateDefaultPages` (`pTemplateID`, `ptID`, `cID`) VA
 --
 
 DROP TABLE IF EXISTS `PageTypePageTemplates`;
-CREATE TABLE IF NOT EXISTS `PageTypePageTemplates` (
+CREATE TABLE `PageTypePageTemplates` (
   `ptID` int(10) unsigned NOT NULL DEFAULT '0',
   `pTemplateID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ptID`,`pTemplateID`),
@@ -8750,7 +8883,7 @@ INSERT INTO `PageTypePageTemplates` (`ptID`, `pTemplateID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PageTypePermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `PageTypePermissionAssignments` (
+CREATE TABLE `PageTypePermissionAssignments` (
   `ptID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -8827,7 +8960,7 @@ INSERT INTO `PageTypePermissionAssignments` (`ptID`, `pkID`, `paID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PageTypePublishTargetTypes`;
-CREATE TABLE IF NOT EXISTS `PageTypePublishTargetTypes` (
+CREATE TABLE `PageTypePublishTargetTypes` (
   `ptPublishTargetTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ptPublishTargetTypeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ptPublishTargetTypeName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -8853,7 +8986,7 @@ INSERT INTO `PageTypePublishTargetTypes` (`ptPublishTargetTypeID`, `ptPublishTar
 --
 
 DROP TABLE IF EXISTS `PageTypes`;
-CREATE TABLE IF NOT EXISTS `PageTypes` (
+CREATE TABLE `PageTypes` (
   `ptID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ptName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ptHandle` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
@@ -8894,7 +9027,7 @@ INSERT INTO `PageTypes` (`ptID`, `ptName`, `ptHandle`, `ptPublishTargetTypeID`, 
 --
 
 DROP TABLE IF EXISTS `PageWorkflowProgress`;
-CREATE TABLE IF NOT EXISTS `PageWorkflowProgress` (
+CREATE TABLE `PageWorkflowProgress` (
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `wpID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`cID`,`wpID`),
@@ -8908,11 +9041,11 @@ CREATE TABLE IF NOT EXISTS `PageWorkflowProgress` (
 --
 
 DROP TABLE IF EXISTS `PermissionAccess`;
-CREATE TABLE IF NOT EXISTS `PermissionAccess` (
+CREATE TABLE `PermissionAccess` (
   `paID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `paIsInUse` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`paID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=83 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=84 ;
 
 --
 -- Daten für Tabelle `PermissionAccess`
@@ -9000,7 +9133,8 @@ INSERT INTO `PermissionAccess` (`paID`, `paIsInUse`) VALUES
 (79, 1),
 (80, 1),
 (81, 1),
-(82, 1);
+(82, 1),
+(83, 0);
 
 -- --------------------------------------------------------
 
@@ -9009,7 +9143,7 @@ INSERT INTO `PermissionAccess` (`paID`, `paIsInUse`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntities`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntities` (
+CREATE TABLE `PermissionAccessEntities` (
   `peID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `petID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`peID`),
@@ -9037,7 +9171,7 @@ INSERT INTO `PermissionAccessEntities` (`peID`, `petID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntityGroups`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntityGroups` (
+CREATE TABLE `PermissionAccessEntityGroups` (
   `pegID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `gID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9063,7 +9197,7 @@ INSERT INTO `PermissionAccessEntityGroups` (`pegID`, `peID`, `gID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntityGroupSets`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntityGroupSets` (
+CREATE TABLE `PermissionAccessEntityGroupSets` (
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `gsID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`peID`,`gsID`),
@@ -9077,7 +9211,7 @@ CREATE TABLE IF NOT EXISTS `PermissionAccessEntityGroupSets` (
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntityTypeCategories`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntityTypeCategories` (
+CREATE TABLE `PermissionAccessEntityTypeCategories` (
   `petID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkCategoryID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`petID`,`pkCategoryID`),
@@ -9175,7 +9309,7 @@ INSERT INTO `PermissionAccessEntityTypeCategories` (`petID`, `pkCategoryID`) VAL
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntityTypes`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntityTypes` (
+CREATE TABLE `PermissionAccessEntityTypes` (
   `petID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `petHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `petName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -9205,7 +9339,7 @@ INSERT INTO `PermissionAccessEntityTypes` (`petID`, `petHandle`, `petName`, `pkg
 --
 
 DROP TABLE IF EXISTS `PermissionAccessEntityUsers`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessEntityUsers` (
+CREATE TABLE `PermissionAccessEntityUsers` (
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`peID`,`uID`),
@@ -9226,7 +9360,7 @@ INSERT INTO `PermissionAccessEntityUsers` (`peID`, `uID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionAccessList`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessList` (
+CREATE TABLE `PermissionAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `pdID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9329,7 +9463,8 @@ INSERT INTO `PermissionAccessList` (`paID`, `peID`, `pdID`, `accessType`) VALUES
 (79, 1, 0, 10),
 (80, 2, 0, 10),
 (81, 1, 0, 10),
-(82, 8, 0, 10);
+(82, 8, 0, 10),
+(83, 8, 0, 10);
 
 -- --------------------------------------------------------
 
@@ -9338,7 +9473,7 @@ INSERT INTO `PermissionAccessList` (`paID`, `peID`, `pdID`, `accessType`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionAccessWorkflows`;
-CREATE TABLE IF NOT EXISTS `PermissionAccessWorkflows` (
+CREATE TABLE `PermissionAccessWorkflows` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `wfID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`paID`,`wfID`),
@@ -9352,7 +9487,7 @@ CREATE TABLE IF NOT EXISTS `PermissionAccessWorkflows` (
 --
 
 DROP TABLE IF EXISTS `PermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `PermissionAssignments` (
+CREATE TABLE `PermissionAssignments` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`paID`,`pkID`),
@@ -9396,7 +9531,7 @@ INSERT INTO `PermissionAssignments` (`paID`, `pkID`) VALUES
 --
 
 DROP TABLE IF EXISTS `PermissionDurationObjects`;
-CREATE TABLE IF NOT EXISTS `PermissionDurationObjects` (
+CREATE TABLE `PermissionDurationObjects` (
   `pdID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pdObject` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`pdID`)
@@ -9409,7 +9544,7 @@ CREATE TABLE IF NOT EXISTS `PermissionDurationObjects` (
 --
 
 DROP TABLE IF EXISTS `PermissionKeyCategories`;
-CREATE TABLE IF NOT EXISTS `PermissionKeyCategories` (
+CREATE TABLE `PermissionKeyCategories` (
   `pkCategoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pkCategoryHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkgID` int(10) unsigned DEFAULT NULL,
@@ -9451,7 +9586,7 @@ INSERT INTO `PermissionKeyCategories` (`pkCategoryID`, `pkCategoryHandle`, `pkgI
 --
 
 DROP TABLE IF EXISTS `PermissionKeys`;
-CREATE TABLE IF NOT EXISTS `PermissionKeys` (
+CREATE TABLE `PermissionKeys` (
   `pkID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pkHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -9581,7 +9716,7 @@ INSERT INTO `PermissionKeys` (`pkID`, `pkHandle`, `pkName`, `pkCanTriggerWorkflo
 --
 
 DROP TABLE IF EXISTS `PileContents`;
-CREATE TABLE IF NOT EXISTS `PileContents` (
+CREATE TABLE `PileContents` (
   `pcID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(10) unsigned NOT NULL DEFAULT '0',
   `itemID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9602,7 +9737,7 @@ CREATE TABLE IF NOT EXISTS `PileContents` (
 --
 
 DROP TABLE IF EXISTS `Piles`;
-CREATE TABLE IF NOT EXISTS `Piles` (
+CREATE TABLE `Piles` (
   `pID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uID` int(10) unsigned DEFAULT NULL,
   `isDefault` tinyint(1) NOT NULL DEFAULT '0',
@@ -9627,7 +9762,7 @@ INSERT INTO `Piles` (`pID`, `uID`, `isDefault`, `timestamp`, `name`, `state`) VA
 --
 
 DROP TABLE IF EXISTS `QueueMessages`;
-CREATE TABLE IF NOT EXISTS `QueueMessages` (
+CREATE TABLE `QueueMessages` (
   `message_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `queue_id` int(10) unsigned NOT NULL,
   `handle` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -9647,7 +9782,7 @@ CREATE TABLE IF NOT EXISTS `QueueMessages` (
 --
 
 DROP TABLE IF EXISTS `QueuePageDuplicationRelations`;
-CREATE TABLE IF NOT EXISTS `QueuePageDuplicationRelations` (
+CREATE TABLE `QueuePageDuplicationRelations` (
   `queue_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `cID` int(10) unsigned NOT NULL DEFAULT '0',
   `originalCID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9662,7 +9797,7 @@ CREATE TABLE IF NOT EXISTS `QueuePageDuplicationRelations` (
 --
 
 DROP TABLE IF EXISTS `Queues`;
-CREATE TABLE IF NOT EXISTS `Queues` (
+CREATE TABLE `Queues` (
   `queue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `queue_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `timeout` int(10) unsigned NOT NULL DEFAULT '30',
@@ -9677,7 +9812,7 @@ CREATE TABLE IF NOT EXISTS `Queues` (
 --
 
 DROP TABLE IF EXISTS `Sessions`;
-CREATE TABLE IF NOT EXISTS `Sessions` (
+CREATE TABLE `Sessions` (
   `sessionID` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `sessionValue` text COLLATE utf8_unicode_ci NOT NULL,
   `sessionTime` int(10) unsigned NOT NULL,
@@ -9691,7 +9826,7 @@ CREATE TABLE IF NOT EXISTS `Sessions` (
 --
 
 DROP TABLE IF EXISTS `SignupRequests`;
-CREATE TABLE IF NOT EXISTS `SignupRequests` (
+CREATE TABLE `SignupRequests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ipFrom` tinyblob,
   `date_access` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -9706,7 +9841,7 @@ CREATE TABLE IF NOT EXISTS `SignupRequests` (
 --
 
 DROP TABLE IF EXISTS `SocialLinks`;
-CREATE TABLE IF NOT EXISTS `SocialLinks` (
+CREATE TABLE `SocialLinks` (
   `slID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ssHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -9730,7 +9865,7 @@ INSERT INTO `SocialLinks` (`slID`, `ssHandle`, `url`) VALUES
 --
 
 DROP TABLE IF EXISTS `Stacks`;
-CREATE TABLE IF NOT EXISTS `Stacks` (
+CREATE TABLE `Stacks` (
   `stID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `stName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `stType` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9762,7 +9897,7 @@ INSERT INTO `Stacks` (`stID`, `stName`, `stType`, `cID`) VALUES
 --
 
 DROP TABLE IF EXISTS `StyleCustomizerCustomCssRecords`;
-CREATE TABLE IF NOT EXISTS `StyleCustomizerCustomCssRecords` (
+CREATE TABLE `StyleCustomizerCustomCssRecords` (
   `sccRecordID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `value` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`sccRecordID`)
@@ -9775,7 +9910,7 @@ CREATE TABLE IF NOT EXISTS `StyleCustomizerCustomCssRecords` (
 --
 
 DROP TABLE IF EXISTS `StyleCustomizerInlineStylePresets`;
-CREATE TABLE IF NOT EXISTS `StyleCustomizerInlineStylePresets` (
+CREATE TABLE `StyleCustomizerInlineStylePresets` (
   `pssPresetID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pssPresetName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `issID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9790,7 +9925,7 @@ CREATE TABLE IF NOT EXISTS `StyleCustomizerInlineStylePresets` (
 --
 
 DROP TABLE IF EXISTS `StyleCustomizerInlineStyleSets`;
-CREATE TABLE IF NOT EXISTS `StyleCustomizerInlineStyleSets` (
+CREATE TABLE `StyleCustomizerInlineStyleSets` (
   `issID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `backgroundColor` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `backgroundImageFileID` int(11) DEFAULT NULL,
@@ -9866,7 +10001,7 @@ INSERT INTO `StyleCustomizerInlineStyleSets` (`issID`, `backgroundColor`, `backg
 --
 
 DROP TABLE IF EXISTS `StyleCustomizerValueLists`;
-CREATE TABLE IF NOT EXISTS `StyleCustomizerValueLists` (
+CREATE TABLE `StyleCustomizerValueLists` (
   `scvlID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`scvlID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
@@ -9878,7 +10013,7 @@ CREATE TABLE IF NOT EXISTS `StyleCustomizerValueLists` (
 --
 
 DROP TABLE IF EXISTS `StyleCustomizerValues`;
-CREATE TABLE IF NOT EXISTS `StyleCustomizerValues` (
+CREATE TABLE `StyleCustomizerValues` (
   `scvID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scvlID` int(10) unsigned DEFAULT NULL,
   `value` text COLLATE utf8_unicode_ci,
@@ -9893,7 +10028,7 @@ CREATE TABLE IF NOT EXISTS `StyleCustomizerValues` (
 --
 
 DROP TABLE IF EXISTS `SystemAntispamLibraries`;
-CREATE TABLE IF NOT EXISTS `SystemAntispamLibraries` (
+CREATE TABLE `SystemAntispamLibraries` (
   `saslHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `saslName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `saslIsActive` tinyint(1) NOT NULL DEFAULT '0',
@@ -9909,7 +10044,7 @@ CREATE TABLE IF NOT EXISTS `SystemAntispamLibraries` (
 --
 
 DROP TABLE IF EXISTS `SystemCaptchaLibraries`;
-CREATE TABLE IF NOT EXISTS `SystemCaptchaLibraries` (
+CREATE TABLE `SystemCaptchaLibraries` (
   `sclHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `sclName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `sclIsActive` tinyint(1) NOT NULL DEFAULT '0',
@@ -9932,7 +10067,7 @@ INSERT INTO `SystemCaptchaLibraries` (`sclHandle`, `sclName`, `sclIsActive`, `pk
 --
 
 DROP TABLE IF EXISTS `SystemContentEditorSnippets`;
-CREATE TABLE IF NOT EXISTS `SystemContentEditorSnippets` (
+CREATE TABLE `SystemContentEditorSnippets` (
   `scsHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `scsName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `scsIsActive` tinyint(1) NOT NULL DEFAULT '0',
@@ -9956,7 +10091,7 @@ INSERT INTO `SystemContentEditorSnippets` (`scsHandle`, `scsName`, `scsIsActive`
 --
 
 DROP TABLE IF EXISTS `SystemDatabaseMigrations`;
-CREATE TABLE IF NOT EXISTS `SystemDatabaseMigrations` (
+CREATE TABLE `SystemDatabaseMigrations` (
   `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -9975,7 +10110,7 @@ INSERT INTO `SystemDatabaseMigrations` (`version`) VALUES
 --
 
 DROP TABLE IF EXISTS `SystemDatabaseQueryLog`;
-CREATE TABLE IF NOT EXISTS `SystemDatabaseQueryLog` (
+CREATE TABLE `SystemDatabaseQueryLog` (
   `query` text COLLATE utf8_unicode_ci,
   `params` text COLLATE utf8_unicode_ci,
   `executionMS` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
@@ -9988,7 +10123,7 @@ CREATE TABLE IF NOT EXISTS `SystemDatabaseQueryLog` (
 --
 
 DROP TABLE IF EXISTS `SystemImageEditorComponents`;
-CREATE TABLE IF NOT EXISTS `SystemImageEditorComponents` (
+CREATE TABLE `SystemImageEditorComponents` (
   `scsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scsHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `scsName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -10005,7 +10140,7 @@ CREATE TABLE IF NOT EXISTS `SystemImageEditorComponents` (
 --
 
 DROP TABLE IF EXISTS `SystemImageEditorControlSets`;
-CREATE TABLE IF NOT EXISTS `SystemImageEditorControlSets` (
+CREATE TABLE `SystemImageEditorControlSets` (
   `scsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scsHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `scsName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -10030,7 +10165,7 @@ INSERT INTO `SystemImageEditorControlSets` (`scsID`, `scsHandle`, `scsName`, `sc
 --
 
 DROP TABLE IF EXISTS `SystemImageEditorFilters`;
-CREATE TABLE IF NOT EXISTS `SystemImageEditorFilters` (
+CREATE TABLE `SystemImageEditorFilters` (
   `scsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scsHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `scsName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -10058,7 +10193,7 @@ INSERT INTO `SystemImageEditorFilters` (`scsID`, `scsHandle`, `scsName`, `scsDis
 --
 
 DROP TABLE IF EXISTS `SystemImageEditorShapes`;
-CREATE TABLE IF NOT EXISTS `SystemImageEditorShapes` (
+CREATE TABLE `SystemImageEditorShapes` (
   `scsID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scsHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `scsName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -10075,7 +10210,7 @@ CREATE TABLE IF NOT EXISTS `SystemImageEditorShapes` (
 --
 
 DROP TABLE IF EXISTS `TopicTrees`;
-CREATE TABLE IF NOT EXISTS `TopicTrees` (
+CREATE TABLE `TopicTrees` (
   `treeID` int(10) unsigned NOT NULL DEFAULT '0',
   `topicTreeName` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   PRIMARY KEY (`treeID`)
@@ -10096,7 +10231,7 @@ INSERT INTO `TopicTrees` (`treeID`, `topicTreeName`) VALUES
 --
 
 DROP TABLE IF EXISTS `TreeCategoryNodes`;
-CREATE TABLE IF NOT EXISTS `TreeCategoryNodes` (
+CREATE TABLE `TreeCategoryNodes` (
   `treeNodeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeNodeCategoryName` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   PRIMARY KEY (`treeNodeID`)
@@ -10118,12 +10253,12 @@ INSERT INTO `TreeCategoryNodes` (`treeNodeID`, `treeNodeCategoryName`) VALUES
 --
 
 DROP TABLE IF EXISTS `TreeGroupNodes`;
-CREATE TABLE IF NOT EXISTS `TreeGroupNodes` (
+CREATE TABLE `TreeGroupNodes` (
   `treeNodeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gID` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`treeNodeID`),
   KEY `gID` (`gID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
 
 --
 -- Daten für Tabelle `TreeGroupNodes`
@@ -10134,7 +10269,8 @@ INSERT INTO `TreeGroupNodes` (`treeNodeID`, `gID`) VALUES
 (3, 2),
 (4, 3),
 (19, 4),
-(20, 5);
+(20, 5),
+(21, 6);
 
 -- --------------------------------------------------------
 
@@ -10143,7 +10279,7 @@ INSERT INTO `TreeGroupNodes` (`treeNodeID`, `gID`) VALUES
 --
 
 DROP TABLE IF EXISTS `TreeNodePermissionAssignments`;
-CREATE TABLE IF NOT EXISTS `TreeNodePermissionAssignments` (
+CREATE TABLE `TreeNodePermissionAssignments` (
   `treeNodeID` int(10) unsigned NOT NULL DEFAULT '0',
   `pkID` int(10) unsigned NOT NULL DEFAULT '0',
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -10172,7 +10308,7 @@ INSERT INTO `TreeNodePermissionAssignments` (`treeNodeID`, `pkID`, `paID`) VALUE
 --
 
 DROP TABLE IF EXISTS `TreeNodes`;
-CREATE TABLE IF NOT EXISTS `TreeNodes` (
+CREATE TABLE `TreeNodes` (
   `treeNodeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeNodeTypeID` int(10) unsigned DEFAULT '0',
   `treeID` int(10) unsigned DEFAULT '0',
@@ -10185,7 +10321,7 @@ CREATE TABLE IF NOT EXISTS `TreeNodes` (
   KEY `treeNodeTypeID` (`treeNodeTypeID`),
   KEY `treeID` (`treeID`),
   KEY `inheritPermissionsFromTreeNodeID` (`inheritPermissionsFromTreeNodeID`,`treeNodeID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
 
 --
 -- Daten für Tabelle `TreeNodes`
@@ -10211,7 +10347,8 @@ INSERT INTO `TreeNodes` (`treeNodeID`, `treeNodeTypeID`, `treeID`, `treeNodePare
 (17, 3, 3, 14, 2, 0, 14),
 (18, 3, 3, 14, 3, 0, 14),
 (19, 1, 1, 1, 3, 0, 1),
-(20, 1, 1, 1, 4, 0, 1);
+(20, 1, 1, 1, 4, 0, 1),
+(21, 1, 1, 1, 5, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -10220,7 +10357,7 @@ INSERT INTO `TreeNodes` (`treeNodeID`, `treeNodeTypeID`, `treeID`, `treeNodePare
 --
 
 DROP TABLE IF EXISTS `TreeNodeTypes`;
-CREATE TABLE IF NOT EXISTS `TreeNodeTypes` (
+CREATE TABLE `TreeNodeTypes` (
   `treeNodeTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeNodeTypeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `pkgID` int(10) unsigned DEFAULT '0',
@@ -10245,7 +10382,7 @@ INSERT INTO `TreeNodeTypes` (`treeNodeTypeID`, `treeNodeTypeHandle`, `pkgID`) VA
 --
 
 DROP TABLE IF EXISTS `Trees`;
-CREATE TABLE IF NOT EXISTS `Trees` (
+CREATE TABLE `Trees` (
   `treeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeTypeID` int(10) unsigned DEFAULT '0',
   `treeDateAdded` datetime DEFAULT NULL,
@@ -10270,7 +10407,7 @@ INSERT INTO `Trees` (`treeID`, `treeTypeID`, `treeDateAdded`, `rootTreeNodeID`) 
 --
 
 DROP TABLE IF EXISTS `TreeTopicNodes`;
-CREATE TABLE IF NOT EXISTS `TreeTopicNodes` (
+CREATE TABLE `TreeTopicNodes` (
   `treeNodeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeNodeTopicName` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   PRIMARY KEY (`treeNodeID`)
@@ -10300,7 +10437,7 @@ INSERT INTO `TreeTopicNodes` (`treeNodeID`, `treeNodeTopicName`) VALUES
 --
 
 DROP TABLE IF EXISTS `TreeTypes`;
-CREATE TABLE IF NOT EXISTS `TreeTypes` (
+CREATE TABLE `TreeTypes` (
   `treeTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `treeTypeHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `pkgID` int(10) unsigned DEFAULT '0',
@@ -10324,7 +10461,7 @@ INSERT INTO `TreeTypes` (`treeTypeID`, `treeTypeHandle`, `pkgID`) VALUES
 --
 
 DROP TABLE IF EXISTS `UserAttributeKeys`;
-CREATE TABLE IF NOT EXISTS `UserAttributeKeys` (
+CREATE TABLE `UserAttributeKeys` (
   `akID` int(10) unsigned NOT NULL,
   `uakProfileDisplay` tinyint(1) NOT NULL DEFAULT '0',
   `uakMemberListDisplay` tinyint(1) NOT NULL DEFAULT '0',
@@ -10353,7 +10490,7 @@ INSERT INTO `UserAttributeKeys` (`akID`, `uakProfileDisplay`, `uakMemberListDisp
 --
 
 DROP TABLE IF EXISTS `UserAttributeValues`;
-CREATE TABLE IF NOT EXISTS `UserAttributeValues` (
+CREATE TABLE `UserAttributeValues` (
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
   `avID` int(10) unsigned DEFAULT '0',
@@ -10368,7 +10505,9 @@ CREATE TABLE IF NOT EXISTS `UserAttributeValues` (
 
 INSERT INTO `UserAttributeValues` (`uID`, `akID`, `avID`) VALUES
 (2, 12, 212),
-(2, 13, 213);
+(2, 13, 213),
+(3, 12, 265),
+(3, 13, 266);
 
 -- --------------------------------------------------------
 
@@ -10377,7 +10516,7 @@ INSERT INTO `UserAttributeValues` (`uID`, `akID`, `avID`) VALUES
 --
 
 DROP TABLE IF EXISTS `UserBannedIPs`;
-CREATE TABLE IF NOT EXISTS `UserBannedIPs` (
+CREATE TABLE `UserBannedIPs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ipFrom` tinyblob,
   `ipTo` tinyblob,
@@ -10395,7 +10534,7 @@ CREATE TABLE IF NOT EXISTS `UserBannedIPs` (
 --
 
 DROP TABLE IF EXISTS `UserGroups`;
-CREATE TABLE IF NOT EXISTS `UserGroups` (
+CREATE TABLE `UserGroups` (
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
   `gID` int(10) unsigned NOT NULL DEFAULT '0',
   `ugEntered` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -10410,7 +10549,8 @@ CREATE TABLE IF NOT EXISTS `UserGroups` (
 
 INSERT INTO `UserGroups` (`uID`, `gID`, `ugEntered`) VALUES
 (1, 5, '2015-08-05 22:21:58'),
-(2, 4, '2015-05-03 12:37:52');
+(2, 4, '2015-05-03 12:37:52'),
+(3, 6, '2015-10-08 22:30:52');
 
 -- --------------------------------------------------------
 
@@ -10419,7 +10559,7 @@ INSERT INTO `UserGroups` (`uID`, `gID`, `ugEntered`) VALUES
 --
 
 DROP TABLE IF EXISTS `UserPermissionEditPropertyAccessList`;
-CREATE TABLE IF NOT EXISTS `UserPermissionEditPropertyAccessList` (
+CREATE TABLE `UserPermissionEditPropertyAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `uName` tinyint(1) DEFAULT '0',
@@ -10439,7 +10579,7 @@ CREATE TABLE IF NOT EXISTS `UserPermissionEditPropertyAccessList` (
 --
 
 DROP TABLE IF EXISTS `UserPermissionEditPropertyAttributeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `UserPermissionEditPropertyAttributeAccessListCustom` (
+CREATE TABLE `UserPermissionEditPropertyAttributeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -10455,7 +10595,7 @@ CREATE TABLE IF NOT EXISTS `UserPermissionEditPropertyAttributeAccessListCustom`
 --
 
 DROP TABLE IF EXISTS `UserPermissionViewAttributeAccessList`;
-CREATE TABLE IF NOT EXISTS `UserPermissionViewAttributeAccessList` (
+CREATE TABLE `UserPermissionViewAttributeAccessList` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `permission` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
@@ -10470,7 +10610,7 @@ CREATE TABLE IF NOT EXISTS `UserPermissionViewAttributeAccessList` (
 --
 
 DROP TABLE IF EXISTS `UserPermissionViewAttributeAccessListCustom`;
-CREATE TABLE IF NOT EXISTS `UserPermissionViewAttributeAccessListCustom` (
+CREATE TABLE `UserPermissionViewAttributeAccessListCustom` (
   `paID` int(10) unsigned NOT NULL DEFAULT '0',
   `peID` int(10) unsigned NOT NULL DEFAULT '0',
   `akID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -10486,7 +10626,7 @@ CREATE TABLE IF NOT EXISTS `UserPermissionViewAttributeAccessListCustom` (
 --
 
 DROP TABLE IF EXISTS `UserPointActions`;
-CREATE TABLE IF NOT EXISTS `UserPointActions` (
+CREATE TABLE `UserPointActions` (
   `upaID` int(11) NOT NULL AUTO_INCREMENT,
   `upaHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `upaName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10515,7 +10655,7 @@ INSERT INTO `UserPointActions` (`upaID`, `upaHandle`, `upaName`, `upaDefaultPoin
 --
 
 DROP TABLE IF EXISTS `UserPointHistory`;
-CREATE TABLE IF NOT EXISTS `UserPointHistory` (
+CREATE TABLE `UserPointHistory` (
   `upID` int(11) NOT NULL AUTO_INCREMENT,
   `upuID` int(11) NOT NULL DEFAULT '0',
   `upaID` int(11) DEFAULT '0',
@@ -10534,7 +10674,7 @@ CREATE TABLE IF NOT EXISTS `UserPointHistory` (
 --
 
 DROP TABLE IF EXISTS `UserPrivateMessages`;
-CREATE TABLE IF NOT EXISTS `UserPrivateMessages` (
+CREATE TABLE `UserPrivateMessages` (
   `msgID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uAuthorID` int(10) unsigned NOT NULL DEFAULT '0',
   `msgDateCreated` datetime NOT NULL,
@@ -10552,7 +10692,7 @@ CREATE TABLE IF NOT EXISTS `UserPrivateMessages` (
 --
 
 DROP TABLE IF EXISTS `UserPrivateMessagesTo`;
-CREATE TABLE IF NOT EXISTS `UserPrivateMessagesTo` (
+CREATE TABLE `UserPrivateMessagesTo` (
   `msgID` int(10) unsigned NOT NULL DEFAULT '0',
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
   `uAuthorID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -10574,7 +10714,7 @@ CREATE TABLE IF NOT EXISTS `UserPrivateMessagesTo` (
 --
 
 DROP TABLE IF EXISTS `Users`;
-CREATE TABLE IF NOT EXISTS `Users` (
+CREATE TABLE `Users` (
   `uID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uName` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `uEmail` varchar(254) COLLATE utf8_unicode_ci NOT NULL,
@@ -10596,15 +10736,16 @@ CREATE TABLE IF NOT EXISTS `Users` (
   PRIMARY KEY (`uID`),
   UNIQUE KEY `uName` (`uName`),
   KEY `uEmail` (`uEmail`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `Users`
 --
 
 INSERT INTO `Users` (`uID`, `uName`, `uEmail`, `uPassword`, `uIsActive`, `uIsValidated`, `uIsFullRecord`, `uDateAdded`, `uLastPasswordChange`, `uHasAvatar`, `uLastOnline`, `uLastLogin`, `uLastIP`, `uPreviousLogin`, `uNumLogins`, `uLastAuthTypeID`, `uTimezone`, `uDefaultLanguage`) VALUES
-(1, 'admin', 'lucius.bachmann@gmx.ch', '$2a$12$uHEYWy975GfxTaOzWTweye3OBYO7bBdsdb2IHi3dqTieafdCkkyCu', '1', -1, 1, '2015-04-06 20:44:34', '2015-04-06 20:44:34', 0, 1440102604, 1440101990, 0x3766303030303031, 1440093708, 28, 1, NULL, NULL),
-(2, 'testuser', 'bachmann395@gmail.com', '$2a$12$VXsKmMvHz.dExxWQVA1j8eyYcLvRkPs6qFXy/js4JWVgpkD5A52YK', '1', -1, 1, '2015-04-19 23:50:45', '2015-04-19 23:50:45', 0, 0, 0, NULL, 0, 0, 0, NULL, 'de_DE');
+(1, 'admin', 'lucius.bachmann@gmx.ch', '$2a$12$uHEYWy975GfxTaOzWTweye3OBYO7bBdsdb2IHi3dqTieafdCkkyCu', '1', -1, 1, '2015-04-06 20:44:34', '2015-04-06 20:44:34', 0, 1444680114, 1444678548, 0x3766303030303031, 1444336300, 33, 1, NULL, NULL),
+(2, 'testuser', 'bachmann395@gmail.com', '$2a$12$VXsKmMvHz.dExxWQVA1j8eyYcLvRkPs6qFXy/js4JWVgpkD5A52YK', '1', -1, 1, '2015-04-19 23:50:45', '2015-04-19 23:50:45', 0, 0, 0, NULL, 0, 0, 0, NULL, 'de_DE'),
+(3, 'testleiter', 'lucius.bachmann@centerboard.ch', '$2a$12$3sj2rtJyk.Jm/bF2.M1Jdu.oK2nx8KAKrT2FTIlyWrDGVHjVuHcOm', '1', -1, 1, '2015-10-08 22:30:51', '2015-10-08 22:30:51', 0, 1444336284, 1444336284, 0x3766303030303031, 0, 1, 1, NULL, 'de_DE');
 
 -- --------------------------------------------------------
 
@@ -10613,7 +10754,7 @@ INSERT INTO `Users` (`uID`, `uName`, `uEmail`, `uPassword`, `uIsActive`, `uIsVal
 --
 
 DROP TABLE IF EXISTS `UserSearchIndexAttributes`;
-CREATE TABLE IF NOT EXISTS `UserSearchIndexAttributes` (
+CREATE TABLE `UserSearchIndexAttributes` (
   `uID` int(10) unsigned NOT NULL DEFAULT '0',
   `ak_profile_private_messages_enabled` tinyint(1) DEFAULT '0',
   `ak_profile_private_messages_notification_enabled` tinyint(1) DEFAULT '0',
@@ -10626,7 +10767,8 @@ CREATE TABLE IF NOT EXISTS `UserSearchIndexAttributes` (
 
 INSERT INTO `UserSearchIndexAttributes` (`uID`, `ak_profile_private_messages_enabled`, `ak_profile_private_messages_notification_enabled`) VALUES
 (1, 0, 0),
-(2, 1, 1);
+(2, 1, 1),
+(3, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -10635,7 +10777,7 @@ INSERT INTO `UserSearchIndexAttributes` (`uID`, `ak_profile_private_messages_ena
 --
 
 DROP TABLE IF EXISTS `UserValidationHashes`;
-CREATE TABLE IF NOT EXISTS `UserValidationHashes` (
+CREATE TABLE `UserValidationHashes` (
   `uvhID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uID` int(10) unsigned DEFAULT NULL,
   `uHash` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
@@ -10655,7 +10797,7 @@ CREATE TABLE IF NOT EXISTS `UserValidationHashes` (
 --
 
 DROP TABLE IF EXISTS `VividStoreDigitalFile`;
-CREATE TABLE IF NOT EXISTS `VividStoreDigitalFile` (
+CREATE TABLE `VividStoreDigitalFile` (
   `dfID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `dffID` int(11) DEFAULT NULL,
@@ -10676,7 +10818,7 @@ INSERT INTO `VividStoreDigitalFile` (`dfID`, `pID`, `dffID`) VALUES
 --
 
 DROP TABLE IF EXISTS `VividStoreGroups`;
-CREATE TABLE IF NOT EXISTS `VividStoreGroups` (
+CREATE TABLE `VividStoreGroups` (
   `gID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `groupName` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`gID`)
@@ -10689,7 +10831,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreGroups` (
 --
 
 DROP TABLE IF EXISTS `VividStoreOrder`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrder` (
+CREATE TABLE `VividStoreOrder` (
   `oID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cID` int(11) DEFAULT NULL,
   `oDate` datetime DEFAULT NULL,
@@ -10718,7 +10860,7 @@ INSERT INTO `VividStoreOrder` (`oID`, `cID`, `oDate`, `oStatus`, `pmID`, `smID`,
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderAttributeKeys`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderAttributeKeys` (
+CREATE TABLE `VividStoreOrderAttributeKeys` (
   `akID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`akID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -10743,7 +10885,7 @@ INSERT INTO `VividStoreOrderAttributeKeys` (`akID`) VALUES
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderAttributeValues`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderAttributeValues` (
+CREATE TABLE `VividStoreOrderAttributeValues` (
   `oID` int(10) unsigned NOT NULL,
   `akID` int(10) unsigned NOT NULL,
   `avID` int(10) unsigned NOT NULL,
@@ -10757,7 +10899,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreOrderAttributeValues` (
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderItem`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderItem` (
+CREATE TABLE `VividStoreOrderItem` (
   `oiID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `oID` int(11) DEFAULT NULL,
@@ -10783,7 +10925,7 @@ INSERT INTO `VividStoreOrderItem` (`oiID`, `pID`, `oID`, `oiProductName`, `oiPri
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderItemOption`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderItemOption` (
+CREATE TABLE `VividStoreOrderItemOption` (
   `oioID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `oiID` int(11) DEFAULT NULL,
   `oioKey` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10798,7 +10940,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreOrderItemOption` (
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderStatus`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderStatus` (
+CREATE TABLE `VividStoreOrderStatus` (
   `osID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `osHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `osName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10826,7 +10968,7 @@ INSERT INTO `VividStoreOrderStatus` (`osID`, `osHandle`, `osName`, `osInformSite
 --
 
 DROP TABLE IF EXISTS `VividStoreOrderStatusHistory`;
-CREATE TABLE IF NOT EXISTS `VividStoreOrderStatusHistory` (
+CREATE TABLE `VividStoreOrderStatusHistory` (
   `oshID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `oID` int(11) DEFAULT NULL,
   `oshStatus` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10842,7 +10984,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreOrderStatusHistory` (
 --
 
 DROP TABLE IF EXISTS `VividStorePaymentMethods`;
-CREATE TABLE IF NOT EXISTS `VividStorePaymentMethods` (
+CREATE TABLE `VividStorePaymentMethods` (
   `pmID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pmHandle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pmName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10859,7 +11001,7 @@ CREATE TABLE IF NOT EXISTS `VividStorePaymentMethods` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProduct`;
-CREATE TABLE IF NOT EXISTS `VividStoreProduct` (
+CREATE TABLE `VividStoreProduct` (
   `pID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `gID` int(11) DEFAULT NULL,
   `cID` int(11) DEFAULT NULL,
@@ -10897,7 +11039,7 @@ INSERT INTO `VividStoreProduct` (`pID`, `gID`, `cID`, `pName`, `pDesc`, `pDetail
 --
 
 DROP TABLE IF EXISTS `VividStoreProductAttributeKeys`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductAttributeKeys` (
+CREATE TABLE `VividStoreProductAttributeKeys` (
   `akID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`akID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -10909,7 +11051,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreProductAttributeKeys` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProductAttributeValues`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductAttributeValues` (
+CREATE TABLE `VividStoreProductAttributeValues` (
   `pID` int(10) unsigned NOT NULL,
   `akID` int(10) unsigned NOT NULL,
   `avID` int(10) unsigned NOT NULL,
@@ -10923,7 +11065,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreProductAttributeValues` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProductImage`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductImage` (
+CREATE TABLE `VividStoreProductImage` (
   `piID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `pifID` int(11) DEFAULT NULL,
@@ -10938,7 +11080,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreProductImage` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProductOptionGroup`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductOptionGroup` (
+CREATE TABLE `VividStoreProductOptionGroup` (
   `pogID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `pogName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -10953,7 +11095,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreProductOptionGroup` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProductOptionItem`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductOptionItem` (
+CREATE TABLE `VividStoreProductOptionItem` (
   `poiID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `pogID` int(11) DEFAULT NULL,
@@ -10969,7 +11111,7 @@ CREATE TABLE IF NOT EXISTS `VividStoreProductOptionItem` (
 --
 
 DROP TABLE IF EXISTS `VividStoreProductUserGroups`;
-CREATE TABLE IF NOT EXISTS `VividStoreProductUserGroups` (
+CREATE TABLE `VividStoreProductUserGroups` (
   `pugID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pID` int(11) DEFAULT NULL,
   `gID` int(11) DEFAULT NULL,
@@ -10990,7 +11132,7 @@ INSERT INTO `VividStoreProductUserGroups` (`pugID`, `pID`, `gID`) VALUES
 --
 
 DROP TABLE IF EXISTS `WorkflowProgress`;
-CREATE TABLE IF NOT EXISTS `WorkflowProgress` (
+CREATE TABLE `WorkflowProgress` (
   `wpID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wpCategoryID` int(10) unsigned DEFAULT NULL,
   `wfID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -11004,7 +11146,7 @@ CREATE TABLE IF NOT EXISTS `WorkflowProgress` (
   KEY `wpCategoryID` (`wpCategoryID`),
   KEY `wfID` (`wfID`),
   KEY `wrID` (`wrID`,`wpID`,`wpIsCompleted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -11013,7 +11155,7 @@ CREATE TABLE IF NOT EXISTS `WorkflowProgress` (
 --
 
 DROP TABLE IF EXISTS `WorkflowProgressCategories`;
-CREATE TABLE IF NOT EXISTS `WorkflowProgressCategories` (
+CREATE TABLE `WorkflowProgressCategories` (
   `wpCategoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wpCategoryHandle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pkgID` int(10) unsigned DEFAULT NULL,
@@ -11038,14 +11180,14 @@ INSERT INTO `WorkflowProgressCategories` (`wpCategoryID`, `wpCategoryHandle`, `p
 --
 
 DROP TABLE IF EXISTS `WorkflowProgressHistory`;
-CREATE TABLE IF NOT EXISTS `WorkflowProgressHistory` (
+CREATE TABLE `WorkflowProgressHistory` (
   `wphID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wpID` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `object` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`wphID`),
   KEY `wpID` (`wpID`,`timestamp`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=58 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=62 ;
 
 --
 -- Daten für Tabelle `WorkflowProgressHistory`
@@ -11108,7 +11250,11 @@ INSERT INTO `WorkflowProgressHistory` (`wphID`, `wpID`, `timestamp`, `object`) V
 (54, 6, '2015-08-20 20:22:57', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"208";s:4:"cvID";s:1:"5";s:4:"wrID";s:1:"6";}'),
 (55, 7, '2015-08-20 20:24:39', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:1:"1";s:4:"cvID";s:1:"9";s:4:"wrID";s:1:"7";}'),
 (56, 8, '2015-08-20 20:28:58', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:1:"1";s:4:"cvID";s:2:"10";s:4:"wrID";s:1:"8";}'),
-(57, 9, '2015-08-20 20:29:42', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"186";s:4:"cvID";s:1:"2";s:4:"wrID";s:1:"9";}');
+(57, 9, '2015-08-20 20:29:42', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"186";s:4:"cvID";s:1:"2";s:4:"wrID";s:1:"9";}'),
+(58, 1, '2015-10-08 20:27:55', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"212";s:4:"cvID";s:1:"1";s:4:"wrID";s:1:"1";}'),
+(59, 2, '2015-10-08 20:28:48', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"212";s:4:"cvID";s:1:"2";s:4:"wrID";s:1:"2";}'),
+(60, 3, '2015-10-08 20:58:45', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"213";s:4:"cvID";s:1:"1";s:4:"wrID";s:1:"3";}'),
+(61, 4, '2015-10-08 20:59:08', 'O:49:"Concrete\\Core\\Workflow\\Request\\ApprovePageRequest":8:{s:14:"\0*\0wrStatusNum";i:30;s:12:"\0*\0currentWP";N;s:6:"\0*\0uID";s:1:"1";s:5:"error";s:0:"";s:4:"pkID";s:2:"14";s:3:"cID";s:3:"213";s:4:"cvID";s:1:"2";s:4:"wrID";s:1:"4";}');
 
 -- --------------------------------------------------------
 
@@ -11117,11 +11263,11 @@ INSERT INTO `WorkflowProgressHistory` (`wphID`, `wpID`, `timestamp`, `object`) V
 --
 
 DROP TABLE IF EXISTS `WorkflowRequestObjects`;
-CREATE TABLE IF NOT EXISTS `WorkflowRequestObjects` (
+CREATE TABLE `WorkflowRequestObjects` (
   `wrID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wrObject` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`wrID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -11130,7 +11276,7 @@ CREATE TABLE IF NOT EXISTS `WorkflowRequestObjects` (
 --
 
 DROP TABLE IF EXISTS `Workflows`;
-CREATE TABLE IF NOT EXISTS `Workflows` (
+CREATE TABLE `Workflows` (
   `wfID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wfName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `wftID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -11146,7 +11292,7 @@ CREATE TABLE IF NOT EXISTS `Workflows` (
 --
 
 DROP TABLE IF EXISTS `WorkflowTypes`;
-CREATE TABLE IF NOT EXISTS `WorkflowTypes` (
+CREATE TABLE `WorkflowTypes` (
   `wftID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `wftHandle` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `wftName` varchar(128) COLLATE utf8_unicode_ci NOT NULL,

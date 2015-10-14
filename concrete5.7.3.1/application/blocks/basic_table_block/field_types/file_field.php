@@ -47,12 +47,27 @@ class FileField extends Field{
 		if ($this->getValue() > 0) {
 			$bf = $this->getFileObject();
 		}
+		$c = Page::getCurrentPage();
+		/*if (is_object($c)) {
+			$cp = new Permissions($c);
+			if (is_object($cp)) {
+				if (!$cp->canViewToolbar()) {*/
+					
+					
+					
+				/*	
+				}
+			}
+		}*/
 		$returnString = "
 		<div class=\"form-group\">
 		".$form->label($this->getPostName(), t('File'))."
 		".$al->file($this->getPostName(), $this->getPostName(), t('Choose File'), $bf)."
 		</div>";
-		
+		$valt = Loader::helper('validation/token');
+		$token = $valt->generate();
+		//$form->addHeaderItem('<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>');
+		$returnString.='<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>';
 		return $returnString;
 	}
 	
