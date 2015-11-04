@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-10-12T21:35:49+02:00
+ * Generated 2015-10-14T18:47:44+02:00
  *
- * @item      misc.latest_version
+ * @item      misc.access_entity_updated
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ return array(
     'site' => 'newgryfipage',
     'version_installed' => '5.7.3.1',
     'misc' => array(
-        'access_entity_updated' => 1438808448,
+        'access_entity_updated' => 1444841264,
         'latest_version' => '5.7.3.1',
         'seen_introduction' => true,
         'do_page_reindex_check' => false
