@@ -1,4 +1,5 @@
 <?php
+exit();
 namespace Concrete\Core\User;
 use \Concrete\Core\Foundation\Object;
 use Loader;

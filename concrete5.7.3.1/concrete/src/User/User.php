@@ -15,6 +15,7 @@ use \Concrete\Core\Permission\Access\Entity\Entity as PermissionAccessEntity;
 use Core;
 use Group;
 use Zend\Stdlib\DateTime;
+use Concrete\Flysystem\Exception;
 
 class User extends Object
 {
@@ -74,6 +75,7 @@ class User extends Object
 
     public static function isLoggedIn()
     {
+
         $session = Core::make('session');
 
         return $session->has('uID') && $session->get('uID') > 0 && $session->has('uName')
@@ -528,6 +530,7 @@ class User extends Object
 
                 $ue = new \Concrete\Core\User\Event\UserGroup($this);
                 $ue->setGroupObject($g);
+              
                 Events::dispatch('on_user_enter_group', $ue);
                 
                 if($g->getGroupName() === "owncloud"){
