@@ -1,8 +1,9 @@
 <?php
-namespace Concrete\Block\Content;
+
+namespace Application\Block\BasicTableBlock\FieldTypes\Helperblocks\Content;
 use \Concrete\Core\Block\BlockController;
 use \Concrete\Core\Editor\LinkAbstractor;
-use \Concrete\Blocks\Content\Controller as ContentBlockController;
+use \Concrete\Block\Content\Controller as ContentBlockController;
 use Concrete\Core\Legacy\Loader;
 	
 /**
@@ -30,7 +31,8 @@ use Concrete\Core\Legacy\Loader;
 		protected $targetTable = "";
 		protected $targetCol = "";
 		protected $targetIdField = "";
-		protected $targetId = 0;
+		protected $targetId = null;
+		protected $value = '';
 		
 		
 		public function getBlockTypeDescription() {
@@ -47,6 +49,19 @@ use Concrete\Core\Legacy\Loader;
                 $this->requireAsset('core/lightbox');
             }
         }
+        
+        public function setSQLParams(string $targetTable
+        							,string $targetCol
+        							,string $targetIdField
+        							,string $targetId){
+        	$this->targetTable = $targetTable;
+        	$this->targetCol = $targetCol;
+        	$this->targetIdField = $targetIdField;
+        	$this->targetId = $targetId;
+        }
+        
+        
+        
 
         public function view()
         {
@@ -58,19 +73,33 @@ use Concrete\Core\Legacy\Loader;
 		}
 
 		
-
+		public function setValue($value){
+			$this->value = $value;
+			
+		}
+		
+		public function getValue(){
+			return $this->value;
+		}
 		
 		public function getImportData($blockNode) {
 			//$content = $blockNode->data->record->content;
-			$db = Loader::db();
-			$sql = 'SELECT '.$this->targetCol.' 
-					FROM '.$this->targetTable.' 
-					WHERE '.$this->targetIdField.' = ?';
-			$content = $db->getOne($sql, array($this->targetId));
+			/*
+			if(!is_null($this->targetId)){
+				$db = Loader::db();
+				$sql = 'SELECT '.$this->targetCol.' 
+						FROM '.$this->targetTable.' 
+						WHERE '.$this->targetIdField.' = ?';
+				$content = $db->getOne($sql, array($this->targetId));
+			}else{
+				$content = '';
+			}*/
+			$content = $this->value;
 			if($content == null || $content == false){
 				$content = '';
 			}
 			$content = LinkAbstractor::import($content);
+			$this->value = content;
 			$args = array('content' => $content);
 			return $args;
 		}
@@ -78,13 +107,13 @@ use Concrete\Core\Legacy\Loader;
 		
 
 		function save($args) {
-			$args['content'] = LinkAbstractor::translateTo($args['content']);
-			$db = Loader::db();
-			$entitymanager = $db->getEntityManager();
-			$entitymanager->
+			$this->value = LinkAbstractor::translateTo($args['content']);
+			
 			//parent::save($args);
 		}
 
 	}
 
+	
+	
 ?>

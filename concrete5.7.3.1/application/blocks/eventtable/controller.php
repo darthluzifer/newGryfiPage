@@ -15,6 +15,8 @@ use Application\Block\BasicTableBlock\FieldTypes\DropdownField as DropdownField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Application\Block\BasicTableBlock\FieldTypes\DropdownMultilinkField as DropdownMultilinkField;
 use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
+use Application\Block\BasicTableBlock\FieldTypes\WysiwygField as WysiwygField;
+use Application\Block\BasicTableBlock\FieldTypes\Application\Block\BasicTableBlock\FieldTypes;
 
 class Controller extends BasicTableBlockController
 {
@@ -51,7 +53,7 @@ class Controller extends BasicTableBlockController
     			"time_from" => new Field("time_from", "Zeit von", "timeFrom"),
     			"time_to" => new Field("time_to", "Zeit bis", "timeTo"),
     			"title" => new Field("title", "Titel", "titleEvent"),
-    			"description" => new Field("description", "Beschreibung", "descEvent"),
+    			"description" => new WysiwygField("description", "Beschreibung", "descEvent"),
     			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
     			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
