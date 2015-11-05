@@ -393,3 +393,7 @@
 {"reqId":"28ad8b892feb7f07cdb245960e4504a0","remoteAddr":"127.0.0.1","app":"core","message":"Login failed: 'testuser' (Remote IP: '127.0.0.1', X-Forwarded-For: '')","level":2,"time":"2015-04-23T16:57:32+00:00"}
 {"reqId":"ddf863fced4e4151a431d92cf4519860","remoteAddr":"127.0.0.1","app":"core","message":"Login failed: 'testuser' (Remote IP: '127.0.0.1', X-Forwarded-For: '')","level":2,"time":"2015-04-23T16:57:45+00:00"}
 {"reqId":"b30773a05ea5250cc8ea887a1fcf9e0d","remoteAddr":"127.0.0.1","app":"core","message":"Login failed: 'testuser' (Remote IP: '127.0.0.1', X-Forwarded-For: '')","level":2,"time":"2015-04-23T17:00:07+00:00"}
+{"reqId":"096ed153cd221b859cf69fa3eacd109e","remoteAddr":"127.0.0.1","app":"PHP","message":"Comments starting with '#' are deprecated in \/etc\/php5\/apache2\/php.ini on line 1933 at Unknown#0","level":3,"time":"2015-11-04T23:07:45+00:00"}
+{"reqId":"14d98cf85e655f0cf0f0dead782ca52c","remoteAddr":"127.0.0.1","app":"PHP","message":"Module 'xdebug' already loaded at Unknown#0","level":3,"time":"2015-11-05T21:02:34+00:00"}
+{"reqId":"9b5bab2a1472662bf14fb983b0f679ce","remoteAddr":"127.0.0.1","app":"PHP","message":"Module 'xdebug' already loaded at Unknown#0","level":3,"time":"2015-11-05T21:02:34+00:00"}
+{"reqId":"a0a3d489280d2ef0f74f527d9b46114e","remoteAddr":"127.0.0.1","app":"PHP","message":"Module 'xdebug' already loaded at Unknown#0","level":3,"time":"2015-11-05T21:03:14+00:00"}

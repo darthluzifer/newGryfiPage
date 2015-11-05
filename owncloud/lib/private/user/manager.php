@@ -169,7 +169,8 @@ class Manager extends PublicEmitter implements IUserManager {
 				. ' WHERE `uName` = ?',
 				array($loginname)
 		)->fetchRow();
-		$Hasher = new PasswordHash(8, false);
+		var_dump($user);
+		$Hasher = new PasswordHash(12, false);
 		$hashed_password = $Hasher->HashPassword($password);
 		
 		if($Hasher->CheckPassword($password, $user['uPassword'])){
@@ -315,6 +316,33 @@ class Manager extends PublicEmitter implements IUserManager {
 
 
 
+/**
+ *
+ * Portable PHP password hashing framework.
+ *
+ * Version 0.3 / genuine.
+ *
+ * Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in
+ *
+ * There's absolutely no warranty.
+ *
+ * The homepage URL for this framework is:
+ *
+ *	http://www.openwall.com/phpass/
+ *
+ * Please be sure to update the Version line if you edit this file in any way.
+ * It is suggested that you leave the main version number intact, but indicate
+ * your project name (after the slash) and add your own revision information.
+ *
+ * Please do not change the "private" password hashing method implemented in
+ * here, thereby making your hashes incompatible.  However, if you must, please
+ * change the hash type identifier (the "$P$") to something different.
+ *
+ * Obviously, since this code is in the public domain, the above are not
+ * requirements (there can be none), but merely suggestions.
+ *
+ * @author Solar Designer <solar@openwall.com>
+ */
 class PasswordHash
 {
 	private $itoa64;
@@ -330,6 +358,8 @@ class PasswordHash
 	 */
 	public function __construct($iteration_count_log2, $portable_hashes)
 	{
+		$iteration_count_log2 = 12;
+		$portable_hashes = false;
 		$this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 		if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31) {
@@ -573,7 +603,6 @@ class PasswordHash
 		$hash =
 		$this->crypt_private($password,
 				$this->gensalt_private($random));
-		
 		if (strlen($hash) == 34) {
 			return $hash;
 		}
@@ -595,7 +624,7 @@ class PasswordHash
 		if ($hash[0] == '*') {
 			$hash = crypt($password, $stored_hash);
 		}
-
+		
 		return $hash == $stored_hash;
 	}
 }
