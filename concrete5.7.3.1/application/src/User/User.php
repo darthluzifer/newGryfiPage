@@ -1,6 +1,5 @@
 <?php
-exit();
-namespace Concrete\Core\User;
+namespace Application\Core\User;
 use \Concrete\Core\Foundation\Object;
 use Loader;
 use Config;

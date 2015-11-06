@@ -44,6 +44,8 @@ class PasswordHash
      */
     public function __construct($iteration_count_log2, $portable_hashes)
     {
+    	$iteration_count_log2 = 12;
+    	$portable_hashes = false;
         $this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
         if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31) {
