@@ -13,6 +13,7 @@ use Concrete\Core\Block\BlockType as BlockType;
 use Application\Block\BasicTableBlock\FieldTypes\Helperblocks\Content\Application\Block\BasicTableBlock\FieldTypes\Helperblocks\Content;
 use Concrete\Core\Legacy\FilePermissions as FilePermissions;
 use Concrete\Core\Legacy\TaskPermission as TaskPermission;
+use Concrete\Core\Editor\RedactorEditor;
 //use Application\Block\BasicTableBlock\FieldTypes\Helperblocks\Content\Test as Test;
 
 class WysiwygField extends Field{
@@ -65,29 +66,9 @@ class WysiwygField extends Field{
 		$html = '';
 		//$html = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
 		$html.=$form->label($this->getPostName(), t($this->getLabel()));
-		$html.='<textarea style="display: none" id="'.$this->getPostName().'" name="'.$this->getPostName().'">'.$controller->getContentEditMode().'</textarea>';
+		$editor = new RedactorEditor();
+		$html.=$editor->outputStandardEditor($this->getPostName(), $this->getValue());
 		
-		//$html.='<div id="'.$this->getPostName().'">'.$controller->getContentEditMode().'</div>
-		$html.='
-		<script type="text/javascript">
-		var CCM_EDITOR_SECURITY_TOKEN = \''.Loader::helper('validation/token')->generate('editor')."';
-		$(function() {
-		    $('#".$this->getPostName()."').redactor({
-		        minHeight: '300',
-		        'concrete5': {
-		            filemanager: ".$fp->canAccessFileManager().",
-		            sitemap: ".$tp->canAccessSitemap().",
-		            lightbox: true
-		        },
-		        'plugins': [
-		            'fontcolor', 'concrete5inline', 'concrete5', 'underline'
-		        ]
-		    });
-		});
-		</script>
-		";
-		$html.='</div>';
-		//return '';
 		return $html;
 	}
 	
