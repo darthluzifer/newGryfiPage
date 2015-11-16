@@ -55,16 +55,9 @@ class Controller extends BasicTableBlockController
     			"description" => new WysiwygField("description", "Beschreibung", "descEvent"),
     			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
-    			"testselect" => new DropdownField("testselect", "Test Select", "testSelect"),
-    			"testlink" => new DropdownLinkField("testlink", "Test Link", "testlink"),
-    			"testmultiLink" => new DropdownMultilinkField("testmultilink", "Test Multi Link", "testmultilink"),
+    			"testmultiLink" => new DropdownMultilinkField("testmultilink", "Gruppen", "testmultilink"),
     	);
     	
-    	$this->fields['testselect']->setOptions(array(""=>"","a" => "somevalue", "b" => "someothervalue"));
-    	
-    	$this->fields['testlink']->setLinkTable("Groups");
-    	$this->fields['testlink']->setShowColumn("gName");
-    	$this->fields['testlink']->setIdField("gID");
     	
     	$this->fields['testmultiLink']->setLinkTable("Groups");
     	$this->fields['testmultiLink']->setShowColumn("gName");
