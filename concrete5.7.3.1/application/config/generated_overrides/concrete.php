@@ -48,5 +48,6 @@ return array(
             'log' => 1,
             'clear_on_reload' => 0
         )
-    )
+    ),
+		
 );

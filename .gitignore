@@ -10,3 +10,4 @@ concrete5.7.3.1/application/config/*
 config/site.php
 files/cache/*
 files/tmp/*
+concrete5.7.3.1/application/config/generated_overrides/concrete.php
