@@ -20,23 +20,8 @@ use Application\Block\BasicTableBlock\FieldTypes\WysiwygField;
 class Controller extends BasicTableBlockController
 {
 
-    public $options = array();
-    protected $btTable = 'btBasicTableInstance';
-    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btEvents'/*name of the table where the data is stored*/);
-	protected $fields = array();
-	
-	
-	
 	protected $tableName = "btEvents";
-	
-	protected $executed = false;
-	
-	protected $isFormview = false;
-	
-	protected $editKey = null;
-	
-	protected $bID = null;
-	
+
     
     
     function __construct($obj = null)
@@ -70,22 +55,7 @@ class Controller extends BasicTableBlockController
     	$this->fields['testmultiLink']->setRowId($_SESSION[$this->tableName.$this->bID."rowid"]);
     	 
     	 
-    	
-    	$this->postFieldMap = array(
-    			"nr" => $this->fields['id'],
-    			"dateFrom" => $this->fields['datum_from'],
-    			"dateTo" => $this->fields['date_to'],
-    			"timeFrom" => $this->fields['time_from'],
-    			"timeTo" => $this->fields['time_to'],
-    			"titleEvent" => $this->fields['title'],
-    			"description" => $this->fields['descEvent'],
-    			"eventFile" => $this->fields['infofile'],
-    			"registerFile" => $this->fields['registerfile'],
-    			"testSelect" => $this->fields['testselect'],
-    			"testlink" => $this->fields['testlink'],
-    			"testmultilink" => $this->fields['testmultilink'],
-    			
-    	);
+    	$this->generatePostFieldMap();
         
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];

@@ -19,26 +19,18 @@ use Application\Block\BasicTableBlock\FieldTypes\WysiwygField;
 
 class Controller extends BasicTableBlockController
 {
-
-    public $options = array();
-    protected $btTable = 'btBasicTableInstance';
-    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBasicExtension'/*name of the table where the data is stored*/);
-	protected $fields = array();
-	
-	
-	
+    /**
+     * tablename
+     * @var string
+     */
 	protected $tableName = "btBasicExtension";
-	
-	protected $executed = false;
-	
-	protected $isFormview = false;
-	
-	protected $editKey = null;
-	
-	protected $bID = null;
-	
-    
-    
+
+
+    /**
+     * Controller constructor.
+     * defines the fields
+     * @param null $obj
+     */
     function __construct($obj = null)
     {
 
@@ -46,23 +38,31 @@ class Controller extends BasicTableBlockController
     	parent::__construct($obj);
     	
     	$this->fields=array(
-
+                //id field, normal
     			"id" => new Field("id", "ID", "nr"),
+                //date fields
     			"date_from" => new DateField("date_from", "Datum von", "dateFrom"),
-    			"date_to" => new Field("date_to", "Datum bis", "dateTo"),
-    			"time_from" => new Field("time_from", "Zeit von", "timeFrom"),
+                "date_to" => new DateField("date_to", "Datum bis", "dateTo"),
+
+                "time_from" => new Field("time_from", "Zeit von", "timeFrom"),
     			"time_to" => new Field("time_to", "Zeit bis", "timeTo"),
     			"title" => new Field("title", "Titel", "titleEvent"),
-    			"description" => new WysiwygField("description", "Beschreibung", "descEvent"),
-    			"infofile" => new FileField("infofile", "Info Datei", "eventFile"),
+
+                //Wysiswyg field
+                "description" => new WysiwygField("description", "Beschreibung", "descEvent"),
+    			//file field
+                "infofile" => new FileField("infofile", "Info Datei", "eventFile"),
     			"registerfile" => new FileField("registerfile", "Anmelde Formular", "registerFile"),
-    			"testmultiLink" => new DropdownMultilinkField("testmultilink", "Gruppen", "testmultilink"),
+
+                //foreign key n:m relation
+                "testmultiLink" => new DropdownMultilinkField("testmultilink", "Gruppen", "testmultilink"),
     	);
     	
-    	
+    	//
     	$this->fields['testmultiLink']->setLinkTable("Groups");
     	$this->fields['testmultiLink']->setShowColumn("gName");
-    	$this->fields['testmultiLink']->setIdField("gID");
+    	//column where the foreign key is stored
+        $this->fields['testmultiLink']->setIdField("gID");
     	$this->fields['testmultiLink']->setNtoMTable('btEventInGroup');
     	$this->fields['testmultiLink']->setLinkFieldSelf('eventID');
     	$this->fields['testmultiLink']->setLinkFieldExt('groupID');
@@ -71,22 +71,8 @@ class Controller extends BasicTableBlockController
     	$this->fields['testmultiLink']->setRowId($_SESSION[$this->tableName.$this->bID."rowid"]);
     	 
     	 
-    	
-    	$this->postFieldMap = array(
-    			"nr" => $this->fields['id'],
-    			"dateFrom" => $this->fields['datum_from'],
-    			"dateTo" => $this->fields['date_to'],
-    			"timeFrom" => $this->fields['time_from'],
-    			"timeTo" => $this->fields['time_to'],
-    			"titleEvent" => $this->fields['title'],
-    			"description" => $this->fields['descEvent'],
-    			"eventFile" => $this->fields['infofile'],
-    			"registerFile" => $this->fields['registerfile'],
-    			"testSelect" => $this->fields['testselect'],
-    			"testlink" => $this->fields['testlink'],
-    			"testmultilink" => $this->fields['testmultilink'],
-    			
-    	);
+    	//to handle the
+    	$this->generatePostFieldMap();
         
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
