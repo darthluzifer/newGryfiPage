@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-11-16T22:12:48+01:00
+ * Generated 2015-11-19T07:59:54+01:00
  *
- * @item      misc.latest_version
+ * @item      misc.do_page_reindex_check
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -48,6 +48,5 @@ return array(
             'log' => 1,
             'clear_on_reload' => 0
         )
-    ),
-		
+    )
 );

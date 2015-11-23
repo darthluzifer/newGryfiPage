@@ -6,6 +6,8 @@ owncloud/config/config.php
 concrete5.7.3.1/application/config/database.php
 concrete5.7.3.1/application/files/cache/*
 .idea/*
+.idea/
+.idea
 concrete5.7.3.1/application/config/*
 config/site.php
 files/cache/*

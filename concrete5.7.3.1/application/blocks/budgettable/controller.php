@@ -19,23 +19,12 @@ use Application\Block\BasicTableBlock\FieldTypes\DateField as DateField;
 class Controller extends BasicTableBlockController
 {
 
-    public $options = array();
-    protected $btTable = 'btBasicTableInstance';
-    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBudget'/*name of the table where the data is stored*/);
-	protected $fields = array();
-	
+
 	
 	
 	protected $tableName = "btBudget";
 	
-	protected $executed = false;
-	
-	protected $isFormview = false;
-	
-	protected $editKey = null;
-	
-	protected $bID = null;
-	
+
 
 	protected $SQLFilter = " parentBudgetId IS NULL";
 	
@@ -61,15 +50,7 @@ class Controller extends BasicTableBlockController
     	 
     	
     	
-    	$this->postFieldMap = array(
-    			"nr" => $this->fields['id'],
-    			"name" => $this->fields['name'],
-    			"description" => $this->fields['description'],
-    			"price" => $this->fields['price'],
-    			"parentBudgetId" => $this->fields['parentBudgetId'],
-    			//"testmultilink" => $this->fields['testmultilink'],
-    			
-    	);
+    	$this->generatePostFieldMap();
         
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];

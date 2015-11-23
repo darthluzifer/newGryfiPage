@@ -1,5 +1,5 @@
 <?php
-namespace Application\Block\Eventtable;
+namespace Application\Block\Nexteventblock;
 
 use Application\Block\BasicTableBlock\FieldTypes\DateField;
 use Concrete\Core\Block\BlockController;
@@ -16,7 +16,7 @@ use Application\Block\BasicTableBlock\FieldTypes\DropdownLinkField as DropdownLi
 use Application\Block\BasicTableBlock\FieldTypes\DropdownMultilinkField as DropdownMultilinkField;
 use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\WysiwygField;
-use Application\Block\
+use Application\Block\Eventtable as Eventtable;
 
 class Controller extends BasicTableBlockController
 {

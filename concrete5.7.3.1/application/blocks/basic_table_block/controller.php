@@ -16,48 +16,106 @@ use Application\Block\BasicTableBlock\Test as Test;
 class Controller extends BlockController
 {
 
+    /**
+     * the options that can be set
+     * @var array
+     */
     public $options = array();
-    protected $btTable = 'btBasicTableInstance';
-    protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBasicTable'/*name of the table where the data is stored*/);
-	protected $fields = array();
-	
-	
-	protected $tableName = "btBasicTable";
-	
-	protected $executed = false;
-	
-	protected $isFormview = false;
-	
-	protected $editKey = null;
-	
-	protected $bID = null;
-	
-	protected $postFieldMap = array();
-    
-	protected $errorMsg = array();
-	
-	protected $header = "BasicTable";
-	
 
+    /**
+     * the table where the block metadata is stored
+     * @var string
+     */
+    protected $btTable = 'btBasicTableInstance';
+    /**
+     * don't really know why necessary
+     * @var array
+     */
+    //protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBasicTable'/*name of the table where the data is stored*/);
+
+    /**
+     * @var array variable to store the fields
+     * array of Appliaction\Block\BasicTableBlock\Field
+     */
+    protected $fields = array();
+
+    /**
+     * Tablename of the table displayed
+     * @var string
+     */
+	protected $tableName = "btBasicTable";
+
+    /**
+     * if the block is already executed
+     * @var bool
+     */
+	protected $executed = false;
+
+    /**
+     * If the block is in form view
+     * @var bool
+     */
+	protected $isFormview = false;
+
+    /**
+     * the currently edited id
+     * @var null int
+     */
+	protected $editKey = null;
+
+    /**
+     * the Block id
+     * @var null int
+     */
+	protected $bID = null;
+
+    /**
+     * to handle a post request more easy, here is the reverse map postname -> field
+     * (in fields is the postname stored)
+     * @var array
+     */
+	protected $postFieldMap = array();
+
+    /**
+     * if validatePost throws an error, here are the errormessages stored
+     * @var array
+     */
+	protected $errorMsg = array();
+
+    /**
+     * table title
+     * @var string
+     */
+	protected $header = "BasicTable";
+
+    /**
+     * @var string
+     */
 	protected $SQLFilter = " 1=1";
-	
+
+    /**
+     *
+     * @var array
+     */
 	protected $addFields = array();
-    
+
+    /**
+     *
+     * Controller constructor.
+     * @param null $obj
+     */
     function __construct($obj = null)
     {
         parent::__construct($obj);
-        
+
+        //define the fields
         $this->fields=array(
         		"id" => new Field("id", "ID", "nr"),
         		"value" => new Field("value", "Value", "wert"),
         );
-        
-        $this->postFieldMap = array(
-        		"nr" => $this->fields['id'],
-        		"wert" => $this->fields['value']
-        		
-        );
-        
+
+
+        $this->generatePostFieldMap();
         
         
         $c = Page::getCurrentPage();
@@ -65,6 +123,7 @@ class Controller extends BlockController
         if (is_object($c)) {
             $this->cID = $c->getCollectionID();
         }
+        //load the options
         if ($this->bID) {
             $db = Loader::db();
             $v = array($this->bID);
@@ -82,38 +141,69 @@ class Controller extends BlockController
                 }
             }
         }
+        //if editkey is set in session, save in property
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
         }
+
+        //check if it is in form view
         if(isset($_SESSION[$this->tableName]['prepareFormEdit'])){
         	$this->isFormview = $_SESSION[$this->tableName]['prepareFormEdit'];
         }
-        
+        //translate the header
         $this->header = t($this->header);
-        
+
+
     }
-    
+
+    /**
+     * Returns the id of the block
+     * TODO change that tablename is not used
+     * @return string
+     */
     function getHTMLId(){
     	return $this->tableName.$this->bID;
     }
-	
+
+    /**
+     * Returns the path where the basic table files are stored
+     * @return string
+     */
     function getBasicTablePath(){
     	return __DIR__;
     }
+
+    /**
+     * @return string
+     */
     public function getBlockTypeDescription()
     {
         return t("Show a simple Table with Data to create, edit, delete");
     }
 
+    /**
+     * @return string
+     */
     public function getBlockTypeName()
     {
         return t("BasicTable");
     }
-    
+
+    /**
+     * returns the javascript error messages translated
+     * @return array
+     */
     public function getJavaScriptStrings() {
     	return array('file-required' => t('You must select a file.'));
     }
-    
+
+    /**
+     * Returns the HTML for the possible actions
+     * TODO extract html to view
+     * @param $object //view object
+     * @param array $row //row (with the rowid)
+     * @return string
+     */
     function getActions($object, $row = array()){
     	//".$object->action('edit_row_form')."
     	$string="
@@ -129,8 +219,12 @@ class Controller extends BlockController
     	</td>";
     	return $string;
     }
-    
-    
+
+    /**
+     * Returns the HTML for the edit button
+     * @param $row
+     * @return string
+     */
     function getEditActionIcon($row){
     	return "<button type='submit' 
     					value = 'edit' 
@@ -141,7 +235,12 @@ class Controller extends BlockController
     								<i class ='fa fa-pencil'> </i>
     			 </button>";
     }
-    
+
+    /**
+     * Returns the HTML for the delete button
+     * @param $row
+     * @return string
+     */
     function getDeleteActionIcon($row){
     	return "<button type='submit'
     					value = 'delete'
@@ -168,21 +267,28 @@ class Controller extends BlockController
         parent::delete();
     }
 
+    /**
+     * if save is pressed, the data is saved to the sql table
+     * @throws \Exception
+     */
     function action_save_row()
     {
-    	
+    	//form view is over
     	$this->isFormview = false;
         $u = new User();
         
         
         $db = Loader::db();
         $bo = $this->getBlockObject();
+
+
         if ($this->post('rcID')) {
             // we pass the rcID through the form so we can deal with stacks
             $c = Page::getByID($this->post('rcID'));
         } else {
             $c = $this->getCollectionObject();
         }
+
 
         if(isset($_POST['cancel'])){
         	if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
@@ -214,17 +320,20 @@ class Controller extends BlockController
                 $ip = $iph->getRequestIP();
                 $ip = ($ip === false)?(''):($ip->getIp($ip::FORMAT_IP_STRING));
                 $v = array();
-//TODO: Validation
+
 
                 $error = false;
                 $errormsg = "";
                 $savevalues = $_REQUEST;
-				foreach($this->addFields as $key => $value){
+
+                //add additional fields
+                foreach($this->addFields as $key => $value){
 					$savevalues[$key]=$value;
 				}
-              
+
+                //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
                 $selfsavefields = array();
-                
+
                 foreach($this->getFields() as $key => $value){
                 	if($key == 'id'){}
                 	else{
@@ -238,7 +347,6 @@ class Controller extends BlockController
                 		}elseif($value->validatePost($savevalues[$value->getPostName()])){
                 			$v[]=$value->getSQLValue();
                 		}else{
-                			var_dump($value->getPostName());
                 			$error = true;
                 			$this->errorMsg[] = $field->getErrorMsg();
                 		}
@@ -246,8 +354,8 @@ class Controller extends BlockController
                 }
                 
                 if($error){
-                	var_dump($this->errorMsg);
-                	$this->prepareFormEdit();
+                	//TODO send error msg to client
+                    $this->prepareFormEdit();
                 	$_SESSION['BasicTableFormData'][$this->bID]['inputValues']=$_REQUEST;
                 	return false;
                 }
@@ -259,9 +367,11 @@ class Controller extends BlockController
                 	$q = $this->createUpdateString();
                 	$v[]=$this->editKey;
                 }
-            
+
+                //save values
                 $db->query($q, $v);
-                
+
+                //if the data is inserted, the saveself fields can only save afterwards
                 foreach($selfsavefields as $num => $selfsavefield){
                 	$selfsavefield->setRowId($this->editKey);
                 	$selfsavefield->saveValues();
@@ -277,22 +387,32 @@ class Controller extends BlockController
            	}
         
     }
-    
-    
+
+    /**
+     * action display form for new entry
+     */
     function action_add_new_row_form(){
     	$this->prepareFormEdit();
     	
     }
 
+    /**
+     * action to open a form to edit/delete (manipulate) an existing row
+     */
     function action_edit_row_form(){
+        //TODO check permissions
     	if ($this->requiresRegistration()) {
     		if (!$u->isRegistered()) {
     			$this->redirect('/login');
     		}
     	}
+
+        //get the editkey
     	$this->editKey = $_POST['rowid'];
+        //save it in the session
     	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
-    	if($_POST['action'] == 'edit'){
+
+        if($_POST['action'] == 'edit'){
     		$this->prepareFormEdit();
     	}else{
     		$this->deleteRow();
@@ -320,7 +440,11 @@ class Controller extends BlockController
     		return false;
     	}
     }
-    
+
+    /**
+     * check if block is in form view or not
+     * @return bool
+     */
     function displayForm(){
     	return $this->isFormview;
     }
@@ -442,6 +566,10 @@ class Controller extends BlockController
         
     }
 
+    /**
+     * funciton to retrieve the table data
+     * @return array
+     */
     public function displayTable()
     {
         // Prepare the database query
@@ -458,21 +586,33 @@ class Controller extends BlockController
 		return $tabledata;
         
     }
-    
+
+    /**
+     * @return array of Application\Block\BasicTableBlock\Field
+     */
     public function getFields(){
     	return $this->fields;
     }
-    
-    
-    
+
+
+    /**
+     * sets the block to executed status
+     */
     public function setExecuted(){
     	$this->executed = true;
     }
-    
+
+    /**
+     * @return bool
+     */
     public function isExecuted(){
     	return $this->executed;
     }
-    
+
+    /**
+     * retrieve one row
+     * @return array
+     */
     public function getRowValues(){
 
     	$returnArray = array();
@@ -529,6 +669,18 @@ class Controller extends BlockController
     
     function getHeader(){
     	return $this->header;
+    }
+
+
+    /**
+     *
+     */
+    protected function generatePostFieldMap(){
+        if(count($this->fields)>0) {
+            foreach ($this->fields as $key => $field) {
+                $this->postFieldMap[$field->getPostName()]=$this->fields[$key];
+            }
+        }
     }
 
 }
