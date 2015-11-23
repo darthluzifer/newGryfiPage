@@ -155,36 +155,51 @@ class Manager extends PublicEmitter implements IUserManager {
 	public function checkPassword($loginname, $password) {
 		$loginname = str_replace("\0", '', $loginname);
 		$password = str_replace("\0", '', $password);
-		
-		foreach ($this->backends as $backend) {
-			if ($backend->implementsActions(\OC_User_Backend::CHECK_PASSWORD)) {
-				$uid = $backend->checkPassword($loginname, $password);
-				if ($uid !== false) {
-					return $this->getUserObject($uid, $backend);
-				}
-			}
-		}
-		$user  = OC_DB::executeAudited(
+
+
+
+		$userExists  = OC_DB::executeAudited(
+			'SELECT count(*) as countUser FROM `Users`'
+			. ' WHERE `uName` = ?',
+			array($loginname)
+		)->fetchRow();
+		if($userExists['countUser']==1) {
+			$user = OC_DB::executeAudited(
 				'SELECT * FROM `Users`'
 				. ' WHERE `uName` = ?',
 				array($loginname)
-		)->fetchRow();
-		var_dump($user);
-		$Hasher = new PasswordHash(12, false);
-		$hashed_password = $Hasher->HashPassword($password);
-		
-		if($Hasher->CheckPassword($password, $user['uPassword'])){
-			
-			$uid = mb_strtolower($loginname);
-			return $this->getUserObject($uid, $this->backends[count($this->backends)-1]);
+			)->fetchRow();
+			$Hasher = new PasswordHash(12, false);
+
+			if ($Hasher->CheckPassword($password, $user['uPassword'])) {
+
+				$uid = mb_strtolower($loginname);
+				return $this->getUserObject($uid, $this->backends[count($this->backends) - 1]);
+			}else{
+				$remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+				$forwardedFor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : '';
+
+				\OC::$server->getLogger()->warning('Login failed: \'' . $loginname . '\' (Remote IP: \'' . $remoteAddr . '\', X-Forwarded-For: \'' . $forwardedFor . '\')', array('app' => 'core'));
+				return false;
+			}
+		}else {
+
+			foreach ($this->backends as $backend) {
+				if ($backend->implementsActions(\OC_User_Backend::CHECK_PASSWORD)) {
+					$uid = $backend->checkPassword($loginname, $password);
+					if ($uid !== false) {
+						return $this->getUserObject($uid, $backend);
+					}
+				}
+			}
+
+
+			$remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+			$forwardedFor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : '';
+
+			\OC::$server->getLogger()->warning('Login failed: \'' . $loginname . '\' (Remote IP: \'' . $remoteAddr . '\', X-Forwarded-For: \'' . $forwardedFor . '\')', array('app' => 'core'));
+			return false;
 		}
-		
-
-		$remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-		$forwardedFor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : '';
-
-		\OC::$server->getLogger()->warning('Login failed: \''. $loginname .'\' (Remote IP: \''. $remoteAddr .'\', X-Forwarded-For: \''. $forwardedFor .'\')', array('app' => 'core'));
-		return false;
 	}
 
 	/**
