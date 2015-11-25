@@ -1,5 +1,5 @@
 <?php
-namespace Application\Core\User;
+namespace Concrete\Core\User;
 
 use Concrete\Core\File\StorageLocation\StorageLocation;
 use \Concrete\Core\Foundation\Object;

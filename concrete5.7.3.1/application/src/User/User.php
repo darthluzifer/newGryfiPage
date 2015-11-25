@@ -1,5 +1,5 @@
 <?php
-namespace Application\Core\User;
+namespace Concrete\Core\User;
 use \Concrete\Core\Foundation\Object;
 use Loader;
 use Config;
@@ -15,6 +15,8 @@ use \Concrete\Core\Permission\Access\Entity\Entity as PermissionAccessEntity;
 use Core;
 use Group;
 use Zend\Stdlib\DateTime;
+use Concrete\Flysystem\Exception;
+use Concrete\Core\Support\Facade\Log;
 
 class User extends Object
 {
@@ -74,6 +76,7 @@ class User extends Object
 
     public static function isLoggedIn()
     {
+
         $session = Core::make('session');
 
         return $session->has('uID') && $session->get('uID') > 0 && $session->has('uName')
@@ -82,7 +85,6 @@ class User extends Object
 
     public function checkLogin()
     {
-
         $session = Core::make('session');
         $aeu = Config::get('concrete.misc.access_entity_updated');
         if ($aeu && $aeu > $session->get('accessEntitiesUpdated')) {
@@ -227,6 +229,8 @@ class User extends Object
     public function recordLogin()
     {
         $db = Loader::db();
+        
+        
         $uLastLogin = $db->getOne("select uLastLogin from Users where uID = ?", array($this->uID));
 
         /** @var \Concrete\Core\Permission\IPService $iph */
@@ -496,7 +500,8 @@ class User extends Object
     {
         // takes a group object, and, if the user is not already in the group, it puts them into it
         $dt = Loader::helper('date');
-
+		$l = new Log();
+		$l->addEntry("test");
         if (is_object($g)) {
             if (!$this->inGroup($g)) {
                 $gID = $g->getGroupID();
@@ -528,8 +533,9 @@ class User extends Object
 
                 $ue = new \Concrete\Core\User\Event\UserGroup($this);
                 $ue->setGroupObject($g);
+              
                 Events::dispatch('on_user_enter_group', $ue);
-                
+                $l->addEntry($g->getGroupName());
                 if($g->getGroupName() === "owncloud"){
                 	$user = UserInfo::getByID($this->getUserID());
                 	$db->Replace("oc_users", array(

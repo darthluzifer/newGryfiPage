@@ -2,9 +2,9 @@
 
 /**
  * -----------------------------------------------------------------------------
- * Generated 2015-11-19T07:59:54+01:00
+ * Generated 2015-11-25T21:52:51+01:00
  *
- * @item      misc.do_page_reindex_check
+ * @item      cache.doctrine_dev_mode
  * @group     concrete
  * @namespace null
  * -----------------------------------------------------------------------------
@@ -15,7 +15,7 @@ return array(
     'version_installed' => '5.7.5.2',
     'misc' => array(
         'access_entity_updated' => 1444841265,
-        'latest_version' => '5.7.3.1',
+        'latest_version' => '5.7.5.2',
         'seen_introduction' => true,
         'do_page_reindex_check' => false
     ),
@@ -33,7 +33,8 @@ return array(
         'overrides' => false,
         'pages' => '0',
         'full_page_lifetime' => 'default',
-        'full_page_lifetime_value' => null
+        'full_page_lifetime_value' => null,
+        'doctrine_dev_mode' => true
     ),
     'theme' => array(
         'compress_preprocessor_output' => true
