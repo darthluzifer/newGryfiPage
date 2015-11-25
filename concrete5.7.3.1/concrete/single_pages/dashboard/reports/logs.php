@@ -5,6 +5,11 @@ $th = Loader::helper('text');
 
 
 ?>
+<div class="ccm-dashboard-header-buttons">
+    <a id="ccm-export-results" class="btn btn-success" href="<?php echo $view->action('csv', $valt->generate())?>?<?php echo $query ?>">
+        <i class='fa fa-download'></i> <?php echo t('Export to CSV') ?>
+    </a>
+</div>
 
 <div class="ccm-dashboard-content-full">
 
@@ -60,7 +65,7 @@ $th = Loader::helper('text');
         <table class="ccm-search-results-table">
             <thead>
                 <tr>
-                    <th class="<?php echo $list->getSearchResultsClass('time')?>"><a href="<?php echo $list->getSortByURL('time', 'desc')?>"><?php echo t('Date/Time')?></a></th>
+                    <th class="<?php echo $list->getSearchResultsClass('logID')?>"><a href="<?php echo $list->getSortByURL('logID', 'desc')?>"><?php echo t('Date/Time')?></a></th>
                     <th class="<?php echo $list->getSearchResultsClass('level')?>"><a href="<?php echo $list->getSortByURL('level', 'desc')?>"><?php echo t('Level')?></a></th>
                     <th><span><?php echo t('Channel')?></span></th>
                     <th><span><?php echo t('User')?></span></th>
