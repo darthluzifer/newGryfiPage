@@ -1,6 +1,7 @@
 <?php
 namespace Application\Block\BasicTableBlock;
 
+use Application\Block\BasicTableBlock\Entities\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Loader;
 use Page;
@@ -107,6 +108,14 @@ class Controller extends BlockController
     function __construct($obj = null)
     {
         parent::__construct($obj);
+
+        $object = new TableBlockOption();
+        $object->set("optionType", "Application\Block\BasicTableBlock\Entities\BlockOptions\CanEditOption");
+        $object->set("optionValue", "test");
+
+        //$db = Loader::db();
+        //$em=$db->getEntityManager();
+       // $em->persist($object);
 
         //define the fields
         $this->fields=array(
