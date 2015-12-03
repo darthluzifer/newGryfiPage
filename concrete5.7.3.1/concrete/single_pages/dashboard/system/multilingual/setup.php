@@ -176,89 +176,14 @@ ccm_multilingualPopulateIcons = function(country) {
 </script>
 
 
-<fieldset>
-    <legend><?php echo t('Copy Locale Tree')?></legend>
-<?php
-$u = new User();
-$copyLocales = array();
-$includesHome = false;
-foreach($pages as $pc) {
-	$pcl = MultilingualSection::getByID($pc->getCollectionID());
-	if ($pc->getCollectionID() == HOME_CID) {
-		$includesHome = true;
-	}
-	$copyLocales[$pc->getCollectionID()] = tc(/*i18n: %1$s is a page name, %2$s is a language name, %3$s is a locale identifier (eg en_US)*/'PageWithLocale', '%1$s (%2$s, %3$s)', $pc->getCollectionName(), $pcl->getLanguageText(), $pcl->getLocale());
-}
-
-if ($u->isSuperUser() && !$includesHome) { ?>
-<form method="post" id="ccm-internationalization-copy-tree" action="#">
-	<?php if (count($pages) > 1) {
-		$copyLocaleSelect1 = $form->select('copyTreeFrom', $copyLocales);
-		$copyLocaleSelect2 = $form->select('copyTreeTo', $copyLocales);
-		?>
-		<p><?php echo t('Copy all pages from a locale to another section. This will only copy pages that have not been associated. It will not replace or remove any pages from the destination section.')?></p>
-		<div class="form-group">
-    		<label class="control-label"><?php echo t('Copy From')?></label>
-		    <?php echo $copyLocaleSelect1?>
-		</div>
-
-        <div class="form-group">
-		    <label class="control-label"><?php echo tc('Destination', 'To')?></label>
-		    <?php echo $copyLocaleSelect2?>
-		</div>
-
-        <?php echo Loader::helper('validation/token')->output('copy_tree')?>
-        <button class="btn btn-default pull-left" type="submit" name="copy"><?php echo t('Copy Tree')?></button>
-
-	<?php } else if (count($pages) == 1) { ?>
-		<p><?php echo t("You must have more than one multilingual section to use this tool.")?></p>
-	<?php } else { ?>
-		<p><?php echo t('You have not created any multilingual content sections yet.')?></p>
-	<?php } ?>
-
-	<?php if(version_compare(APP_VERSION, '5.6.0.3', '>')) {
-			// 5.6.1 OR GREATER
-		?>
-		<script type="text/javascript">
-		$(function() {
-			$("#ccm-internationalization-copy-tree").on('submit', function() {
-				var ctf = $('select[name=copyTreeFrom]').val();
-				var ctt = $('select[name=copyTreeTo]').val();
-				if (ctt > 0 && ctf > 0 && ctt != ctf) {
-					ccm_triggerProgressiveOperation(
-						CCM_TOOLS_PATH + '/dashboard/sitemap_copy_all',
-						[{'name': 'origCID', 'value': ctf}, {'name': 'destCID', 'value': ctt}, {'name': 'copyChildrenOnly', 'value': true}],
-						"<?php echo t('Copy Locale Tree')?>", function() {
-							window.location.href= "<?php echo $this->action('tree_copied')?>";
-						}
-					);
-				} else {
-					alert("<?php echo t('You must choose two separate multilingual sections to copy from/to')?>");
-				}
-				return false;
-			});
-		});
-		</script>
-
-	<?php } ?>
-
-</form>
-<?php } else if (!$u->isSuperUser()) { ?>
-	<p><?php echo t('Only the super user may copy locale trees.')?></p>
-<?php } else if ($includesHome) { ?>
-	<p><?php echo t('Since one of your multilingual sections is the home page, you may not duplicate your site tree using this tool. You must manually assign pages using the page report.')?></p>
-<?php } ?>
-</fieldset>
-
-<div class="spacer-row-6"></div>
-
+<hr/>
 <?php if (count($pages) > 0) {
 	$defaultLocales = array('' => t('** None Set'));
 	foreach($pages as $pc) {
 		$pcl = MultilingualSection::getByID($pc->getCollectionID());
 		$defaultLocales[$pcl->getLocale()] = tc(/*i18n: %1$s is a page name, %2$s is a language name, %3$s is a locale identifier (eg en_US)*/'PageWithLocale', '%1$s (%2$s, %3$s)', $pc->getCollectionName(), $pcl->getLanguageText(), $pcl->getLocale());
 	}
-	$defaultLocalesSelect = $form->select('defaultLocale', $defaultLocales, $defaultLocale);
+	$defaultLocalesSelect = $form->select('defaultLocale', $defaultLocales, $defaultLocale, array('required' => 'required'));
 	?>
    <legend><?php echo t('Multilingual Settings')?></legend>
 	<fieldset>
@@ -284,11 +209,33 @@ if ($u->isSuperUser() && !$includesHome) { ?>
             </div>
 
             <div class="form-group">
+                <label class="control-label"><?php echo t('Registered Users Language Preferences'); ?></label>
+                <p><?php echo t('Load Interface Language from:'); ?></p>
+                <div class="radio">
+                    <label>
+                        <?php echo $form->radio('keepUsersLocale', 0, $keepUsersLocale); ?>
+                        <span><?php echo t('Page (if it exists)'); ?></span>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <?php echo $form->radio('keepUsersLocale', 1, $keepUsersLocale); ?>
+                        <span><?php echo t("User Profile"); ?></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label"><?php echo t('Site interface source locale');?></label>
+                <div class="form-inline">
                 <?php
                 echo $form->select('defaultSourceLanguage', array_merge(array('' => t('*** Unknown or mixed language')), $languages), $defaultSourceLanguage);
+                ?>
+
+                    <?php
                 echo $form->select('defaultSourceCountry', array_merge(array('' => t('*** Undetermined country')), $countries), $defaultSourceCountry);
                 ?>
+                </div>
                 <script>
                 $(document).ready(function() {
                 	new ccmCountryForLanguageLister($('#defaultSourceLanguage'), $('#defaultSourceCountry'));
@@ -302,4 +249,6 @@ if ($u->isSuperUser() && !$includesHome) { ?>
             </div>
         </form>
     </fieldset>
-	<?php } ?>
+    <?php
+}
+
