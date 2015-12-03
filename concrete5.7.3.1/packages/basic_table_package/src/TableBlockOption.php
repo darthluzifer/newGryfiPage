@@ -1,12 +1,12 @@
 <?php
-namespace Application\Block\BasicTableBlock\Entities;
+namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
-use Application\Block\BasicTableBlock\Exceptions\InvalidBlockOptionException;
-use Application\Block\BasicTableBlock\Exceptions\InvalidBlockOptionSetOrderException;
-use Application\Block\BasicTableBlock\Exceptions\InvalidBlockOptionValueException;
-use Concrete\Package\EntitiesExample\Src\Entity;
-use Application\Block\BasicTableBlock\Entities\BlockOptions\CanEditOption;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionException;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionSetOrderException;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionValueException;
+use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\BlockOptions\CanEditOption;
 /**
  * Class BasicTableBlockOption
  * @package Application\Block\BasicTableBlock

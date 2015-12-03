@@ -5,7 +5,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionSetOrderException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionValueException;
-use Concrete\Package\EntitiesExample\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\BlockOptions\CanEditOption;
 /**
  * Class BasicTableBlockOption

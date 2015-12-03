@@ -7,7 +7,7 @@ use Loader;
 use Page;
 use User;
 use Core;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Field as Field;
+use Concrete\Package\BasicTablePackage\Src\Field as Field;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\FileField as FileField;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 
@@ -16,6 +16,12 @@ use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Test as Tes
 
 class Controller extends BlockController
 {
+
+
+
+    protected $pkgAutoloaderRegistries = array(
+        'Src' => 'Concrete\Package\Src'
+    );
 
     /**
      * the options that can be set
@@ -170,6 +176,9 @@ class Controller extends BlockController
 
     }
 
+
+
+
     /**
      * Returns the id of the block
      * TODO change that tablename is not used
@@ -200,7 +209,7 @@ class Controller extends BlockController
      */
     public function getBlockTypeName()
     {
-        return t("BasicTable");
+        return t("BasicTablePackaged");
     }
 
     /**
@@ -546,6 +555,12 @@ class Controller extends BlockController
         }
 
         return parent::duplicate($newBID);
+
+    }
+
+
+    //todo
+    public function uninstall(){
 
     }
 

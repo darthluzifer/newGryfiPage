@@ -2,14 +2,14 @@
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\BasicTableBlock\Field as Field;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\BasicTableBlock\FieldTypes\Field as Field;
 use Loader;
 use Page;
 use Punic\Exception;
 use User;
 use Core;
 use File;
-use Concrete\Controller\SinglePage\Dashboard\BBlock\Permissions as Permissions;
+use Concrete\Controller\Panel\Detail\Page\Permissions
 use Concrete\Core\Block\View\BlockView as View;
 use Concrete\Core\Support\Facade\Log;
 

@@ -109,9 +109,7 @@ class Controller extends BlockController
     {
         parent::__construct($obj);
 
-        $object = new TableBlockOption();
-        $object->set("optionType", "Application\Block\BasicTableBlock\Entities\BlockOptions\CanEditOption");
-        $object->set("optionValue", "test");
+
 
         //$db = Loader::db();
         //$em=$db->getEntityManager();
