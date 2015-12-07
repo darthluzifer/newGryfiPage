@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src;
+namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionException;
