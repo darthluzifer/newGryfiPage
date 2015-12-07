@@ -9,7 +9,7 @@ use Punic\Exception;
 use User;
 use Core;
 use File;
-use Concrete\Controller\Panel\Detail\Page\Permissions
+use Concrete\Controller\Panel\Detail\Page\Permissions;
 use Concrete\Core\Block\View\BlockView as View;
 use Concrete\Core\Support\Facade\Log;
 

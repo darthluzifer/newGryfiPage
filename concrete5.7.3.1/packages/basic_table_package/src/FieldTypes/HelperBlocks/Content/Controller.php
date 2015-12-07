@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\BasicTablePackage\Src\FieldTypes\HelperbBlock\Content;
+namespace Concrete\Package\BasicTablePackage\Src\FieldTypes\HelperBlocks\Content;
 use \Concrete\Core\Block\BlockController;
 use \Concrete\Core\Editor\LinkAbstractor;
 use \Concrete\Block\Content\Controller as ContentBlockController;

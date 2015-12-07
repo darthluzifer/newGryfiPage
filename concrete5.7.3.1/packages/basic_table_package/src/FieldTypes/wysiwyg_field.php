@@ -7,7 +7,7 @@ use Loader;
 use Page;
 use User;
 use Core;
-use Concrete\Package\BasicTablePackage\Src\Field as Field;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HelperBlocks\Content\Controller as ContentController;
 use Concrete\Core\Block\BlockType as BlockType;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HelperbBlock\Content\Application\Block\BasicTableBlock\FieldTypes\HelperbBlock\Content;

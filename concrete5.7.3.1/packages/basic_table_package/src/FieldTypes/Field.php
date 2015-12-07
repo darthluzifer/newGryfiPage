@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\BasicTablePackage\Src;
+namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
 use Loader;

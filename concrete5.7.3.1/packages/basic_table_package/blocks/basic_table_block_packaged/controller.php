@@ -7,7 +7,7 @@ use Loader;
 use Page;
 use User;
 use Core;
-use Concrete\Package\BasicTablePackage\Src\Field as Field;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\FileField as FileField;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 

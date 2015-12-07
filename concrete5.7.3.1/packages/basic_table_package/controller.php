@@ -31,6 +31,10 @@ class Controller extends Package
     protected $appVersionRequired = '5.7.4';
     protected $pkgVersion = '0.0.1';
 
+    protected $pkgAutoloaderRegistries = array(
+      //  'src/FieldTypes/Statistics' => '\BasicTablePackage\FieldTypes'
+    );
+
     public function getPackageName()
     {
         return t("BasicTablePackage");
@@ -49,12 +53,20 @@ class Controller extends Package
         // function. 
         ClassLoader::getInstance()->registerPackage($this);
         */
+        try {
+            $db = Loader::db();
+            $q = "START TRANSACTION;";
+            $db->query($q);
+            $pkg = parent::install();
+            BlockType::installBlockType("basic_table_block_packaged", $pkg);
 
-        $pkg = parent::install();
-        BlockType::installBlockType("basic_table_block_packaged", $pkg);
-        $db = Loader::db();
-        $q = "COMMIT";
-        $db->query($q);
+            $q = "COMMIT";
+            $db->query($q);
+        }catch(Exception $e){
+            $q = "ROLLBACK";
+            $db->query($q);
+            throw $e;
+        }
 
 
     }
