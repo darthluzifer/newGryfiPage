@@ -1,7 +1,7 @@
 <?php
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\TableBlockOption;
+use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Loader;
 use Page;
@@ -109,6 +109,9 @@ class Controller extends BlockController
      */
 	protected $addFields = array();
 
+
+    protected $blockOptions = array();
+
     /**
      *
      * Controller constructor.
@@ -118,15 +121,8 @@ class Controller extends BlockController
     {
         parent::__construct($obj);
 
-        /*
-        $object = new TableBlockOption();
-        var_dump($object);
-        $object->set("optionType", "Application\Block\BasicTableBlock\Entities\BlockOptions\CanEditOption");
-        $object->set("optionValue", "test");
-        */
-        //$db = Loader::db();
-        //$em=$db->getEntityManager();
-       // $em->persist($object);
+
+
 
         //define the fields
         $this->fields=array(
@@ -545,14 +541,14 @@ class Controller extends BlockController
     {
 
         $db = Loader::db();
-
+        /*
         foreach ($this->options as $opt) {
             $v1 = array($newBID, $opt->getOptionName(), $opt->getOptionDisplayOrder());
             $q1 = "INSERT INTO btBasicTableActionOption (bID, optionName, displayOrder) VALUES (?, ?, ?)";
             $db->query($q1, $v1);
 
             
-        }
+        }*/
 
         return parent::duplicate($newBID);
 
@@ -710,6 +706,11 @@ class Controller extends BlockController
                 $this->postFieldMap[$field->getPostName()]=$this->fields[$key];
             }
         }
+    }
+
+
+    public function getBlockOptions(){
+        return $this->blockOptions;
     }
 
 }

@@ -34,8 +34,9 @@ class TableBlockOption extends Entity{
     protected $optionValue;
 
     /**
-     * @var
-     */
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\BasicTableInstance", inversedBy="tableBlockOptions")
+     * @JoinColumn(name="bID", referencedColumnName="bID", nullable=false, onDelete="CASCADE")
+     **/
     protected $BasicTableInstance;
 
 
@@ -44,6 +45,12 @@ class TableBlockOption extends Entity{
      * @var array
      */
     protected $optionTypes = array();
+
+
+    protected $possibleValues = array(
+        "test" => 1,
+        "test2" => 1,
+    );
 
     /**
      *
@@ -88,6 +95,6 @@ class TableBlockOption extends Entity{
     }
 
     protected function checkValue($value){
-        return true;
+        return isset($this->possibleValues[$value]);
     }
 }
