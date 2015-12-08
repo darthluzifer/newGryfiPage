@@ -8,7 +8,7 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\TableBlockOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Helper\Table;

@@ -1,16 +1,18 @@
 <?php
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\BlockOptions\TableBlockOption;
+use Concrete\Core\Package\Package;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
-use Loader;
+use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
+use Core;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use Doctrine\DBAL\Schema\Table;
 use Page;
 use User;
-use Core;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\FileField as FileField;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\SelfSaveInterface as SelfSaveInterface;
-
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
+use Loader;
 
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Test as Test;
 
@@ -109,8 +111,15 @@ class Controller extends BlockController
      */
 	protected $addFields = array();
 
+    /**
+     * @var \Concrete\Package\BasicTablePackage\Src\BasicTableInstance
+     */
+    protected $basicTableInstance;
 
-    protected $blockOptions = array();
+
+    protected $package;
+
+    protected $entityManager;
 
     /**
      *
@@ -139,6 +148,8 @@ class Controller extends BlockController
         if (is_object($c)) {
             $this->cID = $c->getCollectionID();
         }
+
+        /*
         //load the options
         if ($this->bID) {
             $db = Loader::db();
@@ -156,7 +167,7 @@ class Controller extends BlockController
                     $this->options[] = $opt;
                 }
             }
-        }
+        }*/
         //if editkey is set in session, save in property
         if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
         	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
@@ -170,6 +181,18 @@ class Controller extends BlockController
         $this->header = t($this->header);
 
 
+        //load the current options
+        $pkg = Package::getByHandle('basic_table_package');
+        $em = $pkg->getEntityManager();
+        $this->package = $pkg;
+        $this->entityManager = $em;
+        if($obj instanceof Block) {
+
+
+            $bt = $em->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlo));
+
+            $this->basicTableInstance = $bt;
+        }
     }
 
 
@@ -563,30 +586,30 @@ class Controller extends BlockController
     function save($args)
     {
         parent::save($args);
-        $db = Loader::db();
 
-        if (!is_array($args['survivingOptionNames'])) {
-            $args['survivingOptionNames'] = array();
+        if(!$this->basicTableInstance instanceof BasicTableInstance){
+
+            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
+
+            $this->basicTableInstance = $bt;
         }
 
-        $slashedArgs = array();
-        foreach ($args['survivingOptionNames'] as $arg) {
-            $slashedArgs[] = addslashes($arg);
-        }
-        $db->query(
-            "DELETE FROM btBasicTableActionOption WHERE optionName NOT IN ('" . implode(
-                "','",
-                $slashedArgs) . "') AND bID = " . intval($this->bID));
+        if(count($this->basicTableInstance->get("tableBlockOptions")) == 0){
+            $blockOption = new TableBlockOption();
+            $blockOption->set('BasicTableInstance', $this->basicTableInstance);
+            $blockOption->set('optionType', get_class(new CanEditOption()));
 
-        if (is_array($args['pollOption'])) {
-            $displayOrder = 0;
-            foreach ($args['pollOption'] as $optionName) {
-                $v1 = array($this->bID, $optionName, $displayOrder);
-                $q1 = "INSERT INTO btBasicTableActionOption (bID, optionName, displayOrder) VALUES (?, ?, ?)";
-                $db->query($q1, $v1);
-                $displayOrder++;
-            }
+            $blockOption->set("optionValue", "test");
+            $this->basicTableInstance->addBlockOption($blockOption);
+
+            $this->entityManager->persist($blockOption);
+            $this->entityManager->persist($this->basicTableInstance);
+            $this->entityManager->flush();
+
         }
+
+
+
 
         
     }

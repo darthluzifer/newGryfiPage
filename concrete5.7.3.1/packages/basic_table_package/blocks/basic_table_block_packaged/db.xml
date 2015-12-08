@@ -25,6 +25,19 @@
 			<default value=""/>
 		</field>
 	</table>
+
+
+
+
+	<table name ='btBasicTableOption2Group'>
+		<field name="ID" type="I">
+			<key />
+			<unsigned />
+			<autoincrement/>
+		</field>
+		<field name='optionID' type='I'></field>
+		<field name='groupID' type='I'></field>
+	</table>
 </schema>
 
 

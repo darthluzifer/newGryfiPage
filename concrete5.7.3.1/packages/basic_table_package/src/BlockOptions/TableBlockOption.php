@@ -2,11 +2,14 @@
 namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
+use Concrete\Core\Support\Facade\Log;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionSetOrderException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionValueException;
 use Concrete\Package\BasicTablePackage\Src\Entity;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Src\BlockOptions\CanEditOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use OpenCloud\Common\Log\Logger;
+
 /**
  * Class BasicTableBlockOption
  * @package Application\Block\BasicTableBlock
@@ -34,7 +37,7 @@ class TableBlockOption extends Entity{
     protected $optionValue;
 
     /**
-     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\BasicTableInstance", inversedBy="tableBlockOptions")
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\BasicTableInstance", inversedBy="tableBlockOptions", cascade={"persist"})
      * @JoinColumn(name="bID", referencedColumnName="bID", nullable=false, onDelete="CASCADE")
      **/
     protected $BasicTableInstance;
@@ -58,7 +61,6 @@ class TableBlockOption extends Entity{
     public function __construct(){
 
         $this->optionTypes[get_class(new CanEditOption())] = new CanEditOption();
-
     }
 
 
@@ -68,6 +70,10 @@ class TableBlockOption extends Entity{
     {
         //to check the value, optionType and optionValue have to be set
         $checkvalue = false;
+        if(count($this->optionTypes) == 0){
+            $this->__construct();
+        }
+        //\Log::debug(var_dump($this->optionTypes));
 
         //check if OptionType is valid
         if($name == 'optionType'){
@@ -86,7 +92,7 @@ class TableBlockOption extends Entity{
             if(!isset($this->optionType)) {
                 throw new InvalidBlockOptionSetOrderException("You cannot set the option value without setting the option type");
             }
-            if(!$this->optionTypes[$value]->checkValue($this->optionValue)){
+            if(!$this->optionTypes[$this->optionType]->checkValue($value)){
                 throw new InvalidBlockOptionValueException("The value $value is invalid for TableBlockOption ".$this->optionType);
             }
         }
