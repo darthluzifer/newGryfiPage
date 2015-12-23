@@ -5,6 +5,8 @@ use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
+use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\DBAL\Schema\Table;
@@ -122,6 +124,17 @@ class Controller extends BlockController
     protected $entityManager;
 
     /**
+     * Array of \Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption
+     * @var array
+     */
+    protected $requiredOptions =array();
+
+    /**
+     * @var \Concrete\Package\BasicTablePackage\Src\Entity
+     */
+    protected $model;
+
+    /**
      *
      * Controller constructor.
      * @param null $obj
@@ -131,13 +144,15 @@ class Controller extends BlockController
         parent::__construct($obj);
 
 
-
+        $this->model = new ExampleEntity();
 
         //define the fields
-        $this->fields=array(
-        		"id" => new Field("id", "ID", "nr"),
-        		"value" => new Field("value", "Value", "wert"),
-        );
+        /*
+        $this->model->setFieldType('id' => new Field("id", "ID", "nr"));
+
+        */
+
+
 
 
         $this->generatePostFieldMap();
@@ -149,33 +164,14 @@ class Controller extends BlockController
             $this->cID = $c->getCollectionID();
         }
 
-        /*
-        //load the options
-        if ($this->bID) {
-            $db = Loader::db();
-            $v = array($this->bID);
-            $q = "SELECT optionID, optionName, displayOrder FROM btBasicTableActionOption WHERE bID = ? ORDER BY displayOrder ASC";
-            $r = $db->query($q, $v);
-            $this->options = array();
-            if ($r) {
-                while ($row = $r->fetchRow()) {
-                    $opt = new Option;
-                    $opt->optionID = $row['optionID'];
-                    $opt->cID = $this->cID;
-                    $opt->optionName = $row['optionName'];
-                    $opt->displayOrder = $row['displayOrder'];
-                    $this->options[] = $opt;
-                }
-            }
-        }*/
         //if editkey is set in session, save in property
-        if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
-        	$this->editKey = $_SESSION[$this->tableName.$this->bID."rowid"];
+        if(isset($_SESSION[$this->getHTMLId()."rowid"])){
+        	$this->editKey = $_SESSION[$this->getHTMLId()."rowid"];
         }
 
         //check if it is in form view
-        if(isset($_SESSION[$this->tableName]['prepareFormEdit'])){
-        	$this->isFormview = $_SESSION[$this->tableName]['prepareFormEdit'];
+        if(isset($_SESSION[$this->getHTMLId()]['prepareFormEdit'])){
+        	$this->isFormview = $_SESSION[$this->getHTMLId()]['prepareFormEdit'];
         }
         //translate the header
         $this->header = t($this->header);
@@ -189,11 +185,31 @@ class Controller extends BlockController
         if($obj instanceof Block) {
 
 
-            $bt = $em->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlo));
+            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlo));
 
             $this->basicTableInstance = $bt;
         }
+
+        $this->requiredOptions = array(
+            new CanEditOption()
+        );
+
     }
+
+    /**
+     * Doctrine instanciates Fields without calling the constructor.
+     * so the Field Types have to be set afterwards.
+     * here the standard way. If you want to add special field types,
+     * use model->setFieldType('id' => new Field("id", "ID", "nr"));
+     * $model->__construct sets the default field types defined in the model
+     * @param Entity $model
+     * @return Entity
+     */
+    public static function setModelFieldTypes(Entity $model){
+        $model->__construct();
+        return $model;
+    }
+
 
 
 
@@ -204,7 +220,9 @@ class Controller extends BlockController
      * @return string
      */
     function getHTMLId(){
-    	return $this->tableName.$this->bID;
+        $classstring = get_class($this->model);
+        $namespaceArray = explode("\\", $classstring);
+    	return $namespaceArray[count($namespaceArray)-1].$this->bID;
     }
 
     /**
@@ -299,11 +317,6 @@ class Controller extends BlockController
 
     function delete()
     {
-        $db = Loader::db();
-        $v = array($this->bID);
-
-        $q = "DELETE FROM btBasicTableActionOption WHERE bID = ?";
-        $db->query($q, $v);
 
 
         parent::delete();
@@ -333,11 +346,10 @@ class Controller extends BlockController
 
 
         if(isset($_POST['cancel'])){
-        	if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
-        		unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+        	if(isset($_SESSION[$this->getHTMLId()."rowid"])){
+        		unset($_SESSION[$this->getHTMLId()."rowid"]);
         	}
-        	//setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
-        	$_SESSION[$this->tableName]['prepareFormEdit'] = false;
+        	$_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
         	$this->redirect($c->getCollectionPath());
         	return;
         }
@@ -379,18 +391,18 @@ class Controller extends BlockController
                 foreach($this->getFields() as $key => $value){
                 	if($key == 'id'){}
                 	else{
-                		$field = $this->postFieldMap[$value->getPostName()];
+                		$fieldname = $this->postFieldMap[$value->getPostName()];
                 		if($value instanceof SelfSaveInterface){
                 			if($value->validatePost($savevalues[$value->getPostName()])){
 	                			//$value->setValue($_REQUEST[$value->getPostName()]);
-	                			$selfsavefields[]=$value->getSQLValue();
+	                			$selfsavefields[$key]=$value->getSQLValue();
                 			}
                 		
                 		}elseif($value->validatePost($savevalues[$value->getPostName()])){
-                			$v[]=$value->getSQLValue();
+                			$v[$key]=$value->getSQLValue();
                 		}else{
                 			$error = true;
-                			$this->errorMsg[] = $field->getErrorMsg();
+                			$this->errorMsg[] = $value->getErrorMsg();
                 		}
                 	}
                 }
@@ -401,30 +413,35 @@ class Controller extends BlockController
                 	$_SESSION['BasicTableFormData'][$this->bID]['inputValues']=$_REQUEST;
                 	return false;
                 }
-                
+                $classname = get_class($this->model);
+                $model = new $classname;
                 if($this->editKey == null){
-                	$q = $this->createInsertString();
-                	$this->editKey = $db->lastInsertId();
+
                 }else{
-                	$q = $this->createUpdateString();
-                	$v[]=$this->editKey;
+                    $model=$this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
                 }
 
                 //save values
-                $db->query($q, $v);
+                foreach($this->getFields() as $key => $value){
+                    $model->set($key, $v[$key]);
+                }
+
 
                 //if the data is inserted, the saveself fields can only save afterwards
                 foreach($selfsavefields as $num => $selfsavefield){
                 	$selfsavefield->setRowId($this->editKey);
                 	$selfsavefield->saveValues();
                 }
+                $this->entityManager->persist($model);
+                $this->entityManager->flush();
+
                 
-                if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
-                	unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+                if(isset($_SESSION[$this->getHTMLId()."rowid"])){
+                	unset($_SESSION[$this->getHTMLId()."rowid"]);
                 }
                 //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
                 
-                $_SESSION[$this->tableName]['prepareFormEdit'] = false;
+                $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
                 $this->redirect($c->getCollectionPath());
            	}
         
@@ -452,7 +469,7 @@ class Controller extends BlockController
         //get the editkey
     	$this->editKey = $_POST['rowid'];
         //save it in the session
-    	$_SESSION[$this->tableName.$this->bID."rowid"]=$this->editKey;
+    	$_SESSION[$this->getHTMLId()."rowid"]=$this->editKey;
 
         if($_POST['action'] == 'edit'){
     		$this->prepareFormEdit();
@@ -462,19 +479,19 @@ class Controller extends BlockController
     }
     
     public function prepareFormEdit(){
-    	$_SESSION[$this->tableName]['prepareFormEdit'] = true;
+    	$_SESSION[$this->getHTMLId()]['prepareFormEdit'] = true;
     	$this->isFormview = true;
     }
     
     public function deleteRow(){
 
-    	$db = Loader::db();
-    	$q = "DELETE FROM ".$this->tableName." WHERE id=?";
-    	$v = array($this->editKey);
-    	$r = $db->query($q,$v);
-    	$_SESSION[$this->tableName]['prepareFormEdit'] = false;
-    	if(isset($_SESSION[$this->tableName.$this->bID."rowid"])){
-    		unset($_SESSION[$this->tableName.$this->bID."rowid"]);
+        $model=$this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
+        $this->entityManager->remove($model);
+        $this->entityManager->flush();
+        $r = true;
+        $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+    	if(isset($_SESSION[$this->getHTMLId()."rowid"])){
+    		unset($_SESSION[$this->getHTMLId()."rowid"]);
     	}
     	if($r){
     		return true;
@@ -490,68 +507,8 @@ class Controller extends BlockController
     function displayForm(){
     	return $this->isFormview;
     }
-    
-    function createInsertString(){
-    	$sql = "INSERT INTO ".$this->tableName." (";
-    	$sqlmiddle = ")VALUES(";
-    	$first = true;
-    	$second = true;
-    	foreach($this->fields as $fieldname => $type){
-    		//instances if SelfSaveInterface save their values by themselfes.
-    		
-    		if(!($type instanceof SelfSaveInterface)){
-	    		if($first){
-	    			$first = false;
-	    		}elseif ($second){
-	    			$second = false;
-	    			$sql.= $fieldname;
-	    			if($type === 'text'){
-	    				$sqlmiddle.= "?";
-	    			}else{
-	    				$sqlmiddle.= "?";
-	    			}
-	    		}else{
-	    			$sql.= ','.$fieldname;
-	    			if($type === 'text'){
-	    				$sqlmiddle.= ",?";
-	    			}else{
-	    				$sqlmiddle.= ",?";
-	    			}
-	    		}
-    		}
-    	}
-    	
-    	return $sql.$sqlmiddle.')';
-    	
-    	
-    }
-    
-    function createUpdateString(){
-    	$sql = "UPDATE ".$this->tableName." SET ";
-    	$first = true;
-    	$second = true;
-    	
-    	foreach($this->fields as $fieldname => $type){
-    	
-    		if(!($type instanceof SelfSaveInterface)){
-	    		if($first){
-	    			$first = false;
-	    		}elseif ($second){
-	    			$second = false;
-	    			$sql.= $fieldname."=?";
-	    			
-	    		}else{
-	    			$sql.= ', '.$fieldname."=?";
-	    			
-	    		}
-    		}
-    	}
-    	$sql.= " WHERE id=?";
 
-    	return $sql;
-    	 
-    	 
-    }
+
 
     function requiresRegistration()
     {
@@ -562,7 +519,7 @@ class Controller extends BlockController
 
     function duplicate($newBID)
     {
-
+        //TODO duplicate options
         $db = Loader::db();
         /*
         foreach ($this->options as $opt) {
@@ -614,6 +571,8 @@ class Controller extends BlockController
         
     }
 
+
+
     /**
      * funciton to retrieve the table data
      * @return array
@@ -621,14 +580,16 @@ class Controller extends BlockController
     public function displayTable()
     {
         // Prepare the database query
-        $db = Loader::db();
-		$q = "SELECT * from ".$this->tableName." WHERE ".$this->SQLFilter;
-		
-		$r = $db->query($q);
+        //$db = Loader::db();
+		//$q = "SELECT * from ".$this->tableName." WHERE ".$this->SQLFilter;
+        //TODO add filter
+        $modelList=$this->entityManager->getRepository(get_class($this->model))->findAll();
+
 		
 		$tabledata = array();
-		while ($row = $r->fetchRow()) {
-			$tabledata[]=$row;
+		foreach ($modelList as $modelNum => $model) {
+            $model = self::setModelFieldTypes($model);
+			$tabledata[]=$model->getAsAssoc();
 		}
 		
 		return $tabledata;
@@ -639,7 +600,7 @@ class Controller extends BlockController
      * @return array of Application\Block\BasicTableBlock\Field
      */
     public function getFields(){
-    	return $this->fields;
+    	return $this->model->getFieldTypes();
     }
 
 
@@ -668,30 +629,15 @@ class Controller extends BlockController
     		
     		foreach($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value){
     			if(is_object($this->postFieldMap[$key])){
-    				$returnArray[$this->postFieldMap[$key]->getSQLFieldName()]=$value;
+    				$returnArray[$this->postFieldMap[$key]]=$value;
     			}
     		}
 
     	}else{
-	    	
-	    	$db = Loader::db();
-	    	$q = "SELECT * FROM ".$this->tableName." WHERE id=?";
-	    	$v = array($this->editKey);
-	    	
-	    	$r = $db->query($q, $v);
-	    	
-	    	if($r){
-	    		$values = $r->fetchRow();
-	    		foreach($this->getFields() as $key => $value){
-	    			if($key == 'id'){}
-	    			elseif($type instanceof SelfSaveInterface){
-	    				$returnArray[$key]=$value->getValues();
-	    			}
-	    			else{
-	    				$value->setSQLValue($values[$key]);
-	    				$returnArray[$key]=$value->getValue();
-	    			}
-	    		}
+            $model=$this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
+            $model = self::setModelFieldTypes($model);
+            if($model){
+	    		$returnArray = $model->getAsAssoc();
 	    	}else{
 	    	
 	    	//dummy function because we have no values
@@ -724,9 +670,10 @@ class Controller extends BlockController
      *
      */
     protected function generatePostFieldMap(){
-        if(count($this->fields)>0) {
-            foreach ($this->fields as $key => $field) {
-                $this->postFieldMap[$field->getPostName()]=$this->fields[$key];
+        $fields = $this->model->getFieldTypes();
+        if(count($fields)>0) {
+            foreach ($fields as $key => $field) {
+                $this->postFieldMap[$field->getPostName()]=$key;
             }
         }
     }

@@ -14,7 +14,7 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         <?php
         
         $tabledata = $controller->displayTable();
-        
+
         ?>
         <div>
         <?php echo $controller->getHeader($view);?>
@@ -28,6 +28,7 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
 	        <tr>
 	        <?php 
 	        $fields = $controller->getFields();
+
 	        foreach( $fields as $fieldname => $type){
 	        	
 	        	if($fieldname == 'id'){

@@ -24,23 +24,37 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
+
 abstract class Entity
 {
 
     protected $protect = array();
     protected $protectRead = array();
     protected $protectWrite = array();
+    protected $fieldTypes = array();
+
+    public function __construct(){
+
+}
 
     public function get($name)
     {
-        if(property_exists($this, $name) && !in_array($name, $this->protect) && !in_array($name, $this->protectRead)) {
+        if(property_exists($this, $name)
+            && !in_array($name, $this->protect)
+            && !in_array($name, $this->protectRead)
+            && !in_array($name, $this->fieldTypes)) {
             return $this->$name;
         }
     }
 
     public function set($name, $value)
     {
-        if(property_exists($this, $name) && !in_array($name, $this->protect) && !in_array($name, $this->protectWrite)) {
+        if(property_exists($this, $name)
+            && !in_array($name, $this->protect)
+            && !in_array($name, $this->protectWrite)
+            && !in_array($name, $this->fieldTypes)
+        ) {
             $this->$name = $value;
         }
     }
@@ -53,6 +67,32 @@ abstract class Entity
     public function __set($name, $value)
     {
         $this->set($name, $value);
+    }
+
+    public function setControllerFieldType($name, Field $field){
+        if(property_exists($this, $name)
+            && !in_array($name, $this->protect)
+            && !in_array($name, $this->protectWrite)
+            && !in_array($name, $this->fieldTypes)
+        ) {
+            $this->fieldTypes[$name]=$field;
+        }
+    }
+
+    public function getFieldTypes(){
+        if(count($this->fieldTypes) == 0){
+            $this->__construct();
+        }
+        return $this->fieldTypes;
+    }
+
+    public function getAsAssoc(){
+        $returnArray = array();
+        foreach($this->fieldTypes as $key => $value){
+
+            $returnArray[$key]=$this->get($key);
+        }
+        return $returnArray;
     }
 
 }

@@ -31,6 +31,8 @@
                 'Only Registered Users') ?>
         </label>
     </div>
+
+
 </div>
 <script type="text/javascript">
     Concrete.event.fire('survey-edit-open');

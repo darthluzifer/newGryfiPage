@@ -36,6 +36,9 @@ class BasicTableInstance extends Entity
     public function __construct()
     {
         $this->tableBlockOptions = new ArrayCollection();
+        $this->fieldTypes['bID']=new FieldTypes\Field('bID', 'bID', 'identifier');
+        $this->fieldTypes['tableBlockOptions']=new FieldTypes\Field('value', 'Wert', 'wert');
+
     }
     public function addBlockOption(TableBlockOption $option){
         $this->tableBlockOptions[] = $option;
