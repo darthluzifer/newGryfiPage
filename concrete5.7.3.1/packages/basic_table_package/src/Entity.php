@@ -24,6 +24,9 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
+use Concrete\Core\Package\Package;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
 abstract class Entity
@@ -33,10 +36,11 @@ abstract class Entity
     protected $protectRead = array();
     protected $protectWrite = array();
     protected $fieldTypes = array();
+    protected $em;
 
     public function __construct(){
-
-}
+       // $this->setDefaultFieldTypes();
+    }
 
     public function get($name)
     {
@@ -93,6 +97,33 @@ abstract class Entity
             $returnArray[$key]=$this->get($key);
         }
         return $returnArray;
+    }
+
+
+    public function getEntityManager(){
+        if($this->em == null){
+
+            $pkg = Package::getByHandle('basic_table_package');
+            $this->em = $pkg->getEntityManager();
+            return $this->em;
+        }else{
+            return $this->em;
+        }
+    }
+
+    public function setDefaultFieldTypes(){
+        $className = get_class($this);
+        $em = $this->getEntityManager();
+
+        $metadata = $this->getEntityManager()->getClassMetadata($className);
+        foreach ($metadata->fieldMappings as $field => $mapping) {
+            switch($mapping['type']){
+                default:
+                    $this->fieldTypes[$field]=new Field( $field,t($field),t("post".$field));
+                    break;
+            }
+        }
+
     }
 
 }

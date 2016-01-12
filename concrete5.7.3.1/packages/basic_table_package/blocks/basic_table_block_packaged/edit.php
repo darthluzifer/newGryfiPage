@@ -32,6 +32,21 @@
         </label>
     </div>
 
+    <?php
+    $blockOptions = $controller->getBlockOptions();
+    $blockOptionValues = $controller->getBlockOptionsValues();
+    $counter =0;
+    foreach($blockOptions as $optionnum => $OptionType){
+        $field = $OptionType->getFieldType();
+
+        $field->setSQLValue($blockOptionValues[$counter]);
+
+        echo $field->getFormView($form);
+        $counter++;
+    }
+
+    ?>
+
 
 </div>
 <script type="text/javascript">
