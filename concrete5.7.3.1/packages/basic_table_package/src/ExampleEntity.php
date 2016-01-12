@@ -32,7 +32,9 @@ class ExampleEntity extends Entity
     protected $value;
 
 
+
     public function __construct(){
+        parent::__construct();
         $this->fieldTypes['id']=new FieldTypes\Field('id', 'ID', 'identifier');
         $this->fieldTypes['value']=new FieldTypes\Field('value', 'Wert', 'wert');
     }

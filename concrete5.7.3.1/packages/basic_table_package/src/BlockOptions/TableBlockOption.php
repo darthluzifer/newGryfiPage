@@ -13,8 +13,7 @@ use OpenCloud\Common\Log\Logger;
 /**
  * Class BasicTableBlockOption
  * @package Application\Block\BasicTableBlock
- * @Entity
- * @Table(name="BasicTableBlockOption")
+ * @MappedSuperclass
  */
 class TableBlockOption extends Entity{
     /**
@@ -59,8 +58,10 @@ class TableBlockOption extends Entity{
      *
      */
     public function __construct(){
-
+        $this->setDefaultFieldTypes();
         $this->optionTypes[get_class(new CanEditOption())] = new CanEditOption();
+        $this->optionTypes[get_class(new TextBlockOption() )] = new CanEditOption();
+        $this->optionTypes[get_class(new DropdownBlockOption())] = new CanEditOption();
     }
 
 
@@ -102,5 +103,16 @@ class TableBlockOption extends Entity{
 
     protected function checkValue($value){
         return isset($this->possibleValues[$value]);
+    }
+
+    public function setPossibleValues(array $possibleValues){
+        $this->possibleValues = $possibleValues;
+    }
+
+    /**
+     * @return Concrete\Package\BasicTablePackage\Src\FieldTypes\Field
+     */
+    public function getFieldType(){
+        return $this->fieldTypes['optionValue'];
     }
 }

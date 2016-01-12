@@ -16,7 +16,7 @@ class CanEditOption extends TableBlockOption{
     protected $fieldType;
 
     public function __construct(){
-
+        //parent::__construct();
     }
 
     public function setOwnFieldType($bid){

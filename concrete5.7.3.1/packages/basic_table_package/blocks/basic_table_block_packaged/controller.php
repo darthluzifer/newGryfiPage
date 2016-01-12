@@ -5,11 +5,13 @@ use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\DBAL\Schema\Table;
+use OAuth\Common\Exception\Exception;
 use Page;
 use User;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
@@ -191,8 +193,10 @@ class Controller extends BlockController
         }
 
         $this->requiredOptions = array(
-            new CanEditOption()
+            new TextBlockOption()
         );
+        $field = new Field('value', 'test', 'test');
+        $this->requiredOptions[0]->setControllerFieldType('value', $field);
 
     }
 
@@ -550,7 +554,62 @@ class Controller extends BlockController
 
             $this->basicTableInstance = $bt;
         }
+        $toPersist = array();
 
+        if(count($args)>0){
+            foreach($args as $key => $value){
+
+                if(count($this->getBlockOptions())>0){
+                    foreach($this->getBlockOptions() as $num => $blockOption){
+
+                        if($blockOption->getFieldType()->getPostName() == $key){
+                            //check if value to update or not
+                            $found = false;
+                            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption')->findAll();
+
+
+                            $existingBlockOptions = $this->basicTableInstance->get("tableBlockOptions");
+                            if($existingBlockOptions->count()>0) {
+                                foreach ($existingBlockOptions as $num => $existingBlockOption) {
+
+                                    var_dump("bin hier4");
+                                    if (get_class($blockOption) == get_class($existingBlockOption)) {
+                                        $fieldType = $existingBlockOption->getFieldType();
+                                        $fieldType->validatePost($args[$key]);
+
+                                        $existingBlockOption->set('value', $fieldType->getSQLValue());
+                                        $toPersist[] = $existingBlockOption;
+                                        $found = true;
+                                    }
+                                }
+                            }
+                            if(!$found){
+                                $blockOption->set('BasicTableInstance', $this->basicTableInstance);
+                                $blockOption->set('optionType', get_class($blockOption));
+                                $fieldType = $blockOption->getFieldType();
+                                $fieldType->validatePost($args[$key]);
+
+                                $blockOption->set('value', $fieldType->getSQLValue());
+                                $this->basicTableInstance->addBlockOption($blockOption);
+                                $toPersist[] = $blockOption;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var_dump("bin hier5");
+        if(count($toPersist)>0){
+            foreach($toPersist as $num => $blockOption){
+                $this->entityManager->persist($blockOption);
+            }
+        }
+        $this->entityManager->persist($this->basicTableInstance);
+        $this->entityManager->flush();
+
+/*
         if(count($this->basicTableInstance->get("tableBlockOptions")) == 0){
             $blockOption = new TableBlockOption();
             $blockOption->set('BasicTableInstance', $this->basicTableInstance);
@@ -564,7 +623,7 @@ class Controller extends BlockController
             $this->entityManager->flush();
 
         }
-
+*/
 
 
 
@@ -635,19 +694,23 @@ class Controller extends BlockController
 
     	}else{
             $model=$this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
-            $model = self::setModelFieldTypes($model);
-            if($model){
-	    		$returnArray = $model->getAsAssoc();
-	    	}else{
-	    	
-	    	//dummy function because we have no values
-		    	foreach($this->getFields() as $key => $value){
-		    		if($key == 'id'){}
-		    		else{
-		    			$returnArray[$key]="";
-		    		}
-		    	}
-	    	}
+            try{
+                $model = self::setModelFieldTypes($model);
+                if($model){
+                    $returnArray = $model->getAsAssoc();
+                }else{
+
+                //dummy function because we have no values
+                    throw new \Exception;
+                }
+            }catch(\Exception $e){
+                foreach($this->getFields() as $key => $value){
+                    if($key == 'id'){}
+                    else{
+                        $returnArray[$key]="";
+                    }
+                }
+            }
     	}
 	    return $returnArray;
     }
@@ -680,7 +743,18 @@ class Controller extends BlockController
 
 
     public function getBlockOptions(){
-        return $this->blockOptions;
+        return $this->requiredOptions;
     }
+
+    public function getBlockOptionsValues(){
+        $returnArray = array();
+
+        foreach($this->requiredOptions as $key => $option){
+            $returnArray[$key] = "";
+        }
+        return $returnArray;
+    }
+
+
 
 }
