@@ -14,7 +14,6 @@ use OpenCloud\Common\Log\Logger;
  * Class TextBlockOption
  * @package Application\Block\BasicTableBlock
  * @Entity
- * @Entity
  * @Table(name="TextBlockOptions")
  */
 class TextBlockOption extends TableBlockOption{
@@ -32,7 +31,7 @@ class TextBlockOption extends TableBlockOption{
      *
      */
     public function __construct(){
-        $this->setDefaultFieldTypes();
+        parent::__construct();
 
     }
 

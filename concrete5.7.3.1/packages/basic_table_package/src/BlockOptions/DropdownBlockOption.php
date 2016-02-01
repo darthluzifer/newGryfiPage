@@ -33,7 +33,7 @@ class DropdownBlockOption extends TableBlockOption{
      *
      */
     public function __construct(){
-        $this->setDefaultFieldTypes();
+        parent::__construct();
         $field = new DropdownField("value",t('Wert'),t('postWert'));
         $field->setOptions($this->possibleValues);
         $this->setControllerFieldType("value",$field);

@@ -11,9 +11,10 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use OpenCloud\Common\Log\Logger;
 
 /**
- * Class BasicTableBlockOption
- * @package Application\Block\BasicTableBlock
- * @MappedSuperclass
+ * @Entity
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
+ * @Table{name="TableBlockOption"}
  */
 class TableBlockOption extends Entity{
     /**
@@ -59,9 +60,9 @@ class TableBlockOption extends Entity{
      */
     public function __construct(){
         $this->setDefaultFieldTypes();
-        $this->optionTypes[get_class(new CanEditOption())] = new CanEditOption();
-        $this->optionTypes[get_class(new TextBlockOption() )] = new CanEditOption();
-        $this->optionTypes[get_class(new DropdownBlockOption())] = new CanEditOption();
+        $this->optionTypes[CanEditOption::class] = 1;
+        $this->optionTypes[TextBlockOption::class] = 1;
+        $this->optionTypes[DropdownBlockOption::class] = 1;
     }
 
 

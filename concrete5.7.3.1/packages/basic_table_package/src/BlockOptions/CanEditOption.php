@@ -2,6 +2,14 @@
 namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
+use Doctrine\ORM\Mapping\Table;
+
+/**
+ * Class CanEditOption
+ * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
+ * @Entity
+ * @Table(name="CanEditOption")
+ */
 class CanEditOption extends TableBlockOption{
     protected $possibleValues = array(
         "test" => 1,
@@ -15,9 +23,10 @@ class CanEditOption extends TableBlockOption{
      */
     protected $fieldType;
 
-    public function __construct(){
-        //parent::__construct();
-    }
+
+
+
+
 
     public function setOwnFieldType($bid){
         $this->fieldType= new DropdownMultilinkField("testmultilink", "Gruppen", "testmultilink");
