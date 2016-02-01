@@ -336,8 +336,7 @@ class Controller extends BlockController
     	$this->isFormview = false;
         $u = new User();
         
-        
-        $db = Loader::db();
+
         $bo = $this->getBlockObject();
 
 
@@ -524,7 +523,7 @@ class Controller extends BlockController
     function duplicate($newBID)
     {
         //TODO duplicate options
-        $db = Loader::db();
+
         /*
         foreach ($this->options as $opt) {
             $v1 = array($newBID, $opt->getOptionName(), $opt->getOptionDisplayOrder());
