@@ -29,6 +29,7 @@ class BasicTableInstance extends Entity
     protected $bID;
 
     /**
+     * @var ArrayCollection
      * @OneToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption", mappedBy="BasicTableInstance")
      **/
     protected $tableBlockOptions;

@@ -14,7 +14,7 @@ use OpenCloud\Common\Log\Logger;
  * @Entity
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
- * @Table{name="TableBlockOption"}
+ * @Table(name="TableBlockOption")
  */
 class TableBlockOption extends Entity{
     /**
@@ -83,7 +83,7 @@ class TableBlockOption extends Entity{
                 throw new InvalidBlockOptionException("The TableBlockOption $value is not a valid TableBlockOption");
             }
             if(isset($this->optionValue)){
-                if(!$this->optionTypes[$value]->checkValue($this->optionValue)){
+                if(!(new $value())->checkValue($this->optionValue)){
                     $this->optionValue = null;
                 }
             }
@@ -94,7 +94,7 @@ class TableBlockOption extends Entity{
             if(!isset($this->optionType)) {
                 throw new InvalidBlockOptionSetOrderException("You cannot set the option value without setting the option type");
             }
-            if(!$this->optionTypes[$this->optionType]->checkValue($value)){
+            if(!(new $this->optionType())->checkValue($value)){
                 throw new InvalidBlockOptionValueException("The value $value is invalid for TableBlockOption ".$this->optionType);
             }
         }

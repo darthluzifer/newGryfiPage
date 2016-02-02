@@ -24,6 +24,7 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
+use Application\Block\BasicTableBlock\FieldTypes\DateField;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
@@ -115,13 +116,31 @@ abstract class Entity
         $className = get_class($this);
         $em = $this->getEntityManager();
 
-        $metadata = $this->getEntityManager()->getClassMetadata($className);
-        foreach ($metadata->fieldMappings as $field => $mapping) {
-            switch($mapping['type']){
-                default:
-                    $this->fieldTypes[$field]=new Field( $field,t($field),t("post".$field));
-                    break;
+        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor($className);
+
+        //get the default field types for fieldnames
+        foreach ($metadata->getFieldNames() as $fieldnum => $fieldname) {
+            try {
+                $mapping = $metadata->getFieldMapping($fieldname);
+                switch ($mapping['type']) {
+
+                    case 'date':
+                        $this->fieldTypes[$field] = new DateField($field, t($field), t("post" . $field));
+                    default:
+                        $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
+                        break;
+                }
+            }catch(MappingException $e){
+                //wenn das feld ein association mapping ist, dann gibts error
+                $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
             }
+        }
+        if(strpos(get_called_class(), "CanEditOption")!== false){
+            var_dump($metadata->getAssociationMappings());
+        }
+        //get the default field types for associations:
+        foreach($metadata->getAssociationMappings() as $className => $associationMeta){
+
         }
 
     }

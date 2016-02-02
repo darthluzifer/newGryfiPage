@@ -193,10 +193,13 @@ class Controller extends BlockController
         }
 
         $this->requiredOptions = array(
-            new TextBlockOption()
+            new TextBlockOption(),
+            new CanEditOption()
         );
         $field = new Field('value', 'test', 'test');
         $this->requiredOptions[0]->setControllerFieldType('value', $field);
+
+        $this->requiredOptions[1]->setDefaultFieldTypes();
 
     }
 
@@ -554,44 +557,43 @@ class Controller extends BlockController
             $this->basicTableInstance = $bt;
         }
         $toPersist = array();
-
         if(count($args)>0){
             foreach($args as $key => $value){
 
                 if(count($this->getBlockOptions())>0){
                     foreach($this->getBlockOptions() as $num => $blockOption){
+                        if($blockOption->getFieldType() instanceof Field){
+                            if($blockOption->getFieldType()->getPostName() == $key) {
+                                //check if value to update or not
+                                $found = false;
+                                $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption')->findAll();
 
-                        if($blockOption->getFieldType()->getPostName() == $key){
-                            //check if value to update or not
-                            $found = false;
-                            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption')->findAll();
 
+                                $existingBlockOptions = $this->basicTableInstance->get("tableBlockOptions");
+                                if ($existingBlockOptions->count() > 0) {
+                                    foreach ($existingBlockOptions as $num => $existingBlockOption) {
 
-                            $existingBlockOptions = $this->basicTableInstance->get("tableBlockOptions");
-                            if($existingBlockOptions->count()>0) {
-                                foreach ($existingBlockOptions as $num => $existingBlockOption) {
+                                        if (get_class($blockOption) == get_class($existingBlockOption)) {
+                                            $fieldType = $existingBlockOption->getFieldType();
+                                            $fieldType->validatePost($args[$key]);
 
-                                    var_dump("bin hier4");
-                                    if (get_class($blockOption) == get_class($existingBlockOption)) {
-                                        $fieldType = $existingBlockOption->getFieldType();
-                                        $fieldType->validatePost($args[$key]);
-
-                                        $existingBlockOption->set('value', $fieldType->getSQLValue());
-                                        $toPersist[] = $existingBlockOption;
-                                        $found = true;
+                                            $existingBlockOption->set('value', $fieldType->getSQLValue());
+                                            $toPersist[] = $existingBlockOption;
+                                            $found = true;
+                                        }
                                     }
                                 }
-                            }
-                            if(!$found){
-                                $blockOption->set('BasicTableInstance', $this->basicTableInstance);
-                                $blockOption->set('optionType', get_class($blockOption));
-                                $fieldType = $blockOption->getFieldType();
-                                $fieldType->validatePost($args[$key]);
+                                if (!$found) {
+                                    $blockOption->set('BasicTableInstance', $this->basicTableInstance);
+                                    $blockOption->set('optionType', get_class($blockOption));
+                                    $fieldType = $blockOption->getFieldType();
+                                    $fieldType->validatePost($args[$key]);
 
-                                $blockOption->set('value', $fieldType->getSQLValue());
-                                $this->basicTableInstance->addBlockOption($blockOption);
-                                $toPersist[] = $blockOption;
+                                    $blockOption->set('optionValue', $fieldType->getSQLValue());
+                                    $this->basicTableInstance->addBlockOption($blockOption);
+                                    $toPersist[] = $blockOption;
 
+                                }
                             }
                         }
                     }
@@ -599,7 +601,6 @@ class Controller extends BlockController
             }
         }
 
-        var_dump("bin hier5");
         if(count($toPersist)>0){
             foreach($toPersist as $num => $blockOption){
                 $this->entityManager->persist($blockOption);
