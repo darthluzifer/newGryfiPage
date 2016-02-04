@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Doctrine\ORM\EntityManager;
 use Loader;
 use Page;
 use User;
@@ -17,6 +18,11 @@ class Field{
 	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
 	
 	public function __construct($sqlFieldname,$label, $postName, $showInTable = true, $showInForm = true){
 		
@@ -90,7 +96,21 @@ class Field{
 	public function showInTable(){
 		return $this->showInTable;
 	}
-	
-	
-	
+
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager(){
+        if($this->em == null){
+
+            $pkg = Package::getByHandle('basic_table_package');
+            $this->em = $pkg->getEntityManager();
+            return $this->em;
+        }else{
+            return $this->em;
+        }
+    }
+
+
+
 }

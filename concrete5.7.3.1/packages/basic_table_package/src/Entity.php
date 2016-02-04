@@ -112,6 +112,14 @@ abstract class Entity
         }
     }
 
+    public function getId(){
+        return $this->get('id');
+    }
+
+    public function getIdFieldName(){
+        return 'id';
+    }
+
     public function setDefaultFieldTypes(){
         $className = get_class($this);
         $em = $this->getEntityManager();

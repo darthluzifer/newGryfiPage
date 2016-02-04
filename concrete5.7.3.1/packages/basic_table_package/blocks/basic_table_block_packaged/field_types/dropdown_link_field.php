@@ -4,6 +4,7 @@ namespace Concrete\Package\BasicTablePackage\BasicTableBlock\Block\BasicTableBlo
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Field as Field;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\DropdownField as DropdownField;
+use Concrete\Package\BasicTablePackage\Src\Entity;
 use Loader;
 use Page;
 use User;
@@ -19,7 +20,54 @@ class DropdownLinkField extends DropdownField{
 	protected $showcolumn;
 	protected $isNullable = false;
 	protected $idField = 'id';
-	
+    /**
+     * @var Entity
+     */
+	protected $sourceEntity;
+
+    /**
+     * @var String
+     */
+    protected $sourceField;
+
+    /**
+     * @var string
+     */
+    protected $targetEntity;
+
+    /**
+     * @var callable
+     */
+    protected $getDisplayString;
+    /**
+     * @var string
+     */
+    protected $targetField;
+
+    /**
+     * @var array
+     */
+    protected $filter;
+
+    //TODO check if $callable's first parameter is of class Entity
+
+    public function setLinkInfo(Entity $sourceEntity,string $sourceField,String $targetEntity,string $targetField = null, callable $getDisplayString=null, array $filter = null){
+        $this->sourceEntity = $sourceEntity;
+        $this->sourceField = $sourceField;
+        $this->targetEntity = $targetEntity;
+        $this->targetField = $targetField;
+        $this->getDisplayString = $getDisplayString;
+        $this->filter = $filter;
+    }
+
+    public function setGetDisplayString(callable $getDisplayString){
+        $this->getDisplayString = $getDisplayString;
+    }
+
+    public function setFilter(array $filter){
+        $this->filter = $filter;
+    }
+
 	/**
 	 * set the tablename of the linktable (Table, the foreign key points to
 	 * @param String $tablename
