@@ -167,6 +167,26 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 	 * @return Ambigous <multitype:, unknown>
 	 */
 	private function getValues(){
+        if(count($this->values)==0 && !is_null($this->rowid)) {
+            $modelForIdField = new $this->targetEntity;
+            /**
+             * @var $model \Entity
+             */
+            $model = $this->getEntityManager()
+                ->getRepository($this->targetEntity)
+                ->findOne(array(
+                    $modelForIdField->getIdFieldName() => $this->rowid
+                ));
+            $values = $model->get($this->sourceField);
+            if(count($values)>0 && $values != null) {
+                foreach ($model->get($this->sourceField) as $valnum => $value) {
+                    $this->values[$value->getId()]=$this->getDisplayString($value);
+                }
+            }
+        }
+
+        return $this->values;
+        /*
 		if(count($this->values)==0 && !is_null($this->rowid)){
 			
 			
@@ -191,27 +211,34 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 			}
 		}
 		return $this->values;
+        */
 	}
 	
 	
 	public function saveValues($value= null){
 		$db = Loader::db();
-		
-		if($this->rowid == null){
-			//throw some exception or so
-			return;
-		}
+
+        if($this->rowid == null){
+            //throw some exception or so
+            return;
+        }
+
+        $model = $this->getEntityManager()
+            ->getRepository($this->targetEntity)
+            ->findOne(array(
+                $modelForIdField->getIdFieldName() => $this->rowid
+            ));
+
 		
 		//if no insert value
 		if($value == null){
 			$value = $this->value;
 		}
-		
+
+
+        $model->set($this->sourceField, new ArrayCollection());
 		//if no value property is set
 		if($value == null){
-			$db->delete($this->ntomtable, array(
-					$this->linkfieldself => $this->rowid
-			));
 			return;
 		}
 		//first compare the possible, posted and db values
@@ -228,8 +255,11 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 		
 		$checkedoptions = array();
 		$checkedoptionids = array();
+
+
+        $targetModelForIdField = new $this->targetEntity();
+
 		foreach($currentdbvalues as $key => $value){
-			$checkedoptions[$value]= 0;
 			$checkedoptions[$value]= $key;
 		}
 
@@ -247,7 +277,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 				$insert = true;
 				
 			}else if($this->allowAdd){
-				
+				//TODO allowadd schwierig, weil eindeutiger split manchmal schwierig
 				//not existing, but adding allowed, insert new linktable row and then insert
 				$aff=$db->insert($this->linktable, array($this->showcolumn => $postvalue));
 				if($aff > 0){
@@ -256,24 +286,24 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 				}
 			}
 			if($insert){
-				$aff = $db->insert($this->ntomtable, array(
-						$this->linkfieldself => $this->rowid,
-						$this->linkfieldext => $id
-				));
+                $currentArray = $model->get($this->sourceField);
+
+                //add new value
+                $currentArray[]=$this->getEntityManager()
+                    ->getRepository($this->targetEntity)
+                    ->findOne(
+                        $targetModelForIdField->getIdFieldname() => $id
+                    );
+
+                $currentArray = $model->set($this->sourceField, $currentArray);
+
+
 				//var_dump($aff);
 				//exit;
 				//if error, do error logging, throw exception, dunno
 			}
 		}
-		//delete the options that are no longer here
-		foreach($checkedoptions as $key => $value){
-			if($value == 0){
-				$db->delete($this->ntomtable, array(
-						$this->linkfieldself => $this->rowid,
-						$this->linkfieldext => $checkedoptionids[$key]
-				));
-			}
-		}
+
 	}
 	
 	

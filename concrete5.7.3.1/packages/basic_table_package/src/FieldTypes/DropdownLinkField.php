@@ -175,6 +175,8 @@ class DropdownLinkField extends DropdownField{
 
 
     public function getSQLValue(){
+        return $this->value;
+        /*
         if($this->value != null){
             $modelForIdField = new $this->targetEntity;
             $model = $this->getEntityManager()
@@ -188,14 +190,44 @@ class DropdownLinkField extends DropdownField{
             }
         }else{
             return false;
-        }
+        }*/
     }
 
     public function setSQLValue($value){
         if($value instanceof $this->targetEntity){
-            $this->value = $value->get($value->getIdFieldName());
+            $this->value = $value;
         }else{
             throw new InvalidArgumentException("Parameter \$value is ".get_class($value).", should be ".$this->targetEntity." sein");
+        }
+    }
+
+
+    public function getValue(){
+        if($this->options == null){
+            $this->getOptions();
+        }
+
+        return $this->options[$this->value->getId()];
+    }
+
+    public function validatePost($value){
+        $values = array_keys($this->getOptions());
+        if(in_array($value, $values)){
+            $modelForIdField = new $this->targetEntity;
+            $model = $this->getEntityManager()
+                ->getRepository($this->targetEntity)
+                ->findOne(array(
+                    $modelForIdField->getIdFieldName() => $value
+                ));
+
+            if($model != null && $model!=false){
+                $this->setSQLValue($model);
+            }else{
+                $this->setSQLValue(null);
+            }
+
+        }else{
+            return false;
         }
     }
 
