@@ -1,9 +1,9 @@
 <?php
-namespace Concrete\Package\BasicTablePackage\BasicTableBlock\Block\BasicTableBlock\FieldTypes;
+namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Field as Field;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\DropdownField as DropdownField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Loader;
@@ -54,7 +54,7 @@ class DropdownLinkField extends DropdownField{
 
     //TODO check if $callable's first parameter is of class Entity
 
-    public function setLinkInfo(Entity $sourceEntity,string $sourceField,String $targetEntity,string $targetField = null, callable $getDisplayString=null, array $filter = null){
+    public function setLinkInfo(Entity $sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
         $this->targetEntity = $targetEntity;

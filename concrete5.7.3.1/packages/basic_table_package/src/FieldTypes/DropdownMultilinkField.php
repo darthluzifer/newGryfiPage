@@ -1,18 +1,19 @@
 <?php
-namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes;
+namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Field as Field;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\DropdownField as DropdownField;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\DropdownLinkField as DropdownLinkField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Loader;
 use Page;
 use User;
 use Core;
 use File;
-use Concrete\Controller\SinglePage\Dashboard\BBlock\Permissions as Permissions;
+use Concrete\Controller\SinglePage\Dashboard\Block\Permissions as Permissions;
 use Concrete\Core\Block\View\BlockView as View;
-use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\FieldTypes\SelfSaveInterface as SelfSaveInterface;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterface{
     protected $linktable;
@@ -223,6 +224,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
             return;
         }
 
+        $targetModelForIdField = new $this->targetEntity();
         $model = $this->getEntityManager()
             ->getRepository($this->targetEntity)
             ->findOne(array(
@@ -236,6 +238,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         }
 
 
+		$currentdbvalues = $this->getValues();
         $model->set($this->sourceField, new ArrayCollection());
         //if no value property is set
         if($value == null){
@@ -249,7 +252,6 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 
         $options = $this->getOptions();
 
-        $currentdbvalues = $this->getValues();
 
         $flippedoptions = array_flip($options);
 
@@ -257,7 +259,6 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         $checkedoptionids = array();
 
 
-        $targetModelForIdField = new $this->targetEntity();
 
         foreach($currentdbvalues as $key => $value){
             $checkedoptions[$value]= $key;
@@ -277,13 +278,13 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
                 $insert = true;
 
             }else if($this->allowAdd){
-                //TODO allowadd schwierig, weil eindeutiger split manchmal schwierig
+                //TODO allowadd difficult, because identifiying the right columns is difficult
                 //not existing, but adding allowed, insert new linktable row and then insert
-                $aff=$db->insert($this->linktable, array($this->showcolumn => $postvalue));
+                /*$aff=$db->insert($this->linktable, array($this->showcolumn => $postvalue));
                 if($aff > 0){
                     $id = $db->lastInsertId();
                     $insert = true;
-                }
+                }*/
             }
             if($insert){
                 $currentArray = $model->get($this->sourceField);
@@ -291,11 +292,11 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
                 //add new value
                 $currentArray[]=$this->getEntityManager()
                     ->getRepository($this->targetEntity)
-                    ->findOne(
-                        $targetModelForIdField->getIdFieldname() => $id
-                    );
+                    ->findOne(array(
+                        $targetModelForIdField->getIdFieldname()=>$id
+					));
 
-                $currentArray = $model->set($this->sourceField, $currentArray);
+                $model->set($this->sourceField, new ArrayCollection($currentArray));
 
 
 				//var_dump($aff);

@@ -28,7 +28,9 @@ use Application\Block\BasicTableBlock\FieldTypes\DateField;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 
 abstract class Entity
 {
@@ -133,22 +135,28 @@ abstract class Entity
                 switch ($mapping['type']) {
 
                     case 'date':
-                        $this->fieldTypes[$field] = new DateField($field, t($field), t("post" . $field));
+                        $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
                     default:
-                        $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
+                        $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
                 }
             }catch(MappingException $e){
                 //wenn das feld ein association mapping ist, dann gibts error
-                $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
+               // $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
             }
         }
         if(strpos(get_called_class(), "CanEditOption")!== false){
-            var_dump($metadata->getAssociationMappings());
+            //var_dump($metadata->getAssociationMappings());
         }
         //get the default field types for associations:
         foreach($metadata->getAssociationMappings() as $className => $associationMeta){
-
+            if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
+                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+            }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
+                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                $test = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                $test->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['targetEntity'] );
+            }
         }
 
     }

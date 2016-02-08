@@ -33,6 +33,7 @@ class Controller extends Package
 
     protected $pkgAutoloaderRegistries = array(
       //  'src/FieldTypes/Statistics' => '\BasicTablePackage\FieldTypes'
+           'src'                      => 'Concrete\Package\BasicTablePackage\Src'
     );
 
     public function getPackageName()
