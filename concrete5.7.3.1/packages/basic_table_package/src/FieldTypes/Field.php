@@ -38,10 +38,20 @@ class Field{
 		$this->isSQLValue = false;
 		$this->value = $value;
 	}
+
+
 	
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
+	}
+
+	public function setLabel($label){
+		$this->label = $label;
+	}
+
+	public function setPostName($postname){
+		$this->postName = $postname;
 	}
 	
 	public function getSQLValue(){
@@ -55,7 +65,7 @@ class Field{
 	
 	
 	public function getFormView($form){
-		$returnString = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
+		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$returnString.=$form->text($this->getPostName(), $this->getValue(),array('title' => $this->getPostName(),
 				'value' => $this->getValue(),
 				'id' => $this->getPostName()

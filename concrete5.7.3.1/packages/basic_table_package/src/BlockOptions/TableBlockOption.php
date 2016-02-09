@@ -9,6 +9,7 @@ use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use OpenCloud\Common\Log\Logger;
+use Punic\Exception;
 
 /**
  * @Entity
@@ -44,26 +45,24 @@ class TableBlockOption extends Entity{
 
 
 
+
+
+    protected $possibleValues = null;
+
     /**
-     * @var array
+     * @var string
+     * @Column(type="string")
      */
-    protected $optionTypes = array();
-
-
-    protected $possibleValues = array(
-        "test" => 1,
-        "test2" => 1,
-    );
+    protected $optionName = null;
 
     /**
      *
      */
     public function __construct(){
         $this->setDefaultFieldTypes();
-        $this->optionTypes[CanEditOption::class] = 1;
-        $this->optionTypes[TextBlockOption::class] = 1;
-        $this->optionTypes[DropdownBlockOption::class] = 1;
     }
+
+
 
 
 
@@ -71,22 +70,18 @@ class TableBlockOption extends Entity{
     public function set($name, $value)
     {
         //to check the value, optionType and optionValue have to be set
-        $checkvalue = false;
-        if(count($this->optionTypes) == 0){
-            $this->__construct();
-        }
+
         //\Log::debug(var_dump($this->optionTypes));
 
         //check if OptionType is valid
         if($name == 'optionType'){
-            if(!isset($this->optionTypes[$value])){
-                throw new InvalidBlockOptionException("The TableBlockOption $value is not a valid TableBlockOption");
-            }
-            if(isset($this->optionValue)){
-                if(!(new $value())->checkValue($this->optionValue)){
+
+            if (isset($this->optionValue)) {
+                if (!(new $value())->checkValue($this->optionValue)) {
                     $this->optionValue = null;
                 }
             }
+
         }
 
         //check if option value is valid
@@ -100,20 +95,48 @@ class TableBlockOption extends Entity{
         }
         parent::set($name, $value);
 
+
+        if($name == 'optionName'){
+            $this->getFieldType()->setLabel($value);
+        }
+
     }
 
     protected function checkValue($value){
-        return isset($this->possibleValues[$value]);
+        if($this->possibleValues != null) {
+            //option has to meet
+            return isset($this->possibleValues[$value]);
+        }else{
+            //free option
+            return true;
+        }
     }
 
     public function setPossibleValues(array $possibleValues){
         $this->possibleValues = $possibleValues;
+        //$this->fieldTypes['optionValue'] = new //when the values are restricted, use a dropdown
     }
 
     /**
      * @return Concrete\Package\BasicTablePackage\Src\FieldTypes\Field
      */
     public function getFieldType(){
+        if($this->fieldTypes['optionValue']==null){
+            $this->setDefaultFieldTypes();
+        }
+        if($this->optionName != null){
+            $this->fieldTypes['optionValue']->setLabel($this->optionName);
+        }
         return $this->fieldTypes['optionValue'];
+    }
+
+    public function getValue(){
+        return $this->optionValue;
+    }
+
+    public function getFormView($form){
+
+        $this->getFieldType()->setSQLValue($this->getValue());
+        return $this->getFieldType()->getFormView($form);
     }
 }

@@ -37,13 +37,10 @@
     $blockOptionValues = $controller->getBlockOptionsValues();
     $counter =0;
     foreach($blockOptions as $optionnum => $OptionType){
-        $field = $OptionType->getFieldType();
-        if($field != null) {
-            $field->setSQLValue($blockOptionValues[$counter]);
 
-            echo $field->getFormView($form);
-        }
-        $counter++;
+
+        echo $OptionType->getFormView($form);
+
     }
 
     ?>

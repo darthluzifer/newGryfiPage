@@ -38,6 +38,7 @@ class CanEditOption extends TableBlockOption{
     {
         $this->Groups = new ArrayCollection();
 
+        $this->setDefaultFieldTypes();
     }
 
 
@@ -59,6 +60,14 @@ class CanEditOption extends TableBlockOption{
 */
     public function getLabel(){
         return t('Welche Gruppen können Eintäge editieren?');
+    }
+
+    public function getFieldType(){
+        return $this->fieldTypes['Groups'];
+    }
+
+    public function getValue(){
+        return $this->Groups;
     }
 
 

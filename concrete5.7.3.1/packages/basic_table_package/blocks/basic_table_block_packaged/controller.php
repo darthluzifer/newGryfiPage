@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
 use Concrete\Core\Package\Package;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
@@ -187,19 +188,24 @@ class Controller extends BlockController
         if($obj instanceof Block) {
 
 
-            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlo));
+            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
 
             $this->basicTableInstance = $bt;
         }
 
         $this->requiredOptions = array(
             new TextBlockOption(),
-            new CanEditOption()
+            new DropdownBlockOption(),
         );
-        $field = new Field('value', 'test', 'test');
-        $this->requiredOptions[0]->setControllerFieldType('value', $field);
+        $this->requiredOptions[0]->set('optionName', "Test");
+        $this->requiredOptions[1]->set('optionName', "TestDropDown");
+        $this->requiredOptions[1]->setPossibleValues(array(
+            "test",
+            "test2"
+        ));
 
-        $this->requiredOptions[1]->setDefaultFieldTypes();
+
+        //$this->requiredOptions[1]->setDefaultFieldTypes();
 
     }
 
@@ -219,6 +225,14 @@ class Controller extends BlockController
 
 
 
+    public function getBasicTableInstance(){
+        if($this->basicTableInstance == null) {
+            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
+
+            $this->basicTableInstance = $bt;
+        }
+        return $this->basicTableInstance;
+    }
 
 
     /**
@@ -550,12 +564,7 @@ class Controller extends BlockController
     {
         parent::save($args);
 
-        if(!$this->basicTableInstance instanceof BasicTableInstance){
-
-            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
-
-            $this->basicTableInstance = $bt;
-        }
+       $this->getBasicTableInstance();
         $toPersist = array();
         if(count($args)>0){
             foreach($args as $key => $value){
@@ -743,7 +752,20 @@ class Controller extends BlockController
 
 
     public function getBlockOptions(){
-        return $this->requiredOptions;
+        $this->getBasicTableInstance();
+        $currentBlockOptions = $this->basicTableInstance->get('tableBlockOptions');
+
+
+
+        if(count($currentBlockOptions)==0){
+            return $this->requiredOptions;
+        }else{
+            foreach($this->requiredOptions as $optionNum => $requOption){
+                foreach($currentBlockOptions as $)
+            }
+            return $currentBlockOptions->toArray();
+        }
+
     }
 
     public function getBlockOptionsValues(){

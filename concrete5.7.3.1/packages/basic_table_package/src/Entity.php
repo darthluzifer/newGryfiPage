@@ -45,6 +45,10 @@ abstract class Entity
        // $this->setDefaultFieldTypes();
     }
 
+    public static function getFullClassName(){
+        return get_class();
+    }
+
     public function get($name)
     {
         if(property_exists($this, $name)
@@ -123,6 +127,8 @@ abstract class Entity
     }
 
     public function setDefaultFieldTypes(){
+
+
         $className = get_class($this);
         $em = $this->getEntityManager();
 

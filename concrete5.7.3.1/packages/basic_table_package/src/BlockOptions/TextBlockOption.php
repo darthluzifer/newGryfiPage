@@ -20,30 +20,4 @@ class TextBlockOption extends TableBlockOption{
 
 
 
-
-
-    protected $possibleValues = array(
-        "test" => 1,
-        "test2" => 1,
-    );
-
-    /**
-     *
-     */
-    public function __construct(){
-        parent::__construct();
-
-    }
-
-
-
-
-    /**
-     * text block option does not need to check the values
-     * @param $value
-     * @return bool
-     */
-    protected function checkValue($value){
-        return true;
-    }
 }
