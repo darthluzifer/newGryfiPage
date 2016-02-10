@@ -60,6 +60,7 @@ class TableBlockOption extends Entity{
      */
     public function __construct(){
         $this->setDefaultFieldTypes();
+        $this->optionType = self::getFullClassName();
     }
 
 
@@ -112,9 +113,13 @@ class TableBlockOption extends Entity{
         }
     }
 
-    public function setPossibleValues(array $possibleValues){
+    public function setPossibleValues( $possibleValues){
         $this->possibleValues = $possibleValues;
         //$this->fieldTypes['optionValue'] = new //when the values are restricted, use a dropdown
+    }
+
+    public function getPossibleValues(){
+        return $this->possibleValues;
     }
 
     /**
@@ -126,12 +131,17 @@ class TableBlockOption extends Entity{
         }
         if($this->optionName != null){
             $this->fieldTypes['optionValue']->setLabel($this->optionName);
+            $this->fieldTypes['optionValue']->setPostName(str_replace(" ", "", $this->optionName));
         }
         return $this->fieldTypes['optionValue'];
     }
 
     public function getValue(){
         return $this->optionValue;
+    }
+
+    public function setValue($value){
+        $this->optionValue = $value;
     }
 
     public function getFormView($form){

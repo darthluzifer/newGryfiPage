@@ -196,6 +196,7 @@ class Controller extends BlockController
         $this->requiredOptions = array(
             new TextBlockOption(),
             new DropdownBlockOption(),
+            new CanEditOption()
         );
         $this->requiredOptions[0]->set('optionName', "Test");
         $this->requiredOptions[1]->set('optionName', "TestDropDown");
@@ -203,6 +204,9 @@ class Controller extends BlockController
             "test",
             "test2"
         ));
+
+        $this->requiredOptions[0]->set('optionName', "testlink");
+
 
 
         //$this->requiredOptions[1]->setDefaultFieldTypes();
@@ -228,7 +232,12 @@ class Controller extends BlockController
     public function getBasicTableInstance(){
         if($this->basicTableInstance == null) {
             $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
-
+            if($bt == null){
+                $bt = new BasicTableInstance();
+                $bt->set("bID", $this->bID);
+                $this->entityManager->persist($bt);
+                $this->entityManager->flush($bt);
+            }
             $this->basicTableInstance = $bt;
         }
         return $this->basicTableInstance;
@@ -565,47 +574,33 @@ class Controller extends BlockController
         parent::save($args);
 
        $this->getBasicTableInstance();
+
+
         $toPersist = array();
         if(count($args)>0){
             foreach($args as $key => $value){
 
+
+
+
                 if(count($this->getBlockOptions())>0){
-                    foreach($this->getBlockOptions() as $num => $blockOption){
-                        if($blockOption->getFieldType() instanceof Field){
-                            if($blockOption->getFieldType()->getPostName() == $key) {
-                                //check if value to update or not
-                                $found = false;
-                                $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption')->findAll();
+                    $blockOptionPostMap = $this->generateOptionsPostFieldMap();
 
+                    if(isset($blockOptionPostMap[$key])){
+                        if($blockOptionPostMap[$key]->BasicTableInstance != null){
 
-                                $existingBlockOptions = $this->basicTableInstance->get("tableBlockOptions");
-                                if ($existingBlockOptions->count() > 0) {
-                                    foreach ($existingBlockOptions as $num => $existingBlockOption) {
-
-                                        if (get_class($blockOption) == get_class($existingBlockOption)) {
-                                            $fieldType = $existingBlockOption->getFieldType();
-                                            $fieldType->validatePost($args[$key]);
-
-                                            $existingBlockOption->set('value', $fieldType->getSQLValue());
-                                            $toPersist[] = $existingBlockOption;
-                                            $found = true;
-                                        }
-                                    }
-                                }
-                                if (!$found) {
-                                    $blockOption->set('BasicTableInstance', $this->basicTableInstance);
-                                    $blockOption->set('optionType', get_class($blockOption));
-                                    $fieldType = $blockOption->getFieldType();
-                                    $fieldType->validatePost($args[$key]);
-
-                                    $blockOption->set('optionValue', $fieldType->getSQLValue());
-                                    $this->basicTableInstance->addBlockOption($blockOption);
-                                    $toPersist[] = $blockOption;
-
-                                }
-                            }
+                        }else{
+                            $blockOptionPostMap[$key]->set("BasicTableInstance", $this->basicTableInstance);
+                            $this->basicTableInstance->addBlockOption($blockOptionPostMap[$key]);
                         }
+                        $blockOptionPostMap[$key]->getFieldType()->setSQLValue($value);
+                        $blockOptionPostMap[$key]->setValue(
+                            $blockOptionPostMap[$key]->getFieldType()->getSQLValue()
+                        );
+                        $toPersist[]=$blockOptionPostMap[$key];
+
                     }
+
                 }
             }
         }
@@ -750,9 +745,25 @@ class Controller extends BlockController
         }
     }
 
+    protected function generateOptionsPostFieldMap(){
+        $blockOptions = $this->getBlockOptions();
+
+        $blockOptionsPostMap = array();
+        foreach($blockOptions as $optionnum => $option){
+            $blockOptionsPostMap[$option->getFieldType()->getPostName()]=$option;
+        }
+
+        return $blockOptionsPostMap;
+    }
+
 
     public function getBlockOptions(){
         $this->getBasicTableInstance();
+
+        if($this->basicTableInstance == null){
+            return $this->requiredOptions;
+        }
+
         $currentBlockOptions = $this->basicTableInstance->get('tableBlockOptions');
 
 
@@ -760,10 +771,16 @@ class Controller extends BlockController
         if(count($currentBlockOptions)==0){
             return $this->requiredOptions;
         }else{
+
             foreach($this->requiredOptions as $optionNum => $requOption){
-                foreach($currentBlockOptions as $)
+                foreach($currentBlockOptions->toArray() as $currentBlockOption){
+                    if($currentBlockOption->optionName == $requOption->optionName){
+                        $currentBlockOption->setPossibleValues($requOption->getPossibleValues());
+                        $this->requiredOptions[$optionNum]=$currentBlockOption;
+                    }
+                }
             }
-            return $currentBlockOptions->toArray();
+            return $this->requiredOptions;
         }
 
     }

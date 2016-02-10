@@ -63,11 +63,23 @@ class CanEditOption extends TableBlockOption{
     }
 
     public function getFieldType(){
-        return $this->fieldTypes['Groups'];
+        if($this->fieldTypes['optionValue']==null){
+            $this->setDefaultFieldTypes();
+        }
+        if($this->optionName != null){
+            $this->fieldTypes['Groups']->setLabel($this->optionName);
+            $this->fieldTypes['Groups']->setPostName(str_replace(" ", "", $this->optionName));
+        }
+        return $this->fieldTypes['optionValue'];
+
     }
 
     public function getValue(){
         return $this->Groups;
+    }
+
+    public function setValue($Groups){
+        $this->Groups = $Groups;
     }
 
 

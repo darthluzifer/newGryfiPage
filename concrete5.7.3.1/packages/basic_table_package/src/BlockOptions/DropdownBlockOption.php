@@ -15,7 +15,6 @@ use OpenCloud\Common\Log\Logger;
  * Class TextBlockOption
  * @package Application\Block\BasicTableBlock
  * @Entity
- * @Entity
  * @Table(name="DropDownBlockOptions")
  */
 class DropdownBlockOption extends TableBlockOption{
