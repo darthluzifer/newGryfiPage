@@ -4,11 +4,6 @@ OC::$CLASSPATH['OC_Calendar_App'] = 'calendar/lib/app.php';
 OC::$CLASSPATH['OC_Calendar_Calendar'] = 'calendar/lib/calendar.php';
 OC::$CLASSPATH['OC_Calendar_Object'] = 'calendar/lib/object.php';
 OC::$CLASSPATH['OC_Calendar_Hooks'] = 'calendar/lib/hooks.php';
-OC::$CLASSPATH['OC_Connector_Sabre_CalDAV'] = 'calendar/lib/sabre/backend.php';
-OC::$CLASSPATH['OC_Connector_Sabre_CalDAV_CalendarRoot'] = 'calendar/lib/sabre/calendarroot.php';
-OC::$CLASSPATH['OC_Connector_Sabre_CalDAV_UserCalendars'] = 'calendar/lib/sabre/usercalendars.php';
-OC::$CLASSPATH['OC_Connector_Sabre_CalDAV_Calendar'] = 'calendar/lib/sabre/calendar.php';
-OC::$CLASSPATH['OC_Connector_Sabre_CalDAV_CalendarObject'] = 'calendar/lib/sabre/object.php';
 OC::$CLASSPATH['OC_Calendar_Repeat'] = 'calendar/lib/repeat.php';
 OC::$CLASSPATH['OC_Calendar_Export'] = 'calendar/lib/export.php';
 OC::$CLASSPATH['OC_Calendar_Import'] = 'calendar/lib/import.php';
@@ -33,10 +28,6 @@ OCP\App::addNavigationEntry( array(
 \OC::$server->getSearch()->registerProvider('OCA\Calendar\Search\Provider', array('apps' => array('calendar')));
 OCP\Share::registerBackend('calendar', 'OC_Share_Backend_Calendar');
 OCP\Share::registerBackend('event', 'OC_Share_Backend_Event');
-
-Sabre\VObject\Property::$classMap['SUMMARY'] = 'OC\VObject\StringProperty';
-Sabre\VObject\Property::$classMap['DESCRIPTION'] = 'OC\VObject\StringProperty';
-Sabre\VObject\Property::$classMap['LOCATION'] = 'OC\VObject\StringProperty';
 
 $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {

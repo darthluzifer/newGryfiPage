@@ -11,6 +11,7 @@
 
 namespace OCA\Documents;
 
+use OC\Files\Filesystem;
 use \OCP\AppFramework\Http;
 use \OCP\IRequest;
 use \OC\Files\View;
@@ -29,15 +30,16 @@ class DownloadResponse extends \OCP\AppFramework\Http\Response {
 		$this->request = $request;
 		$this->user = $user;
 		$this->path = $path;
-		
+
+		Filesystem::initMountPoints($user);
 		$this->view = new View('/' . $user);
 		if (!$this->view->file_exists($path)){
-			parent::setStatus(Http::STATUS_NOT_FOUND);
+			$this->setStatus(Http::STATUS_NOT_FOUND);
 		}
 	}
 	
 	public function render(){
-		if (parent::getStatus() === Http::STATUS_NOT_FOUND){
+		if ($this->getStatus() === Http::STATUS_NOT_FOUND){
 			return '';
 		}
 		$info = $this->view->getFileInfo($this->path);

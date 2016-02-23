@@ -10,26 +10,25 @@
 
 namespace OCA\Contacts;
 
-use OCP\AppFramework\App as MainApp,
-	OCP\AppFramework\IAppContainer,
-	OCA\Contacts\App,
-	OCA\Contacts\Middleware\Http as HttpMiddleware,
-	OCA\Contacts\Controller\PageController,
-	OCA\Contacts\Controller\AddressBookController,
-	OCA\Contacts\Controller\BackendController,
-	OCA\Contacts\Controller\GroupController,
-	OCA\Contacts\Controller\ContactController,
-	OCA\Contacts\Controller\ContactPhotoController,
-	OCA\Contacts\Controller\SettingsController,
-	OCA\Contacts\Controller\ImportController,
-	OCA\Contacts\Controller\ExportController;
+use OCP\AppFramework\App as MainApp;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\IAppContainer;
+use OCA\Contacts\Middleware\Http as HttpMiddleware;
+use OCA\Contacts\Controller\PageController;
+use OCA\Contacts\Controller\AddressBookController;
+use OCA\Contacts\Controller\BackendController;
+use OCA\Contacts\Controller\GroupController;
+use OCA\Contacts\Controller\ContactController;
+use OCA\Contacts\Controller\ContactPhotoController;
+use OCA\Contacts\Controller\SettingsController;
+use OCA\Contacts\Controller\ImportController;
+use OCA\Contacts\Controller\ExportController;
 
 /**
  * This class manages our app actions
  *
- * TODO: Merge with App
+ * TODO: Build app properly on basis of AppFramework
  */
-
 class Dispatcher extends MainApp {
 
 	/**
@@ -57,7 +56,12 @@ class Dispatcher extends MainApp {
 		parent::__construct($this->appName, $params);
 		$this->container = $this->getContainer();
 		$this->server = $this->container->getServer();
-		$this->app = new App($this->container->query('API')->getUserId());
+		$user = \OC::$server->getUserSession()->getUser();
+		if (is_null($user)) {
+			\OC_Util::redirectToDefaultPage();
+		}
+		$userId = $user->getUID();
+		$this->app = new App($userId);
 		$this->registerServices();
 		$this->container->registerMiddleware('HttpMiddleware');
 	}
@@ -76,8 +80,8 @@ class Dispatcher extends MainApp {
 		});
 		$this->container->registerService('AddressBookController', function(IAppContainer $container) use($app, $appName) {
 			$request = $container->query('Request');
-			$api = $container->query('API');
-			return new AddressBookController($appName, $request, $app, $api);
+			$userId = \OC::$server->getUserSession()->getUser()->getUID();
+			return new AddressBookController($appName, $request, $app, $userId);
 		});
 		$this->container->registerService('BackendController', function(IAppContainer $container) use($app, $appName) {
 			$request = $container->query('Request');

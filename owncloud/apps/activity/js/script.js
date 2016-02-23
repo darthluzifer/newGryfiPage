@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2015
+ *
+ * This file is licensed under the Affero General Public License version 3
+ * or later.
+ *
+ * See the COPYING-README file.
+ *
+ */
 $(function(){
 	var OCActivity={};
 
@@ -6,25 +15,33 @@ $(function(){
 		currentPage: 0,
 		navigation: $('#app-navigation'),
 
+
+		_onPopState: function(params) {
+			params = _.extend({
+				filter: 'all'
+			}, params);
+
+			this.setFilter(params.filter);
+		},
+
 		setFilter: function (filter) {
 			if (filter === this.filter) {
 				return;
 			}
 
-			this.navigation.find('a[data-navigation=' + this.filter + ']').removeClass('active');
+			this.navigation.find('a[data-navigation=' + this.filter + ']').parent().removeClass('active');
 			this.currentPage = 0;
 
 			this.filter = filter;
-			OC.Util.History.pushState('filter=' + filter);
 
 			OCActivity.InfinitScrolling.container.animate({ scrollTop: 0 }, 'slow');
 			OCActivity.InfinitScrolling.container.children().remove();
-			$('#no_activities').addClass('hidden');
+			$('#emptycontent').addClass('hidden');
 			$('#no_more_activities').addClass('hidden');
 			$('#loading_activities').removeClass('hidden');
 			OCActivity.InfinitScrolling.ignoreScroll = false;
 
-			this.navigation.find('a[data-navigation=' + filter + ']').addClass('active');
+			this.navigation.find('a[data-navigation=' + filter + ']').parent().addClass('active');
 
 			OCActivity.InfinitScrolling.prefill();
 		}
@@ -33,6 +50,7 @@ $(function(){
 	OCActivity.InfinitScrolling = {
 		ignoreScroll: false,
 		container: $('#container'),
+		lastDateGroup: null,
 		content: $('#app-content'),
 
 		prefill: function () {
@@ -43,20 +61,7 @@ $(function(){
 					OC.generateUrl('/apps/activity/activities/fetch'),
 					'filter=' + OCActivity.Filter.filter + '&page=' + OCActivity.Filter.currentPage,
 					function (data) {
-						if (data.trim().length) {
-							OCActivity.InfinitScrolling.appendContent(data);
-
-							// Continue prefill
-							OCActivity.InfinitScrolling.prefill();
-						} else if (OCActivity.Filter.currentPage == 1) {
-							// First page is empty - No activities :(
-							$('#no_activities').removeClass('hidden');
-							$('#loading_activities').addClass('hidden');
-						} else {
-							// Page is empty - No more activities :(
-							$('#no_more_activities').removeClass('hidden');
-							$('#loading_activities').addClass('hidden');
-						}
+						OCActivity.InfinitScrolling.handleActivitiesCallback(data);
 					}
 				);
 			}
@@ -72,41 +77,104 @@ $(function(){
 					OC.generateUrl('/apps/activity/activities/fetch'),
 					'filter=' + OCActivity.Filter.filter + '&page=' + OCActivity.Filter.currentPage,
 					function (data) {
-						OCActivity.InfinitScrolling.appendContent(data);
-						OCActivity.InfinitScrolling.ignoreScroll = false;
-
-						if (!data.trim().length) {
-							// Page is empty - No more activities :(
-							$('#no_more_activities').removeClass('hidden');
-							$('#loading_activities').addClass('hidden');
-							OCActivity.InfinitScrolling.ignoreScroll = true;
-						}
+						OCActivity.InfinitScrolling.handleActivitiesCallback(data);
 					}
 				);
 			}
 		},
 
-		appendContent: function (content) {
-			var firstNewGroup = $(content).first(),
-				lastGroup = this.container.children().last();
+		handleActivitiesCallback: function (data) {
+			var $numActivities = data.length;
 
-			// Is the first new container the same as the last one?
-			if (lastGroup && lastGroup.data('date') === firstNewGroup.data('date')) {
-				var appendedBoxes = firstNewGroup.find('.box'),
-					lastBoxContainer = lastGroup.find('.boxcontainer');
+			if ($numActivities > 0) {
+				for (var i = 0; i < data.length; i++) {
+					var $activity = data[i];
+					this.appendActivityToContainer($activity);
+				}
 
-				// Move content into the last box
-				OCActivity.InfinitScrolling.processElements(appendedBoxes);
-				lastBoxContainer.append(appendedBoxes);
+				// Continue prefill
+				this.prefill();
 
-				// Remove the first box, so it's not duplicated
-				content = $(content).slice(1);
+			} else if (OCActivity.Filter.currentPage == 1) {
+				// First page is empty - No activities :(
+				var $emptyContent = $('#emptycontent');
+				$emptyContent.removeClass('hidden');
+				if (OCActivity.Filter.filter == 'all') {
+					$emptyContent.find('p').text(t('activity', 'This stream will show events like additions, changes & shares'));
+				} else {
+					$emptyContent.find('p').text(t('activity', 'There are no events for this filter'));
+				}
+				$('#loading_activities').addClass('hidden');
+
 			} else {
-				content = $(content);
+				// Page is empty - No more activities :(
+				$('#no_more_activities').removeClass('hidden');
+				$('#loading_activities').addClass('hidden');
+			}
+		},
+
+		appendActivityToContainer: function ($activity) {
+			this.makeSureDateGroupExists($activity.relativeTimestamp, $activity.readableTimestamp);
+			this.addActivity($activity);
+		},
+
+		makeSureDateGroupExists: function($relativeTimestamp, $readableTimestamp) {
+			var $lastGroup = this.container.children().last();
+
+			if ($lastGroup.data('date') !== $relativeTimestamp) {
+				var $content = '<div class="section activity-section group" data-date="' + escapeHTML($relativeTimestamp) + '">' + "\n"
+					+'	<h2>'+"\n"
+					+'		<span class="has-tooltip" title="' + escapeHTML($readableTimestamp) + '">' + escapeHTML($relativeTimestamp) + '</span>' + "\n"
+					+'	</h2>' + "\n"
+					+'	<div class="boxcontainer">' + "\n"
+					+'	</div>' + "\n"
+					+'</div>';
+				$content = $($content);
+				OCActivity.InfinitScrolling.processElements($content);
+				this.container.append($content);
+				this.lastDateGroup = $content;
+			}
+		},
+
+		addActivity: function($activity) {
+			var $content = ''
+				+ '<div class="box">' + "\n"
+				+ '	<div class="messagecontainer">' + "\n"
+
+				+ '		<div class="activity-icon ' + (($activity.typeicon) ? escapeHTML($activity.typeicon) + ' svg' : '') + '"></div>' + "\n"
+
+				+ '		<div class="activitysubject">' + "\n"
+				+ (($activity.link) ? '			<a href="' + $activity.link + '">' + "\n" : '')
+				+ '			' + $activity.subjectformatted.markup.trimmed + "\n"
+				+ (($activity.link) ? '			</a>' + "\n" : '')
+				+ '		</div>' + "\n"
+
+				+'		<span class="activitytime has-tooltip" title="' + escapeHTML($activity.readableDateTimestamp) + '">' + "\n"
+				+ '			' + escapeHTML($activity.relativeDateTimestamp) + "\n"
+				+'		</span>' + "\n";
+
+			if ($activity.message) {
+				$content += '<div class="activitymessage">' + "\n"
+					+ $activity.messageformatted.markup.trimmed + "\n"
+					+'</div>' + "\n";
 			}
 
-			OCActivity.InfinitScrolling.processElements(content);
-			this.container.append(content);
+			if ($activity.previews && $activity.previews.length) {
+				$content += '<br />';
+				for (var i = 0; i < $activity.previews.length; i++) {
+					var $preview = $activity.previews[i];
+					$content += (($preview.link) ? '<a href="' + $preview.link + '">' + "\n" : '')
+						+ '<img class="preview' + (($preview.isMimeTypeIcon) ? ' preview-mimetype-icon' : '') + '" src="' + $preview.source + '" alt=""/>' + "\n"
+						+ (($preview.link) ? '</a>' + "\n" : '')
+				}
+			}
+
+			$content += '	</div>' + "\n"
+				+'</div>';
+
+			$content = $($content);
+			OCActivity.InfinitScrolling.processElements($content);
+			this.lastDateGroup.append($content);
 		},
 
 		processElements: function (parentElement) {
@@ -115,18 +183,24 @@ $(function(){
 				element.avatar(element.data('user'), 28);
 			});
 
-			$(parentElement).find('.tooltip').tipsy({
-				gravity:	's',
-				fade:		true
-			});
+			$(parentElement).find('.has-tooltip').tooltip({
+				placement: 'bottom'
+			})
 		}
 	};
 
+	OC.Util.History.addOnPopStateHandler(_.bind(OCActivity.Filter._onPopState, OCActivity.Filter));
 	OCActivity.Filter.setFilter(OCActivity.InfinitScrolling.container.attr('data-activity-filter'));
 	OCActivity.InfinitScrolling.content.on('scroll', OCActivity.InfinitScrolling.onScroll);
 
 	OCActivity.Filter.navigation.find('a[data-navigation]').on('click', function (event) {
-		OCActivity.Filter.setFilter($(this).attr('data-navigation'));
+		var filter = $(this).attr('data-navigation');
+		if (filter !== OCActivity.Filter.filter) {
+			OC.Util.History.pushState({
+				filter: filter
+			});
+		}
+		OCActivity.Filter.setFilter(filter);
 		event.preventDefault();
 	});
 
@@ -136,8 +210,8 @@ $(function(){
 		} else {
 			$('#rssurl').addClass('hidden');
 		}
-		$.post(OC.generateUrl('/apps/activity/settings/feed'), 'enable=' + this.checked, function(data) {
-			$('#rssurl').val(data.data.rsslink);
+		$.post(OC.generateUrl('/apps/activity/settings/feed'), 'enable=' + this.checked, function(response) {
+			$('#rssurl').val(response.data.rsslink);
 		});
 	});
 

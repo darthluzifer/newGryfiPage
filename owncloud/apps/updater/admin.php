@@ -12,6 +12,9 @@
 
 namespace OCA\Updater;
 
-\OCP\User::checkAdminUser();
-$tmpl = new \OCP\Template(App::APP_ID, 'admin');
-return $tmpl->fetchPage();
+use \OCA\Updater\AppInfo\Application;
+
+$app = new Application();
+$container = $app->getContainer();
+$response = $container->query('\OCA\Updater\Controller\AdminController')->index();
+return $response->render();

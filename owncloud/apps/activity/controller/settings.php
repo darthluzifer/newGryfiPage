@@ -25,6 +25,7 @@ namespace OCA\Activity\Controller;
 
 use OCA\Activity\Data;
 use OCA\Activity\UserSettings;
+use OCP\Activity\IExtension;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -69,7 +70,15 @@ class Settings extends Controller {
 	 * @param IL10N $l10n
 	 * @param string $user
 	 */
-	public function __construct($appName, IRequest $request, IConfig $config, ISecureRandom $random, IURLGenerator $urlGenerator, Data $data, UserSettings $userSettings, IL10N $l10n, $user) {
+	public function __construct($appName,
+								IRequest $request,
+								IConfig $config,
+								ISecureRandom $random,
+								IURLGenerator $urlGenerator,
+								Data $data,
+								UserSettings $userSettings,
+								IL10N $l10n,
+								$user) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
 		$this->random = $random;
@@ -109,10 +118,9 @@ class Settings extends Controller {
 		}
 
 		$email_batch_time = 3600;
-		if ($notify_setting_batchtime == UserSettings::EMAIL_SEND_DAILY) {
+		if ($notify_setting_batchtime === UserSettings::EMAIL_SEND_DAILY) {
 			$email_batch_time = 3600 * 24;
-		}
-		if ($notify_setting_batchtime == UserSettings::EMAIL_SEND_WEEKLY) {
+		} else if ($notify_setting_batchtime === UserSettings::EMAIL_SEND_WEEKLY) {
 			$email_batch_time = 3600 * 24 * 7;
 		}
 
@@ -133,7 +141,6 @@ class Settings extends Controller {
 		);
 
 		return new DataResponse(array(
-			'status'	=>'success',
 			'data'		=> array(
 				'message'	=> (string) $this->l10n->t('Your settings have been updated.'),
 			),
@@ -151,17 +158,26 @@ class Settings extends Controller {
 
 		$activities = array();
 		foreach ($types as $type => $desc) {
+			if (is_array($desc)) {
+				$methods = isset($desc['methods']) ? $desc['methods'] : [IExtension::METHOD_STREAM, IExtension::METHOD_MAIL];
+				$desc = isset($desc['desc']) ? $desc['desc'] : '';
+			} else {
+				$methods = [IExtension::METHOD_STREAM, IExtension::METHOD_MAIL];
+			}
+
 			$activities[$type] = array(
 				'desc'		=> $desc,
-				'email'		=> $this->userSettings->getUserSetting($this->user, 'email', $type),
-				'stream'	=> $this->userSettings->getUserSetting($this->user, 'stream', $type),
+				IExtension::METHOD_MAIL		=> $this->userSettings->getUserSetting($this->user, 'email', $type),
+				IExtension::METHOD_STREAM	=> $this->userSettings->getUserSetting($this->user, 'stream', $type),
+				'methods'	=> $methods,
 			);
 		}
 
 		$settingBatchTime = UserSettings::EMAIL_SEND_HOURLY;
-		if ($this->userSettings->getUserSetting($this->user, 'setting', 'batchtime') == 3600 * 24 * 7) {
+		$currentSetting = (int) $this->userSettings->getUserSetting($this->user, 'setting', 'batchtime');
+		if ($currentSetting === 3600 * 24 * 7) {
 			$settingBatchTime = UserSettings::EMAIL_SEND_WEEKLY;
-		} else if ($this->userSettings->getUserSetting($this->user, 'setting', 'batchtime') == 3600 * 24) {
+		} else if ($currentSetting === 3600 * 24) {
 			$settingBatchTime = UserSettings::EMAIL_SEND_DAILY;
 		}
 
@@ -173,6 +189,11 @@ class Settings extends Controller {
 
 			'notify_self'		=> $this->userSettings->getUserSetting($this->user, 'setting', 'self'),
 			'notify_selfemail'	=> $this->userSettings->getUserSetting($this->user, 'setting', 'selfemail'),
+
+			'methods'			=> [
+				IExtension::METHOD_MAIL => $this->l10n->t('Mail'),
+				IExtension::METHOD_STREAM => $this->l10n->t('Stream'),
+			],
 		], '');
 	}
 
@@ -194,13 +215,12 @@ class Settings extends Controller {
 				$conflicts = $this->config->getUsersForUserValue('activity', 'rsstoken', $token);
 			}
 
-			$tokenUrl = $this->urlGenerator->linkToRouteAbsolute('activity.rss', array('token' => $token)); //FIXME
+			$tokenUrl = $this->urlGenerator->linkToRouteAbsolute('activity.Feed.show', ['token' => $token]);
 		}
 
 		$this->config->setUserValue($this->user, 'activity', 'rsstoken', $token);
 
 		return new DataResponse(array(
-			'status'	=>'success',
 			'data'		=> array(
 				'message'	=> (string) $this->l10n->t('Your settings have been updated.'),
 				'rsslink'	=> $tokenUrl,

@@ -125,7 +125,7 @@ class ImportCsvConnector extends ImportConnector {
 	 * @return VCard, all unconverted elements are stored in X-Unknown-Element parameters
 	 */
 	public function convertElementToVCard($element, $title = null) {
-		$vcard = \Sabre\VObject\Component::create('VCARD');
+		$vcard = new \OCA\Contacts\VObject\VCard();
 
 		$nbElt = count($element);
 		for ($i=0; $i < $nbElt; $i++) {
@@ -154,7 +154,7 @@ class ImportCsvConnector extends ImportConnector {
 						if (isset($importEntry->vcard_favourites)) {
 							foreach ($importEntry->vcard_favourites as $vcardFavourite) {
 								if (strcasecmp((string)$vcardFavourite, trim($oneValue)) == 0) {
-									$property = \Sabre\VObject\Property::create("X-FAVOURITES", 'yes');
+									$property = $vcard->createProperty("X-FAVOURITES", 'yes');
 									$vcard->add($property);
 								} else {
 									$property = $this->getOrCreateVCardProperty($vcard, $importEntry->vcard_entry);
@@ -167,8 +167,8 @@ class ImportCsvConnector extends ImportConnector {
 						}
 					}
 				} else if (isset($element[$i]) && isset($title[$i])) {
-					$property = \Sabre\VObject\Property::create("X-Unknown-Element", StringUtil::convertToUTF8($element[$i]));
-					$property->parameters[] = new \Sabre\VObject\Parameter('TYPE', ''.StringUtil::convertToUTF8($title[$i]));
+					$property = $vcard->createProperty("X-Unknown-Element", StringUtil::convertToUTF8($element[$i]));
+					$property->add('TYPE', StringUtil::convertToUTF8($title[$i]));
 					$vcard->add($property);
 				}
 			}
@@ -179,7 +179,7 @@ class ImportCsvConnector extends ImportConnector {
 
 	/**
 	 * @brief gets the import entry corresponding to the position given in parameter
-	 * @param $position the position to look for in the connector
+	 * @param string $position the position to look for in the connector
 	 * @return int|false
 	 */
 	private function getImportEntryFromPosition($position) {
@@ -234,8 +234,12 @@ class ImportCsvConnector extends ImportConnector {
 			return 0;
 		} else {
 			$element = $this->convertElementToVCard($parts[0], $titles);
-			$unknownElements = $element->select("X-Unknown-Element");
-			return (1 - (0.5 * count($unknownElements)/count($parts[0])));
+			if ($element) {
+				$unknownElements = $element->select("X-Unknown-Element");
+				return (1 - (0.5 * count($unknownElements)/count($parts[0])));
+			} else {
+				return 0;
+			}
 		}
 	}
 }

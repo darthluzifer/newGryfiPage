@@ -22,34 +22,60 @@
 
 namespace OCA\Activity\Tests;
 
+use OC\ActivityManager;
 use OCA\Activity\Navigation;
+use OCA\Activity\Tests\Mock\Extension;
 
 class NavigationTest extends TestCase {
 	public function getTemplateData() {
 		return array(
-			array('all', null),
+			array('all'),
 			array('all', 'self'),
-			array('random', null),
+			array('all', 'self', 'thisIsTheRSSToken'),
+			array('random'),
 		);
 	}
 
 	/**
 	 * @dataProvider getTemplateData
 	 */
-	public function testHooksDeleteUser($constructorActive, $forceActive) {
-		$l = \OCP\Util::getL10N('activity');
-		$navigation = new Navigation($l, \OC::$server->getActivityManager(), \OC::$server->getURLGenerator(), $constructorActive);
+	public function testGetTemplate($constructorActive, $forceActive = null, $rssToken = '') {
+		$activityLanguage = \OCP\Util::getL10N('activity', 'en');
+		$activityManager = new ActivityManager(
+			$this->getMock('OCP\IRequest'),
+			$this->getMock('OCP\IUserSession'),
+			$this->getMock('OCP\IConfig')
+		);
+		$activityManager->registerExtension(function() use ($activityLanguage) {
+			return new Extension($activityLanguage, $this->getMock('\OCP\IURLGenerator'));
+		});
+		$userSettings = $this->getMockBuilder('OCA\Activity\UserSettings')
+			->disableOriginalConstructor()
+			->getMock();
+		$userSettings->expects($this->exactly(2))
+			->method('getUserSetting')
+			->with('test', 'setting', 'self')
+			->willReturn(true);
+		$navigation = new Navigation(
+			$activityLanguage,
+			$activityManager,
+			\OC::$server->getURLGenerator(),
+			$userSettings,
+			'test',
+			$rssToken,
+			$constructorActive
+		);
 		$output = $navigation->getTemplate($forceActive)->fetchPage();
 
 		// Get only the template part with the navigation links
-		$navigationLinks = substr($output, strpos($output, '<li>') + 4);
+		$navigationLinks = substr($output, strpos($output, '<ul>') + 4);
 		$navigationLinks = substr($navigationLinks, 0, strrpos($navigationLinks, '</li>'));
 
 		// Remove tabs and new lines
 		$navigationLinks = str_replace(array("\t", "\n"), '', $navigationLinks);
 
 		// Turn the list of links into an array
-		$navigationEntries = explode('</li><li>', $navigationLinks);
+		$navigationEntries = explode('</li>', $navigationLinks);
 
 		$links = $navigation->getLinkList();
 
@@ -63,11 +89,10 @@ class NavigationTest extends TestCase {
 						'href="' . $link['url'] . '">' . $link['name']. '</a>',
 						$navigationEntry
 					);
-					if ($forceActive == $link['id']) {
-						$this->assertContains('class="active"', $navigationEntry);
-					}
-					else if ($forceActive == null && $constructorActive == $link['id']) {
-						$this->assertContains('class="active"', $navigationEntry);
+					if ($forceActive == $link['id'] || ($forceActive == null && $constructorActive == $link['id'])) {
+						$this->assertStringStartsWith('<li class="active">', $navigationEntry);
+					} else {
+						$this->assertStringStartsWith('<li>', $navigationEntry);
 					}
 				}
 			}
@@ -77,6 +102,14 @@ class NavigationTest extends TestCase {
 		// Check size of app links
 		$this->assertSame(1, sizeof($links['apps']));
 		$this->assertNotContains('data-navigation="files"', $navigationLinks, 'Files app should not be included when there are no other apps.');
+
+		if ($rssToken) {
+			$rssInputField = strpos($output, 'input id="rssurl"');
+			$this->assertGreaterThan(0, $rssInputField);
+			$endOfInputField = strpos($output, ' />', $rssInputField);
+
+			$this->assertNotSame(false, strpos(substr($output, $rssInputField, $endOfInputField - $rssInputField), $rssToken));
+		}
 	}
 
 }

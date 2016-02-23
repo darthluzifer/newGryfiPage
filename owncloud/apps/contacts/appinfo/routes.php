@@ -6,9 +6,29 @@
  * later.
  * See the COPYING-README file.
  */
-namespace OCA\Contacts;
+namespace OCA\Contacts\AppInfo;
 
 use OCA\Contacts\Dispatcher;
+use OCP\AppFramework\App;
+
+$app = new App('contacts');
+$app->registerRoutes(
+	$this,
+	[
+		'routes' => [
+			[
+				'name' => 'page#index',
+				'url' => '/',
+				'verb' => 'GET',
+			],
+			[
+				'name' => 'settings#set',
+				'url' => 'preference/set',
+				'verb' => 'POST',
+			],
+		]
+	]
+);
 
 //define the routes
 $this->create('contacts_index', '/')
@@ -437,7 +457,7 @@ $this->create('contacts_categories_removefrom', 'groups/removefrom/{categoryId}'
 	)
 	->requirements(array('categoryId'));
 
-$this->create('contacts_setpreference', 'preference/set')
+$this->create('contacts_index_properties', 'indexproperties/{user}/')
 	->post()
 	->action(
 		function($params) {
@@ -447,17 +467,25 @@ $this->create('contacts_setpreference', 'preference/set')
 		}
 	);
 
-$this->create('contacts_index_properties', 'indexproperties/{user}/')
-	->post()
-	->action(
-		function($params) {
-			\OC::$server->getSession()->close();
-			// TODO: Add BackgroundJob for this.
-			\OCP\Util::emitHook('OCA\Contacts', 'indexProperties', array());
+$userSession = \OC::$server->getUserSession();
+$currentUid = null;
+if ($userSession->getUser() != null) {
+	$currentUid = $userSession->getUser()->getUid();
+}
 
-			\OCP\Config::setUserValue($params['user'], 'contacts', 'contacts_properties_indexed', 'yes');
-			\OCP\JSON::success(array('isIndexed' => true));
-		}
-	)
-	->requirements(array('user'))
-	->defaults(array('user' => \OCP\User::getUser()));
+if (!empty($currentUid)) {
+	$this->create('contacts_index_properties', 'indexproperties/{user}/')
+		->post()
+		->action(
+			function($params) {
+				\OC::$server->getSession()->close();
+				// TODO: Add BackgroundJob for this.
+				\OCP\Util::emitHook('OCA\Contacts', 'indexProperties', array());
+
+				\OCP\Config::setUserValue($params['user'], 'contacts', 'contacts_properties_indexed', 'yes');
+				\OCP\JSON::success(array('isIndexed' => true));
+			}
+		)
+		->requirements(array('user'))
+		->defaults(array('user' => $currentUid));
+}

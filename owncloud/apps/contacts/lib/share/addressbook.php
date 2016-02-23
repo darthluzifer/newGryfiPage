@@ -22,14 +22,14 @@ class Addressbook implements \OCP\Share_Backend_Collection {
 	public $app;
 
 	public function __construct() {
-		$this->app = new App(\OCP\User::getUser());
+		$this->app = new App(\OC::$server->getUserSession()->getUser()->getUId());
 	}
 
 	/**
 	* @brief Get the source of the item to be stored in the database
 	* @param string Item
 	* @param string Owner of the item
-	* @return mixed|array|false Source
+	* @return boolean Source
 	*
 	* Return an array if the item is file dependent, the array needs two keys: 'item' and 'file'
 	* Return false if the item does not exist for the user

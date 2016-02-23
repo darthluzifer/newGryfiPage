@@ -26,7 +26,6 @@ namespace OCA\Activity;
 use \OCP\Activity\IManager;
 use \OCP\IURLGenerator;
 use \OCP\Template;
-use \OCP\Util;
 
 /**
  * Class Navigation
@@ -43,8 +42,14 @@ class Navigation {
 	/** @var \OCP\IURLGenerator */
 	protected $URLGenerator;
 
+	/** @var UserSettings */
+	protected $userSettings;
+
 	/** @var string */
 	protected $active;
+
+	/** @var string */
+	protected $user;
 
 	/** @var string */
 	protected $rssLink;
@@ -55,18 +60,28 @@ class Navigation {
 	 * @param \OC_L10N $l
 	 * @param \OCP\Activity\IManager $manager
 	 * @param \OCP\IURLGenerator $URLGenerator
+	 * @param UserSettings $userSettings
+	 * @param string $user
 	 * @param string $rssToken
 	 * @param null|string $active Navigation entry that should be marked as active
 	 */
-	public function __construct(\OC_L10N $l, IManager $manager, IURLGenerator $URLGenerator, $rssToken, $active = 'all') {
+	public function __construct(\OC_L10N $l,
+								IManager $manager,
+								IURLGenerator $URLGenerator,
+								UserSettings $userSettings,
+								$user,
+								$rssToken,
+								$active = 'all') {
 		$this->l = $l;
 		$this->activityManager = $manager;
 		$this->URLGenerator = $URLGenerator;
+		$this->userSettings = $userSettings;
+		$this->user = $user;
 		$this->active = $active;
 
 		if ($rssToken) {
 			$this->rssLink = $this->URLGenerator->getAbsoluteURL(
-				$this->URLGenerator->linkToRoute('activity.rss', array('token' => $rssToken))
+				$this->URLGenerator->linkToRoute('activity.Feed.show', array('token' => $rssToken))
 			);
 		} else {
 			$this->rssLink = '';
@@ -82,7 +97,7 @@ class Navigation {
 	public function getTemplate($forceActive = null) {
 		$active = $forceActive ?: $this->active;
 
-		$template = new Template('activity', 'navigation', '');
+		$template = new Template('activity', 'stream.app.navigation', '');
 		$entries = $this->getLinkList();
 
 		if (sizeof($entries['apps']) === 1) {
@@ -104,44 +119,33 @@ class Navigation {
 	 * @return array Notification data (user => array of rows from the table)
 	 */
 	public function getLinkList() {
-		$topEntries = array(
-			array(
+		$topEntries = [
+			[
 				'id' => 'all',
 				'name' => (string) $this->l->t('All Activities'),
 				'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList'),
-			),
-			array(
+			],
+		];
+
+		if ($this->user && $this->userSettings->getUserSetting($this->user, 'setting', 'self')) {
+			$topEntries[] = [
 				'id' => 'self',
 				'name' => (string) $this->l->t('Activities by you'),
 				'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList', array('filter' => 'self')),
-			),
-			array(
+			];
+			$topEntries[] = [
 				'id' => 'by',
 				'name' => (string) $this->l->t('Activities by others'),
 				'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList', array('filter' => 'by')),
-			),
-			array(
-				'id' => 'shares',
-				'name' => (string) $this->l->t('Shares'),
-				'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList', array('filter' => 'shares')),
-			),
-		);
-
-		$appFilterEntries = array(
-			array(
-				'id' => 'files',
-				'name' => (string) $this->l->t('Files'),
-				'url' => $this->URLGenerator->linkToRoute('activity.Activities.showList', array('filter' => 'files')),
-			),
-		);
+			];
+		}
 
 		$additionalEntries = $this->activityManager->getNavigation();
 		$topEntries = array_merge($topEntries, $additionalEntries['top']);
-		$appFilterEntries = array_merge($appFilterEntries, $additionalEntries['apps']);
 
 		return array(
 			'top'		=> $topEntries,
-			'apps'		=> $appFilterEntries,
+			'apps'		=> $additionalEntries['apps'],
 		);
 	}
 }

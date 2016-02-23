@@ -8,6 +8,7 @@ script('core', array(
 ));
 
 script('contacts', array(
+	'share',
 	'modernizr.custom',
 	'app',
 	'addressbooks',
@@ -19,6 +20,7 @@ script('contacts', array(
 ));
 
 style('contacts', array(
+	'share',
 	'multi-select',
 	'jquery.ocaddnew',
 	'contacts',
@@ -336,7 +338,7 @@ vendor_style('contacts', array(
 						<a role="button" class="icon-delete action delete"></a>
 					</span>
 				</dd>
-			</d>
+			</div>
 		</li>
 		<li>
 			<ul class="email propertylist hidden">
@@ -356,6 +358,11 @@ vendor_style('contacts', array(
 		<li>
 			<ul class="url propertylist hidden">
 				<h3><?php p($l->t('Website')); ?></h3>
+			</ul>
+		</li>
+		<li>
+			<ul class="cloud propertylist hidden">
+				<h3><?php p($l->t('Federated Cloud ID')); ?></h3>
 			</ul>
 		</li>
 		<li>
@@ -384,6 +391,7 @@ vendor_style('contacts', array(
 			<option value="ADR"><?php p($l->t('Address')); ?></option>
 			<option value="NOTE"><?php p($l->t('Note')); ?></option>
 			<option value="URL"><?php p($l->t('Web site')); ?></option>
+			<option value="CLOUD"><?php p($l->t('Federated Cloud ID')); ?></option>
 		</select>
 		<a class="cancel">
 			<?php p($l->t('Cancel')); ?>
@@ -419,6 +427,20 @@ vendor_style('contacts', array(
 			</span>
 		</li>
 	</div>
+	<div class="cloud" type="text/template">
+		<li data-element="cloud" data-checksum="{checksum}" class="propertycontainer">
+			<span class="parameters">
+				<input type="checkbox" class="parameter tooltipped rightwards" data-parameter="TYPE" name="parameters[TYPE][]" value="PREF" title="<?php p($l->t('Preferred')); ?>" />
+				<select class="rtl type parameter" data-parameter="TYPE" name="parameters[TYPE][]">
+					<?php print_unescaped(OCP\html_select_options($_['cloudTypes'], array())) ?>
+				</select>
+			</span>
+			<input type="text" class="nonempty value" name="value" value="{value}" x-moz-errormessage="<?php p($l->t('Please specify a valid Federated Cloud ID.')); ?>" placeholder="<?php p($l->t('username@example.com/owncloud')); ?>" required />
+			<span class="listactions">
+				<a role="button" class="icon-delete action delete tooltipped leftwards" title="<?php p($l->t('Delete Federated Cloud ID')); ?>"></a>
+			</span>
+		</li>
+	</div>
 	<div class="tel" type="text/template">
 		<li data-element="tel" data-checksum="{checksum}" class="propertycontainer">
 			<span class="parameters">
@@ -449,7 +471,7 @@ vendor_style('contacts', array(
 		</li>
 	</div>
 	<div class="adr" type="text/template">
-		<li data-element="adr" data-checksum="{checksum}" data-lang="<?php p(OCP\Config::getUserValue(OCP\USER::getUser(), 'core', 'lang', 'en')); ?>" class="propertycontainer">
+		<li data-element="adr" data-checksum="{checksum}" data-lang="<?php p(OCP\Config::getUserValue(\OC::$server->getUserSession()->getUser()->getUId(), 'core', 'lang', 'en')); ?>" class="propertycontainer">
 			<span class="parameters">
 				<input type="checkbox" id="adr_pref_{idx}" class="parameter tooltipped downwards" data-parameter="TYPE" name="parameters[TYPE][]" value="PREF" title="<?php p($l->t('Preferred')); ?>" />
 				<select class="type parameter" data-parameter="TYPE" name="parameters[TYPE][]">
@@ -491,7 +513,7 @@ vendor_style('contacts', array(
 		</li>
 	</div>
 	<!--
-		<li data-element="adr" data-checksum="{checksum}" data-lang="<?php p(OCP\Config::getUserValue(OCP\USER::getUser(), 'core', 'lang', 'en')); ?>" class="propertycontainer">
+		<li data-element="adr" data-checksum="{checksum}" data-lang="<?php p(OCP\Config::getUserValue(\OC::$server->getUserSession()->getUser()->getUId(), 'core', 'lang', 'en')); ?>" class="propertycontainer">
 			<span class="parameters">
 				<input type="checkbox" id="adr_pref_{idx}" class="parameter tooltipped downwards" data-parameter="TYPE" name="parameters[TYPE][]" value="PREF" title="<?php p($l->t('Preferred')); ?>" />
 				<select class="type parameter" data-parameter="TYPE" name="parameters[TYPE][]">

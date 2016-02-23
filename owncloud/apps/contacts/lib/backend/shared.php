@@ -85,10 +85,12 @@ class Shared extends Database {
 			Contacts\Share\Addressbook::FORMAT_ADDRESSBOOKS
 		);
 
-		// Not sure if I'm doing it wrongly, or if its supposed to return
-		// the info in an array?
-		$addressBook = (isset($addressBook['permissions']) ? $addressBook : $addressBook[0]);
-
+		if(count($addressBook) == 0) {
+			return null;
+		}
+		
+		$addressBook = $addressBook[0];
+		
 		if(!isset($addressBook['permissions'])) {
 			return null;
 		}
@@ -136,7 +138,12 @@ class Shared extends Database {
 		$card = parent::getContact($addressBookId, $id, $options);
 
 		if (!$card) {
-			throw new \Exception('Shared Contact not found: ' . implode(',', $id), 404);
+			if (is_array($id)) {
+				$idstr = implode(", ", $id);
+			} else {
+				$idstr = $id;
+			}
+			throw new \Exception('Shared Contact not found: ' . $idstr, 404);
 		}
 
 		$card['permissions'] = $permissions;

@@ -23,7 +23,6 @@
 namespace OCA\Contacts;
 use OCA\Contacts\Utils\JSONSerializer;
 use OCA\Contacts\Utils\Properties;
-use OCA\Contacts\Utils\TemporaryPhoto;
 use OCA\Contacts\VObject\VCard;
 
 /**
@@ -71,22 +70,22 @@ class AddressbookProvider implements \OCP\IAddressBook {
 
 	/**
 	* In comparison to getKey() this function returns a human readable (maybe translated) name
-	* @return mixed
+	* @return string
 	*/
 	public function getDisplayName() {
 		return $this->addressBook->getDisplayName();
 	}
 
 	/**
-	* @return mixed
+	* @return integer
 	*/
 	public function getPermissions() {
 		return $this->addressBook->getPermissions();
 	}
 
 	/**
-	* @param $pattern
-	* @param $searchProperties
+	* @param string $pattern
+	* @param string[] $searchProperties
 	* @param $options
 	* @return array|false
 	*/
@@ -115,14 +114,16 @@ class AddressbookProvider implements \OCP\IAddressBook {
   				INNER JOIN `$addrTable`
 			ON `$addrTable`.id = `$contTable`.addressbookid
 			WHERE
-			(
+				(`$contTable`.addressbookid = ?) AND
+				(
 SQL;
 
 		$params = array();
+		$params[] = $this->addressBook->getMetaData()['id'];		
 		foreach ($searchProperties as $property) {
 			$params[] = $property;
 			$params[] = '%' . $pattern . '%';
-			$query .= '(`name` = ? AND `value` LIKE ?) OR ';
+			$query .= '(`name` = ? AND `value` ILIKE ?) OR ';
 		}
 		$query = substr($query, 0, strlen($query) - 4);
 		$query .= ')';
@@ -138,7 +139,7 @@ SQL;
 			$id = $row['contactid'];
 			$addressbookKey = $row['addressbookid'];
 			// Check if we are the owner of the contact
-			if ($row['userid'] !== \OCP\User::getUser()) {
+			if ($row['userid'] !== \OC::$server->getUserSession()->getUser()->getUId()) {
 				// we aren't the owner of the contact
 				try {
 					// it is possible that the contact is shared with us
@@ -175,7 +176,7 @@ SQL;
 
 	/**
 	* @param $properties
-	* @return mixed
+	* @return Contact|null
 	*/
 	public function createOrUpdate($properties) {
 		$addressBook = $this->getAddressbook();

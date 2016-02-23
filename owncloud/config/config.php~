@@ -1,0 +1,21 @@
+<?php
+$CONFIG = array (
+  'instanceid' => 'ocrlsj53s2ye',
+  'passwordsalt' => '6EEmWbOT0Xp9RUgawt7cLqAeuBgI0y',
+  'secret' => 'b8y0igyh4UOt90VBuREG86L5mTwVd+8bn+tXDnQgy0E2t4bG',
+  'trusted_domains' => 
+  array (
+    0 => 'localhost',
+  ),
+  'datadirectory' => '/var/www/html/newGryfiPage/owncloud/data',
+  'overwrite.cli.url' => 'http://localhost/newGryfiPage/owncloud',
+  'dbtype' => 'mysql',
+  'version' => '8.2.2.2',
+  'dbname' => 'gryfenberg',
+  'dbhost' => 'localhost',
+  'dbtableprefix' => 'oc_',
+  'dbuser' => 'oc_admin1',
+  'dbpassword' => 'VmykFB9ay0euRC6JnbUeuUFTZiQUWR',
+  'logtimezone' => 'UTC',
+  'installed' => true,
+);

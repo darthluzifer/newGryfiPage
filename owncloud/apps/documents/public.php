@@ -15,9 +15,7 @@ namespace OCA\Documents;
 
 \OCP\JSON::checkAppEnabled('documents');
 
-\OCP\Util::addStyle( 'documents', 'style' );
-
-if (\OC_Appconfig::getValue('core', 'shareapi_allow_links', 'yes') !== 'yes') {
+if (\OC::$server->getConfig()->getAppValue('core', 'shareapi_allow_links', 'yes') !== 'yes') {
 	header('HTTP/1.0 404 Not Found');
 	$tmpl = new OCP\Template('', '404', 'guest');
 	$tmpl->printPage();
@@ -36,7 +34,6 @@ if (isset($_GET['t'])) {
 			$tmpl->assign('hasPassword', true);
 		} else {
 			\OCP\Util::addStyle( 'documents', '3rdparty/webodf/dojo-app');
-			\OCP\Util::addStyle( 'documents', '3rdparty/webodf/editor' );
 			\OCP\Util::addScript('documents', 'documents');
 			if ($file->getFileId()){
 				$session = new Db\Session();

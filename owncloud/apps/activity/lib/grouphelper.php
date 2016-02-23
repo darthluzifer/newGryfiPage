@@ -23,7 +23,8 @@
 
 namespace OCA\Activity;
 
-use \OCP\Activity\IManager;
+use OCP\Activity\IManager;
+use OCP\IL10N;
 
 class GroupHelper
 {
@@ -61,22 +62,30 @@ class GroupHelper
 	}
 
 	/**
+	 * @param string $user
+	 */
+	public function setUser($user) {
+		$this->dataHelper->setUser($user);
+	}
+
+	/**
+	 * @param IL10N $l
+	 */
+	public function setL10n(IL10N $l) {
+		$this->dataHelper->setL10n($l);
+	}
+
+	/**
 	 * Add an activity to the internal array
 	 *
 	 * @param array $activity
 	 */
 	public function addActivity($activity) {
-		$activity['subjectparams_array'] = unserialize($activity['subjectparams']);
-		if (!is_array($activity['subjectparams_array'])) {
-			$activity['subjectparams_array'] = array($activity['subjectparams_array']);
-		}
+		$activity['subjectparams_array'] = $this->dataHelper->getParameters($activity['subjectparams']);
+		$activity['messageparams_array'] = $this->dataHelper->getParameters($activity['messageparams']);
 
-		$activity['messageparams_array'] = unserialize($activity['messageparams']);
-		if (!is_array($activity['messageparams_array'])) {
-			$activity['messageparams_array'] = array($activity['messageparams_array']);
-		}
-
-		if (!$this->getGroupKey($activity)) {
+		$groupKey = $this->getGroupKey($activity);
+		if ($groupKey === false) {
 			if (!empty($this->openGroup)) {
 				$this->activities[] = $this->openGroup;
 				$this->openGroup = array();
@@ -89,8 +98,9 @@ class GroupHelper
 
 		// Only group when the event has the same group key
 		// and the time difference is not bigger than 3 days.
-		if ($this->getGroupKey($activity) === $this->groupKey &&
+		if ($groupKey === $this->groupKey &&
 			abs($activity['timestamp'] - $this->groupTime) < (3 * 24 * 60 * 60)
+			&& (!isset($this->openGroup['activity_ids']) || sizeof($this->openGroup['activity_ids']) <= 5)
 		) {
 			$parameter = $this->getGroupParameter($activity);
 			if ($parameter !== false) {
@@ -98,21 +108,33 @@ class GroupHelper
 					$this->openGroup['subjectparams_array'][$parameter] = array($this->openGroup['subjectparams_array'][$parameter]);
 				}
 				if (!isset($this->openGroup['activity_ids'])) {
-					$this->openGroup['activity_ids'] = array((int) $this->openGroup['activity_id']);
+					$this->openGroup['activity_ids'] = [(int) $this->openGroup['activity_id']];
+					$this->openGroup['files'] = [
+						(int) $this->openGroup['object_id'] => (string) $this->openGroup['file']
+					];
 				}
 
 				$this->openGroup['subjectparams_array'][$parameter][] = $activity['subjectparams_array'][$parameter];
 				$this->openGroup['subjectparams_array'][$parameter] = array_unique($this->openGroup['subjectparams_array'][$parameter]);
 				$this->openGroup['activity_ids'][] = (int) $activity['activity_id'];
+
+				$this->openGroup['files'][(int) $activity['object_id']] = (string) $activity['file'];
 			}
 		} else {
-			if (!empty($this->openGroup)) {
-				$this->activities[] = $this->openGroup;
-			}
+			$this->closeOpenGroup();
 
-			$this->groupKey = $this->getGroupKey($activity);
+			$this->groupKey = $groupKey;
 			$this->groupTime = $activity['timestamp'];
 			$this->openGroup = $activity;
+		}
+	}
+
+	/**
+	 * Closes the currently open group and adds it to the list of activities
+	 */
+	protected function closeOpenGroup() {
+		if (!empty($this->openGroup)) {
+			$this->activities[] = $this->openGroup;
 		}
 	}
 
@@ -126,26 +148,27 @@ class GroupHelper
 		if ($this->getGroupParameter($activity) === false) {
 			return false;
 		}
-		return $activity['app'] . '|' . $activity['user'] . '|' . $activity['subject'];
-	}
 
-	protected function getGroupParameter($activity) {
-		if (!$this->allowGrouping) {
+		// FIXME
+		// Non-local users are currently not distinguishable, so grouping them might
+		// remove the information how many different users performed the same action.
+		// So we do not group them anymore, until we found another solution.
+		if ($activity['user'] === '') {
 			return false;
 		}
 
-		if ($activity['app'] === 'files') {
-			switch ($activity['subject']) {
-				case 'created_self':
-				case 'created_by':
-				case 'changed_self':
-				case 'changed_by':
-				case 'deleted_self':
-				case 'deleted_by':
-				case 'restored_self':
-				case 'restored_by':
-					return 0;
-			}
+		return $activity['app'] . '|' . $activity['user'] . '|' . $activity['subject'] . '|' . $activity['object_type'];
+	}
+
+	/**
+	 * Get the parameter which is the varying part
+	 *
+	 * @param array $activity
+	 * @return bool|int False if the activity should not be grouped, parameter position otherwise
+	 */
+	protected function getGroupParameter($activity) {
+		if (!$this->allowGrouping) {
+			return false;
 		}
 
 		// Allow other apps to group their notifications
@@ -158,18 +181,18 @@ class GroupHelper
 	 * @return array translated activities ready for use
 	 */
 	public function getActivities() {
-		if (!empty($this->openGroup)) {
-			$this->activities[] = $this->openGroup;
-		}
+		$this->closeOpenGroup();
 
 		$return = array();
 		foreach ($this->activities as $activity) {
+			$this->activityManager->setFormattingObject($activity['object_type'], $activity['object_id']);
 			$activity = $this->dataHelper->formatStrings($activity, 'subject');
 			$activity = $this->dataHelper->formatStrings($activity, 'message');
 
-			$activity['typeicon'] = $this->dataHelper->getTypeIcon($activity['type']);
+			$activity['typeicon'] = $this->activityManager->getTypeIcon($activity['type']);
 			$return[] = $activity;
 		}
+		$this->activityManager->setFormattingObject('', 0);
 
 		return $return;
 	}

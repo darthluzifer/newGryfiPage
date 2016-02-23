@@ -17,6 +17,7 @@ use \OCA\Documents\Controller\UserController;
 use \OCA\Documents\Controller\SessionController;
 use \OCA\Documents\Controller\DocumentController;
 use \OCA\Documents\Controller\SettingsController;
+use \OCA\Documents\AppConfig;
 
 class Application extends App {
 	public function __construct (array $urlParams = array()) {
@@ -54,10 +55,15 @@ class Application extends App {
 			return new SettingsController(
 				$c->query('AppName'), 
 				$c->query('Request'),
-				$c->query('CoreConfig'),
-				$c->query('Logger'),
 				$c->query('L10N'),
+				$c->query('AppConfig'),
 				$c->query('UserId')
+			);
+		});
+		
+		$container->registerService('AppConfig', function($c) {
+			return new AppConfig(
+				$c->query('CoreConfig')
 			);
 		});
 		
@@ -67,14 +73,16 @@ class Application extends App {
 		$container->registerService('Logger', function($c) {
 			return $c->query('ServerContainer')->getLogger();
 		});
-        $container->registerService('CoreConfig', function($c) {
-            return $c->query('ServerContainer')->getConfig();
-        });
-        $container->registerService('L10N', function($c) {
-            return $c->query('ServerContainer')->getL10N($c->query('AppName'));
-        });
-        $container->registerService('UserId', function() {
-            return \OCP\User::getUser();
-        });
+		$container->registerService('CoreConfig', function($c) {
+			return $c->query('ServerContainer')->getConfig();
+		});
+		$container->registerService('L10N', function($c) {
+			return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+		});
+		$container->registerService('UserId', function($c) {
+			$user = $c->query('ServerContainer')->getUserSession()->getUser();
+			$uid = is_null($user) ? '' : $user->getUID();
+			return $uid;
+		});
 	}
 }

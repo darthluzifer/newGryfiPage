@@ -7,6 +7,7 @@ use Loader;
 use Page;
 use User;
 use Core;
+use Concrete\Core\Package\Package as Package;
 
 class Field{
 	protected $sqlFieldname;

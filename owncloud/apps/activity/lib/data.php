@@ -4,6 +4,7 @@
  * ownCloud - Activity App
  *
  * @author Frank Karlitschek
+ * @author Joas Schilling
  * @copyright 2013 Frank Karlitschek frank@owncloud.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,169 +24,146 @@
 
 namespace OCA\Activity;
 
+use OCP\Activity\IEvent;
 use OCP\Activity\IExtension;
-use OCP\DB;
-use OCP\User;
-use OCP\Util;
+use OCP\Activity\IManager;
+use OCP\IDBConnection;
+use OCP\IL10N;
+use OCP\IUser;
+use OCP\IUserSession;
 
 /**
  * @brief Class for managing the data in the activities
  */
-class Data
-{
-	const TYPE_SHARED = 'shared';
-	const TYPE_SHARE_EXPIRED = 'share_expired';
-	const TYPE_SHARE_UNSHARED = 'share_unshared';
-
-	const TYPE_SHARE_CREATED = 'file_created';
-	const TYPE_SHARE_CHANGED = 'file_changed';
-	const TYPE_SHARE_DELETED = 'file_deleted';
-	const TYPE_SHARE_RESHARED = 'file_reshared';
-	const TYPE_SHARE_RESTORED = 'file_restored';
-
-	const TYPE_SHARE_DOWNLOADED = 'file_downloaded';
-	const TYPE_SHARE_UPLOADED = 'file_uploaded';
-
-	const TYPE_STORAGE_QUOTA_90 = 'storage_quota_90';
-	const TYPE_STORAGE_FAILURE = 'storage_failure';
-
-	/** @var \OCP\Activity\IManager */
+class Data {
+	/** @var IManager */
 	protected $activityManager;
 
-	public function __construct(\OCP\Activity\IManager $activityManager){
+	/** @var IDBConnection */
+	protected $connection;
+
+	/** @var IUserSession */
+	protected $userSession;
+
+	/**
+	 * @param IManager $activityManager
+	 * @param IDBConnection $connection
+	 * @param IUserSession $userSession
+	 */
+	public function __construct(IManager $activityManager, IDBConnection $connection, IUserSession $userSession) {
 		$this->activityManager = $activityManager;
+		$this->connection = $connection;
+		$this->userSession = $userSession;
 	}
 
 	protected $notificationTypes = array();
 
 	/**
-	 * @param \OCP\IL10N $l
+	 * @param IL10N $l
 	 * @return array Array "stringID of the type" => "translated string description for the setting"
+	 * 				or Array "stringID of the type" => [
+	 * 					'desc' => "translated string description for the setting"
+	 * 					'methods' => [\OCP\Activity\IExtension::METHOD_*],
+	 * 				]
 	 */
-	public function getNotificationTypes(\OCP\IL10N $l) {
-		if (isset($this->notificationTypes[$l->getLanguageCode()]))
-		{
+	public function getNotificationTypes(IL10N $l) {
+		if (isset($this->notificationTypes[$l->getLanguageCode()])) {
 			return $this->notificationTypes[$l->getLanguageCode()];
 		}
 
-		$notificationTypes = array(
-			self::TYPE_SHARED => $l->t('A file or folder has been <strong>shared</strong>'),
-//			self::TYPE_SHARE_UNSHARED => $l->t('Previously shared file or folder has been <strong>unshared</strong>'),
-//			self::TYPE_SHARE_EXPIRED => $l->t('Expiration date of shared file or folder <strong>expired</strong>'),
-			self::TYPE_SHARE_CREATED => $l->t('A new file or folder has been <strong>created</strong>'),
-			self::TYPE_SHARE_CHANGED => $l->t('A file or folder has been <strong>changed</strong>'),
-			self::TYPE_SHARE_DELETED => $l->t('A file or folder has been <strong>deleted</strong>'),
-//			self::TYPE_SHARE_RESHARED => $l->t('A file or folder has been <strong>reshared</strong>'),
-			self::TYPE_SHARE_RESTORED => $l->t('A file or folder has been <strong>restored</strong>'),
-//			self::TYPE_SHARE_DOWNLOADED => $l->t('A file or folder shared via link has been <strong>downloaded</strong>'),
-//			self::TYPE_SHARE_UPLOADED => $l->t('A file has been <strong>uploaded</strong> into a folder shared via link'),
-//			self::TYPE_STORAGE_QUOTA_90 => $l->t('<strong>Storage usage</strong> is at 90%%'),
-//			self::TYPE_STORAGE_FAILURE => $l->t('An <strong>external storage</strong> has an error'),
-		);
-
-		// Allow other apps to add new notification types
-		$additionalNotificationTypes = $this->activityManager->getNotificationTypes($l->getLanguageCode());
-		$notificationTypes = array_merge($notificationTypes, $additionalNotificationTypes);
-
+		// Allow apps to add new notification types
+		$notificationTypes = $this->activityManager->getNotificationTypes($l->getLanguageCode());
 		$this->notificationTypes[$l->getLanguageCode()] = $notificationTypes;
-
 		return $notificationTypes;
 	}
 
 	/**
 	 * Send an event into the activity stream
 	 *
-	 * @param string $app The app where this event is associated with
-	 * @param string $subject A short description of the event
-	 * @param array  $subjectparams Array with parameters that are filled in the subject
-	 * @param string $message A longer description of the event
-	 * @param array  $messageparams Array with parameters that are filled in the message
-	 * @param string $file The file including path where this event is associated with. (optional)
-	 * @param string $link A link where this event is associated with (optional)
-	 * @param string $affecteduser If empty the current user will be used
-	 * @param string $type Type of the notification
-	 * @param int    $prio Priority of the notification
+	 * @param IEvent $event
 	 * @return bool
 	 */
-	public static function send($app, $subject, $subjectparams = array(), $message = '', $messageparams = array(), $file = '', $link = '', $affecteduser = '', $type = '', $prio = IExtension::PRIORITY_MEDIUM) {
-		$timestamp = time();
-		$user = User::getUser();
-		
-		if ($affecteduser === '') {
-			$auser = $user;
-		} else {
-			$auser = $affecteduser;
+	public function send(IEvent $event) {
+		if ($event->getAffectedUser() === '' || $event->getAffectedUser() === null) {
+			return false;
 		}
 
 		// store in DB
-		$query = DB::prepare('INSERT INTO `*PREFIX*activity`(`app`, `subject`, `subjectparams`, `message`, `messageparams`, `file`, `link`, `user`, `affecteduser`, `timestamp`, `priority`, `type`)' . ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )');
-		$query->execute(array($app, $subject, serialize($subjectparams), $message, serialize($messageparams), $file, $link, $user, $auser, $timestamp, $prio, $type));
-
-		// fire a hook so that other apps like notification systems can connect
-		Util::emitHook('OC_Activity', 'post_event', array('app' => $app, 'subject' => $subject, 'user' => $user, 'affecteduser' => $affecteduser, 'message' => $message, 'file' => $file, 'link'=> $link, 'prio' => $prio, 'type' => $type));
+		$queryBuilder = $this->connection->getQueryBuilder();
+		$queryBuilder->insert('activity')
+			->values([
+				'app' => $queryBuilder->createParameter('app'),
+				'subject' => $queryBuilder->createParameter('subject'),
+				'subjectparams' => $queryBuilder->createParameter('subjectparams'),
+				'message' => $queryBuilder->createParameter('message'),
+				'messageparams' => $queryBuilder->createParameter('messageparams'),
+				'file' => $queryBuilder->createParameter('object_name'),
+				'link' => $queryBuilder->createParameter('link'),
+				'user' => $queryBuilder->createParameter('user'),
+				'affecteduser' => $queryBuilder->createParameter('affecteduser'),
+				'timestamp' => $queryBuilder->createParameter('timestamp'),
+				'priority' => $queryBuilder->createParameter('priority'),
+				'type' => $queryBuilder->createParameter('type'),
+				'object_type' => $queryBuilder->createParameter('object_type'),
+				'object_id' => $queryBuilder->createParameter('object_id'),
+			])
+			->setParameters([
+				'app' => $event->getApp(),
+				'type' => $event->getType(),
+				'affecteduser' => $event->getAffectedUser(),
+				'user' => $event->getAuthor(),
+				'timestamp' => (int) $event->getTimestamp(),
+				'subject' => $event->getSubject(),
+				'subjectparams' => json_encode($event->getSubjectParameters()),
+				'message' => $event->getMessage(),
+				'messageparams' => json_encode($event->getMessageParameters()),
+				'priority' => IExtension::PRIORITY_MEDIUM,
+				'object_type' => $event->getObjectType(),
+				'object_id' => (int) $event->getObjectId(),
+				'object_name' => $event->getObjectName(),
+				'link' => $event->getLink(),
+			])
+			->execute();
 
 		return true;
 	}
 
 	/**
-	 * @brief Send an event into the activity stream
+	 * Send an event as email
 	 *
-	 * @param string $app The app where this event is associated with
-	 * @param string $subject A short description of the event
-	 * @param array  $subjectParams Array of parameters that are filled in the placeholders
-	 * @param string $affectedUser Name of the user we are sending the activity to
-	 * @param string $type Type of notification
-	 * @param int $latestSendTime Activity time() + batch setting of $affecteduser
+	 * @param IEvent $event
+	 * @param int    $latestSendTime Activity $timestamp + batch setting of $affectedUser
 	 * @return bool
 	 */
-	public static function storeMail($app, $subject, array $subjectParams, $affectedUser, $type, $latestSendTime) {
-		$timestamp = time();
-
-		// store in DB
-		$query = DB::prepare('INSERT INTO `*PREFIX*activity_mq` '
-			. ' (`amq_appid`, `amq_subject`, `amq_subjectparams`, `amq_affecteduser`, `amq_timestamp`, `amq_type`, `amq_latest_send`) '
-			. ' VALUES(?, ?, ?, ?, ?, ?, ?)');
-		$query->execute(array(
-			$app,
-			$subject,
-			serialize($subjectParams),
-			$affectedUser,
-			$timestamp,
-			$type,
-			$latestSendTime,
-		));
-
-		// fire a hook so that other apps like notification systems can connect
-		Util::emitHook('OC_Activity', 'post_email', array(
-			'app'			=> $app,
-			'subject'		=> $subject,
-			'subjectparams'	=> $subjectParams,
-			'affecteduser'	=> $affectedUser,
-			'timestamp'		=> $timestamp,
-			'type'			=> $type,
-			'latest_send'	=> $latestSendTime,
-		));
-
-		return true;
-	}
-
-	/**
-	 * Filter the activity types
-	 *
-	 * @param array $types
-	 * @param string $filter
-	 * @return array
-	 */
-	public function filterNotificationTypes($types, $filter) {
-		switch ($filter) {
-			case 'shares':
-				return array_intersect(array(
-					Data::TYPE_SHARED,
-				), $types);
+	public function storeMail(IEvent $event, $latestSendTime) {
+		if ($event->getAffectedUser() === '' || $event->getAffectedUser() === null) {
+			return false;
 		}
 
-		// Allow other apps to add new notification types
-		return $this->activityManager->filterNotificationTypes($types, $filter);
+		// store in DB
+		$queryBuilder = $this->connection->getQueryBuilder();
+		$queryBuilder->insert('activity_mq')
+			->values([
+				'amq_appid' => $queryBuilder->createParameter('app'),
+				'amq_subject' => $queryBuilder->createParameter('subject'),
+				'amq_subjectparams' => $queryBuilder->createParameter('subjectparams'),
+				'amq_affecteduser' => $queryBuilder->createParameter('affecteduser'),
+				'amq_timestamp' => $queryBuilder->createParameter('timestamp'),
+				'amq_type' => $queryBuilder->createParameter('type'),
+				'amq_latest_send' => $queryBuilder->createParameter('latest_send'),
+			])
+			->setParameters([
+				'app' => $event->getApp(),
+				'subject' => $event->getSubject(),
+				'subjectparams' => json_encode($event->getSubjectParameters()),
+				'affecteduser' => $event->getAffectedUser(),
+				'timestamp' => (int) $event->getTimestamp(),
+				'type' => $event->getType(),
+				'latest_send' => $latestSendTime,
+			])
+			->execute();
+
+		return true;
 	}
 
 	/**
@@ -195,108 +173,97 @@ class Data
 	 * @param int $start The start entry
 	 * @param int $count The number of statements to read
 	 * @param string $filter Filter the activities
+	 * @param string $user User for whom we display the stream
+	 * @param string $objectType
+	 * @param int $objectId
 	 * @return array
 	 */
-	public function read(GroupHelper $groupHelper, UserSettings $userSettings, $start, $count, $filter = 'all') {
+	public function read(GroupHelper $groupHelper, UserSettings $userSettings, $start, $count, $filter = 'all', $user = '', $objectType = '', $objectId = 0) {
 		// get current user
-		$user = User::getUser();
+		if ($user === '') {
+			$user = $this->userSession->getUser();
+			if ($user instanceof IUser) {
+				$user = $user->getUID();
+			} else {
+				// No user given and not logged in => no activities
+				return [];
+			}
+		}
+		$groupHelper->setUser($user);
+
 		$enabledNotifications = $userSettings->getNotificationTypes($user, 'stream');
-		$enabledNotifications = $this->filterNotificationTypes($enabledNotifications, $filter);
+		$enabledNotifications = $this->activityManager->filterNotificationTypes($enabledNotifications, $filter);
+		$parameters = array_unique($enabledNotifications);
 
 		// We don't want to display any activities
-		if (empty($enabledNotifications)) {
+		if (empty($parameters)) {
 			return array();
 		}
 
-		$parameters = array($user);
-		$limitActivities = " AND `type` IN ('" . implode("','", $enabledNotifications) . "')";
+		$placeholders = implode(',', array_fill(0, sizeof($parameters), '?'));
+		$limitActivities = " AND `type` IN (" . $placeholders . ")";
+		array_unshift($parameters, $user);
 
 		if ($filter === 'self') {
 			$limitActivities .= ' AND `user` = ?';
 			$parameters[] = $user;
-		}
-		else if ($filter === 'by') {
+		} else if ($filter === 'by' || $filter === 'all' && !$userSettings->getUserSetting($user, 'setting', 'self')) {
 			$limitActivities .= ' AND `user` <> ?';
 			$parameters[] = $user;
+		} else if ($filter === 'filter') {
+			if (!$userSettings->getUserSetting($user, 'setting', 'self')) {
+				$limitActivities .= ' AND `user` <> ?';
+				$parameters[] = $user;
+			}
+			$limitActivities .= ' AND `object_type` = ?';
+			$parameters[] = $objectType;
+			$limitActivities .= ' AND `object_id` = ?';
+			$parameters[] = $objectId;
 		}
-		else if ($filter !== 'all') {
-			switch ($filter) {
-				case 'files':
-					$limitActivities .= ' AND `app` = ?';
-					$parameters[] = 'files';
-				break;
 
-				default:
-					list($condition, $params) = $this->activityManager->getQueryForFilter($filter);
-					if (!is_null($condition)) {
-						$limitActivities .= ' ';
-						$limitActivities .= $condition;
-						if (is_array($params)) {
-							$parameters = array_merge($parameters, $params);
-						}
-					}
+		list($condition, $params) = $this->activityManager->getQueryForFilter($filter);
+		if (!is_null($condition)) {
+			$limitActivities .= ' ';
+			$limitActivities .= $condition;
+			if (is_array($params)) {
+				$parameters = array_merge($parameters, $params);
 			}
 		}
 
-		// fetch from DB
-		$query = DB::prepare(
-			'SELECT * '
-			. ' FROM `*PREFIX*activity` '
-			. ' WHERE `affecteduser` = ? ' . $limitActivities
-			. ' ORDER BY `timestamp` DESC',
-			$count, $start);
-		$result = $query->execute($parameters);
-
-		return $this->getActivitiesFromQueryResult($result, $groupHelper);
+		return $this->getActivities($count, $start, $limitActivities, $parameters, $groupHelper);
 	}
 
 	/**
 	 * Process the result and return the activities
 	 *
-	 * @param \OC_DB_StatementWrapper|int $result
+	 * @param int $count
+	 * @param int $start
+	 * @param string $limitActivities
+	 * @param array $parameters
 	 * @param \OCA\Activity\GroupHelper $groupHelper
 	 * @return array
 	 */
-	public function getActivitiesFromQueryResult($result, GroupHelper $groupHelper) {
-		if (DB::isError($result)) {
-			Util::writeLog('Activity', DB::getErrorMessage($result), Util::ERROR);
-		} else {
-			while ($row = $result->fetchRow()) {
-				$groupHelper->addActivity($row);
-			}
+	protected function getActivities($count, $start, $limitActivities, $parameters, GroupHelper $groupHelper) {
+		$query = $this->connection->prepare(
+			'SELECT * '
+			. ' FROM `*PREFIX*activity` '
+			. ' WHERE `affecteduser` = ? ' . $limitActivities
+			. ' ORDER BY `timestamp` DESC',
+			$count, $start);
+		$query->execute($parameters);
+
+		while ($row = $query->fetch()) {
+			$groupHelper->addActivity($row);
 		}
+		$query->closeCursor();
 
 		return $groupHelper->getActivities();
 	}
 
 	/**
-	 * Get the casted page number from $_GET
-	 * @return int
-	 */
-	public function getPageFromParam() {
-		if (isset($_GET['page'])) {
-			return (int) $_GET['page'];
-		}
-
-		return 1;
-	}
-
-	/**
-	 * Get the filter from $_GET
-	 * @return string
-	 * @deprecated Use validateFilter() instead
-	 */
-	public function getFilterFromParam() {
-		if (!isset($_GET['filter']))
-			return 'all';
-
-		return $this->validateFilter($_GET['filter']);
-	}
-
-	/**
 	 * Verify that the filter is valid
 	 *
-	 * @param string $filter
+	 * @param string $filterValue
 	 * @return string
 	 */
 	public function validateFilter($filterValue) {
@@ -307,9 +274,8 @@ class Data
 		switch ($filterValue) {
 			case 'by':
 			case 'self':
-			case 'shares':
 			case 'all':
-			case 'files':
+			case 'filter':
 				return $filterValue;
 			default:
 				if ($this->activityManager->isFilterValid($filterValue)) {
@@ -354,7 +320,7 @@ class Data
 			$sqlWhere = ' WHERE ' . implode(' AND ', $sqlWhereList);
 		}
 
-		$query = DB::prepare(
+		$query = $this->connection->prepare(
 			'DELETE FROM `*PREFIX*activity`' . $sqlWhere);
 		$query->execute($sqlParameters);
 	}

@@ -25,6 +25,7 @@
 namespace OCA\Contacts\CardDAV;
 
 use OCA\Contacts;
+use \Sabre\DAV\PropPatch;
 
 /**
  * This class exchanges data between SabreDav and the Address book backends.
@@ -52,10 +53,10 @@ class Backend extends \Sabre\CardDAV\Backend\AbstractBackend {
 		foreach($this->backends as $backendName) {
 			$backend = $app->getBackend($backendName);
 			$addressBooks = $backend->getAddressBooksForUser();
-			
+
 			if (is_array($addressBooks)) {
 				foreach($addressBooks as $addressBook) {
-					if($addressBook['owner'] != \OCP\USER::getUser()) {
+					if($addressBook['owner'] != \OC::$server->getUserSession()->getUser()->getUId()) {
 						$addressBook['uri'] = $addressBook['uri'] . '_shared_by_' . $addressBook['owner'];
 						$addressBook['displayname'] = $addressBook['displayname'];
 					}
@@ -85,12 +86,13 @@ class Backend extends \Sabre\CardDAV\Backend\AbstractBackend {
 	 * well as the return value.
 	 *
 	 * @param mixed $addressbookid
-	 * @param array $mutations
 	 * @see \Sabre\DAV\IProperties::updateProperties
 	 * @return bool|array
 	 */
-	public function updateAddressBook($addressbookid, array $mutations) {
+	public function updateAddressBook($addressbookid, PropPatch $propPatch) {
 		$changes = array();
+
+		$mutations = $propPatch->getRemainingMutations();
 
 		foreach($mutations as $property=>$newvalue) {
 			switch($property) {
@@ -187,7 +189,7 @@ class Backend extends \Sabre\CardDAV\Backend\AbstractBackend {
 				//'carddata' => $i['carddata'],
 				'size' => strlen($contact['carddata']),
 				'etag' => '"' . md5($contact['carddata']) . '"',
-				'uri' => urlencode($contact['uri']),
+				'uri' => $contact['uri'],
 				'lastmodified' => $contact['lastmodified'] );
 		}
 

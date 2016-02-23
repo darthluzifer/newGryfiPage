@@ -15,6 +15,7 @@ namespace OCA\Activity\Tests\Controller;
 
 use OCA\Activity\Controller\Settings;
 use OCA\Activity\Tests\TestCase;
+use OCP\Activity\IExtension;
 
 class SettingsTest extends TestCase {
 	/** @var \PHPUnit_Framework_MockObject_MockObject */
@@ -156,8 +157,7 @@ class SettingsTest extends TestCase {
 	 * @param array $response
 	 */
 	protected function assertDataResponse($response) {
-		$this->assertEquals(2, sizeof($response));
-		$this->assertArrayHasKey('status', $response);
+		$this->assertEquals(1, sizeof($response));
 		$this->assertArrayHasKey('data', $response);
 		$data = $response['data'];
 		$this->assertEquals(1, sizeof($data));
@@ -168,7 +168,13 @@ class SettingsTest extends TestCase {
 	public function testDisplayPanelTypeTable() {
 		$this->data->expects($this->any())
 			->method('getNotificationTypes')
-			->willReturn(['NotificationTestTypeShared' => 'Share description']);
+			->willReturn([
+				'NotificationTestTypeShared'	=> 'Share description',
+				'NotificationTestTypeShared2'	=> [
+					'desc' => 'Share description2',
+					'methods' => [IExtension::METHOD_MAIL],
+				],
+			]);
 
 		$renderedResponse = $this->controller->displayPanel()->render();
 		$this->assertContains('<form id="activity_notifications" class="section">', $renderedResponse);
@@ -176,6 +182,13 @@ class SettingsTest extends TestCase {
 		// Checkboxes for the type
 		$this->assertContains('<label for="NotificationTestTypeShared_email">', $renderedResponse);
 		$this->assertContains('<label for="NotificationTestTypeShared_stream">', $renderedResponse);
+
+		$cleanedResponse = str_replace(["\n", "\t"], ' ', $renderedResponse);
+		while (strpos($cleanedResponse, '  ') !== false) {
+			$cleanedResponse = str_replace('  ', ' ', $cleanedResponse);
+		}
+		$this->assertContains('<input type="checkbox" id="NotificationTestTypeShared2_email" name="NotificationTestTypeShared2_email" value="1" class="NotificationTestTypeShared2 email checkbox" />', $cleanedResponse);
+		$this->assertContains('<input type="checkbox" id="NotificationTestTypeShared2_stream" name="NotificationTestTypeShared2_stream" value="1" class="NotificationTestTypeShared2 stream checkbox" disabled="disabled" />', $cleanedResponse);
 
 		// Description of the type
 		$cleanedResponse = str_replace(["\n", "\t"], '', $renderedResponse);
@@ -268,15 +281,14 @@ class SettingsTest extends TestCase {
 			->willReturn('012345678901234567890123456789');
 		$this->urlGenerator->expects($this->any())
 			->method('linkToRouteAbsolute')
-			->with('activity.rss', ['token' => '012345678901234567890123456789'])
+			->with('activity.Feed.show', ['token' => '012345678901234567890123456789'])
 			->willReturn('feedurl::012345678901234567890123456789');
 		$this->config->expects($this->once())
 			->method('setUserValue')
 			->with('test', 'activity', 'rsstoken', $token);
 
 		$response = $this->controller->feed($enabled)->getData();
-		$this->assertEquals(2, sizeof($response));
-		$this->assertArrayHasKey('status', $response);
+		$this->assertEquals(1, sizeof($response));
 		$this->assertArrayHasKey('data', $response);
 		$data = $response['data'];
 		$this->assertEquals(2, sizeof($data));

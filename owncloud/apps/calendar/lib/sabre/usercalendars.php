@@ -1,6 +1,6 @@
 <?php
 /**
- * ownCloud - OC_Connector_Sabre_CalDAV_UserCalendars
+ * ownCloud - \OCA\Calendar\Sabre\UserCalendars
  *
  * @author Thomas Tanghus
  * @copyright 2012 Thomas Tanghus (thomas@tanghus.net)
@@ -19,14 +19,35 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+use Sabre\CalDAV\Calendar;
+
+namespace OCA\Calendar\Sabre;
 
 /**
- * This class overrides \Sabre\CalDAV\UserCalendars::getChildren()
- * to instantiate OC_Connector_Sabre_CalDAV_Calendars.
+ * This class overrides \Sabre\CalDAV\CalendarHome::getChildren()
+ * to instantiate \OCA\Calendar\Sabre\Calendars.
 */
-class OC_Connector_Sabre_CalDAV_UserCalendars extends \Sabre\CalDAV\UserCalendars {
+class UserCalendars extends \Sabre\CalDAV\CalendarHome {
 
 	/**
+	 * Returns a single calendar, by name
+	 *
+	 * @param string $name
+	 * @return Calendar
+	 */
+	function getChild($name) {
+		$children = $this->getChildren();
+
+		foreach($children as $child) {
+			if ($child->getName() === $name) {
+				return $child;
+			}
+		}
+
+		return parent::getChild($name);
+	}
+
+		/**
 	* Returns a list of calendars
 	*
 	* @return array
@@ -36,7 +57,7 @@ class OC_Connector_Sabre_CalDAV_UserCalendars extends \Sabre\CalDAV\UserCalendar
 		$calendars = $this->caldavBackend->getCalendarsForUser($this->principalInfo['uri']);
 		$objs = array();
 		foreach($calendars as $calendar) {
-			$objs[] = new OC_Connector_Sabre_CalDAV_Calendar($this->caldavBackend, $calendar);
+			$objs[] = new Calendar($this->caldavBackend, $calendar);
 		}
 		$objs[] = new \Sabre\CalDAV\Schedule\Outbox($this->principalInfo['uri']);
 		return $objs;

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>User Provisioning API &mdash; ownCloud Server Administration Manual 8.0 documentation</title>
+    <title>User Provisioning API &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '8.0',
+        VERSION:     '8.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud Server Administration Manual 8.0 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
     <link rel="up" title="User Management" href="index.html" />
     <link rel="next" title="File Sharing and Management" href="../configuration_files/index.html" />
     <link rel="prev" title="LDAP User Cleanup" href="user_auth_ldap_cleanup.html" />
@@ -99,7 +99,7 @@
 <div class="container">
   <div class="content">
     <div class="page-header">
-      <h1><a href="../contents.html">ownCloud Server Administration Manual</a></h1>
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
 
     </div>
     
@@ -110,13 +110,15 @@
 							<div class="menu-support-container">
 								<ul id="menu-support" class="menu">
 									<ul>
-										<li><a href="../contents.html">Overview</a></li>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
 									</ul>
                   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.0 Server Administration Manual Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.0 Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Management</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="user_configuration.html">User Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reset_admin_password.html">Resetting a Lost Admin Password</a></li>
@@ -150,18 +152,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operations/index.html">Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../videos/index.html">ownCloud Videos</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Custom and Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
 </ul>
 
 								</ul>
@@ -232,7 +235,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 </div>
 <div class="section" id="users-getusers">
 <h2>users / getusers<a class="headerlink" href="#users-getusers" title="Permalink to this headline">¶</a></h2>
-<p>Retrieves a list of users from the cloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
+<p>Retrieves a list of users from the ownCloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
 <p><strong>Syntax: ocs/v1.php/cloud/users</strong></p>
 <ul class="simple">
 <li>HTTP method: GET</li>
@@ -348,7 +351,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 </div>
 <div class="section" id="users-deleteuser">
 <h2>users / deleteuser<a class="headerlink" href="#users-deleteuser" title="Permalink to this headline">¶</a></h2>
-<p>Deletes a user from the cloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
+<p>Deletes a user from the ownCloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
 <p><strong>Syntax: ocs/v1.php/cloud/users/{userid}</strong></p>
 <ul class="simple">
 <li>HTTP method: DELETE</li>
@@ -363,7 +366,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 <blockquote>
 <div><ul class="simple">
 <li>DELETE <tt class="docutils literal"><span class="pre">http://admin:secret&#64;example.com/ocs/v1.php/cloud/users/Frank</span></tt></li>
-<li>Deletes the use <tt class="docutils literal"><span class="pre">Frank</span></tt></li>
+<li>Deletes the user <tt class="docutils literal"><span class="pre">Frank</span></tt></li>
 </ul>
 </div></blockquote>
 </div>
@@ -473,8 +476,8 @@ listed above. The Provisioning API app is enabled by default.</p>
 <ul class="simple">
 <li>100 - successful</li>
 <li>101 - no group specified</li>
-<li>102 - group doesnt exist</li>
-<li>103 - user doesn&#8217;t exist</li>
+<li>102 - group does not exist</li>
+<li>103 - user does not exist</li>
 <li>104 - insufficient privileges</li>
 <li>105 - failed to remove user from group</li>
 </ul>
@@ -515,13 +518,13 @@ listed above. The Provisioning API app is enabled by default.</p>
 <li>100 - successful</li>
 <li>101 - user does not exist</li>
 <li>102 - group does not exist</li>
-<li>103 - unkown failure</li>
+<li>103 - unknown failure</li>
 </ul>
 <div class="section" id="id15">
 <h3>Example<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li>POST <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmin</span> <span class="pre">-d</span>
+<li>POST <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmins</span> <span class="pre">-d</span>
 <span class="pre">groupid=&quot;group&quot;</span></tt></li>
 <li>Makes the user <tt class="docutils literal"><span class="pre">Frank</span></tt> a subadmin of the <tt class="docutils literal"><span class="pre">group</span></tt> group</li>
 </ul>
@@ -544,7 +547,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 <div class="section" id="users-removesubadmin">
 <h2>users / removesubadmin<a class="headerlink" href="#users-removesubadmin" title="Permalink to this headline">¶</a></h2>
 <p>Removes the subadmin rights for the user specified from the group specified. Authentication is done by sending a Basic HTTP Authorization header.</p>
-<p><strong>Syntax: ocs/v1.php/cloud/users/{userid}/subadmin</strong></p>
+<p><strong>Syntax: ocs/v1.php/cloud/users/{userid}/subadmins</strong></p>
 <ul class="simple">
 <li>HTTP method: DELETE</li>
 <li>DELETE argument: groupid, string - the group from which to remove the user&#8217;s subadmin rights</li>
@@ -560,7 +563,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 <h3>Example<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li>DELETE <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmin</span> <span class="pre">-d</span> <span class="pre">groupid=&quot;oldgroup&quot;</span></tt></li>
+<li>DELETE <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmins</span> <span class="pre">-d</span> <span class="pre">groupid=&quot;oldgroup&quot;</span></tt></li>
 <li>Removes <tt class="docutils literal"><span class="pre">Frank's</span></tt> subadmin rights from the <tt class="docutils literal"><span class="pre">oldgroup</span></tt> group</li>
 </ul>
 </div></blockquote>
@@ -590,13 +593,13 @@ listed above. The Provisioning API app is enabled by default.</p>
 <ul class="simple">
 <li>100 - successful</li>
 <li>101 - user does not exist</li>
-<li>102 - unkown failure</li>
+<li>102 - unknown failure</li>
 </ul>
 <div class="section" id="id19">
 <h3>Example<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li>GET <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmin</span></tt></li>
+<li>GET <tt class="docutils literal"><span class="pre">http://admin:secret&#64;myowncloud.org/ocs/v1.php/cloud/users/Frank/subadmins</span></tt></li>
 <li>Returns the groups of which <tt class="docutils literal"><span class="pre">Frank</span></tt> is a subadmin</li>
 </ul>
 </div></blockquote>
@@ -620,7 +623,7 @@ listed above. The Provisioning API app is enabled by default.</p>
 </div>
 <div class="section" id="groups-getgroups">
 <h2>groups / getgroups<a class="headerlink" href="#groups-getgroups" title="Permalink to this headline">¶</a></h2>
-<p>Retrieves a list of groups from the cloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
+<p>Retrieves a list of groups from the ownCloud server. Authentication is done by sending a Basic HTTP Authorization header.</p>
 <p><strong>Syntax: ocs/v1.php/cloud/groups</strong></p>
 <ul class="simple">
 <li>HTTP method: GET</li>
@@ -747,7 +750,7 @@ sending a Basic HTTP Authorization header.</p>
 <p>Status codes:</p>
 <ul class="simple">
 <li>100 - successful</li>
-<li>101 - group doesn&#8217;t exist</li>
+<li>101 - group does not exist</li>
 <li>102 - unknown failure</li>
 </ul>
 <div class="section" id="id27">
@@ -787,7 +790,7 @@ sending a Basic HTTP Authorization header.</p>
 <p>Status codes:</p>
 <ul class="simple">
 <li>100 - successful</li>
-<li>101 - group doesn&#8217;t exist</li>
+<li>101 - group does not exist</li>
 <li>102 - failed to delete group</li>
 </ul>
 <div class="section" id="id29">
@@ -815,7 +818,7 @@ sending a Basic HTTP Authorization header.</p>
 </div>
 <div class="section" id="apps-getapps">
 <h2>apps / getapps<a class="headerlink" href="#apps-getapps" title="Permalink to this headline">¶</a></h2>
-<p>Returns a list of apps installed on the cloud server. Authentication is done by sending a Basic HTTP Authorization
+<p>Returns a list of apps installed on the ownCloud server. Authentication is done by sending a Basic HTTP Authorization
 header.</p>
 <p><strong>Syntax: ocs/v1.php/cloud/apps/</strong></p>
 <ul class="simple">

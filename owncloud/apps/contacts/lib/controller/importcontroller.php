@@ -10,21 +10,22 @@
 
 namespace OCA\Contacts\Controller;
 
-use OCA\Contacts\App,
-	OCA\Contacts\JSONResponse,
-	OCA\Contacts\Controller,
-	Sabre\VObject,
-	OCA\Contacts\VObject\VCard as MyVCard,
-	OCA\Contacts\ImportManager,
-	OCP\IRequest,
-	OCP\ICache,
-	OCP\ITags;
+use OCA\Contacts\App;
+use OCA\Contacts\JSONResponse;
+use OCA\Contacts\Controller;
+use OCA\Contacts\ImportManager;
+use OCP\IRequest;
+use OCP\ICache;
+use OCP\ITags;
 
 /**
  * Controller importing contacts
  */
 class ImportController extends Controller {
 
+	/**
+	 * @param string $appName
+	 */
 	public function __construct($appName, IRequest $request, App $app, ICache $cache, ITags $tags) {
 		parent::__construct($appName, $request, $app);
 		$this->cache = $cache;
@@ -86,10 +87,7 @@ class ImportController extends Controller {
 				return $response;
 			}
 			$content = file_get_contents($tmpname);
-			$proxyStatus = \OC_FileProxy::$enabled;
-			\OC_FileProxy::$enabled = false;
 			if($view->file_put_contents('/imports/'.$filename, $content)) {
-				\OC_FileProxy::$enabled = $proxyStatus;
 				$progresskey = 'contacts-import-' . rand();
 				$response->setParams(
 					array(
@@ -101,7 +99,6 @@ class ImportController extends Controller {
 					)
 				);
 			} else {
-				\OC_FileProxy::$enabled = $proxyStatus;
 				$response->bailOut(App::$l10n->t('Error uploading contacts to storage.'));
 			return $response;
 			}
@@ -129,12 +126,8 @@ class ImportController extends Controller {
 			$view->mkdir('imports');
 		}
 
-		$proxyStatus = \OC_FileProxy::$enabled;
-		\OC_FileProxy::$enabled = false;
-		$content = \OC_Filesystem::file_get_contents($path . '/' . $filename);
-		//$content = file_get_contents('oc://' . $path . '/' . $filename);
+		$content = \OC\Files\Filesystem::file_get_contents($path . '/' . $filename);
 		if($view->file_put_contents('/imports/' . $filename, $content)) {
-			\OC_FileProxy::$enabled = $proxyStatus;
 			$progresskey = 'contacts-import-' . rand();
 			$response->setParams(
 				array(
@@ -146,7 +139,6 @@ class ImportController extends Controller {
 				)
 			);
 		} else {
-			\OC_FileProxy::$enabled = $proxyStatus;
 			$response->bailOut(App::$l10n->t('Error moving file to imports folder.'));
 		}
 		return $response;
@@ -159,7 +151,7 @@ class ImportController extends Controller {
 		$request = $this->request;
 		$response = new JSONResponse();
 		$params = $this->request->urlParams;
-		$app = new App(\OCP\User::getUser());
+		$app = new App(\OC::$server->getUserSession()->getUser()->getUId());
 		$addressBookId = $params['addressBookId'];
 		$format = $params['importType'];
 
@@ -189,15 +181,11 @@ class ImportController extends Controller {
 			return $response;
 		}
 		$view = \OCP\Files::getStorage('contacts');
-		$proxyStatus = \OC_FileProxy::$enabled;
-		\OC_FileProxy::$enabled = false;
-		$file = $view->file_get_contents('/imports/' . $filename);
-		\OC_FileProxy::$enabled = $proxyStatus;
 
 		$importManager = new ImportManager();
-		
+
 		$formatList = $importManager->getTypes();
-		
+
 		$found = false;
 		$parts = array();
 		foreach ($formatList as $formatName => $formatDisplayName) {
@@ -206,7 +194,7 @@ class ImportController extends Controller {
 				$found = true;
 			}
 		}
-		
+
 		if (!$found) {
 			// detect file type
 			$mostLikelyName = "";
@@ -218,13 +206,13 @@ class ImportController extends Controller {
 					$mostLikelyValue = $probValue;
 				}
 			}
-			
+
 			if ($mostLikelyValue > 0) {
 				// found one (most likely...)
 				$parts = $importManager->importFile($view->getLocalFile('/imports/' . $filename), $mostLikelyName);
 			}
 		}
-		
+
 		if ($parts) {
 			//import the contacts
 			$imported = 0;
@@ -286,8 +274,8 @@ class ImportController extends Controller {
 	}
 
 	/**
-	 * @param $pct
-	 * @param $total
+	 * @param integer $pct
+	 * @param integer $total
 	 * @param $progresskey
 	 */
 	protected function writeProcess($pct, $total, $progresskey) {
@@ -297,9 +285,9 @@ class ImportController extends Controller {
 
 	/**
 	 * @param $view
-	 * @param $filename
+	 * @param string $filename
 	 * @param $progresskey
-	 * @param $response
+	 * @param JSONResponse $response
 	 */
 	protected function cleanup($view, $filename, $progresskey, $response) {
 		if (!$view->unlink('/imports/' . $filename)) {

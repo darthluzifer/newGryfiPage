@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Considerations on Monitoring &mdash; ownCloud Server Administration Manual 8.0 documentation</title>
+    <title>Considerations on Monitoring &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '8.0',
+        VERSION:     '8.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud Server Administration Manual 8.0 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
     <link rel="up" title="Operations" href="index.html" />
     <link rel="next" title="Scaling Across Multiple Machines" href="scaling_multiple_machines.html" />
     <link rel="prev" title="Operations" href="index.html" />
@@ -99,7 +99,7 @@
 <div class="container">
   <div class="content">
     <div class="page-header">
-      <h1><a href="../contents.html">ownCloud Server Administration Manual</a></h1>
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
 
     </div>
     
@@ -110,17 +110,19 @@
 							<div class="menu-support-container">
 								<ul id="menu-support" class="menu">
 									<ul>
-										<li><a href="../contents.html">Overview</a></li>
+										
+<li><a href="../contents.html">Table of Contents</a></li>
 									</ul>
                   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.0 Server Administration Manual Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.0 Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">ownCloud 8.2 Server Administration Manual Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">ownCloud 8.2 Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new_admin.html">What&#8217;s New for Admins in ownCloud 8.2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration_user/index.html">User Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration_files/index.html">File Sharing and Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration_server/index.html">ownCloud Server Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration_database/index.html">Database Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Operations</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="">Considerations on Monitoring</a><ul>
@@ -133,13 +135,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../videos/index.html">ownCloud Videos</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_installation/index.html">Enterprise Subscription Installation (ES Only)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Custom and Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_clients/index.html">Creating Branded ownCloud Clients (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_server_branding/index.html">Enterprise Server Branding (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
 </ul>
 
 								</ul>
@@ -160,7 +163,7 @@
 n-tier web applications.  Successfully managing such an installation requires
 active monitoring of the application and supporting infrastructure components.
 The purpose of this section is to outline the components of ownCloud that need
-to be monitored, and provide guidance on what to look for ownCloud in an
+to be monitored, and provide guidance on what to look for in ownCloud in an
 enterprise installation.</p>
 <div class="section" id="owncloud-deployment-architecture">
 <h2>ownCloud Deployment Architecture<a class="headerlink" href="#owncloud-deployment-architecture" title="Permalink to this headline">¶</a></h2>
@@ -197,12 +200,12 @@ server is operating properly.</p>
 <p>ownCloud also provides a built in logging function. If the ownCloud Enterprise Edition logging applications
 are enabled, this file will track user logins and shared file activity. If these logging applications are
 not enabled, this log file still tracks basic ownCloud health. Given the potential for this file to get
-quite large, the log file should be rotated on a daily basis, and given the important of the error information
+quite large, the log file should be rotated on a daily basis, and given the importance of the error information
 in the log file, this should be integrated with an enterprise log manager.</p>
 <p>Logfile entries that start with the keyword “Error” should be logged and reported to ownCloud support.</p>
 <div class="section" id="apache">
 <h4>Apache<a class="headerlink" href="#apache" title="Permalink to this headline">¶</a></h4>
-<p>The apache error and access log should also be monitored. Significant spontanious changes of the number
+<p>The apache error and access log should also be monitored. Significant spontaneous changes of the number
 of requests per second should also be monitored and looked into.</p>
 </div>
 <div class="section" id="database-server">
@@ -219,8 +222,8 @@ provided by the operating-system and/or the cluster filesystem vendor.</p>
 <div class="section" id="load-balancer">
 <h3>Load Balancer<a class="headerlink" href="#load-balancer" title="Permalink to this headline">¶</a></h3>
 <p>The load balancer is monitoring the health of the application servers and is distributing the traffic in
-the optimal way. The application-servers are should additionally monitored to detect long lasting OS or
-hardware problems. Monitoring solutions like Nagos provide build in functionality to do this.</p>
+the optimal way. The application-servers should also be monitored to detect long lasting OS or
+hardware problems. Monitoring solutions like Nagios provide built in functionality to do this.</p>
 </div>
 </div>
 </div>

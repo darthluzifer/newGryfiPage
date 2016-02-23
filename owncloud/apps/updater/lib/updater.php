@@ -14,20 +14,36 @@ namespace OCA\Updater;
 
 class Updater {
 
-	protected static $processed = array();
+	protected static $processed = [];
 
 	public static function update($version, $backupBase){
 		if (!is_dir($backupBase)){
 			throw new \Exception("Backup directory $backupBase is not found");
 		}
 
+		// Switch include paths to backup
+		$pathsArray = explode(PATH_SEPARATOR, get_include_path());
+		$pathsTranslated = [];
+		foreach ($pathsArray as $path){
+			//Update all 3rdparty paths
+			if (preg_match('|^' . preg_quote(\OC::$THIRDPARTYROOT . '/3rdparty') . '|', $path)) {
+				$pathsTranslated[] = preg_replace(
+					'|^' . preg_quote(\OC::$THIRDPARTYROOT . '/3rdparty') .'|', 
+					$backupBase . '/3rdparty', 
+					$path
+				);
+				continue;
+			}
+			// Update all OC webroot paths
+			$pathsTranslated[] = preg_replace(
+				'|^' . preg_quote(\OC::$SERVERROOT) .'|', 
+				$backupBase,
+				$path
+			);
+		}
+		
 		set_include_path(
-				$backupBase . PATH_SEPARATOR .
-				$backupBase . '/core/lib' . PATH_SEPARATOR .
-				$backupBase . '/core/config' . PATH_SEPARATOR .
-				$backupBase . '/3rdparty' . PATH_SEPARATOR .
-				$backupBase . '/apps' . PATH_SEPARATOR .
-				get_include_path()
+			implode(PATH_SEPARATOR, $pathsTranslated) 
 		);
 
 		$tempDir = self::getTempDir();
@@ -82,7 +98,7 @@ class Updater {
 
 	public static function cleanUp(){
 		Helper::removeIfExists(self::getTempDir());
-		Helper::removeIfExists(App::getTempBase());
+		Helper::removeIfExists(self::getTempBase());
 	}
 	
 	public static function isClean(){
@@ -90,7 +106,11 @@ class Updater {
 	}
 
 	public static function getTempDir(){
-		return App::getTempBase() . 'tmp';
+		return self::getTempBase() . 'tmp';
 	}
-
+	
+	protected static function getTempBase(){
+		$app = new \OCA\Updater\AppInfo\Application();
+		return $app->getContainer()->query('Config')->getTempBase();
+	}
 }

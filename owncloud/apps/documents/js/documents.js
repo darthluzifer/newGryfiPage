@@ -61,7 +61,7 @@ $.widget('oc.documentGrid', {
 		previewURL = OC.generateUrl('/core/preview.png?') + $.param(urlSpec);
 		previewURL = previewURL.replace('(', '%28').replace(')', '%29');
 		
-		if ( $('#previews_enabled').length ) {
+		if ( $('#previews_enabled').length && document.hasPreview) {
 			var img = new Image();
 			img.onload = function(){
 				var ready = function (node){
@@ -158,17 +158,17 @@ var documentsMain = {
 	
 	UI : {		
 		/* Editor wrapper HTML */
-		container : '<div id = "mainContainer" class="claro">' +
-					'  <div id = "editor">' +
-					'    <div id = "container">' +
-					'      <div id="canvas"></div>' +
+		container : '<div id="mainContainer" class="claro">' +
+					'  <div id="editor" class="webodfeditor-editor">' +
+					'    <div id="container" class="webodfeditor-canvascontainer">' +
+					'      <div id="canvas" class="webodfeditor-canvas"></div>' +
 					'    </div>' +
 					'  </div>' +
-					'  <div id = "collaboration">' +
-					'    <div id = "collabContainer">' +
-					'      <div id = "members">' +
-					'        <div id = "inviteButton"></div>' +
-					'        <div id = "memberList"></div>' +
+					'  <div id="collaboration">' +
+					'    <div id="collabContainer">' +
+					'      <div id="members">' +
+					'        <div id="inviteButton"></div>' +
+					'        <div id="memberList"></div>' +
 					'      </div>' +
 					'    </div>' +
 					'  </div>' +
@@ -204,7 +204,7 @@ var documentsMain = {
 			// Fade out editor
 			$('#mainContainer').fadeOut('fast', function() {
 				$('#mainContainer').remove();
-				$('#content').fadeIn('fast');
+				$('#content-wrapper').fadeIn('fast');
 				$(document.body).removeClass('claro');
 				$('title').text(documentsMain.UI.mainTitle);
 			});
@@ -328,11 +328,18 @@ var documentsMain = {
 			return;
 		}
 
+		var pollUrl = documentsMain.isGuest 
+				? OC.generateUrl('apps/documents/session/guest/poll/{token}', {'token' : $("[name='document']").val()})
+				: OC.generateUrl('apps/documents/session/user/poll'),
+			saveUrl = documentsMain.isGuest 
+				? OC.generateUrl('apps/documents/session/guest/save/{token}', {'token' : $("[name='document']").val()})
+				: OC.generateUrl('apps/documents/session/user/save')
+				;
 		documentsMain.canShare = !documentsMain.isGuest
 				&& typeof OC.Share !== 'undefined' && response.permissions & OC.PERMISSION_SHARE;
 		require({ }, ["owncloud/ServerFactory", "webodf/editor/Editor"], function (ServerFactory, Editor) {
 			// fade out file list and show WebODF canvas
-			$('#content').fadeOut('fast').promise().done(function() {
+			$('#content-wrapper').fadeOut('fast').promise().done(function() {
 				
 				documentsMain.fileId = response.file_id;
 				documentsMain.fileName = response.title;
@@ -347,10 +354,19 @@ var documentsMain = {
 				documentsMain.memberId = response.member_id;
 
 				// TODO: set webodf translation system, by passing a proper function translate(!string):!string in "runtime.setTranslator(translate);"
-
-				documentsMain.webodfServerInstance = serverFactory.createServer();
+				documentsMain.webodfServerInstance = serverFactory.createServer({
+					url : pollUrl,
+					sessionStateToFileUrl : saveUrl
+				});
 				documentsMain.webodfServerInstance.setToken(oc_requesttoken);
-				documentsMain.webodfEditorInstance = new Editor({unstableFeaturesEnabled: documentsMain.useUnstable}, documentsMain.webodfServerInstance, serverFactory);
+				documentsMain.webodfEditorInstance = new Editor(
+						{
+							allFeaturesEnabled: true,
+							collabEditingEnabled: true
+						},
+						documentsMain.webodfServerInstance, serverFactory
+				);
+				
 				documentsMain.webodfEditorInstance.addEventListener(Editor.EVENT_BEFORESAVETOFILE, documentsMain.UI.showSave);
 				documentsMain.webodfEditorInstance.addEventListener(Editor.EVENT_SAVEDTOFILE, documentsMain.UI.hideSave);
 				documentsMain.webodfEditorInstance.addEventListener(Editor.EVENT_ERROR, documentsMain.onEditorShutdown);
@@ -376,9 +392,9 @@ var documentsMain = {
 		console.log('joining session '+fileId);
 		var url;
 		if (documentsMain.isGuest){
-			url = OC.generateUrl('apps/documents/ajax/session/joinasguest/{token}', {token: fileId});
+			url = OC.generateUrl('apps/documents/session/guest/join/{token}', {token: fileId});
 		} else {
-			url = OC.generateUrl('apps/documents/ajax/session/joinasuser/{file_id}', {file_id: fileId});
+			url = OC.generateUrl('apps/documents/session/user/join/{file_id}', {file_id: fileId});
 		}
 		$.post(
 			url,
@@ -691,6 +707,8 @@ $(document).ready(function() {
 		$('.add-document .upload').css({opacity:0.7});
 		documentsMain.show();
 	});
-	
+	OC.addStyle('documents', '3rdparty/webodf/wodotexteditor');
+	OC.addStyle('documents', '/3rdparty/webodf/wodocollabpane');
+
 	OC.addScript('documents', '3rdparty/webodf/dojo-amalgamation', documentsMain.onStartup);
 });

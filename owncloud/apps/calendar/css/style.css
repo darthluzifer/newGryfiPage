@@ -199,6 +199,11 @@ button.category{margin:0 3px;}
 	display: block;
 	margin: 5px 0;
 }
+#event-time:after {
+	content: "";
+	display: table;
+	clear: both;
+}
 #event-time-from {
 	float: left;
 }
@@ -206,23 +211,23 @@ button.category{margin:0 3px;}
 	float: right;
 }
 #from, #to {
-	width: 65px;
+	width: 80px;
 	margin: 0;
 }
 #fromtime, #totime {
 	margin: 0;
-	width: 80px;
+	width: 90px;
 }
 #event-allday {
-	display: inline-block;
 	margin: 7px 0;
-	width: 100%;
 }
-/* category input field leaves room for edit button */
-#category {
+/* category input field leaves room for edit button
+   location input field leaves room for map button */
+#category, #event-location {
 	width: 90%;
 }
-#editCategories {
+
+#editCategories, #viewOnMap {
 	display: inline-block;
 	padding: 6px 12px;
 }
@@ -251,6 +256,8 @@ button.category{margin:0 3px;}
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding: 0;
+	z-index: 1000;
+	max-width: 100%;
 }
 .ui-dialog .ui-dialog-content {
 	overflow: initial;
@@ -578,11 +585,17 @@ button.category{margin:0 3px;}
 	z-index: 999;
 }
 
+/* force minimum height for event so that 15 minute events are visible */
+.fc-event {
+	min-height: 20px;
+}
+
 .fc-event-draggable { cursor: default; }
 
 .fc-agenda .fc-agenda-axis{
 	padding:0;
 	padding-right:4px;
+	line-height:initial;
 }
 
 button.ui-multiselect{

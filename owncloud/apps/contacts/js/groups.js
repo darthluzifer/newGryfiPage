@@ -530,7 +530,7 @@ OC.Contacts = OC.Contacts || {};
 				if(self.hasGroup(newname, owner)) {
 					$(document).trigger('status.contacts.error', {
 						error: true,
-						message: t('contacts', 'A group named "{group}" already exists', {group: escapeHTML(newname)})
+						message: t('contacts', 'A group named "{group}" already exists', {group: newname})
 					});
 					return;
 				}
@@ -552,7 +552,7 @@ OC.Contacts = OC.Contacts || {};
 					$editInput.removeClass('loading');
 				});
 			},
-			cancel: function(event) {
+			cancel: function() {
 				console.log('cancel');
 				$editInput.removeClass('loading');
 			},
@@ -610,7 +610,7 @@ OC.Contacts = OC.Contacts || {};
 		var self = this;
 		if(this.hasGroup(name, OC.currentUser)) {
 			if(typeof cb === 'function') {
-				cb({error:true, message:t('contacts', 'A group named "{group}" already exists', {group: escapeHTML(name)})});
+				cb({error:true, message:t('contacts', 'A group named "{group}" already exists', {group: name})});
 			}
 			return;
 		}
@@ -656,7 +656,7 @@ OC.Contacts = OC.Contacts || {};
 				}
 			} else {
 				if(typeof cb === 'function') {
-					cb({error:true, message:response.data.message});
+					cb({error:true, message:response.message});
 				}
 			}
 		})
@@ -669,7 +669,6 @@ OC.Contacts = OC.Contacts || {};
 
 	GroupList.prototype.loadGroups = function(cb) {
 		var self = this;
-		var acceptdrop = '.dragContact';
 		var $groupList = this.$groupList;
 		var tmpl = this.$groupListItemTemplate;
 		var $elem;

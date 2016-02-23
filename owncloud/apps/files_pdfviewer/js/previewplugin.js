@@ -25,7 +25,7 @@
 		},
 
 		hide: function() {
-			$('#pdframe, #pdfbar').remove();
+			$('#pdframe').remove();
 			if ($('#isPublic').val() && $('#filesApp').val()){
 				$('#controls').removeClass('hidden');
 			}
@@ -43,8 +43,8 @@
 		show: function(downloadUrl, isFileList) {
 			var self = this;
 			var $iframe;
-			var viewer = OC.generateUrl('/apps/files_pdfviewer/?file={file}', {file: encodeURIComponent(downloadUrl)});
-			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;" src="'+viewer+'" sandbox="allow-scripts allow-same-origin" /><div id="pdfbar"><a id="close" title="Close">X</a></div>');
+			var viewer = OC.generateUrl('/apps/files_pdfviewer/?file={file}', {file: downloadUrl});
+			$iframe = $('<iframe id="pdframe" style="width:100%;height:100%;display:block;position:absolute;top:0;" src="'+viewer+'" sandbox="allow-scripts allow-same-origin allow-popups" />');
 
 			if(isFileList === true) {
 				FileList.setViewerMode(true);
@@ -66,14 +66,31 @@
 			$("#pageWidthOption").attr("selected","selected");
 			// replace the controls with our own
 			$('#app-content #controls').addClass('hidden');
-			$('#pdfbar').css({position:'absolute',top:'6px',right:'5px'});
+
 			// if a filelist is present, the PDF viewer can be closed to go back there
-			if ($('#fileList').length) {
-				$('#close').css({display:'block',padding:'0 5px',color:'#BBBBBB','font-weight':'900','font-size':'16px',height:'18px',background:'transparent'}).click(function(){
+			$('#pdframe').load(function(){
+				var iframe = $('#pdframe').contents();
+				if ($('#fileList').length) {
+					iframe.find('#secondaryToolbarClose').click(function() {
+						if(!$('html').hasClass('ie8')) {
+							history.back();
+						} else {
+							self.hide();
+						}
+					});
+				} else {
+					iframe.find("#secondaryToolbarClose").addClass('hidden');
+				}
+			});
+
+			if(!$('html').hasClass('ie8')) {
+				history.pushState({}, '', '#pdfviewer');
+			}
+
+			if(!$('html').hasClass('ie8')) {
+				$(window).one('popstate', function (e) {
 					self.hide();
 				});
-			} else {
-				$('#close').addClass('hidden');
 			}
 		},
 
@@ -93,9 +110,9 @@
 					if($('#isPublic').val()) {
 						var sharingToken = $('#sharingToken').val();
 						downloadUrl = OC.generateUrl('/s/{token}/download?files={files}&path={path}', {
-							token: encodeURIComponent(sharingToken),
-							files: encodeURIComponent(fileName),
-							path:  encodeURIComponent(context.dir)
+							token: sharingToken,
+							files: fileName,
+							path: context.dir
 						});
 					} else {
 						downloadUrl = Files.getDownloadUrl(fileName, context.dir);
@@ -109,14 +126,20 @@
 
 })(OCA);
 
-OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
+// Doesn't work with IE below 9
+if(!$.browser.msie || ($.browser.msie && $.browser.version >= 9)){
+	OC.Plugins.register('OCA.Files.FileList', OCA.FilesPdfViewer.PreviewPlugin);
+}
 
 // FIXME: Hack for single public file view since it is not attached to the fileslist
 $(document).ready(function(){
-	if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
-		var sharingToken = $('#sharingToken').val();
-		var downloadUrl = OC.generateUrl('/s/{token}/download', {token: encodeURIComponent(sharingToken)});
-		var viewer = OCA.FilesPdfViewer.PreviewPlugin;
-		viewer.show(downloadUrl, false);
+	// Doesn't work with IE below 9
+	if(!$.browser.msie || ($.browser.msie && $.browser.version >= 9)){
+		if ($('#isPublic').val() && $('#mimetype').val() === 'application/pdf') {
+			var sharingToken = $('#sharingToken').val();
+			var downloadUrl = OC.generateUrl('/s/{token}/download', {token: sharingToken});
+			var viewer = OCA.FilesPdfViewer.PreviewPlugin;
+			viewer.show(downloadUrl, false);
+		}
 	}
 });

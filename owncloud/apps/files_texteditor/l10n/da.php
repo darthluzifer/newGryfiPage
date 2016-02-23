@@ -1,12 +1,16 @@
-<?php $TRANSLATIONS = array(
-"Save" => "Gem",
-"Search" => "Søg",
-"Close" => "Luk",
-"Next" => "Næste",
-"Clear" => "Ryd",
-"Saving..." => "Gemmer...",
-"Failed to save file" => "Kunne ikke gemme filen",
-"An error occurred!" => "Der opstod en fejl!",
-"There are unsaved changes in the text editor" => "Der er ugemte ændringer i tekstbehandleren",
-"There were unsaved changes, click here to go back" => "Ændringer blev ikke gemt - klik her for at gå tilbage"
+<?php
+$TRANSLATIONS = array(
+"Cannot read the file." => "Kan ikke læse filen.",
+"Invalid file path supplied." => "Der blev angivet en ugyldig filsti.",
+"Cannot save file as it has been modified since opening" => "Kan ikke gemme filen, da den er blevet ændret efter den blev åbnet",
+"Insufficient permissions" => "Utilstrækkeligt med rettigheder",
+"File path not supplied" => "Filstien er ikke angivet",
+"File mtime not supplied" => "Filen mtime er ikke anvist",
+"saving..." => "gemmer...",
+"saved!" => "gemt!",
+"failed!" => "mislykkedes!",
+"Saved" => "Gemt",
+"There was a problem saving your changes. Click to resume editing." => "Der opstod et problem ved lagringen af dine ændringer. Klik for at genoptage redigeringen.",
+"An error occurred!" => "Der opstod en fejl!"
 );
+$PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

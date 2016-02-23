@@ -25,11 +25,13 @@ namespace OCA\Activity\AppInfo;
 use OC\Files\View;
 use OCA\Activity\Consumer;
 use OCA\Activity\Controller\Activities;
+use OCA\Activity\Controller\Feed;
 use OCA\Activity\Controller\Settings;
 use OCA\Activity\Data;
 use OCA\Activity\DataHelper;
 use OCA\Activity\GroupHelper;
-use OCA\Activity\Hooks;
+use OCA\Activity\FilesHooks;
+use OCA\Activity\MailQueueHandler;
 use OCA\Activity\Navigation;
 use OCA\Activity\ParameterHelper;
 use OCA\Activity\UserSettings;
@@ -45,8 +47,12 @@ class Application extends App {
 		 * Activity Services
 		 */
 		$container->registerService('ActivityData', function(IContainer $c) {
+			/** @var \OC\Server $server */
+			$server = $c->query('ServerContainer');
 			return new Data(
-				$c->query('ServerContainer')->query('ActivityManager')
+				$server->getActivityManager(),
+				$server->getDatabaseConnection(),
+				$server->getUserSession()
 			);
 		});
 
@@ -57,6 +63,7 @@ class Application extends App {
 
 		$container->registerService('Consumer', function(IContainer $c) {
 			return new Consumer(
+				$c->query('ActivityData'),
 				$c->query('UserSettings')
 			);
 		});
@@ -66,10 +73,15 @@ class Application extends App {
 			$server = $c->query('ServerContainer');
 			return new DataHelper(
 				$server->getActivityManager(),
-				new ParameterHelper (
+				new ParameterHelper(
 					$server->getActivityManager(),
+					$server->getUserManager(),
+					$server->getURLGenerator(),
+					$server->getContactsManager(),
 					new View(''),
-					$c->query('ActivityL10N')
+					$server->getConfig(),
+					$c->query('ActivityL10N'),
+					$c->query('CurrentUID')
 				),
 				$c->query('ActivityL10N')
 			);
@@ -83,11 +95,40 @@ class Application extends App {
 			);
 		});
 
+		$container->registerService('GroupHelperSingleEntries', function(IContainer $c) {
+			return new GroupHelper(
+				$c->query('ServerContainer')->getActivityManager(),
+				$c->query('DataHelper'),
+				false
+			);
+		});
+
 		$container->registerService('Hooks', function(IContainer $c) {
-			return new Hooks(
+			/** @var \OC\Server $server */
+			$server = $c->query('ServerContainer');
+
+			return new FilesHooks(
+				$server->getActivityManager(),
 				$c->query('ActivityData'),
 				$c->query('UserSettings'),
+				$server->getGroupManager(),
+				new View(''),
+				$server->getDatabaseConnection(),
 				$c->query('CurrentUID')
+			);
+		});
+
+		$container->registerService('MailQueueHandler', function(IContainer $c) {
+			/** @var \OC\Server $server */
+			$server = $c->query('ServerContainer');
+
+			return new MailQueueHandler(
+				$server->getDateTimeFormatter(),
+				$server->getDatabaseConnection(),
+				$c->query('DataHelper'),
+				$server->getMailer(),
+				$server->getURLGenerator(),
+				$server->getUserManager()
 			);
 		});
 
@@ -99,7 +140,9 @@ class Application extends App {
 			return new Navigation(
 				$c->query('ActivityL10N'),
 				$server->getActivityManager(),
-				$c->query('URLGenerator'),
+				$server->getURLGenerator(),
+				$c->query('UserSettings'),
+				$c->query('CurrentUID'),
 				$rssToken
 			);
 		});
@@ -140,10 +183,10 @@ class Application extends App {
 
 			return new Settings(
 				$c->query('AppName'),
-				$c->query('Request'),
+				$server->getRequest(),
 				$server->getConfig(),
 				$server->getSecureRandom()->getMediumStrengthGenerator(),
-				$c->query('URLGenerator'),
+				$server->getURLGenerator(),
 				$c->query('ActivityData'),
 				$c->query('UserSettings'),
 				$c->query('ActivityL10N'),
@@ -152,13 +195,39 @@ class Application extends App {
 		});
 
 		$container->registerService('ActivitiesController', function(IContainer $c) {
+			/** @var \OC\Server $server */
+			$server = $c->query('ServerContainer');
+
 			return new Activities(
 				$c->query('AppName'),
-				$c->query('Request'),
+				$server->getRequest(),
 				$c->query('ActivityData'),
 				$c->query('GroupHelper'),
 				$c->query('Navigation'),
 				$c->query('UserSettings'),
+				$server->getDateTimeFormatter(),
+				$server->getPreviewManager(),
+				$server->getURLGenerator(),
+				$server->getMimeTypeDetector(),
+				new View(''),
+				$c->query('CurrentUID')
+			);
+		});
+
+		$container->registerService('FeedController', function(IContainer $c) {
+			/** @var \OC\Server $server */
+			$server = $c->query('ServerContainer');
+
+			return new Feed(
+				$c->query('AppName'),
+				$server->getRequest(),
+				$c->query('ActivityData'),
+				$c->query('GroupHelperSingleEntries'),
+				$c->query('UserSettings'),
+				$c->query('URLGenerator'),
+				$server->getActivityManager(),
+				$server->getL10NFactory(),
+				$server->getConfig(),
 				$c->query('CurrentUID')
 			);
 		});

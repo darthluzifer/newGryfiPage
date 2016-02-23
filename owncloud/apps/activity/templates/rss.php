@@ -13,7 +13,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<title><?php p($l->t('Activity feed')); ?></title>
 		<language><?php p($_['rssLang']); ?></language>
 		<link><?php p($_['rssLink']); ?></link>
-		<description><?php p($l->t('Personal activity feed for %s', $_['user'])); ?></description>
+		<description><?php p($_['description']); ?></description>
 		<pubDate><?php p($_['rssPubDate']); ?></pubDate>
 		<lastBuildDate><?php p($_['rssPubDate']); ?></lastBuildDate>
 		<atom:link href="<?php p($_['rssLink']); ?>" rel="self" type="application/rss+xml" />
@@ -21,7 +21,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<item>
 			<guid isPermaLink="false"><?php p($activity['activity_id']); ?></guid>
 <?php if (!empty($activity['subject'])): ?>
-			<title><?php p($activity['subjectformatted']['full']); ?></title>
+			<title><?php p(str_replace("\n", ' ', $activity['subjectformatted']['full'])); ?></title>
 <?php endif; ?>
 <?php if (!empty($activity['link'])): ?>
 			<link><?php p($activity['link']); ?></link>
@@ -30,7 +30,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<pubDate><?php p(date('r', $activity['timestamp'])); ?></pubDate>
 <?php endif; ?>
 <?php if (!empty($activity['message'])): ?>
-			<description><![CDATA[<?php p($activity['messageformatted']['full']); ?>]]></description>
+			<description><![CDATA[<?php print_unescaped(str_replace("\n", '<br />', \OCP\Util::sanitizeHTML($activity['messageformatted']['full']))); ?>]]></description>
 <?php endif; ?>
 		</item>
 <?php } ?>

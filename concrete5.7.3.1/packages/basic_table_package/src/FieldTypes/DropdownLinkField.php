@@ -148,7 +148,7 @@ class DropdownLinkField extends DropdownField{
 
         
 
-        $modelList=$this->entityManager->getRepository($this->targetEntity)->findAll();
+        $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 
         $options = array();
         if(count($this->options)==0) {

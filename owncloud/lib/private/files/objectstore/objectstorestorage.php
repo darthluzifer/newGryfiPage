@@ -1,26 +1,30 @@
 <?php
 /**
- * @author Jörn Friedrich Dreyer
- * @copyright (c) 2014 Jörn Friedrich Dreyer <jfd@owncloud.com>
+ * @author Joas Schilling <nickvergessen@owncloud.com>
+ * @author Jörn Friedrich Dreyer <jfd@butonic.de>
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Robin Appelman <icewind@owncloud.com>
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
+ * @copyright Copyright (c) 2015, ownCloud, Inc.
+ * @license AGPL-3.0
  *
- * This library is distributed in the hope that it will be useful,
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  *
  */
 
 namespace OC\Files\ObjectStore;
 
-use OC\Files\Filesystem;
+use Icewind\Streams\IteratorDirectory;
 use OCP\Files\ObjectStore\IObjectStore;
 
 class ObjectStoreStorage extends \OC\Files\Storage\Common {
@@ -58,41 +62,44 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 	public function mkdir($path) {
 		$path = $this->normalizePath($path);
 
-		if ($this->is_dir($path)) {
+		if ($this->file_exists($path)) {
 			return false;
 		}
 
-		$dirName = $this->normalizePath(dirname($path));
-		$parentExists = $this->is_dir($dirName);
-
 		$mTime = time();
-
-		$data = array(
+		$data = [
 			'mimetype' => 'httpd/unix-directory',
 			'size' => 0,
 			'mtime' => $mTime,
 			'storage_mtime' => $mTime,
 			'permissions' => \OCP\Constants::PERMISSION_ALL,
-		);
-
-		if ($dirName === '' && !$parentExists) {
+		];
+		if ($path === '') {
 			//create root on the fly
 			$data['etag'] = $this->getETag('');
 			$this->getCache()->put('', $data);
-			$parentExists = true;
-
-			// we are done when the root folder was meant to be created
-			if ($dirName === $path) {
-				return true;
+			return true;
+		} else {
+			// if parent does not exist, create it
+			$parent = $this->normalizePath(dirname($path));
+			$parentType = $this->filetype($parent);
+			if ($parentType === false) {
+				if (!$this->mkdir($parent)) {
+					// something went wrong
+					return false;
+				}
+			} else if ($parentType === 'file') {
+				// parent is a file
+				return false;
 			}
-		}
-
-		if ($parentExists) {
+			// finally create the new dir
+			$mTime = time(); // update mtime
+			$data['mtime'] = $mTime;
+			$data['storage_mtime'] = $mTime;
 			$data['etag'] = $this->getETag($path);
 			$this->getCache()->put($path, $data);
 			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -213,10 +220,8 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 				$files[] = $file['name'];
 			}
 
-			\OC\Files\Stream\Dir::register('objectstore' . $path . '/', $files);
-
-			return opendir('fakedir://objectstore' . $path . '/');
-		} catch (Exception $e) {
+			return IteratorDirectory::wrap($files);
+		} catch (\Exception $e) {
 			\OCP\Util::writeLog('objectstore', $e->getMessage(), \OCP\Util::ERROR);
 			return false;
 		}
@@ -332,7 +337,7 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 				'size' => 0,
 				'mtime' => $mtime,
 				'storage_mtime' => $mtime,
-				'permissions' => \OCP\Constants::PERMISSION_ALL,
+				'permissions' => \OCP\Constants::PERMISSION_ALL - \OCP\Constants::PERMISSION_CREATE,
 			);
 			$fileId = $this->getCache()->put($path, $stat);
 			try {
@@ -357,7 +362,7 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 		if (empty($stat)) {
 			// create new file
 			$stat = array(
-				'permissions' => \OCP\Constants::PERMISSION_ALL,
+				'permissions' => \OCP\Constants::PERMISSION_ALL - \OCP\Constants::PERMISSION_CREATE,
 			);
 		}
 		// update stat with new data

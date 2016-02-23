@@ -13,21 +13,25 @@ var odfViewer = {
 	],
 			
 	register : function(response){
+		var i, 
+			mimeRead, 
+			mimeUpdate;
+		
 		if (response && response.mimes){
 			jQuery.each(response.mimes, function(i, mime){
 				odfViewer.supportedMimesRead.push(mime);
 				odfViewer.supportedMimesUpdate.push(mime);
 			});
 		}
-		for (var i = 0; i < odfViewer.supportedMimesRead.length; ++i) {
-			var mime = odfViewer.supportedMimesRead[i];
-			OCA.Files.fileActions.register(mime, 'View', OC.PERMISSION_READ, '', odfViewer.onView);
-			OCA.Files.fileActions.setDefault(mime, 'View');
+		for (i = 0; i < odfViewer.supportedMimesRead.length; ++i) {
+			mimeRead = odfViewer.supportedMimesRead[i];
+			OCA.Files.fileActions.register(mimeRead, 'View', OC.PERMISSION_READ, '', odfViewer.onView);
+			OCA.Files.fileActions.setDefault(mimeRead, 'View');
 		}
-		for (var i = 0; i < odfViewer.supportedMimesUpdate.length; ++i) {
-			var mime = odfViewer.supportedMimesUpdate[i];
+		for (i = 0; i < odfViewer.supportedMimesUpdate.length; ++i) {
+			mimeUpdate = odfViewer.supportedMimesUpdate[i];
 			OCA.Files.fileActions.register(
-					mime, 
+					mimeUpdate, 
 					'Edit',
 					OC.PERMISSION_UPDATE, 
 					OC.imagePath('core', 'actions/rename'), 
@@ -39,7 +43,7 @@ var odfViewer = {
 	
 	dispatch : function(filename){
 		if (odfViewer.supportedMimesUpdate.indexOf(OCA.Files.fileActions.getCurrentMimeType()) !== -1
-		 && OCA.Files.fileActions.getCurrentPermissions() & OC.PERMISSION_UPDATE
+			&& OCA.Files.fileActions.getCurrentPermissions() & OC.PERMISSION_UPDATE
 		){
 			odfViewer.onEdit(filename);
 		} else {
@@ -49,22 +53,24 @@ var odfViewer = {
 	
 	onEdit : function(fileName, context){
 		var fileId = context.$file.attr('data-id');
-		window.location = OC.linkTo('documents', 'index.php') + '#' + fileId;
+		window.location = OC.generateUrl('apps/documents/index') + '#' + fileId;
 	},
 			
 	onView: function(filename) {
-		var attachTo = odfViewer.isDocuments ? '#documents-content' : '#controls',
+		var fileloc,
+		attachTo = odfViewer.isDocuments ? '#documents-content' : '#controls',
 		attachToolbarTo = odfViewer.isDocuments ? '#content-wrapper' : '#controls';
 
 		if (odfViewer.isDocuments){
 			//Documents view
-			var location = filename;
+			fileloc = filename;
 		} else {
 			//Public page, files app, etc
 			var dirName = $('#dir').val()!='/' ? $('#dir').val() + '/' : '/';
-			var location = OC.filePath('documents', 'ajax', 'download.php') + '?path=' + encodeURIComponent(dirName) + encodeURIComponent(filename)
-			 + '&requesttoken=' + encodeURIComponent(oc_requesttoken);
-			OC.addStyle('documents', '3rdparty/webodf/editor');
+			fileloc = OC.filePath('documents', 'ajax', 'download.php') + '?path=' 
+				+ encodeURIComponent(dirName) + encodeURIComponent(filename)
+				+ '&requesttoken=' + encodeURIComponent(oc_requesttoken);
+			OC.addStyle('documents', '3rdparty/webodf/wodotexteditor');
 		}
 		
 		OC.addStyle('documents', 'viewer/odfviewer');
@@ -91,7 +97,7 @@ var odfViewer = {
 
 			var odfelement = document.getElementById("odf-canvas");
 			var odfcanvas = new odf.OdfCanvas(odfelement);
-			odfcanvas.load(location);
+			odfcanvas.load(fileloc);
 		});
 	},
 	

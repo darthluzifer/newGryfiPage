@@ -105,7 +105,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 
 
-        $values = $this->getValues();
+        $values = $this->getValues()->toArray();
         $valuestring = implode(", ", $values);
         $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
@@ -307,7 +307,21 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 
     }
 
+    public function setSQLValue($value){
+        if(count($value)==0){
+            $this->values=new ArrayCollection();
+        }elseif($value instanceof ArrayCollection){
+            //check if values are of the right entitiy
+            foreach($value->toArray() as $valnum => $valueitem){
+                if(!$valueitem instanceof $this->targetEntity){
+                    throw new InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
+                }
+            }
+            $this->values = $value;
+        }
 
+
+    }
 
 
 

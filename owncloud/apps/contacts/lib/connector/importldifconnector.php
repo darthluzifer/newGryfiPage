@@ -22,9 +22,9 @@
  
 namespace OCA\Contacts\Connector;
 
-use Sabre\VObject\Component,
-	Sabre\VObject\StringUtil,
-	Sabre\VObject;
+use Sabre\VObject\Component;
+use Sabre\VObject\StringUtil;
+use Sabre\VObject;
 
 /**
  * @brief Implementation of the LDIF import format
@@ -117,7 +117,7 @@ class ImportLdifConnector extends ImportConnector{
 	 * @return VCard
 	 */
 	public function convertElementToVCard($element) {
-		$dest = \Sabre\VObject\Component::create('VCARD');
+		$dest = new \OCA\Contacts\VObject\VCard();
 		
 		foreach ($element as $ldifProperty) {
 			$importEntry = $this->getImportEntry($ldifProperty[0]);
@@ -135,8 +135,8 @@ class ImportLdifConnector extends ImportConnector{
 					$this->convertElementToProperty($oneValue, $importEntry, $dest);
 				}
 			} else {
-				$property = \Sabre\VObject\Property::create("X-Unknown-Element", ''.StringUtil::convertToUTF8($ldifProperty[1]));
-				$property->parameters[] = new \Sabre\VObject\Parameter('TYPE', ''.StringUtil::convertToUTF8($ldifProperty[0]));
+				$property = $dest->createProperty("X-Unknown-Element", ''.StringUtil::convertToUTF8($ldifProperty[1]));
+				$property->add('TYPE', StringUtil::convertToUTF8($ldifProperty[0]));
 				$dest->add($property);
 			}
 		}
@@ -156,7 +156,7 @@ class ImportLdifConnector extends ImportConnector{
 		if (isset($importEntry->vcard_favourites)) {
 			foreach ($importEntry->vcard_favourites as $vcardFavourite) {
 				if (strcasecmp((string)$vcardFavourite, trim($value)) == 0) {
-					$property = \Sabre\VObject\Property::create("X-FAVOURITES", 'yes');
+					$property = $dest->createProperty("X-FAVOURITES", 'yes');
 					$dest->add($property);
 				} else {
 					$property = $this->getOrCreateVCardProperty($dest, $importEntry->vcard_entry);
@@ -207,8 +207,12 @@ class ImportLdifConnector extends ImportConnector{
 			return 0;
 		} else {
 			$element = $this->convertElementToVCard($parts[0]);
-			$unknownElements = $element->select("X-Unknown-Element");
-			return (1 - (0.5 * count($unknownElements)/count($parts[0])));
+			if ($element) {
+				$unknownElements = $element->select("X-Unknown-Element");
+				return (1 - (0.5 * count($unknownElements)/count($parts[0])));
+			} else {
+				return 0;
+			}
 		}
 	}	
 }

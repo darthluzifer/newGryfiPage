@@ -12,6 +12,8 @@
 
 namespace OCA\Documents\Db;
 
+use OCP\Security\ISecureRandom;
+
 use OCA\Documents\Filter;
 
 /**
@@ -47,12 +49,7 @@ class Session extends \OCA\Documents\Db {
 	public static function start($uid, $file){
 		// Create a directory to store genesis
 		$genesis = new \OCA\Documents\Genesis($file);
-		
-		list($ownerView, $path) = $file->getOwnerViewAndPath();
-		$mimetype = $ownerView->getMimeType($path);
-		if (!Filter::isSupportedMimetype($mimetype)){
-			throw new \Exception( $path . ' is ' . $mimetype . ' and is not supported by Documents app');
-		}
+
 		$oldSession = new Session();
 		$oldSession->loadBy('file_id', $file->getFileId());
 		
@@ -76,30 +73,32 @@ class Session extends \OCA\Documents\Db {
 		;
 		
 		$memberColor = \OCA\Documents\Helper::getMemberColor($uid);
-		$member = new \OCA\Documents\Db\Member(array(
+		$member = new \OCA\Documents\Db\Member([
 			$sessionData['es_id'], 
 			$uid,
 			$memberColor,
 			time(),
 			intval($file->isPublicShare()),
 			$file->getToken()
-		));
+		]);
 		
 		if (!$member->insert()){
 			throw new \Exception('Failed to add member into database');
 		}
+		$sessionData['member_id'] = (string) $member->getLastInsertId();
 		
 		// Do we have OC_Avatar in out disposal?
-		if (\OC_Config::getValue('enable_avatars', true) !== true){
+		if (\OC::$server->getConfig()->getSystemValue('enable_avatars', true) !== true){
 			$imageUrl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==';
 		} else {
 			$imageUrl = $uid;
 		}
 
-		$displayName = $file->isPublicShare() ? $uid . ' ' . \OCA\Documents\Db\Member::getGuestPostfix() : \OCP\User::getDisplayName($uid);
-		$userId = $file->isPublicShare() ? $displayName : \OCP\User::getUser();
-			
-		$sessionData['member_id'] = (string) $member->getLastInsertId();
+		$displayName = $file->isPublicShare() 
+			? $uid . ' ' . \OCA\Documents\Db\Member::getGuestPostfix() 
+			: \OC::$server->getUserSession()->getUser()->getDisplayName($uid)
+		;
+		$userId = $file->isPublicShare() ? $displayName : \OC::$server->getUserSession()->getUser()->getUID();
 		$op = new \OCA\Documents\Db\Op();
 		$op->addMember(
 					$sessionData['es_id'],
@@ -109,10 +108,9 @@ class Session extends \OCA\Documents\Db {
 					$memberColor,
 					$imageUrl
 		);
-	
-		$sessionData['title'] = basename($path);
-		$fileInfo = $ownerView->getFileInfo($path);
-		$sessionData['permissions'] = $fileInfo->getPermissions();
+
+		$sessionData['title'] = basename($file->getPath());
+		$sessionData['permissions'] = $file->getPermissions();
 		
 		return $sessionData;
 	}
@@ -188,13 +186,13 @@ class Session extends \OCA\Documents\Db {
 			WHERE `s`.`es_id` = ?
 			GROUP BY `m`.`es_id`
 			',
-			array(
-					\OCP\User::getUser(),
+			[
+					\OC::$server->getUserSession()->getUser()->getUID(),
 					$esId
-			)
+			]
 		);
 
-		$info = $result->fetchRow();
+		$info = $result->fetch();
 		if (!is_array($info)){
 			$info = array();
 		}
@@ -204,7 +202,9 @@ class Session extends \OCA\Documents\Db {
 	protected function getUniqueSessionId(){
 		$testSession = new Session();
 		do{
-			$id = \OC_Util::generateRandomBytes(30);
+			$id = \OC::$server->getSecureRandom()
+				->getMediumStrengthGenerator()
+				->generate(30, ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_DIGITS);
 		} while ($testSession->load($id)->hasData());
 
 		return $id;

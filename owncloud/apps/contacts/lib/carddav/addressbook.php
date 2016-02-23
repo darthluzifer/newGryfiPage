@@ -28,7 +28,8 @@ use OCA\Contacts;
  * This class overrides __construct to get access to $addressBookInfo and
  * $carddavBackend, \Sabre\CardDAV\AddressBook::getACL() to return read/write
  * permissions based on user and shared state and it overrides
- * \Sabre\CardDAV\AddressBook::getChild() and \Sabre\CardDAV\AddressBook::getChildren()
+ * \Sabre\CardDAV\AddressBook::getChild(), \Sabre\CardDAV\AddressBook::getChildren()
+ * and \Sabre\CardDAV\AddressBook::getMultipleChildren()
  * to instantiate \OCA\Contacts\CardDAV\Cards.
 */
 class AddressBook extends \Sabre\CardDAV\AddressBook {
@@ -77,20 +78,22 @@ class AddressBook extends \Sabre\CardDAV\AddressBook {
 		$deleteprincipal = $this->getOwner();
 		$uid = $this->carddavBackend->userIDByPrincipal($this->getOwner());
 
+		$currentUid = \OC::$server->getUserSession()->getUser()->getUId();
+
 		$readWriteACL = array(
 			array(
 				'privilege' => '{DAV:}read',
-				'principal' => 'principals/' . \OCP\User::getUser(),
+				'principal' => 'principals/' . $currentUid,
 				'protected' => true,
 			),
 			array(
 				'privilege' => '{DAV:}write',
-				'principal' => 'principals/' . \OCP\User::getUser(),
+				'principal' => 'principals/' . $currentUid,
 				'protected' => true,
 			),
 		);
 
-		if($uid !== \OCP\User::getUser()) {
+		if($uid !== $currentUid) {
 			list(, $id) = explode('::', $this->addressBookInfo['id']);
 			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource('addressbook', $id);
 			if($sharedAddressbook) {
@@ -101,16 +104,16 @@ class AddressBook extends \Sabre\CardDAV\AddressBook {
 					return $readWriteACL;
 				}
 				if ($sharedAddressbook['permissions'] & \OCP\PERMISSION_CREATE) {
-					$createprincipal = 'principals/' . \OCP\User::getUser();
+					$createprincipal = 'principals/' . $currentUid;
 				}
 				if ($sharedAddressbook['permissions'] & \OCP\PERMISSION_READ) {
-					$readprincipal = 'principals/' . \OCP\User::getUser();
+					$readprincipal = 'principals/' . $currentUid;
 				}
 				if ($sharedAddressbook['permissions'] & \OCP\PERMISSION_UPDATE) {
-					$writeprincipal = 'principals/' . \OCP\User::getUser();
+					$writeprincipal = 'principals/' . $currentUid;
 				}
 				if ($sharedAddressbook['permissions'] & \OCP\PERMISSION_DELETE) {
-					$deleteprincipal = 'principals/' . \OCP\User::getUser();
+					$deleteprincipal = 'principals/' . $currentUid;
 				}
 			}
 		} else {
@@ -221,6 +224,26 @@ class AddressBook extends \Sabre\CardDAV\AddressBook {
 		$objs = $this->carddavBackend->getCards($this->addressBookInfo['id']);
 		$children = array();
 		foreach($objs as $obj) {
+			$children[] = new Card($this->carddavBackend,$this->addressBookInfo,$obj);
+		}
+		return $children;
+
+	}
+
+	/**
+	 * This method receives a list of paths in it's first argument.
+	 * It must return an array with Node objects.
+	 *
+	 * If any children are not found, you do not have to return them.
+	 *
+	 * @return array
+	 */
+	function getMultipleChildren(array $paths) {
+
+		$objs = $this->carddavBackend->getMultipleCards($this->addressBookInfo['id'], $paths);
+		$children = [];
+		foreach($objs as $obj) {
+#			$obj['acl'] = $this->getChildACL();
 			$children[] = new Card($this->carddavBackend,$this->addressBookInfo,$obj);
 		}
 		return $children;

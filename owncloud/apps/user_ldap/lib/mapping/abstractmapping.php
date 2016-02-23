@@ -1,10 +1,24 @@
 <?php
 /**
-* Copyright (c) 2014 Arthur Schiwon <blizzz@owncloud.com>
-* This file is licensed under the Affero General Public License version 3 or
-* later.
-* See the COPYING-README file.
-*/
+ * @author Arthur Schiwon <blizzz@owncloud.com>
+ * @author Morris Jobke <hey@morrisjobke.de>
+ *
+ * @copyright Copyright (c) 2015, ownCloud, Inc.
+ * @license AGPL-3.0
+ *
+ * This code is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License, version 3,
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ */
 
 namespace OCA\User_LDAP\Mapping;
 
@@ -144,12 +158,22 @@ abstract class AbstractMapping {
 	}
 
 	/**
-	 * Gets the name based on the provided LDAP DN.
+	 * Gets the name based on the provided LDAP UUID.
 	 * @param string $uuid
 	 * @return string|false
 	 */
 	public function getNameByUUID($uuid) {
 		return $this->getXbyY('owncloud_name', 'directory_uuid', $uuid);
+	}
+
+	/**
+	 * Gets the UUID based on the provided LDAP DN
+	 * @param string $dn
+	 * @return false|string
+	 * @throws \Exception
+	 */
+	public function getUUIDByDN($dn) {
+		return $this->getXbyY('directory_uuid', 'ldap_dn', $dn);
 	}
 
 	/**

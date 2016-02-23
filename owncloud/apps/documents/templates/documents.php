@@ -1,3 +1,13 @@
+<?php
+style( 'documents', 'share' );
+style( 'documents', 'style' );
+style( 'documents', '3rdparty/webodf/dojo-app' );
+script('documents', 'share');
+script('documents', 'documents');
+script('files', 'file-upload');
+script('files', 'jquery.iframe-transport');
+script('files', 'jquery.fileupload');
+?>
 <div id="documents-content">
 	<ul class="documentslist">
 		<li class="add-document">
@@ -8,7 +18,7 @@
 				<form data-upload-id="1"
 					  id="data-upload-form"
 					  class="file_upload_form"
-					  action="<?php print_unescaped(OCP\Util::linkTo('files', 'ajax/upload.php')); ?>"
+					  action="<?php print_unescaped(link_to('files', 'ajax/upload.php')); ?>"
 					  method="post"
 					  enctype="multipart/form-data"
 					  target="file_upload_target_1">
