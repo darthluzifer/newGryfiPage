@@ -250,23 +250,12 @@ class CanEditOption extends \Concrete\Package\BasicTablePackage\Src\BlockOptions
     /**
      * {@inheritDoc}
      */
-    public function setPossibleValues($possibleValues)
+    public function setPossibleValues(array $possibleValues)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPossibleValues', array($possibleValues));
 
         return parent::setPossibleValues($possibleValues);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPossibleValues()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPossibleValues', array());
-
-        return parent::getPossibleValues();
     }
 
     /**

@@ -37,10 +37,17 @@ class Expire implements ICommand {
 	private $user;
 
 	/**
-	 * @param string $user
+	 * @var int
 	 */
-	function __construct($user) {
+	private $trashBinSize;
+
+	/**
+	 * @param string $user
+	 * @param int $trashBinSize
+	 */
+	function __construct($user, $trashBinSize) {
 		$this->user = $user;
+		$this->trashBinSize = $trashBinSize;
 	}
 
 	public function handle() {
@@ -52,7 +59,7 @@ class Expire implements ICommand {
 
 		\OC_Util::tearDownFS();
 		\OC_Util::setupFS($this->user);
-		Trashbin::expire($this->user);
+		Trashbin::expire($this->trashBinSize, $this->user);
 		\OC_Util::tearDownFS();
 	}
 }
