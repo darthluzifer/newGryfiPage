@@ -245,14 +245,12 @@
 
 		onUnshare: function(event) {
 			var $element = $(event.target);
-			if (!$element.is('a')) {
-				$element = $element.closest('a');
-			}
+			console.log($element);
 
-			var $loading = $element.find('.icon-loading-small').eq(0);
+			var $loading = $element.siblings('.icon-loading-small').eq(0);
 			if(!$loading.hasClass('hidden')) {
 				// in process
-				return false;
+				return;
 			}
 			$loading.removeClass('hidden');
 

@@ -198,13 +198,9 @@ OCA = OCA || {};
 				return;
 			}
 
-			// special cases: deal with text area and multiselect
+			// deal with text area
 			if ($element.is('textarea') && $.isArray(value)) {
 				value = value.join("\n");
-			} else if($element.hasClass(this.multiSelectPluginClass)) {
-				if(!_.isArray(value)) {
-					value = value.split("\n");
-				}
 			}
 
 			if ($element.is('span')) {

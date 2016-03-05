@@ -379,7 +379,6 @@ class Activity implements IExtension {
 			 */
 			$parameters = $fileQueryList = [];
 			$parameters[] = self::APP_FILES;
-			$parameters[] = self::APP_FILES;
 
 			$fileQueryList[] = '(`type` <> ? AND `type` <> ?)';
 			$parameters[] = self::TYPE_SHARE_CREATED;
@@ -394,12 +393,10 @@ class Activity implements IExtension {
 				$parameters[] = $favorite . '/%';
 			}
 
+			$parameters[] = self::APP_FILES;
+
 			return [
-				' CASE '
-					. 'WHEN `app` <> ? THEN 1 '
-					. 'WHEN `app` = ? AND (' . implode(' OR ', $fileQueryList) . ') THEN 1 '
-					. 'ELSE 0 '
-				. 'END = 1 ',
+				' CASE WHEN `app` = ? THEN (' . implode(' OR ', $fileQueryList) . ') ELSE `app` <> ? END ',
 				$parameters,
 			];
 		}

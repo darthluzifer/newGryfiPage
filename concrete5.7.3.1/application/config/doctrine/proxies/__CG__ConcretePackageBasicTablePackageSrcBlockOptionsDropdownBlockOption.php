@@ -228,17 +228,6 @@ class DropdownBlockOption extends \Concrete\Package\BasicTablePackage\Src\BlockO
     /**
      * {@inheritDoc}
      */
-    public function getPossibleValues()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPossibleValues', array());
-
-        return parent::getPossibleValues();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getFieldType()
     {
 
