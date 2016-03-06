@@ -205,7 +205,7 @@ class Controller extends BlockController
             "test2"
         ));
 
-        $this->requiredOptions[0]->set('optionName', "testlink");
+        $this->requiredOptions[2]->set('optionName', "testlink");
 
 
 
@@ -607,6 +607,7 @@ class Controller extends BlockController
 
         if(count($toPersist)>0){
             foreach($toPersist as $num => $blockOption){
+                $blockOption->set('optionType',get_class($blockOption));
                 $this->entityManager->persist($blockOption);
             }
         }

@@ -147,7 +147,7 @@ class DropdownLinkField extends DropdownField{
         $em = $this->getEntityManager();
 
         
-
+//TODO implement filter for options
         $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 
         $options = array();
@@ -156,7 +156,8 @@ class DropdownLinkField extends DropdownField{
 
                 foreach ($modelList as $model) {
                     if ($this->getDisplayString != null) {
-                        $options[$model->getId()] = $this->getDisplayString($model);
+                        $displayFunction = $this->getDisplayString;
+                        $options[$model->getId()] = $displayFunction($model);
                     }
                 }
             }
