@@ -51,16 +51,24 @@ abstract class Entity
 
     public function get($name)
     {
+        $test = "a";
         if(property_exists($this, $name)
             && !in_array($name, $this->protect)
             && !in_array($name, $this->protectRead)
             && !in_array($name, $this->fieldTypes)) {
-            return $this->$name;
+
+            $returnvar = $this->{$name};
+            if(property_exists($this, "gID")){
+                    $returnvar2 = $this->gID;
+            }
+
+            return $returnvar;
         }
     }
 
     public function set($name, $value)
     {
+        $test = "a";
         if(property_exists($this, $name)
             && !in_array($name, $this->protect)
             && !in_array($name, $this->protectWrite)
@@ -72,7 +80,9 @@ abstract class Entity
 
     public function __get($name)
     {
-        return $this->get($name);
+        $test = "a";
+        $returnvar = $this->get($name);
+        return $returnvar;
     }
 
     public function __set($name, $value)
@@ -95,6 +105,43 @@ abstract class Entity
             $this->__construct();
         }
         return $this->fieldTypes;
+    }
+
+    public static function getDefaultGetDisplayStringFunction(){
+        $function = function($item){
+            $returnString = "";
+            $metadata = $item->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($item));
+            $fieldTypes = $item->get('fieldTypes');
+            foreach ($metadata->getFieldNames() as $fieldnum => $fieldname) {
+                    try {
+                        $mapping = $metadata->getFieldMapping($fieldname);
+
+                        if(isset($fieldTypes[$fieldname])){
+                            $field = $fieldTypes[$fieldname];
+                        }else {
+                            switch ($mapping['type']) {
+
+                                case 'datetime':
+                                    $field = new DateField("justlocal", "justlocal", "justlocal");
+                                    break;
+                                default:
+                                    $field = new Field("justlocal", "justlocal", "justlocal");
+                                    break;
+                            }
+                        }
+                        $sqlvalue = $item->$fieldname;
+                        $field->setSQLValue($sqlvalue);
+                        $returnString.=$field->getValue()." ";
+
+
+                    }catch(MappingException $e){
+                        //wenn das feld ein association mapping ist, dann gibts error
+                        // $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
+                    }
+                }
+            return $returnString;
+        };
+        return $function;
     }
 
     public function getAsAssoc(){
@@ -126,6 +173,10 @@ abstract class Entity
         return 'id';
     }
 
+    /**
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Exception
+     */
     public function setDefaultFieldTypes(){
 
 
@@ -142,6 +193,7 @@ abstract class Entity
 
                     case 'date':
                         $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
                     default:
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
@@ -158,9 +210,10 @@ abstract class Entity
         foreach($metadata->getAssociationMappings() as $className => $associationMeta){
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,self::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['targetEntity'] );
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,self::getDefaultGetDisplayStringFunction());
             }
         }
 

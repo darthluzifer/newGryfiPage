@@ -22,7 +22,7 @@ class CanEditOption extends TableBlockOption{
      * @var string
      * @Column(type="string")
      */
-    protected $optionType;
+    protected $optionType =__CLASS__;
 
     /**
      * @var ArrayCollection of Group
@@ -37,7 +37,7 @@ class CanEditOption extends TableBlockOption{
     public function __construct()
     {
         $this->Groups = new ArrayCollection();
-
+        $this->optionType == __CLASS__;
         $this->setDefaultFieldTypes();
     }
 
@@ -84,6 +84,7 @@ class CanEditOption extends TableBlockOption{
     }
 
     public function setValue($Groups){
+        
         $this->Groups = $Groups;
     }
 

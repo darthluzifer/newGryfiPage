@@ -53,6 +53,15 @@ class DateField extends Field{
 	public function getNullable(){
 		return $this->isNullable;
 	}
+
+	public function setSQLValue($value){
+		if($value instanceof \DateTime){
+			$this->value = $value->format("Y-m-d");
+		}else{
+			$this->value = $value;
+		}
+		$this->isSQLValue = true;
+	}
 	
 	public function setValue($value){
 		//var_dump($value);

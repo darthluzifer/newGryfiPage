@@ -228,7 +228,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         $model = $this->getEntityManager()
             ->getRepository($this->targetEntity)
             ->findOne(array(
-                $modelForIdField->getIdFieldName() => $this->rowid
+                $targetModelForIdField->getIdFieldName() => $this->rowid
             ));
 
 

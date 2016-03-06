@@ -33,7 +33,7 @@ class TableBlockOption extends Entity{
 
     /**
      * @var string
-     * @Column(type="string")
+     * @Column(type="string",nullable=true)
      */
     protected $optionValue;
 
