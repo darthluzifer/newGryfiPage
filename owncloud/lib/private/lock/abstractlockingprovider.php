@@ -28,8 +28,6 @@ use OCP\Lock\ILockingProvider;
  * to release any left over locks at the end of the request
  */
 abstract class AbstractLockingProvider implements ILockingProvider {
-	const TTL = 3600; // how long until we clear stray locks in seconds
-
 	protected $acquiredLocks = [
 		'shared' => [],
 		'exclusive' => []
