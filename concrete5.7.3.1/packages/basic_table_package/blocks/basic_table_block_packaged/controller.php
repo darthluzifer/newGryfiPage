@@ -569,6 +569,59 @@ class Controller extends BlockController
 
     }
 
+    public function on_start()
+    {
+        $al = \Concrete\Core\Asset\AssetList::getInstance();
+        $al->register(
+            'javascript', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
+            array( 'minify' => false, 'combine' => true)
+        );
+        $al->register(
+            'javascript', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/js/bootstrap-datepicker.js',
+            array('minify' => false, 'combine' => true)
+        );
+
+        $al->register(
+            'javascript', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/js/bootstrap-tagsinput.min.js',
+            array('minify' => false, 'combine' => true)
+        );
+/*
+        $al->register(
+            'javascript', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/js/jquery.bootgrid.min.js',
+            array('minify' => false, 'combine' => true)
+        );
+*/
+        $al->register(
+            'css', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/css/bootstrap-tagsinput.css',
+            array('minify' => false, 'combine' => true)
+        );
+
+        $al->register(
+            'css', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/css/datepicker.css',
+            array('minify' => false, 'combine' => true)
+        );
+
+        $al->register(
+            'css', 'basictable', 'packages/basic_table_package/blocks/basic_table_block_packaged/css/jquery.bootgrid.min.css',
+            array('minify' => false, 'combine' => true)
+        );
+
+        $al->registerGroup('basictable', array(
+            array('css', 'basictable'),
+            array('javascript', 'jquery'),
+            array('javascript', 'bootstrap'),
+            array('javascript', 'basictable')
+        ));
+
+    }
+
+    public function registerViewAssets()
+    {
+        $this->requireAsset('basictable');
+    }
+
+
+
     function save($args)
     {
         parent::save($args);

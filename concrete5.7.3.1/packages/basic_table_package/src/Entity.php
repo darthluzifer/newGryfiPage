@@ -108,7 +108,7 @@ abstract class Entity
     }
 
     public static function getDefaultGetDisplayStringFunction(){
-        $function = function($item){
+        $function = function(Entity $item){
             $returnString = "";
             $metadata = $item->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($item));
             $fieldTypes = $item->get('fieldTypes');

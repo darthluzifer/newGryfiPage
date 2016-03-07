@@ -118,7 +118,7 @@ var JsonHighlightRules = function() {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
             }, {
-                token : "invalid.illegal", // single quoted strings are not allowed
+                token : "invalid.illegam", // single quoted strings are not allowed
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
             }, {
                 token : "invalid.illegal", // comments are not allowed

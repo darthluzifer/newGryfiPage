@@ -188,4 +188,20 @@ class Group extends Entity
         return $this->gID;
     }
 
+    public function getIdFieldName()
+    {
+        return 'gID';
+    }
+
+    public static function getDefaultGetDisplayStringFunction(){
+        $function = function(Group $item){
+            $returnString =$item->gName;
+
+
+            return $returnString;
+        };
+        return $function;
+    }
+
+
 }

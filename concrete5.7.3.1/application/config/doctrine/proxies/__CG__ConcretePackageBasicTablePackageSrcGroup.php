@@ -51,9 +51,28 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
         $this->__cloner__      = $cloner;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param string $name
+     */
+    public function __get($name)
+    {
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
 
+        return parent::__get($name);
+    }
 
+    /**
+     * {@inheritDoc}
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set($name, $value)
+    {
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
 
+        return parent::__set($name, $value);
+    }
 
 
 
@@ -64,10 +83,10 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID');
+            return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID');
+        return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em');
     }
 
     /**
@@ -173,4 +192,103 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function get($name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', array($name));
+
+        return parent::get($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function set($name, $value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', array($name, $value));
+
+        return parent::set($name, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdFieldName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+
+        return parent::getIdFieldName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', array($name, $field));
+
+        return parent::setControllerFieldType($name, $field);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldTypes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', array());
+
+        return parent::getFieldTypes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAsAssoc()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', array());
+
+        return parent::getAsAssoc();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEntityManager()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
+
+        return parent::getEntityManager();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDefaultFieldTypes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', array());
+
+        return parent::setDefaultFieldTypes();
+    }
+
 }

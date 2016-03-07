@@ -224,11 +224,11 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
             return;
         }
 
-        $targetModelForIdField = new $this->targetEntity();
+        $modelForIdField = new $this->sourceEntity();
         $model = $this->getEntityManager()
             ->getRepository($this->targetEntity)
             ->findOne(array(
-                $targetModelForIdField->getIdFieldName() => $this->rowid
+                $modelForIdField->getIdFieldName() => $this->rowid
             ));
 
 
@@ -263,7 +263,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         foreach($currentdbvalues as $key => $value){
             $checkedoptions[$value]= $key;
         }
-
+        $currentArray = [];
         foreach($postvalues as $num => $postvalue){
             $insert = false;
             $id = null;
@@ -288,7 +288,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
             }
             if($insert){
                 $currentArray = $model->get($this->sourceField);
-
+                $targetModelForIdField = new $this->targetEntity;
                 //add new value
                 $currentArray[]=$this->getEntityManager()
                     ->getRepository($this->targetEntity)
@@ -296,14 +296,17 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
                         $targetModelForIdField->getIdFieldname()=>$id
 					));
 
-                $model->set($this->sourceField, new ArrayCollection($currentArray));
 
 
 				//var_dump($aff);
 				//exit;
 				//if error, do error logging, throw exception, dunno
 			}
+
         }
+        $model->set($this->sourceField, new ArrayCollection($currentArray));
+        $this->em->persist($model);
+        $this->em->flush($model);
 
     }
 
