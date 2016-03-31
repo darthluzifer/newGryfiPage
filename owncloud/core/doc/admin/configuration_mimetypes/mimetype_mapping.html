@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -7,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Mimetype mapping &mdash; ownCloud Server Administration Manual 8.2 documentation</title>
+    <title>Mimetype mapping &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Mimetypes Management" href="index.html" />
     <link rel="next" title="Maintenance" href="../maintenance/index.html" />
     <link rel="prev" title="Mimetype aliases" href="mimetype_aliases.html" />
@@ -93,13 +92,13 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
   <div class="content">
     <div class="page-header">
-      <h1><a href="../contents.html">ownCloud Server Administration Manual</a></h1>
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
 
     </div>
     
@@ -139,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_logging/index.html">Enterprise Logging Apps (ES only)</a></li>
 </ul>
 
 								</ul>
@@ -154,12 +154,12 @@
   <div class="section" id="mimetype-mapping">
 <h1>Mimetype mapping<a class="headerlink" href="#mimetype-mapping" title="Permalink to this headline">¶</a></h1>
 <p>ownCloud allows administrators to specify the mapping of a file extension to a
-mimetype. For example files ending in <tt class="docutils literal"><span class="pre">mp3</span></tt> map to <tt class="docutils literal"><span class="pre">audio/mpeg</span></tt>. Which
+mimetype. For example files ending in <code class="docutils literal"><span class="pre">mp3</span></code> map to <code class="docutils literal"><span class="pre">audio/mpeg</span></code>. Which
 then in turn allows ownCloud to show the audio icon.</p>
-<p>By default ownCloud comes with <tt class="docutils literal"><span class="pre">mimetypemapping.dist.json</span></tt>. This is a
+<p>By default ownCloud comes with <code class="docutils literal"><span class="pre">mimetypemapping.dist.json</span></code>. This is a
 simple json array.
 Administrators should not update this file as it will get replaced on upgrades
-of ownCloud. Instead the file <tt class="docutils literal"><span class="pre">mimetypemapping.json</span></tt> should be created and
+of ownCloud. Instead the file <code class="docutils literal"><span class="pre">mimetypemapping.json</span></code> should be created and
 modified, this file has precedence over the shipped file.</p>
 </div>
 

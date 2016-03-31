@@ -289,6 +289,15 @@ The ``user_backends`` app (which needs to be enabled first) allows you to
 configure alternate authentication backends. Supported backends are:
 IMAP (OC_User_IMAP), SMB (OC_User_SMB), and FTP (OC_User_FTP).
 
+::
+
+	'lost_password_link' => 'https://example.org/link/to/password/reset',
+
+If your user backend does not allow to reset the password (e.g. when it's a
+read-only user backend like LDAP), you can specify a custom link, where the
+user is redirected to, when clicking the "reset password" link after a failed
+login-attempt.
+
 Mail Parameters
 ---------------
 
@@ -501,6 +510,12 @@ Available values:
     delete when exceeds D2 days
 * ``disabled``
     trash bin auto clean disabled, files and folders will be kept forever
+
+File versions
+-------------
+
+These parameters control the Versions app.
+
 
 ::
 
@@ -940,22 +955,6 @@ minutes. Setting it to 0 disables the feature.
 
 See command line (occ) methods ldap:show-remnants and user:delete
 
-::
-
-	'enforce_home_folder_naming_rule' => true,
-
-Enforce the existence of the home folder naming rule for all users
-
-Following scenario:
- * a home folder naming rule is set in LDAP advanced settings
- * a user doesn't have the home folder naming rule attribute set
-
-If this is set to **true** (default) it will NOT fallback to the core's
-default naming rule of using the internal user ID as home folder name.
-
-If this is set to **false** it will fallback for the users without the
-attribute set to naming the home folder like the internal user ID.
-
 Maintenance
 -----------
 
@@ -1094,6 +1093,8 @@ Using Object Store with ownCloud
 			// dev-/trystack uses swift by default, the lib defaults to 'cloudFiles'
 			// if omitted
 			'serviceName' => 'swift',
+			// The Interface / url Type, optional
+			'urlType' => 'internal'
 		),
 	),
 
@@ -1234,6 +1235,15 @@ general use if outside changes might happen.
 
 2 -> Check every time the filesystem is used, causes a performance hit when
 using external storages, not recommended for regular use.
+
+::
+
+	'part_file_in_storage' => true,
+
+On default ownCloud will store the part files created during upload in the
+same storage as the upload target. Setting this to false will store the part
+files in the root of the users folder which might be required to work with certain
+external storage setups that have limited rename capabilities.
 
 ::
 

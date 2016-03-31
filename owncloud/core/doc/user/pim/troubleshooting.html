@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Contacts &amp; Calendar" href="index.html" />
     <link rel="next" title="Collaborative Document Editing" href="../documents.html" />
     <link rel="prev" title="Thunderbird - Synchronize Addressbook" href="sync_thunderbird.html" />
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -151,10 +150,11 @@
 <h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="blackberry-os-10-2">
 <h2>BlackBerry OS 10.2<a class="headerlink" href="#blackberry-os-10-2" title="Permalink to this headline">¶</a></h2>
-<p>BlackBerry OS up to 10.2.2102 does not accept a URL with protocol <tt class="docutils literal"><span class="pre">https://</span></tt>
+<p>BlackBerry OS up to 10.2.2102 does not accept a URL with protocol <code class="docutils literal"><span class="pre">https://</span></code>
 in front of the server address. It will always tell you that it cannot login on
 your server. So instead of writing:</p>
-<div class="highlight-python"><pre>https://address/remote.php/carddav/principals/username</pre>
+<div class="highlight-python"><div class="highlight"><pre>https://address/remote.php/carddav/principals/username
+</pre></div>
 </div>
 <p>in the server address field, you have to write:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">address</span><span class="o">/</span><span class="n">remote</span><span class="o">.</span><span class="n">php</span><span class="o">/</span><span class="n">carddav</span><span class="o">/</span><span class="n">principals</span><span class="o">/</span><span class="n">username</span>

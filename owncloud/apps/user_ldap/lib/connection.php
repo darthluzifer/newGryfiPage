@@ -37,6 +37,7 @@ use OC\ServerNotAvailableException;
  *
  * @property string ldapUserFilter
  * @property string ldapUserDisplayName
+ * @property string ldapUserDisplayName2
  * @property boolean hasPagedResultSupport
  * @property string[] ldapBaseUsers
  * @property int|string ldapPagingSize holds an integer
@@ -206,7 +207,7 @@ class Connection extends LDAPUtility {
 		}
 		$key = $this->getCacheKey($key);
 
-		return json_decode(base64_decode($this->cache->get($key)));
+		return json_decode(base64_decode($this->cache->get($key)), true);
 	}
 
 	/**
@@ -574,10 +575,6 @@ class Connection extends LDAPUtility {
 	private function doConnect($host, $port) {
 		if(empty($host)) {
 			return false;
-		}
-		if(strpos($host, '://') !== false) {
-			//ldap_connect ignores port parameter when URLs are passed
-			$host .= ':' . $port;
 		}
 		$this->ldapConnectionRes = $this->ldap->connect($host, $port);
 		if($this->ldap->setOption($this->ldapConnectionRes, LDAP_OPT_PROTOCOL_VERSION, 3)) {

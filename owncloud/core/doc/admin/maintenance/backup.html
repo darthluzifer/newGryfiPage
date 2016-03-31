@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Maintenance" href="index.html" />
     <link rel="next" title="How to Upgrade Your ownCloud Server" href="upgrade.html" />
     <link rel="prev" title="Maintenance Mode Configuration" href="enable_maintenance.html" />
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -148,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_logging/index.html">Enterprise Logging Apps (ES only)</a></li>
 </ul>
 
 								</ul>
@@ -172,7 +172,8 @@
 <h2>Backup Folders<a class="headerlink" href="#backup-folders" title="Permalink to this headline">¶</a></h2>
 <p>Simply copy your config and data folder (or even your whole ownCloud install and data folder) to a place outside of
 your ownCloud environment. You could use this command:</p>
-<div class="highlight-python"><pre>rsync -Aax owncloud/ owncloud-dirbkp_`date +"%Y%m%d"`/</pre>
+<div class="highlight-python"><div class="highlight"><pre>rsync -Aax owncloud/ owncloud-dirbkp_`date +&quot;%Y%m%d&quot;`/
+</pre></div>
 </div>
 </div>
 <div class="section" id="backup-database">
@@ -181,17 +182,20 @@ your ownCloud environment. You could use this command:</p>
 <h3>MySQL/MariaDB<a class="headerlink" href="#mysql-mariadb" title="Permalink to this headline">¶</a></h3>
 <p>MySQL or MariaDB, which is a drop-in MySQL replacement, is the recommended
 database engine. To backup MySQL/MariaDB:</p>
-<div class="highlight-python"><pre>mysqldump --lock-tables -h [server] -u [username] -p[password] [db_name] &gt; owncloud-sqlbkp_`date +"%Y%m%d"`.bak</pre>
+<div class="highlight-python"><div class="highlight"><pre>mysqldump --lock-tables -h [server] -u [username] -p[password] [db_name] &gt; owncloud-sqlbkp_`date +&quot;%Y%m%d&quot;`.bak
+</pre></div>
 </div>
 </div>
 <div class="section" id="sqlite">
 <h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><pre>sqlite3 data/owncloud.db .dump &gt; owncloud-sqlbkp_`date +"%Y%m%d"`.bak</pre>
+<div class="highlight-python"><div class="highlight"><pre>sqlite3 data/owncloud.db .dump &gt; owncloud-sqlbkp_`date +&quot;%Y%m%d&quot;`.bak
+</pre></div>
 </div>
 </div>
 <div class="section" id="postgresql">
 <h3>PostgreSQL<a class="headerlink" href="#postgresql" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><pre>PGPASSWORD="password" pg_dump [db_name] -h [server] -U [username] -f owncloud-sqlbkp_`date +"%Y%m%d"`.bak</pre>
+<div class="highlight-python"><div class="highlight"><pre>PGPASSWORD=&quot;password&quot; pg_dump [db_name] -h [server] -U [username] -f owncloud-sqlbkp_`date +&quot;%Y%m%d&quot;`.bak
+</pre></div>
 </div>
 </div>
 </div>

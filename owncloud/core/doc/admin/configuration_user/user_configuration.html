@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="User Management" href="index.html" />
     <link rel="next" title="Resetting a Lost Admin Password" href="reset_admin_password.html" />
     <link rel="prev" title="User Management" href="index.html" />
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -151,6 +150,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_logging/index.html">Enterprise Logging Apps (ES only)</a></li>
 </ul>
 
 								</ul>
@@ -274,7 +274,7 @@ assign group admin privileges.</p>
 </div>
 <p><strong>Super Administrators</strong> have full rights on your ownCloud server, and can
 access and modify all settings. To assign the <strong>Super Administrators</strong> role to
-a user, simply add them to the <tt class="docutils literal"><span class="pre">admin</span></tt> group.</p>
+a user, simply add them to the <code class="docutils literal"><span class="pre">admin</span></code> group.</p>
 </div>
 <div class="section" id="managing-groups">
 <h2>Managing Groups<a class="headerlink" href="#managing-groups" title="Permalink to this headline">¶</a></h2>
@@ -290,12 +290,13 @@ automatically applied to new users. You may assign a different quota to any user
 by selecting from the <strong>Quota</strong> dropdown, selecting either a preset value or
 entering a custom value. When you create custom quotas, use the normal
 abbreviations for your storage values such as 500 MB, 5 GB, 5 TB, and so on.</p>
-<p>You now have a configurable option in <tt class="docutils literal"><span class="pre">config.php</span></tt> that controls whether
+<p>You now have a configurable option in <code class="docutils literal"><span class="pre">config.php</span></code> that controls whether
 external storage is counted against user&#8217;s quotas. This is still
 experimental, and may not work as expected. The default is to not count
 external storage as part of user storage quotas. If you prefer to include it,
-then change the default <tt class="docutils literal"><span class="pre">false</span></tt> to <tt class="docutils literal"><span class="pre">true</span></tt>.:</p>
-<div class="highlight-python"><pre>'quota_include_external_storage' =&gt; false,</pre>
+then change the default <code class="docutils literal"><span class="pre">false</span></code> to <code class="docutils literal"><span class="pre">true</span></code>.:</p>
+<div class="highlight-python"><div class="highlight"><pre>&#39;quota_include_external_storage&#39; =&gt; false,
+</pre></div>
 </div>
 <p>Metadata (such as thumbnails, temporary files, and encryption keys) takes up
 about 10% of disk space, but is not counted against user quotas. Users can check

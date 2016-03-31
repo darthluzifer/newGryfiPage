@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Files &amp; Synchronization" href="index.html" />
     <link rel="next" title="Contacts &amp; Calendar" href="../pim/index.html" />
     <link rel="prev" title="Storage Quota" href="quota.html" />
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -120,6 +119,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Files &amp; Synchronization</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="access_webgui.html">Accessing your Files Using the ownCloud Web Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="access_webdav.html">Accessing ownCloud Files Using WebDAV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery_app.html">Gallery App</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deleted_file_management.html">Managing Deleted Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="desktop_mobile_sync.html">Desktop and Mobile Synchronization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="encrypting_files.html">Encrypting Your ownCloud Files</a></li>
@@ -150,18 +150,15 @@
   <div class="section" id="version-control">
 <h1>Version Control<a class="headerlink" href="#version-control" title="Permalink to this headline">¶</a></h1>
 <p>ownCloud supports simple version control system for files. Versioning creates
-backups of files which are accessible via the Versions link. This link contains
-the history of the file where you can roll back a file to any previous version.
-Changes made at intervals greater than two minutes are saved in
-data/[user]/versions.</p>
-<p>To restore a specific version of a file, hover your cursor over a file and click
-the <em>Versions</em> link. If any version is available, you should see a list like
-the image below:</p>
+backups of files which are accessible via the Versions tab on the Details
+sidebar. This tab contains the history of the file where you can roll back a
+file to any previous version. Changes made at intervals greater than two minutes
+are saved in data/[user]/versions.</p>
 <div class="figure">
 <img alt="../_images/files_versioning.png" src="../_images/files_versioning.png" />
 </div>
-<p>Clicking on <em>Restore</em> next to any version will revert the file to that
-version back.</p>
+<p>To restore a specific version of a file, click the circular arrow to the left.
+Click on the timestamp to download it.</p>
 <p>The versioning app expires old versions automatically to make sure that
 the user doesn&#8217;t run out of space. This pattern is used to delete
 old versions:</p>

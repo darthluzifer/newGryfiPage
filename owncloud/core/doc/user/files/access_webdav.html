@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,9 +26,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Files &amp; Synchronization" href="index.html" />
-    <link rel="next" title="Managing Deleted Files" href="deleted_file_management.html" />
+    <link rel="next" title="Gallery App" href="gallery_app.html" />
     <link rel="prev" title="Accessing your Files Using the ownCloud Web Interface" href="access_webgui.html" />
 <script type="text/javascript">
 (function () {
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -124,6 +123,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#webdav-configuration">WebDAV Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-files-using-linux">Accessing Files Using Linux</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#creating-webdav-mounts-on-the-linux-command-line">Creating WebDAV Mounts on the Linux Command Line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-public-shares-over-webdav">Accessing public shares over WebDAV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-files-using-mac-os-x">Accessing Files Using Mac OS X</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-files-using-microsoft-windows">Accessing Files Using Microsoft Windows</a></li>
@@ -131,6 +131,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#known-problems">Known Problems</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="gallery_app.html">Gallery App</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deleted_file_management.html">Managing Deleted Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="desktop_mobile_sync.html">Desktop and Mobile Synchronization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="encrypting_files.html">Encrypting Your ownCloud Files</a></li>
@@ -208,9 +209,10 @@ URL of your ownCloud server installation.</p>
 <p>You can access files in Linux operating systems using the following methods.</p>
 <div class="section" id="nautilus-file-manager">
 <h3>Nautilus File Manager<a class="headerlink" href="#nautilus-file-manager" title="Permalink to this headline">¶</a></h3>
-<p>Use the <tt class="docutils literal"><span class="pre">davs://</span></tt> protocol to connect the Nautilus file manager to your
+<p>Use the <code class="docutils literal"><span class="pre">davs://</span></code> protocol to connect the Nautilus file manager to your
 ownCloud share:</p>
-<div class="highlight-python"><pre>davs://example.org/owncloud/remote.php/webdav</pre>
+<div class="highlight-python"><div class="highlight"><pre>davs://example.org/owncloud/remote.php/webdav
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -222,8 +224,9 @@ of <cite>davs://</cite>.</p>
 <div class="section" id="accessing-files-with-kde-and-dolphin-file-manager">
 <h3>Accessing Files with KDE and Dolphin File Manager<a class="headerlink" href="#accessing-files-with-kde-and-dolphin-file-manager" title="Permalink to this headline">¶</a></h3>
 <p>To access your ownCloud files using the Dolphin file manager in KDE, use
-the <tt class="docutils literal"><span class="pre">webdav://</span></tt> protocol:</p>
-<div class="highlight-python"><pre>webdav://example.org/owncloud/remote.php/webdav</pre>
+the <code class="docutils literal"><span class="pre">webdav://</span></code> protocol:</p>
+<div class="highlight-python"><div class="highlight"><pre>webdav://example.org/owncloud/remote.php/webdav
+</pre></div>
 </div>
 <img alt="screenshot of configuring Dolphin file manager to use WebDAV" src="../_images/webdav_dolphin.png" />
 <p>You can create a permanent link to your ownCloud server:</p>
@@ -238,7 +241,7 @@ The resulting dialog should appear with WebDAV already selected.</li>
 <li>User: The ownCloud username you used to log in, for example admin.</li>
 <li>Server: The ownCloud domain name, for example <strong>example.org</strong> (without
 <strong>http://</strong> before or directories afterwards).</li>
-<li>Folder &#8211; Enter the path <tt class="docutils literal"><span class="pre">owncloud/remote.php/webdav</span></tt>.</li>
+<li>Folder &#8211; Enter the path <code class="docutils literal"><span class="pre">owncloud/remote.php/webdav</span></code>.</li>
 </ul>
 </li>
 <li>(Optional) Check the &#8220;Create icon checkbox&#8221; for a bookmark to appear in the
@@ -255,60 +258,80 @@ prefer to access ownCloud the same way as any other remote filesystem mount.
 The following example shows how to create a personal mount and have it mounted
 automatically every time you log in to your Linux computer.</p>
 <ol class="arabic">
-<li><p class="first">Install the <tt class="docutils literal"><span class="pre">davfs2</span></tt> WebDAV filesystem driver, which allows you to mount
+<li><p class="first">Install the <code class="docutils literal"><span class="pre">davfs2</span></code> WebDAV filesystem driver, which allows you to mount
 WebDAV shares just like any other remote filesystem. Use this command to
 install it on Debian/Ubuntu:</p>
-<div class="highlight-python"><pre>apt-get install davfs2</pre>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install davfs2
+</pre></div>
 </div>
 </li>
 <li><p class="first">Use this command to install it on CentOS, Fedora, and openSUSE:</p>
-<div class="highlight-python"><pre>yum install davfs2</pre>
+<div class="highlight-python"><div class="highlight"><pre>yum install davfs2
+</pre></div>
 </div>
 </li>
-<li><p class="first">Add yourself to the <tt class="docutils literal"><span class="pre">davfs2</span></tt> group:</p>
-<div class="highlight-python"><pre>usermod -aG davfs2 &lt;username&gt;</pre>
+<li><p class="first">Add yourself to the <code class="docutils literal"><span class="pre">davfs2</span></code> group:</p>
+<div class="highlight-python"><div class="highlight"><pre>usermod -aG davfs2 &lt;username&gt;
+</pre></div>
 </div>
 </li>
 </ol>
 <ol class="arabic" start="3">
-<li><p class="first">Then create an <tt class="docutils literal"><span class="pre">owncloud</span></tt> directory in your home directory for the
-mountpoint, and <tt class="docutils literal"><span class="pre">.davfs2/</span></tt> for your personal configuration file:</p>
-<div class="highlight-python"><pre>mkdir ~/owncloud
-mkdir ~/.davfs2</pre>
+<li><p class="first">Then create an <code class="docutils literal"><span class="pre">owncloud</span></code> directory in your home directory for the
+mountpoint, and <code class="docutils literal"><span class="pre">.davfs2/</span></code> for your personal configuration file:</p>
+<div class="highlight-python"><div class="highlight"><pre>mkdir ~/owncloud
+mkdir ~/.davfs2
+</pre></div>
 </div>
 </li>
-<li><p class="first">Copy <tt class="docutils literal"><span class="pre">/etc/davfs2/secrets</span></tt> to <tt class="docutils literal"><span class="pre">~/.davfs2</span></tt>:</p>
-<div class="highlight-python"><pre>cp  /etc/davfs2/secrets ~/.davfs2/secrets</pre>
+<li><p class="first">Copy <code class="docutils literal"><span class="pre">/etc/davfs2/secrets</span></code> to <code class="docutils literal"><span class="pre">~/.davfs2</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>cp  /etc/davfs2/secrets ~/.davfs2/secrets
+</pre></div>
 </div>
 </li>
 <li><p class="first">Set yourself as the owner and make the permissions read-write owner only:</p>
-<div class="highlight-python"><pre>chown &lt;username&gt;:&lt;username&gt;  ~/.davfs2/secrets
-chmod 600 ~/.davfs2/secrets</pre>
+<div class="highlight-python"><div class="highlight"><pre>chown &lt;username&gt;:&lt;username&gt;  ~/.davfs2/secrets
+chmod 600 ~/.davfs2/secrets
+</pre></div>
 </div>
 </li>
-<li><p class="first">Add your ownCloud login credentials to the end of the <tt class="docutils literal"><span class="pre">secrets</span></tt> file,
+<li><p class="first">Add your ownCloud login credentials to the end of the <code class="docutils literal"><span class="pre">secrets</span></code> file,
 using your ownCloud server URL and your ownCloud username and password:</p>
-<div class="highlight-python"><pre>example.org/owncloud/remote.php/webdav &lt;username&gt; &lt;password&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>example.org/owncloud/remote.php/webdav &lt;username&gt; &lt;password&gt;
+</pre></div>
 </div>
 </li>
-<li><p class="first">Add the mount information to <tt class="docutils literal"><span class="pre">/etc/fstab</span></tt>:</p>
-<div class="highlight-python"><pre>example.org/owncloud/remote.php/webdav /home/&lt;username&gt;/owncloud
-davfs user,rw,auto 0 0</pre>
+<li><p class="first">Add the mount information to <code class="docutils literal"><span class="pre">/etc/fstab</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>example.org/owncloud/remote.php/webdav /home/&lt;username&gt;/owncloud
+davfs user,rw,auto 0 0
+</pre></div>
 </div>
 </li>
 <li><p class="first">Then test that it mounts and authenticates by running the following
 command. If you set it up correctly you won&#8217;t need root permissions:</p>
-<div class="highlight-python"><pre>mount ~/owncloud</pre>
+<div class="highlight-python"><div class="highlight"><pre>mount ~/owncloud
+</pre></div>
 </div>
 </li>
 <li><p class="first">You should also be able to unmount it:</p>
-<div class="highlight-python"><pre>umount ~/owncloud</pre>
+<div class="highlight-python"><div class="highlight"><pre>umount ~/owncloud
+</pre></div>
 </div>
 </li>
 </ol>
 <p>Now every time you login to your Linux system your ownCloud share should
-automatically mount via WebDAV in your <tt class="docutils literal"><span class="pre">~/owncloud</span></tt> directory. If you prefer
-to mount it manually, change <tt class="docutils literal"><span class="pre">auto</span></tt> to <tt class="docutils literal"><span class="pre">noauto</span></tt> in <tt class="docutils literal"><span class="pre">/etc/fstab</span></tt>.</p>
+automatically mount via WebDAV in your <code class="docutils literal"><span class="pre">~/owncloud</span></code> directory. If you prefer
+to mount it manually, change <code class="docutils literal"><span class="pre">auto</span></code> to <code class="docutils literal"><span class="pre">noauto</span></code> in <code class="docutils literal"><span class="pre">/etc/fstab</span></code>.</p>
+</div>
+<div class="section" id="accessing-public-shares-over-webdav">
+<h2>Accessing public shares over WebDAV<a class="headerlink" href="#accessing-public-shares-over-webdav" title="Permalink to this headline">¶</a></h2>
+<p>ownCloud provides the possibility to access public shares over WebDAV.</p>
+<p>To access the public share, open:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://example.com/owncloud/public.php/webdav
+</pre></div>
+</div>
+<p>in a WebDAV client, use the share token as username and the (optional) share password
+as password.</p>
 </div>
 <div class="section" id="known-issues">
 <h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
@@ -319,8 +342,9 @@ to mount it manually, change <tt class="docutils literal"><span class="pre">auto
 <div class="section" id="solution">
 <h3>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h3>
 <p>If you experience trouble when you create a file in the directory,
-edit <tt class="docutils literal"><span class="pre">/etc/davfs2/davfs2.conf</span></tt> and add:</p>
-<div class="highlight-python"><pre>use_locks 0</pre>
+edit <code class="docutils literal"><span class="pre">/etc/davfs2/davfs2.conf</span></code> and add:</p>
+<div class="highlight-python"><div class="highlight"><pre>use_locks 0
+</pre></div>
 </div>
 </div>
 <div class="section" id="id1">
@@ -330,9 +354,9 @@ edit <tt class="docutils literal"><span class="pre">/etc/davfs2/davfs2.conf</spa
 <div class="section" id="id2">
 <h3>Solution<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>If you use a self-signed certificate, you will get a warning. To
-change this, you need to configure <tt class="docutils literal"><span class="pre">davfs2</span></tt> to recognize your certificate.
-Copy <tt class="docutils literal"><span class="pre">mycertificate.pem</span></tt> to <tt class="docutils literal"><span class="pre">/etc/davfs2/certs/</span></tt>. Then edit
-<tt class="docutils literal"><span class="pre">/etc/davfs2/davfs2.conf</span></tt> and uncomment the line <tt class="docutils literal"><span class="pre">servercert</span></tt>. Now add the
+change this, you need to configure <code class="docutils literal"><span class="pre">davfs2</span></code> to recognize your certificate.
+Copy <code class="docutils literal"><span class="pre">mycertificate.pem</span></code> to <code class="docutils literal"><span class="pre">/etc/davfs2/certs/</span></code>. Then edit
+<code class="docutils literal"><span class="pre">/etc/davfs2/davfs2.conf</span></code> and uncomment the line <code class="docutils literal"><span class="pre">servercert</span></code>. Now add the
 path of your certificate as in this example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">servercert</span>   <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">davfs2</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span><span class="n">mycertificate</span><span class="o">.</span><span class="n">pem</span>
 </pre></div>
@@ -359,7 +383,8 @@ ownCloud server runs on <strong>Apache</strong> and <strong>mod_php</strong>, or
 <div><img alt="Screenshot of entering your ownCloud server address on Mac OS X" src="../_images/osx_webdav1.png" />
 <p>For example, the URL used to connect to the ownCloud server
 from the Mac OS X Finder is:</p>
-<div class="highlight-python"><pre>http://example.org/owncloud/remote.php/webdav</pre>
+<div class="highlight-python"><div class="highlight"><pre>http://example.org/owncloud/remote.php/webdav
+</pre></div>
 </div>
 <img alt="../_images/osx_webdav2.png" src="../_images/osx_webdav2.png" />
 </div></blockquote>
@@ -398,15 +423,16 @@ the drive:</p>
 </li>
 <li><p class="first">Enter the following line in the command prompt to map to the computer Z
 drive:</p>
-<div class="highlight-python"><pre>net use Z: https://&lt;drive_path&gt;/remote.php/webdav /user:youruser
-yourpassword</pre>
+<div class="highlight-python"><div class="highlight"><pre>net use Z: https://&lt;drive_path&gt;/remote.php/webdav /user:youruser
+yourpassword
+</pre></div>
 </div>
 </li>
 </ol>
 <blockquote>
 <div>where &lt;drive_path&gt; is the URL to your ownCloud server.</div></blockquote>
-<p>For example: <tt class="docutils literal"><span class="pre">net</span> <span class="pre">use</span> <span class="pre">Z:</span> <span class="pre">https://example.org/owncloud/remote.php/webdav</span>
-<span class="pre">/user:youruser</span> <span class="pre">yourpassword</span></tt></p>
+<p>For example: <code class="docutils literal"><span class="pre">net</span> <span class="pre">use</span> <span class="pre">Z:</span> <span class="pre">https://example.org/owncloud/remote.php/webdav</span>
+<span class="pre">/user:youruser</span> <span class="pre">yourpassword</span></code></p>
 <blockquote>
 <div>The computer maps the files of your ownCloud account to the drive letter Z.</div></blockquote>
 <div class="admonition note">
@@ -417,8 +443,9 @@ connections on devices while in a public place, we strongly recommend using a
 VPN tunnel to provide the necessary security.</p>
 </div>
 <p>An alternative command syntax is:</p>
-<div class="highlight-python"><pre>net use Z: \\example.org@ssl\owncloud\remote.php\webdav /user:youruser
-yourpassword</pre>
+<div class="highlight-python"><div class="highlight"><pre>net use Z: \\example.org@ssl\owncloud\remote.php\webdav /user:youruser
+yourpassword
+</pre></div>
 </div>
 </div>
 <div class="section" id="mapping-drives-with-windows-explorer">
@@ -434,7 +461,8 @@ the drop-down menu.</li>
 </ol>
 <blockquote>
 <div><p>For example:</p>
-<div class="highlight-python"><pre>https://example.org/owncloud/remote.php/webdav</pre>
+<div class="highlight-python"><div class="highlight"><pre>https://example.org/owncloud/remote.php/webdav
+</pre></div>
 </div>
 </div></blockquote>
 <div class="admonition note">
@@ -448,7 +476,7 @@ different credentials</strong>.</p>
 <a class="reference internal image-reference" href="../_images/explorer_webdav.png"><img alt="screenshot of mapping WebDAV on Windows Explorer" src="../_images/explorer_webdav.png" style="width: 502.4px; height: 366.4px;" /></a>
 </div>
 <ol class="arabic simple" start="5">
-<li>Click the <tt class="docutils literal"><span class="pre">Finish</span></tt> button.</li>
+<li>Click the <code class="docutils literal"><span class="pre">Finish</span></code> button.</li>
 </ol>
 <blockquote>
 <div>Windows Explorer maps the network drive, making your ownCloud instance
@@ -469,7 +497,7 @@ Mac OS X and Windows.</p>
 <li>Specify a server without any leading protocol information. For example:</li>
 </ol>
 <blockquote>
-<div><tt class="docutils literal"><span class="pre">example.org</span></tt></div></blockquote>
+<div><code class="docutils literal"><span class="pre">example.org</span></code></div></blockquote>
 <p>2. Specify the appropriate port.  The port you choose depends on whether or not
 your ownCloud server supports SSL. Cyberduck requires that you select a
 different connection type if you plan to use SSL.  For example:</p>
@@ -480,7 +508,7 @@ different connection type if you plan to use SSL.  For example:</p>
 <p>3. Use the &#8216;More Options&#8217; drop-down menu to add the rest of your WebDAV URL into
 the &#8216;Path&#8217; field. For example:</p>
 <blockquote>
-<div><tt class="docutils literal"><span class="pre">remote.php/webdav</span></tt></div></blockquote>
+<div><code class="docutils literal"><span class="pre">remote.php/webdav</span></code></div></blockquote>
 <p>Now Cyberduck enables file access to the ownCloud server.</p>
 </div>
 <div class="section" id="known-problems">
@@ -538,7 +566,7 @@ service.</p>
 <li>Click through until you get to the certificate error in the browser status
 line.</li>
 <li>View the cert, then from the Details tab, select Copy to File.</li>
-<li>Save to the desktop with an arbitrary name, for example <tt class="docutils literal"><span class="pre">myOwnCloud.cer</span></tt>.</li>
+<li>Save to the desktop with an arbitrary name, for example <code class="docutils literal"><span class="pre">myOwnCloud.cer</span></code>.</li>
 <li>Start, Run, MMC.</li>
 <li>File, Add/Remove Snap-In.</li>
 <li>Select Certificates, Click Add, My User Account, then Finish, then OK.</li>

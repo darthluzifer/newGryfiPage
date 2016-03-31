@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 User Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="Contacts &amp; Calendar" href="index.html" />
     <link rel="next" title="Synchronizing with KDE SC" href="sync_kde.html" />
     <link rel="prev" title="iOS - Synchronize iPhone/iPad" href="sync_ios.html" />
@@ -93,7 +92,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -147,7 +146,8 @@
   <div class="section" id="synchronizing-with-os-x">
 <h1>Synchronizing with OS X<a class="headerlink" href="#synchronizing-with-os-x" title="Permalink to this headline">¶</a></h1>
 <p>To use ownCloud with iCal you will need to use the following URL:</p>
-<div class="highlight-python"><pre>http://ADDRESS/remote.php/caldav/principals/username/</pre>
+<div class="highlight-python"><div class="highlight"><pre>http://ADDRESS/remote.php/caldav/principals/username/
+</pre></div>
 </div>
 <p>The setup is basically the same as with iOS using the path <strong>ADDRESS/remote.php/caldav/principals/username/</strong> to sync with ownCloud. For OS X 10.7 Lion and 10.8 Mountain Lion everything works fine, but OS X 10.6 (Snow Leopard) and older needs some fiddling to work. A user contributed the following:</p>
 <ol class="arabic">
@@ -164,13 +164,15 @@
 <li><p class="first">Navigate to the newly created folder and edit the <strong>Configuration.plist</strong> with your favorite text editor.</p>
 </li>
 <li><p class="first">Search for a section looking like this:</p>
-<div class="highlight-python"><pre>&lt;key&gt;servername&lt;/key&gt; &lt;string&gt;http://:0(null)&lt;/string&gt; &lt;key&gt;username&lt;/key&gt; &lt;string&gt;Whatever_you_entered_before&lt;/string&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;key&gt;servername&lt;/key&gt; &lt;string&gt;http://:0(null)&lt;/string&gt; &lt;key&gt;username&lt;/key&gt; &lt;string&gt;Whatever_you_entered_before&lt;/string&gt;
+</pre></div>
 </div>
 </li>
 </ol>
 <ol class="arabic" start="8">
 <li><p class="first">Make it look like this. Please note that the :80 after <strong>YOUR_DOMAIN</strong> is important:</p>
-<div class="highlight-python"><pre>&lt;key&gt;servername&lt;/key &lt;string&gt;http://YOUR_DOMAIN:80/owncloud/remote.php/carddav/principals/username&lt;/string&gt; &lt;key&gt;username&lt;/key &lt;string&gt;username&lt;/string&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;key&gt;servername&lt;/key &lt;string&gt;http://YOUR_DOMAIN:80/owncloud/remote.php/carddav/principals/username&lt;/string&gt; &lt;key&gt;username&lt;/key &lt;string&gt;username&lt;/string&gt;
+</pre></div>
 </div>
 </li>
 <li><p class="first">Save the file and open addressbook again. It will not work yet.</p>

@@ -255,6 +255,10 @@ var UserList = {
 		}
 	},
 	doSort: function() {
+		// some browsers like Chrome lose the scrolling information
+		// when messing with the list elements
+		var lastScrollTop = this.scrollArea.scrollTop();
+		var lastScrollLeft = this.scrollArea.scrollLeft();
 		var rows = $userListBody.find('tr').get();
 
 		rows.sort(function(a, b) {
@@ -280,6 +284,8 @@ var UserList = {
 		if(items.length > 0) {
 			$userListBody.append(items);
 		}
+		this.scrollArea.scrollTop(lastScrollTop);
+		this.scrollArea.scrollLeft(lastScrollLeft);
 	},
 	checkUsersToLoad: function() {
 		//30 shall be loaded initially, from then on always 10 upon scrolling
@@ -609,10 +615,11 @@ $(document).ready(function () {
 	// Implements User Search
 	OCA.Search.users= new UserManagementFilter(UserList, GroupList);
 
+	UserList.scrollArea = $('#app-content');
+
 	UserList.doSort();
 	UserList.availableGroups = $userList.data('groups');
 
-	UserList.scrollArea = $('#app-content');
 	UserList.scrollArea.scroll(function(e) {UserList._onScroll(e);});
 
 	$userList.after($('<div class="loading" style="height: 200px; visibility: hidden;"></div>'));
@@ -654,7 +661,7 @@ $(document).ready(function () {
 							{username: uid, password: $(this).val(), recoveryPassword: recoveryPasswordVal},
 							function (result) {
 								if (result.status != 'success') {
-									OC.Notification.show(t('admin', result.data.message));
+									OC.Notification.showTemporary(t('admin', result.data.message));
 								}
 							}
 						);
@@ -729,24 +736,20 @@ $(document).ready(function () {
 			.focus()
 			.keypress(function (event) {
 				if (event.keyCode === 13) {
-					if ($(this).val().length > 0) {
-						$tr.data('mailAddress', $input.val());
-						$input.blur();
-						$.ajax({
-							type: 'PUT',
-							url: OC.generateUrl('/settings/users/{id}/mailAddress', {id: uid}),
-							data: {
-								mailAddress: $(this).val()
-							}
-						}).fail(function (result) {
-							OC.Notification.show(result.responseJSON.data.message);
-							// reset the values
-							$tr.data('mailAddress', mailAddress);
-							$tr.children('.mailAddress').children('span').text(mailAddress);
-						});
-					} else {
-						$input.blur();
-					}
+					$tr.data('mailAddress', $input.val());
+					$input.blur();
+					$.ajax({
+						type: 'PUT',
+						url: OC.generateUrl('/settings/users/{id}/mailAddress', {id: uid}),
+						data: {
+							mailAddress: $(this).val()
+						}
+					}).fail(function (result) {
+						OC.Notification.show(result.responseJSON.data.message);
+						// reset the values
+						$tr.data('mailAddress', mailAddress);
+						$tr.children('.mailAddress').children('span').text(mailAddress);
+					});
 				}
 			})
 			.blur(function () {

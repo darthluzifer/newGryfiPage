@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -7,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuring the Activity App &mdash; ownCloud Server Administration Manual 8.2 documentation</title>
+    <title>Configuring the Activity App &mdash; ownCloud 8.2 Server Administration Manual 8.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../contents.html" />
     <link rel="up" title="ownCloud Server Configuration" href="index.html" />
     <link rel="next" title="Configuring the ClamAV Antivirus Scanner" href="antivirus_configuration.html" />
     <link rel="prev" title="Using the occ Command" href="occ_command.html" />
@@ -93,13 +92,13 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
   <div class="content">
     <div class="page-header">
-      <h1><a href="../contents.html">ownCloud Server Administration Manual</a></h1>
+      <h1><a href="../contents.html">ownCloud 8.2 Server Administration Manual</a></h1>
 
     </div>
     
@@ -132,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="config_sample_php_parameters.html">Config.php Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="email_configuration.html">Email Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="external_sites.html">Linking External Sites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_client_repos.html">Custom Client Download Repositories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="knowledgebase_configuration.html">Knowledge Base Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="language_configuration.html">Language Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logging_configuration.html">Logging Configuration</a></li>
@@ -159,6 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_logging/index.html">Enterprise Logging Apps (ES only)</a></li>
 </ul>
 
 								</ul>
@@ -192,10 +193,10 @@ simply go to your ownCloud Apps page to enable it.</p>
 <h2>Configuring your ownCloud for the Activity App<a class="headerlink" href="#configuring-your-owncloud-for-the-activity-app" title="Permalink to this headline">¶</a></h2>
 <p>To configure your ownCloud to send out e-mail notifications a working
 <a class="reference internal" href="email_configuration.html"><em>Email Configuration</em></a> is mandatory.</p>
-<p>Furthermore it is recommended to configure the background job <tt class="docutils literal"><span class="pre">Webcron</span></tt> or
-<tt class="docutils literal"><span class="pre">Cron</span></tt> as described in <a class="reference internal" href="background_jobs_configuration.html"><em>Defining Background Jobs</em></a>.</p>
-<p>There is also a config option <tt class="docutils literal"><span class="pre">activity_expire_days</span></tt> available in your
-<tt class="docutils literal"><span class="pre">config.php</span></tt> (See <a class="reference internal" href="config_sample_php_parameters.html"><em>Config.php Parameters</em></a>) which allows
+<p>Furthermore it is recommended to configure the background job <code class="docutils literal"><span class="pre">Webcron</span></code> or
+<code class="docutils literal"><span class="pre">Cron</span></code> as described in <a class="reference internal" href="background_jobs_configuration.html"><em>Defining Background Jobs</em></a>.</p>
+<p>There is also a configuration option <code class="docutils literal"><span class="pre">activity_expire_days</span></code> available in your
+<code class="docutils literal"><span class="pre">config.php</span></code> (See <a class="reference internal" href="config_sample_php_parameters.html"><em>Config.php Parameters</em></a>) which allows
 you to clean-up older activies from the database.</p>
 </div>
 </div>

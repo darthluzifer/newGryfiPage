@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/bootstrap.js"></script>
-    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../index.html" />
+    <link rel="top" title="ownCloud 8.2 Server Administration Manual 8.2 documentation" href="../contents.html" />
     <link rel="next" title="Enterprise Subscription Installation (ES Only)" href="../enterprise_installation/index.html" />
     <link rel="prev" title="Theming ownCloud" href="../operations/theming.html" />
 <script type="text/javascript">
@@ -92,7 +91,7 @@
 </script>
 
   </head>
-  <body>
+  <body role="document">
   
 
 <div class="container">
@@ -156,6 +155,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_external_storage/index.html">External Storage (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_user_management/index.html">User Management (ES only)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../enterprise_files_drop/index.html">Enabling Anonymous Uploads with Files Drop (ES Only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise_logging/index.html">Enterprise Logging Apps (ES only)</a></li>
 </ul>
 
 								</ul>
@@ -182,7 +182,7 @@ to typical mistakes or frequently occurring issues</p>
 </div>
 <ul class="simple">
 <li><a class="reference external" href="https://mailman.owncloud.org/mailman/listinfo/user">The ownCloud User mailing list</a></li>
-<li>The ownCloud IRC chat channel <tt class="docutils literal"><span class="pre">irc://#owncloud&#64;freenode.net</span></tt> on
+<li>The ownCloud IRC chat channel <code class="docutils literal"><span class="pre">irc://#owncloud&#64;freenode.net</span></code> on
 freenode.net, also accessible via <a class="reference external" href="http://webchat.freenode.net/?channels=owncloud">webchat</a></li>
 </ul>
 <p>Please understand that all these channels essentially consist of users like you
@@ -204,29 +204,32 @@ support options.</p>
 </div>
 <div class="section" id="general-troubleshooting">
 <h2>General Troubleshooting<a class="headerlink" href="#general-troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="../installation/system_requirements.html"><em>System Requirements</em></a> for supported platforms, and
+especially supported Web browsers.</p>
 <div class="section" id="disable-3rdparty-non-shipped-apps">
 <h3>Disable 3rdparty / non-shipped apps<a class="headerlink" href="#disable-3rdparty-non-shipped-apps" title="Permalink to this headline">¶</a></h3>
 <p>It might be possible that 3rd party / non-shipped apps are causing various
 different issues. Always disable 3rd party apps before upgrades, and for
-troubleshooting. Please refer to the <a class="reference internal" href="../configuration_server/occ_command.html#apps-commands-label"><em>Apps Commands</em></a> on how
+troubleshooting. Please refer to the <a class="reference internal" href="../configuration_server/occ_command.html#apps-commands-label"><span>Apps Commands</span></a> on how
 to disable an app from command line.</p>
 </div>
 <div class="section" id="owncloud-logfiles">
 <h3>ownCloud Logfiles<a class="headerlink" href="#owncloud-logfiles" title="Permalink to this headline">¶</a></h3>
-<p>In a standard ownCloud installation the log level is set to <tt class="docutils literal"><span class="pre">Normal</span></tt>. To find
-any issues you need to raise the log level to <tt class="docutils literal"><span class="pre">All</span></tt> in your <tt class="docutils literal"><span class="pre">config.php</span></tt>
+<p>In a standard ownCloud installation the log level is set to <code class="docutils literal"><span class="pre">Normal</span></code>. To find
+any issues you need to raise the log level to <code class="docutils literal"><span class="pre">All</span></code> in your <code class="docutils literal"><span class="pre">config.php</span></code>
 file, or to <strong>Everything</strong> on your ownCloud Admin page. Please see
 <a class="reference internal" href="../configuration_server/logging_configuration.html"><em>Logging Configuration</em></a> for more information on
 these log levels.</p>
 <p>Some logging - for example JavaScript console logging - needs manually editing
-the configuration file. Edit <tt class="file docutils literal"><span class="pre">config/config.php</span></tt> and add
-<tt class="docutils literal"><span class="pre">define('DEBUG',</span>
-<span class="pre">true);</span></tt>:</p>
-<div class="highlight-python"><pre>&lt;?php
-define('DEBUG',true);
+the configuration file. Edit <code class="file docutils literal"><span class="pre">config/config.php</span></code> and add
+<code class="docutils literal"><span class="pre">define('DEBUG',</span>
+<span class="pre">true);</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;?php
+define(&#39;DEBUG&#39;,true);
 $CONFIG = array (
     ... configuration goes here ...
-);</pre>
+);
+</pre></div>
 </div>
 <p>For JavaScript issues you will also need to view the javascript console. All
 major browsers have developer tools for viewing the console, and you
@@ -235,27 +238,28 @@ the <a class="reference external" href="https://getfirebug.com/">Firebug extensi
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The logfile of ownCloud is located in the data directory
-<tt class="docutils literal"><span class="pre">owncloud/data/owncloud.log</span></tt>.</p>
+<code class="docutils literal"><span class="pre">owncloud/data/owncloud.log</span></code>.</p>
 </div>
 </div>
 <div class="section" id="php-version-and-information">
 <span id="label-phpinfo"></span><h3>PHP Version and Information<a class="headerlink" href="#php-version-and-information" title="Permalink to this headline">¶</a></h3>
 <p>You will need to know your PHP version and configurations. To do this, create a
 plain-text file named <strong>phpinfo.php</strong> and place it in your Web root, for
-example <tt class="docutils literal"><span class="pre">/var/www/html/phpinfo.php</span></tt>. (Your Web root may be in a different
+example <code class="docutils literal"><span class="pre">/var/www/html/phpinfo.php</span></code>. (Your Web root may be in a different
 location; your Linux distribution documentation will tell you where.) This file
 contains just this line:</p>
-<div class="highlight-python"><pre>&lt;?php phpinfo(); ?&gt;</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;?php phpinfo(); ?&gt;
+</pre></div>
 </div>
 <p>Open this file in a Web browser by pointing your browser to
-<tt class="docutils literal"><span class="pre">localhost/phpinfo.php</span></tt>:</p>
+<code class="docutils literal"><span class="pre">localhost/phpinfo.php</span></code>:</p>
 <div class="figure">
 <img alt="../_images/phpinfo.png" src="../_images/phpinfo.png" />
 </div>
 <p>Your PHP version is at the top, and the rest of the page contains abundant
 system information such as active modules, active <cite>.ini</cite> files, and much more.
 When you are finished reviewing your information you must delete
-<tt class="docutils literal"><span class="pre">phpinfo.php</span></tt>, or move it outside of your Web directory, because it is a
+<code class="docutils literal"><span class="pre">phpinfo.php</span></code>, or move it outside of your Web directory, because it is a
 security risk to expose such sensitive data.</p>
 </div>
 <div class="section" id="debugging-sync-issues">
@@ -271,7 +275,7 @@ not be modified manually.</p>
 <li>Undetected changes due to caching in the database</li>
 </ul>
 <p>If you need to directly upload files from the same server please use a WebDAV
-command line client like <tt class="docutils literal"><span class="pre">cadaver</span></tt> to upload files to the WebDAV interface at:</p>
+command line client like <code class="docutils literal"><span class="pre">cadaver</span></code> to upload files to the WebDAV interface at:</p>
 <blockquote>
 <div><a class="reference external" href="https://example.org/owncloud/remote.php/webdav">https://example.org/owncloud/remote.php/webdav</a></div></blockquote>
 </div>
@@ -279,30 +283,30 @@ command line client like <tt class="docutils literal"><span class="pre">cadaver<
 <h3>Common problems / error messages<a class="headerlink" href="#common-problems-error-messages" title="Permalink to this headline">¶</a></h3>
 <p>Some common problems / error messages found in your logfiles as described above:</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">SQLSTATE[HY000]</span> <span class="pre">[1040]</span> <span class="pre">Too</span> <span class="pre">many</span> <span class="pre">connections</span></tt> -&gt; You need to increase the
+<li><code class="docutils literal"><span class="pre">SQLSTATE[HY000]</span> <span class="pre">[1040]</span> <span class="pre">Too</span> <span class="pre">many</span> <span class="pre">connections</span></code> -&gt; You need to increase the
 connection limit of your database, please refer to the manual of your database
 for more information.</li>
-<li><tt class="docutils literal"><span class="pre">SQLSTATE[HY000]:</span> <span class="pre">General</span> <span class="pre">error:</span> <span class="pre">5</span> <span class="pre">database</span> <span class="pre">is</span> <span class="pre">locked</span></tt> -&gt; You&#8217;re using
-<tt class="docutils literal"><span class="pre">SQLite</span></tt>
+<li><code class="docutils literal"><span class="pre">SQLSTATE[HY000]:</span> <span class="pre">General</span> <span class="pre">error:</span> <span class="pre">5</span> <span class="pre">database</span> <span class="pre">is</span> <span class="pre">locked</span></code> -&gt; You&#8217;re using
+<code class="docutils literal"><span class="pre">SQLite</span></code>
 which can&#8217;t handle a lot of parallel requests. Please consider converting to
 another database like described in
 <a class="reference internal" href="../configuration_database/db_conversion.html"><em>Converting Database Type</em></a>.</li>
-<li><tt class="docutils literal"><span class="pre">SQLSTATE[HY000]:</span> <span class="pre">General</span> <span class="pre">error:</span> <span class="pre">2006</span> <span class="pre">MySQL</span> <span class="pre">server</span> <span class="pre">has</span> <span class="pre">gone</span> <span class="pre">away</span></tt> -&gt; The
+<li><code class="docutils literal"><span class="pre">SQLSTATE[HY000]:</span> <span class="pre">General</span> <span class="pre">error:</span> <span class="pre">2006</span> <span class="pre">MySQL</span> <span class="pre">server</span> <span class="pre">has</span> <span class="pre">gone</span> <span class="pre">away</span></code> -&gt; The
 database request takes too long and therefore the MySQL server times out. Its
 also possible that the server is dropping a packet that is too large. Please
 refer to the manual of your database for how to raise the config options
-<tt class="docutils literal"><span class="pre">wait_timeout</span></tt> and/or <tt class="docutils literal"><span class="pre">max_allowed_packet</span></tt>.</li>
-<li><tt class="docutils literal"><span class="pre">SQLSTATE[HY000]</span> <span class="pre">[2002]</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></tt> -&gt; There is a problem
+<code class="docutils literal"><span class="pre">wait_timeout</span></code> and/or <code class="docutils literal"><span class="pre">max_allowed_packet</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">SQLSTATE[HY000]</span> <span class="pre">[2002]</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code> -&gt; There is a problem
 accessing your SQLite database file in your data directory
-(<tt class="docutils literal"><span class="pre">data/owncloud.db</span></tt>). Please check the permissions of this folder/file or
+(<code class="docutils literal"><span class="pre">data/owncloud.db</span></code>). Please check the permissions of this folder/file or
 if it exists at all. If you&#8217;re using MySQL please start your database.</li>
-<li><tt class="docutils literal"><span class="pre">Connection</span> <span class="pre">closed</span> <span class="pre">/</span> <span class="pre">Operation</span> <span class="pre">cancelled</span></tt> -&gt; This could be caused by wrong
-<tt class="docutils literal"><span class="pre">KeepAlive</span></tt> settings within your Apache config. Make sure that
-<tt class="docutils literal"><span class="pre">KeepAlive</span></tt> is set to <tt class="docutils literal"><span class="pre">On</span></tt> and  also try to raise the limits of
-<tt class="docutils literal"><span class="pre">KeepAliveTimeout</span></tt> and  <tt class="docutils literal"><span class="pre">MaxKeepAliveRequests</span></tt>.</li>
-<li><tt class="docutils literal"><span class="pre">No</span> <span class="pre">basic</span> <span class="pre">authentication</span> <span class="pre">headers</span> <span class="pre">were</span> <span class="pre">found</span></tt> -&gt; This error is shown in your
-<tt class="docutils literal"><span class="pre">data/owncloud.log</span></tt> file. Some Apache modules like <tt class="docutils literal"><span class="pre">mod_fastcgi</span></tt>, <tt class="docutils literal"><span class="pre">mod_fcgid</span></tt>
-or <tt class="docutils literal"><span class="pre">mod_proxy_fcgi</span></tt> are not passing the needed authentication headers to
+<li><code class="docutils literal"><span class="pre">Connection</span> <span class="pre">closed</span> <span class="pre">/</span> <span class="pre">Operation</span> <span class="pre">cancelled</span></code> -&gt; This could be caused by wrong
+<code class="docutils literal"><span class="pre">KeepAlive</span></code> settings within your Apache config. Make sure that
+<code class="docutils literal"><span class="pre">KeepAlive</span></code> is set to <code class="docutils literal"><span class="pre">On</span></code> and  also try to raise the limits of
+<code class="docutils literal"><span class="pre">KeepAliveTimeout</span></code> and  <code class="docutils literal"><span class="pre">MaxKeepAliveRequests</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">No</span> <span class="pre">basic</span> <span class="pre">authentication</span> <span class="pre">headers</span> <span class="pre">were</span> <span class="pre">found</span></code> -&gt; This error is shown in your
+<code class="docutils literal"><span class="pre">data/owncloud.log</span></code> file. Some Apache modules like <code class="docutils literal"><span class="pre">mod_fastcgi</span></code>, <code class="docutils literal"><span class="pre">mod_fcgid</span></code>
+or <code class="docutils literal"><span class="pre">mod_proxy_fcgi</span></code> are not passing the needed authentication headers to
 PHP and so the login to ownCloud via WebDAV, CalDAV and CardDAV clients is
 failing. Information on how to correctly configure your environment can be
 found at the <a class="reference external" href="https://forum.owncloud.org/viewtopic.php?f=17&amp;t=30646">forums</a>.</li>
@@ -322,13 +326,13 @@ installation running Apache2 with mod_php is assumed. On other webservers,
 Linux distros or operating systems they can differ.</p>
 </div>
 <ul class="simple">
-<li>The logfile of Apache2 is located in <tt class="docutils literal"><span class="pre">/var/log/apache2/error.log</span></tt>.</li>
-<li>The logfile of PHP can be configured in your <tt class="docutils literal"><span class="pre">/etc/php5/apache2/php.ini</span></tt>.
-You need to set the directive <tt class="docutils literal"><span class="pre">log_errors</span></tt> to <tt class="docutils literal"><span class="pre">On</span></tt> and choose the path
-to store the logfile in the <tt class="docutils literal"><span class="pre">error_log</span></tt> directive. After those changes you
+<li>The logfile of Apache2 is located in <code class="docutils literal"><span class="pre">/var/log/apache2/error.log</span></code>.</li>
+<li>The logfile of PHP can be configured in your <code class="docutils literal"><span class="pre">/etc/php5/apache2/php.ini</span></code>.
+You need to set the directive <code class="docutils literal"><span class="pre">log_errors</span></code> to <code class="docutils literal"><span class="pre">On</span></code> and choose the path
+to store the logfile in the <code class="docutils literal"><span class="pre">error_log</span></code> directive. After those changes you
 need to restart your Webserver.</li>
 <li>The logfile of ownCloud is located in the data directory
-<tt class="docutils literal"><span class="pre">/var/www/owncloud/data/owncloud.log</span></tt>.</li>
+<code class="docutils literal"><span class="pre">/var/www/owncloud/data/owncloud.log</span></code>.</li>
 </ul>
 </div>
 <div class="section" id="webserver-and-php-modules">
@@ -414,21 +418,22 @@ document root and the client has difficulties finding the Cal- or CardDAV
 end-points, configure your web server to redirect from a &#8220;well-known&#8221; URL to
 the
 one used by ownCloud. When using the Apache web server this is easily achieved
-using a <tt class="file docutils literal"><span class="pre">.htaccess</span></tt> file in the document root of your site.</p>
-<p>Say your instance is located in the <tt class="docutils literal"><span class="pre">owncloud</span></tt> folder, so the URL to it is
-<tt class="docutils literal"><span class="pre">ADDRESS/owncloud</span></tt>, create or edit the <tt class="file docutils literal"><span class="pre">.htaccess</span></tt> file and add the
+using a <code class="file docutils literal"><span class="pre">.htaccess</span></code> file in the document root of your site.</p>
+<p>Say your instance is located in the <code class="docutils literal"><span class="pre">owncloud</span></code> folder, so the URL to it is
+<code class="docutils literal"><span class="pre">ADDRESS/owncloud</span></code>, create or edit the <code class="file docutils literal"><span class="pre">.htaccess</span></code> file and add the
 following lines:</p>
-<div class="highlight-python"><pre>Redirect 301 /.well-known/carddav /owncloud/remote.php/carddav
-Redirect 301 /.well-known/caldav /owncloud/remote.php/caldav</pre>
+<div class="highlight-python"><div class="highlight"><pre>Redirect 301 /.well-known/carddav /owncloud/remote.php/carddav
+Redirect 301 /.well-known/caldav /owncloud/remote.php/caldav
+</pre></div>
 </div>
-<p>Now change the URL in the client settings to just use <tt class="docutils literal"><span class="pre">ADDRESS</span></tt> instead of
-e.g. <tt class="docutils literal"><span class="pre">ADDRESS/remote.php/carddav/principals/username</span></tt>.</p>
+<p>Now change the URL in the client settings to just use <code class="docutils literal"><span class="pre">ADDRESS</span></code> instead of
+e.g. <code class="docutils literal"><span class="pre">ADDRESS/remote.php/carddav/principals/username</span></code>.</p>
 <p>This problem is being discussed in the <a class="reference external" href="http://forum.owncloud.org/viewtopic.php?f=3&amp;t=71&amp;p=2211#p2197">forum</a>.</p>
 </div>
 <div class="section" id="unable-to-update-contacts-or-events">
 <h3>Unable to update Contacts or Events<a class="headerlink" href="#unable-to-update-contacts-or-events" title="Permalink to this headline">¶</a></h3>
-<p>If you get an error like <tt class="docutils literal"><span class="pre">PATCH</span> <span class="pre">https://ADDRESS/some_url</span> <span class="pre">HTTP/1.0</span> <span class="pre">501</span> <span class="pre">Not</span>
-<span class="pre">Implemented</span></tt> it is likely caused by one of the following reasons:</p>
+<p>If you get an error like <code class="docutils literal"><span class="pre">PATCH</span> <span class="pre">https://ADDRESS/some_url</span> <span class="pre">HTTP/1.0</span> <span class="pre">501</span> <span class="pre">Not</span>
+<span class="pre">Implemented</span></code> it is likely caused by one of the following reasons:</p>
 <dl class="docutils">
 <dt>Using Pound reverse-proxy/load balancer</dt>
 <dd>As of writing this Pound doesn&#8217;t support the HTTP/1.1 verb.
