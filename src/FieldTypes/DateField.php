@@ -6,6 +6,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Loader;
 use Page;
 use Punic\Exception;
+use Sabre\VObject\Property\VCard\DateTime;
 use User;
 use Core;
 use File;
@@ -22,6 +23,7 @@ class DateField extends Field{
 	protected $errMsg="";
 
 	protected $isNullable = true;
+	/*TODO make userFormat configurable*/
 	public static $userFormat = 'd.m.Y';
 	public static $seperator = '.';
 	public static $formatErrorMessage = 'Bitte geben Sie ein gültiges Datum im Format d.m.Y an, also z.b. 23.01.2015';
@@ -221,6 +223,22 @@ class DateField extends Field{
 	}
 	
 	
-	
+	public function getSQLValue(){
+		if($this->value == null){
+			return null;
+		}
+		return new \DateTime($this->value);
+	}
+
+	public function setSQLValue($value){
+		//for now, save the value as Y-m-d, later change to save as DateTime
+		if($value instanceof \DateTime){
+			$value = $value->format('Y-m-d');
+		}
+		$this->value = $value;
+	}
+
+
+
 	
 }

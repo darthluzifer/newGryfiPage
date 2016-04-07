@@ -24,7 +24,7 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
-use Application\Block\BasicTableBlock\FieldTypes\DateField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;

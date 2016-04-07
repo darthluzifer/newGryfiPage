@@ -575,52 +575,60 @@ class Controller extends BlockController
 
     public function on_start()
     {
+        $package = Package::getByHandle("basic_table_package");
         $al = \Concrete\Core\Asset\AssetList::getInstance();
         $al->register(
             'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
         $al->register(
             'javascript', 'datepicker', 'blocks/basic_table_block_packaged/js/bootstrap-datepicker.js',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
 
         $al->register(
             'javascript', 'tagsinput', 'blocks/basic_table_block_packaged/js/bootstrap-tagsinput.min.js',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
 
         $al->register(
             'javascript', 'bootgrid', 'blocks/basic_table_block_packaged/js/jquery.bootgrid.min.js',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
 
         $al->register(
             'css', 'tagsinputcss', 'blocks/basic_table_block_packaged/css/bootstrap-tagsinput.css',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
 
         $al->register(
             'css', 'datepickercss', 'blocks/basic_table_block_packaged/css/datepicker.css',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
         );
 
         $al->register(
             'css', 'bootgridcss', 'blocks/basic_table_block_packaged/css/jquery.bootgrid.min.css',
             array('minify' => false, 'combine' => true)
-            , $this->package
+            , $package
+        );
+
+        $al->register(
+            'css', 'basicTablecss', 'blocks/basic_table_block_packaged/view.css',
+            array('minify' => false, 'combine' => true)
+            , $package
         );
 
         $al->registerGroup('basictable', array(
             array('css', 'tagsinputcss'),
             array('css', 'datepickercss'),
             array('css', 'bootgridcss'),
+            array('css', 'basicTablecss'),
             array('javascript', 'jquery'),
             array('javascript', 'bootstrap'),
             array('javascript', 'typeahead'),

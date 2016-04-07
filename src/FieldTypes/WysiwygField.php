@@ -61,7 +61,7 @@ class WysiwygField extends Field{
 		$fp = FilePermissions::getGlobal();
 		$tp = new TaskPermission();
 
-		$this->blockController->edit();
+//		$this->blockController->edit();
 		$controller = $this->blockController;
 		$html = '';
 		//$html = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
