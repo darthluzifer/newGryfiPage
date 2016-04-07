@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions;
+namespace Concrete\Package\BasicTablePackage\Src\Exceptions;
 /**
  * Created by PhpStorm.
  * User: lucius
