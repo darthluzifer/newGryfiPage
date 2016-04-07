@@ -1,7 +1,7 @@
 <?php
 namespace {
     die('Intended for use with IDE symbol matching only.');
-    //Generated on Tue, 08 Dec 2015 21:31:07 +0100
+    //Generated on Thu, 07 Apr 2016 16:17:53 +0200
 
     class Area extends \Concrete\Core\Area\Area
     {
