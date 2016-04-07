@@ -83,7 +83,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
      */
     public function setRowId( $id){
         $this->rowid = $id;
-        $this->values = array();
+        $this->value = array();
     }
 
     public function setAllowAdd($isAllowed = true){
@@ -106,7 +106,18 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 
 
         $values = $this->getValues()->toArray();
-        $valuestring = implode(", ", $values);
+
+        $valueStrings = array();
+
+        //to display the values, we have to convert them to strings with our getDisplayString function
+        $displayFunction = $this->getDisplayString;
+        foreach($values as $num => $entity){
+
+            $valueStrings[]= $displayFunction($entity);
+        }
+
+
+        $valuestring = implode(", ", $valueStrings);
         $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
 
@@ -144,23 +155,29 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 
 
     public function validatePost($value){
-        if($this->allowAdd){
 
-            return parent::validatePost($value);
-        }
 
         $postvalues = explode(",", $value);
+        $targetModelForIdField = new $this->targetEntity;
+        $options = $this->getOptions();
 
-        $values = $this->getOptions();
+        $flipoptions = array_flip($options);
 
+        $sqlArray = new ArrayCollection();
         foreach($postvalues as $num => $postvalue){
-            if(in_array($postvalue, $values)){
-
+            if(in_array($postvalue, $options)){
+                $findItem = $this->getEntityManager()
+                    ->getRepository($this->targetEntity)
+                    ->findOneBy(array(
+                        $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
+                    ));
+                $sqlArray->add($findItem);
             }else{
-                return false;
+               //TODO throw exception, if invalid values should produce an error message
             }
         }
-        return parent::validatePost($value);
+        $this->setSQLValue($sqlArray);
+        return true;
     }
 
     /**
@@ -168,7 +185,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
      * @return Ambigous <multitype:, unknown>
      */
     private function getValues(){
-        if(count($this->values)==0 && !is_null($this->rowid)) {
+        if(count($this->value)==0 && !is_null($this->rowid)) {
             $modelForIdField = new $this->targetEntity;
             /**
              * @var $model \Entity
@@ -181,12 +198,12 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
             $values = $model->get($this->sourceField);
             if(count($values)>0 && $values != null) {
                 foreach ($model->get($this->sourceField) as $valnum => $value) {
-                    $this->values[$value->getId()]=$this->getDisplayString($value);
+                    $this->value[$value->getId()]=$this->getDisplayString($value);
                 }
             }
         }
 
-        return $this->values;
+        return $this->value;
         /*
 		if(count($this->values)==0 && !is_null($this->rowid)){
 
@@ -312,7 +329,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
 
     public function setSQLValue($value){
         if(count($value)==0){
-            $this->values=new ArrayCollection();
+            $this->value=new ArrayCollection();
         }elseif($value instanceof ArrayCollection){
             //check if values are of the right entitiy
             foreach($value->toArray() as $valnum => $valueitem){
@@ -320,7 +337,7 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
                     throw new InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
                 }
             }
-            $this->values = $value;
+            $this->value = $value;
         }
 
 

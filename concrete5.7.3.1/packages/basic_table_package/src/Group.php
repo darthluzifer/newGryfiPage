@@ -7,6 +7,7 @@
  */
 
 namespace Concrete\Package\BasicTablePackage\Src;
+use Concrete\Package\BasicTablePackage\Src\Entity;
 
 /**
  * Class Group
@@ -202,6 +203,8 @@ class Group extends Entity
         };
         return $function;
     }
+
+
 
 
 }

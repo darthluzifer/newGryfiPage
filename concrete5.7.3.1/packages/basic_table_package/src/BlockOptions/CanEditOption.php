@@ -5,6 +5,8 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Doctrine\ORM\Mapping\Table;
 use Concrete\Package\BasicTablePackage\Src\Group as Group;
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
+
 /**
  * Class CanEditOption
  * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
@@ -80,11 +82,16 @@ class CanEditOption extends TableBlockOption{
     }
 */
     public function getValue(){
+        if($this->Groups instanceof PersistentCollection){
+            $this->Groups = new ArrayCollection($this->Groups->toArray());
+        }
         return $this->Groups;
     }
 
     public function setValue($Groups){
-        
+        if($Groups instanceof PersistentCollection){
+            $Groups = new ArrayCollection($Groups->toArray());
+        }
         $this->Groups = $Groups;
     }
 

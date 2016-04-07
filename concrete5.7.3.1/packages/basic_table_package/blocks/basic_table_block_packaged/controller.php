@@ -646,7 +646,7 @@ class Controller extends BlockController
                             $blockOptionPostMap[$key]->set("BasicTableInstance", $this->basicTableInstance);
                             $this->basicTableInstance->addBlockOption($blockOptionPostMap[$key]);
                         }
-                        $blockOptionPostMap[$key]->getFieldType()->setSQLValue($value);
+                        $blockOptionPostMap[$key]->getFieldType()->validatePost($value);
                         $blockOptionPostMap[$key]->setValue(
                             $blockOptionPostMap[$key]->getFieldType()->getSQLValue()
                         );
