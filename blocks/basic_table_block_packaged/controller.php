@@ -145,9 +145,9 @@ class Controller extends BlockController
     {
         parent::__construct($obj);
 
-
-        $this->model = new ExampleEntity();
-
+        if($this->model == null) {
+            $this->model = new ExampleEntity();
+        }
         //define the fields
         /*
         $this->model->setFieldType('id' => new Field("id", "ID", "nr"));
@@ -191,10 +191,11 @@ class Controller extends BlockController
         }
 
         $this->requiredOptions = array(
-            new TextBlockOption(),
+          /*  new TextBlockOption(),
             new DropdownBlockOption(),
-            new CanEditOption()
+            new CanEditOption()*/
         );
+        /*
         $this->requiredOptions[0]->set('optionName', "Test");
         $this->requiredOptions[1]->set('optionName', "TestDropDown");
         $this->requiredOptions[1]->setPossibleValues(array(
@@ -206,7 +207,7 @@ class Controller extends BlockController
 
 
         //$this->requiredOptions[1]->setDefaultFieldTypes();
-
+*/
     }
 
     /**
@@ -447,7 +448,7 @@ class Controller extends BlockController
             if ($this->editKey == null) {
 
             } else {
-                $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
+                $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             }
 
             //save values
@@ -504,7 +505,7 @@ class Controller extends BlockController
 
         if ($_POST['action'] == 'edit') {
             $this->prepareFormEdit();
-        } else {
+        } elseif($_POST['action'] == 'delete') {
             $this->deleteRow();
         }
     }
