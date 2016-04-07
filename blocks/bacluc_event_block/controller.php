@@ -49,9 +49,11 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
      */
     function __construct($obj = null)
     {
-        parent::__construct($obj);
+        //$this->model has to be instantiated before, that session handling works right
 
         $this->model = new Event();
+        parent::__construct($obj);
+
 
         //load the current options
         $pkg = Package::getByHandle('bacluc_event_package');
