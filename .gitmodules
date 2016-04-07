@@ -1,3 +1,6 @@
 [submodule "concrete5.7.3.1/packages/BasicTablePackage"]
 	path = concrete5.7.3.1/packages/BasicTablePackage
 	url = git@github.com:BacLuc/BasicTablePackage.git
+[submodule "concrete5.7.3.1/packages/basic_table_package"]
+	path = concrete5.7.3.1/packages/basic_table_package
+	url = git@github.com:BacLuc/basic_table_package.git
