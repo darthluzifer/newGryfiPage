@@ -73,6 +73,25 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
             $this->basicTableInstance = $bt;
         }
 
+
+/*
+ * add blockoptions here if you wish
+        $this->requiredOptions = array(
+            new TextBlockOption(),
+            new DropdownBlockOption(),
+            new CanEditOption()
+        );
+
+        $this->requiredOptions[0]->set('optionName', "Test");
+        $this->requiredOptions[1]->set('optionName', "TestDropDown");
+        $this->requiredOptions[1]->setPossibleValues(array(
+            "test",
+            "test2"
+        ));
+
+        $this->requiredOptions[2]->set('optionName', "testlink");
+*/
+
     }
 
 
