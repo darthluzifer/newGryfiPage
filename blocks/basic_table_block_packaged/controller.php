@@ -173,24 +173,8 @@ class Controller extends BlockController
 
             $this->basicTableInstance = $bt;
         }
+    $this->requiredOptions = array();
 
-        $this->requiredOptions = array(
-           new TextBlockOption(),
-            new DropdownBlockOption(),
-            new CanEditOption()
-        );
-
-        $this->requiredOptions[0]->set('optionName', "Test");
-        $this->requiredOptions[1]->set('optionName', "TestDropDown");
-        $this->requiredOptions[1]->setPossibleValues(array(
-            "test",
-            "test2"
-        ));
-
-        $this->requiredOptions[2]->set('optionName', "testlink");
-
-
-        //$this->requiredOptions[1]->setDefaultFieldTypes();
 
     }
 
