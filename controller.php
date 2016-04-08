@@ -10,6 +10,7 @@ use Concrete\Core\Foundation\ClassLoader;
 use Punic\Exception;
 use Loader;
 use Core;
+use BlockTypeSet;
 
 class Controller extends Package
 {
@@ -37,6 +38,10 @@ class Controller extends Package
     {
 
         $pre_pkg = Package::getByHandle('basic_table_package');
+
+
+
+
         if (!is_object($pre_pkg)){
             throw new Exception (t('To Install BaclucEventPackage, you have to Install BasicTablePackage first.
             @see <a href=\'https://github.com/BacLuc/basic_table_package\'>https://github.com/BacLuc/basic_table_package</a>'));
@@ -48,6 +53,12 @@ class Controller extends Package
         try {
 
             $pkg = parent::install();
+
+            //add blocktypeset
+            if (!BlockTypeSet::getByHandle('bacluc_event_set')) {
+                BlockTypeSet::add('bacluc_event_set', 'Appointment', $pkg);
+            }
+
             BlockType::installBlockType("bacluc_event_block", $pkg);
 
             $em->getConnection()->commit();

@@ -42,6 +42,13 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
      */
     protected $model;
 
+
+    /**
+     * set blocktypeset
+     * @var string
+     */
+    protected $btDefaultSet = 'bacluc_event_set';
+
     /**
      *
      * Controller constructor.

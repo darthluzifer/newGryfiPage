@@ -88,13 +88,21 @@ class Event extends Entity
 
     public function setDefaultFieldTypes(){
         parent::setDefaultFieldTypes();
+        /**
+         * because Entity::setDefaultFieldTypes does not detect special field types like Wysiwyg field or filefield, they have to be set here manually.
+         * The only Fields Entity::setDefaultFieldTypes detects are date, DropdownLinkField (m:1 relation), DropdownMulitLInkField (n:m relation)
+         */
         $this->fieldTypes['description']=new WysiwygField("description",t("Description"),"description");
         $this->fieldTypes['infofile']= new FileField("infofile", t('Info'), "info");
         $this->fieldTypes['registerfile']= new FileField("registerfile", t('Anmeldung'), "register");
     }
 
 
-
+    /**
+     * the getters and setters and der magic equivalent have to be copied to every subclass, because property_exists does not find variabels of the subclasses
+     * @param $name
+     * @return mixed
+     */
     public function get($name)
     {
         if(property_exists($this, $name)
@@ -140,6 +148,10 @@ class Event extends Entity
         return 'id';
     }
 
+    /**
+     * Returns the function, which generates the String for LInk Fields to identify the instance. Has to be unique to prevent errors
+     * @return \Closure
+     */
     public static function getDefaultGetDisplayStringFunction(){
         $function = function(Event $item){
             $dateField = new DateField("test", "test", "test");
