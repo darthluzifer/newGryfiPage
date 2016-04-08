@@ -90,7 +90,13 @@ class BasicTableInstance extends Entity
 
     public function getId(){
         return $this->bID;
+
     }
+
+    public function getIdFieldName(){
+        return "bID";
+    }
+
 
 
 }

@@ -30,8 +30,8 @@ class CanEditOption extends TableBlockOption{
      * @var ArrayCollection of Group
      * @ManyToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
      * @JoinTable(name="caneditoptions_groups",
-     *      joinColumns={@JoinColumn(name="tableblockoption_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gID")}
+     *      joinColumns={@JoinColumn(name="tableblockoption_id", referencedColumnName="id", onDelete = "CASCADE")},
+     *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gID", onDelete = "CASCADE")}
      *      )
      */
     protected $Groups;

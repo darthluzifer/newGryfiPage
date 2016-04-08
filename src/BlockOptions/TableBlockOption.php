@@ -38,7 +38,7 @@ class TableBlockOption extends Entity{
     protected $optionValue;
 
     /**
-     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\BasicTableInstance", inversedBy="tableBlockOptions", cascade={"persist"})
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\BasicTableInstance", inversedBy="tableBlockOptions")
      * @JoinColumn(name="bID", referencedColumnName="bID", nullable=false, onDelete="CASCADE")
      **/
     protected $BasicTableInstance;

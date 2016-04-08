@@ -36,30 +36,18 @@ class Controller extends BlockController
     public $options = array();
 
     /**
-     * the table where the block metadata is stored
+     * the table where the options are linked to
      * @var string
      */
     protected $btTable = 'btBasicTableInstance';
 
-
-    protected $btHandle = 'basic_table_block_packaged';
     /**
-     * don't really know why necessary
-     * @var array
-     */
-    //protected $btExportTables = array('btBasicTableInstance', 'btBasicTableActionOption', 'btBasicTable'/*name of the table where the data is stored*/);
-
-    /**
-     * @var array variable to store the fields
-     * array of Appliaction\Block\BasicTableBlock\Field
-     */
-    protected $fields = array();
-
-    /**
-     * Tablename of the table displayed
      * @var string
+     * Blockhandle, same name as the directory
      */
-    protected $tableName = "btBasicTable";
+    protected $btHandle = 'basic_table_block_packaged';
+
+
 
     /**
      * if the block is already executed
@@ -87,42 +75,38 @@ class Controller extends BlockController
 
     /**
      * to handle a post request more easy, here is the reverse map postname -> field
-     * (in fields is the postname stored)
      * @var array
      */
     protected $postFieldMap = array();
 
     /**
      * if validatePost throws an error, here are the errormessages stored
+     *
      * @var array
      */
     protected $errorMsg = array();
 
     /**
-     * table title
+     * block title
      * @var string
      */
     protected $header = "BasicTablePackaged";
 
-    /**
-     * @var string
-     */
-    protected $SQLFilter = " 1=1";
 
-    /**
-     *
-     * @var array
-     */
-    protected $addFields = array();
 
     /**
      * @var \Concrete\Package\BasicTablePackage\Src\BasicTableInstance
      */
     protected $basicTableInstance;
 
-
+    /**
+     * @var Package
+     */
     protected $package;
 
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     protected $entityManager;
 
     /**
@@ -145,14 +129,14 @@ class Controller extends BlockController
     {
         parent::__construct($obj);
 
+        /*
+         * if the basic table block is extended, $this->model is already set and should not be overwritted, that the name of the session variable is set right
+         * */
         if($this->model == null) {
             $this->model = new ExampleEntity();
         }
-        //define the fields
-        /*
-        $this->model->setFieldType('id' => new Field("id", "ID", "nr"));
 
-        */
+
 
 
         $this->generatePostFieldMap();
@@ -243,8 +227,8 @@ class Controller extends BlockController
 
 
     /**
-     * Returns the id of the block
-     * TODO change that tablename is not used
+     * Returns the id of the block, used in html id's and for the session variable
+     *
      * @return string
      */
     function getHTMLId()
@@ -346,12 +330,24 @@ class Controller extends BlockController
     			 </button>";
     }
 
-
+    /**
+     * @throws \Exception
+     */
     function delete()
     {
+        $em = $this->entityManager;
 
+        $em->beginTransaction();
+         try{
+            $em->remove($this->getBasicTableInstance());
+            $em->flush();
 
-        parent::delete();
+            parent::delete();
+             $em->commit();
+         }catch(\Exception $e){
+             $em->rollback();
+             throw $e;
+         }
     }
 
     /**
@@ -847,12 +843,12 @@ class Controller extends BlockController
 
     public function getBlockOptions()
     {
-        $this->getBasicTableInstance();
 
-        if ($this->basicTableInstance == null) {
+        if ($this->bID == null) {
             return $this->requiredOptions;
         }
 
+        $this->getBasicTableInstance();
         $currentBlockOptions = $this->basicTableInstance->get('tableBlockOptions');
 
 
