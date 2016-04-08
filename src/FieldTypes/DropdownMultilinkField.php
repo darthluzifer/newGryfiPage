@@ -15,7 +15,13 @@ use Concrete\Core\Block\View\BlockView as View;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterface{
+/**
+ * Class DropdownMultilinkField
+ * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * Field for an n;m relation with bootstrap tagsinput
+ * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
+ */
+class DropdownMultilinkField extends DropdownLinkField{
     protected $linktable;
     protected $ntomtable;
     protected $sqlfilter = " 1=1 ";
@@ -204,128 +210,10 @@ class DropdownMultilinkField extends DropdownLinkField implements SelfSaveInterf
         }
 
         return $this->value;
-        /*
-		if(count($this->values)==0 && !is_null($this->rowid)){
-
-
-
-			$db = Loader::db();
-			$sql = "SELECT l.".$this->idfieldext." as schluessel,l.".$this->showcolumn." as value FROM
-					".$this->linktable." l
-					JOIN ".$this->ntomtable." nm ON l.".$this->idfieldext." = nm.".$this->linkfieldext."
-					WHERE nm.".$this->linkfieldself." = ?
-					";
-			if(strlen($this->sqlfilter) > 0){
-				$sql .= " AND ".$this->sqlfilter;
-			}
-			$filtervalues = array($this->rowid);
-			if(count($this->sqlvars)>0){
-				$filtervalues+=$this->sqlvars;
-			}
-			$r = $db->query($sql, array($this->rowid));
-
-			while ($row = $r->fetchRow()) {
-				$this->values[$row['schluessel']]=$row['value'];
-			}
-		}
-		return $this->values;
-        */
-    }
-
-
-    public function saveValues($value= null){
-        $db = Loader::db();
-
-        if($this->rowid == null){
-            //throw some exception or so
-            return;
-        }
-
-        $modelForIdField = new $this->sourceEntity();
-        $model = $this->getEntityManager()
-            ->getRepository($this->targetEntity)
-            ->findOne(array(
-                $modelForIdField->getIdFieldName() => $this->rowid
-            ));
-
-
-        //if no insert value
-        if($value == null){
-            $value = $this->value;
-        }
-
-
-		$currentdbvalues = $this->getValues();
-        $model->set($this->sourceField, new ArrayCollection());
-        //if no value property is set
-        if($value == null){
-            return;
-        }
-        //first compare the possible, posted and db values
-
-
-
-        $postvalues = explode(",", $value);
-
-        $options = $this->getOptions();
-
-
-        $flippedoptions = array_flip($options);
-
-        $checkedoptions = array();
-        $checkedoptionids = array();
-
-
-
-        foreach($currentdbvalues as $key => $value){
-            $checkedoptions[$value]= $key;
-        }
-        $currentArray = [];
-        foreach($postvalues as $num => $postvalue){
-            $insert = false;
-            $id = null;
-
-            //check if the option is already in db
-            if(isset($checkedoptions[$postvalue])){
-                $checkedoptions[$postvalue]=1;
-            }elseif(in_array($postvalue, $options)){
-                //option is possible
-
-                $id = $flippedoptions[$postvalue];
-                $insert = true;
-
-            }else if($this->allowAdd){
-                //TODO allowadd difficult, because identifiying the right columns is difficult
-                //not existing, but adding allowed, insert new linktable row and then insert
-                /*$aff=$db->insert($this->linktable, array($this->showcolumn => $postvalue));
-                if($aff > 0){
-                    $id = $db->lastInsertId();
-                    $insert = true;
-                }*/
-            }
-            if($insert){
-                $currentArray = $model->get($this->sourceField);
-                $targetModelForIdField = new $this->targetEntity;
-                //add new value
-                $currentArray[]=$this->getEntityManager()
-                    ->getRepository($this->targetEntity)
-                    ->findOne(array(
-                        $targetModelForIdField->getIdFieldname()=>$id
-					));
-
-
-
-				//var_dump($aff);
-				//exit;
-				//if error, do error logging, throw exception, dunno
-			}
-
-        }
-        $model->set($this->sourceField, new ArrayCollection($currentArray));
-        $this->em->persist($model);
-        $this->em->flush($model);
 
     }
+
+
 
     public function setSQLValue($value){
         if(count($value)==0){

@@ -14,6 +14,11 @@ use File;
 use Concrete\Controller\SinglePage\Dashboard\Pages\Types\Permissions;
 use Concrete\Core\Block\View\BlockView as View;
 
+/**
+ * Class DropdownLinkField
+ * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * A Dropdownfield which lists other instances
+ */
 class DropdownLinkField extends DropdownField{
     protected $linktable;
     protected $sqlfilter = " 1=1 ";
@@ -53,7 +58,15 @@ class DropdownLinkField extends DropdownField{
     protected $isBidirectional = false;
 
     //TODO check if $callable's first parameter is of class Entity
-
+    /**
+     * set the Info for the Link table
+     * @param Entity $sourceEntity
+     * @param $sourceField
+     * @param $targetEntity
+     * @param null $targetField
+     * @param callable|null $getDisplayString to overrride the default getDisplayStringFunction provided by the Entity
+     * @param array|null $filter
+     */
     public function setLinkInfo(Entity $sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
@@ -177,28 +190,14 @@ class DropdownLinkField extends DropdownField{
 
     public function getSQLValue(){
         return $this->value;
-        /*
-        if($this->value != null){
-            $modelForIdField = new $this->targetEntity;
-            $model = $this->getEntityManager()
-                ->getRepository($this->targetEntity)
-                ->findOne(array(
-                    $modelForIdField->getIdFieldName() => $this->value
-                ));
 
-            if($model != null && $model!=false){
-                return $model;
-            }
-        }else{
-            return false;
-        }*/
     }
 
     public function setSQLValue($value){
         if($value instanceof $this->targetEntity){
             $this->value = $value;
         }else{
-            throw new InvalidArgumentException("Parameter \$value is ".get_class($value).", should be ".$this->targetEntity." sein");
+            throw new InvalidArgumentException("Parameter \$value is ".get_class($value).", should be ".$this->targetEntity." ");
         }
     }
 

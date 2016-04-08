@@ -9,6 +9,8 @@ use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class CanEditOption
+ * Test Option to Link to another entity.
+ * TODO add functionality, that users which are not in this group get false on  a funciton checkCondition
  * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
  */

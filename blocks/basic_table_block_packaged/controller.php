@@ -175,11 +175,11 @@ class Controller extends BlockController
         }
 
         $this->requiredOptions = array(
-          /*  new TextBlockOption(),
+           new TextBlockOption(),
             new DropdownBlockOption(),
-            new CanEditOption()*/
+            new CanEditOption()
         );
-        /*
+
         $this->requiredOptions[0]->set('optionName', "Test");
         $this->requiredOptions[1]->set('optionName', "TestDropDown");
         $this->requiredOptions[1]->setPossibleValues(array(
@@ -191,7 +191,7 @@ class Controller extends BlockController
 
 
         //$this->requiredOptions[1]->setDefaultFieldTypes();
-*/
+
     }
 
     /**
@@ -418,13 +418,7 @@ class Controller extends BlockController
                 if ($key == 'id') {
                 } else {
                     $fieldname = $this->postFieldMap[$value->getPostName()];
-                    if ($value instanceof SelfSaveInterface) {
-                        if ($value->validatePost($savevalues[$value->getPostName()])) {
-                            //$value->setValue($_REQUEST[$value->getPostName()]);
-                            $selfsavefields[$key] = $value->getSQLValue();
-                        }
-
-                    } elseif ($value->validatePost($savevalues[$value->getPostName()])) {
+                    if ($value->validatePost($savevalues[$value->getPostName()])) {
                         $v[$key] = $value->getSQLValue();
                     } else {
                         $error = true;
@@ -454,10 +448,7 @@ class Controller extends BlockController
 
 
             //if the data is inserted, the saveself fields can only save afterwards
-            foreach ($selfsavefields as $num => $selfsavefield) {
-                $selfsavefield->setRowId($this->editKey);
-                $selfsavefield->saveValues();
-            }
+
             $this->entityManager->persist($model);
             $this->entityManager->flush();
 
@@ -487,7 +478,7 @@ class Controller extends BlockController
      */
     function action_edit_row_form()
     {
-        //TODO check permissions
+        $u = new User();
         if ($this->requiresRegistration()) {
             if (!$u->isRegistered()) {
                 $this->redirect('/login');
@@ -515,7 +506,7 @@ class Controller extends BlockController
     public function deleteRow()
     {
 
-        $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
+        $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
         $this->entityManager->remove($model);
         $this->entityManager->flush();
         $r = true;
@@ -548,16 +539,7 @@ class Controller extends BlockController
 
     function duplicate($newBID)
     {
-        //TODO duplicate options
 
-        /*
-        foreach ($this->options as $opt) {
-            $v1 = array($newBID, $opt->getOptionName(), $opt->getOptionDisplayOrder());
-            $q1 = "INSERT INTO btBasicTableActionOption (bID, optionName, displayOrder) VALUES (?, ?, ?)";
-            $db->query($q1, $v1);
-
-            
-        }*/
 
         return parent::duplicate($newBID);
 
@@ -570,6 +552,9 @@ class Controller extends BlockController
 
     }
 
+    /**
+     * list needed javascript/css files
+     */
     public function on_start()
     {
         $package = Package::getByHandle("basic_table_package");
@@ -636,17 +621,26 @@ class Controller extends BlockController
 
     }
 
+    /**
+     * register needed javascript
+     */
     public function registerViewAssets()
     {
         $this->requireAsset('basictable');
     }
 
+    /**
+     * register also for add form
+     */
     public function add()
     {
         $this->requireAsset('basictable');
     }
 
-
+    /**
+     * @param $args
+     * save the added/edited block (not the row)
+     */
     function save($args)
     {
 
@@ -657,16 +651,21 @@ class Controller extends BlockController
 
         $toPersist = array();
         if (count($args) > 0) {
+
+            $blockOptionPostMap = $this->generateOptionsPostFieldMap();
             foreach ($args as $key => $value) {
 
 
+                //if there are required options
                 if (count($this->getBlockOptions()) > 0) {
-                    $blockOptionPostMap = $this->generateOptionsPostFieldMap();
 
+                    //if the key is in the postmap
                     if (isset($blockOptionPostMap[$key])) {
+                        //if the option is already linked to this instance
                         if ($blockOptionPostMap[$key]->BasicTableInstance != null) {
 
                         } else {
+                            //if not, link with instance
                             $blockOptionPostMap[$key]->set("BasicTableInstance", $this->basicTableInstance);
                             $this->basicTableInstance->addBlockOption($blockOptionPostMap[$key]);
                         }
@@ -691,23 +690,6 @@ class Controller extends BlockController
         $this->entityManager->persist($this->basicTableInstance);
         $this->entityManager->flush();
 
-        /*
-                if(count($this->basicTableInstance->get("tableBlockOptions")) == 0){
-                    $blockOption = new TableBlockOption();
-                    $blockOption->set('BasicTableInstance', $this->basicTableInstance);
-                    $blockOption->set('optionType', get_class(new CanEditOption()));
-
-                    $blockOption->set("optionValue", "test");
-                    $this->basicTableInstance->addBlockOption($blockOption);
-
-                    $this->entityManager->persist($blockOption);
-                    $this->entityManager->persist($this->basicTableInstance);
-                    $this->entityManager->flush();
-
-                }
-        */
-
-
     }
 
 
@@ -717,9 +699,7 @@ class Controller extends BlockController
      */
     public function displayTable()
     {
-        // Prepare the database query
-        //$db = Loader::db();
-        //$q = "SELECT * from ".$this->tableName." WHERE ".$this->SQLFilter;
+
         //TODO add filter
         $modelList = $this->entityManager->getRepository(get_class($this->model))->findAll();
 
@@ -767,6 +747,7 @@ class Controller extends BlockController
     {
 
         $returnArray = array();
+        //if there was an error submitting the form, the values are saved in the session
         if (isset($_SESSION['BasicTableFormData'][$this->bID]['inputValues'])) {
 
             foreach ($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value) {
@@ -776,7 +757,7 @@ class Controller extends BlockController
             }
 
         } else {
-            $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array('id' => $this->editKey));
+            $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             try {
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
@@ -803,6 +784,9 @@ class Controller extends BlockController
         return $this->errorMsg;
     }
 
+    /**
+     * test of ajax functionality, exit() is important
+     */
     function action_myAction()
     {
         echo json_encode(array('hi' => 'test'));
@@ -816,7 +800,7 @@ class Controller extends BlockController
 
 
     /**
-     *
+     * generates the postfieldmap. "postkey" => sqlfieldname
      */
     protected function generatePostFieldMap()
     {
@@ -828,6 +812,11 @@ class Controller extends BlockController
         }
     }
 
+    /**
+     * generates the blockOptionsPostMap
+     * "postkey"=>instance of \Conrete\Package\BasicTablePackage\BlockOptions\TableBlockOption
+     * @return array
+     */
     protected function generateOptionsPostFieldMap()
     {
         $blockOptions = $this->getBlockOptions();
@@ -841,6 +830,10 @@ class Controller extends BlockController
     }
 
 
+    /**
+     * if no options are set, it returns the $this->requiredoptions array. Else it returns the merge of $this->requiredoptions and the TableBlockOptions of the basicTableInstance
+     * @return array of instance of \Conrete\Package\BasicTablePackage\BlockOptions\TableBlockOption
+     */
     public function getBlockOptions()
     {
 
@@ -869,15 +862,7 @@ class Controller extends BlockController
 
     }
 
-    public function getBlockOptionsValues()
-    {
-        $returnArray = array();
 
-        foreach ($this->requiredOptions as $key => $option) {
-            $returnArray[$key] = "";
-        }
-        return $returnArray;
-    }
 
 
 }

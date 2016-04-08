@@ -6,8 +6,6 @@
 	<?php 
 	$fields = $controller->getFields();
 	$rowValues = $controller->getRowValues();
-	//var_dump("rowvalues:");
-	//var_dump($rowValues);
 	foreach($fields as $field => $FieldObject){
 		if($field == 'id'){
 			

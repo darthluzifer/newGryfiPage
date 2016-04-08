@@ -27,8 +27,10 @@ if(!$controller->isExecuted()){
 
 
 ?>
+
 <script type="text/javascript">
-$(document).ready(function(e){
+//test the ajax funcitonality
+	$(document).ready(function(e){
 		$.ajax({
 		      type: "POST",
 		      url: "<?php echo $this->action('myAction') ?>",
@@ -36,7 +38,11 @@ $(document).ready(function(e){
 		      data:{test: 'test'
 			      },
 		      success: function(j){
-					console.log(j);
+
+				  //in ie, when the debugging console is not open, console is not defined -> errror
+				      if(console) {
+						  console.log(j);
+					  }
 	
 			      }
 	

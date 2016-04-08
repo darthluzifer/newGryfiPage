@@ -48,17 +48,7 @@ class FileField extends Field{
 			$bf = $this->getFileObject();
 		}
 		$c = Page::getCurrentPage();
-		/*if (is_object($c)) {
-			$cp = new Permissions($c);
-			if (is_object($cp)) {
-				if (!$cp->canViewToolbar()) {*/
-					
-					
-					
-				/*	
-				}
-			}
-		}*/
+
 		$returnString = "
 		<div class=\"form-group\">
 		".$form->label($this->getPostName(), t('File'))."

@@ -1,4 +1,10 @@
-<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php
+/**
+ * define the block add/edit view here
+ */
+
+
+defined('C5_EXECUTE') or die("Access Denied."); ?>
 <style type="text/css">
     div.action-options {
         position: relative;
@@ -14,7 +20,8 @@
 
 </style>
 <div class="ccm-ui basic-table-edit">
-    
+   <!--
+   requires registration works, but the form is not showing the saved value, TODO
     <label for="requiresRegistration"><?php echo t('Target Audience') ?></label>
 
     <div class="radio">
@@ -31,10 +38,9 @@
                 'Only Registered Users') ?>
         </label>
     </div>
-
+-->
     <?php
     $blockOptions = $controller->getBlockOptions();
-    $blockOptionValues = $controller->getBlockOptionsValues();
     $counter =0;
     foreach($blockOptions as $optionnum => $OptionType){
 

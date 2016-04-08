@@ -66,18 +66,7 @@ class DateField extends Field{
 			$this->value = $value;
 		}else{
 			$explodeValue = explode(self::$seperator, $value);
-			//var_dump($explodeValue);
-			/*
-			var_dump(strlen($explodeValue[2])<=4);
-			var_dump(strlen($explodeValue[2])>=2);
-			var_dump(is_numeric($explodeValue[2]));
-			var_dump(is_numeric($explodeValue[1]));
-			var_dump($explodeValue[1]+0 <= 12);
-			var_dump($explodeValue[1]+0 >= 1);
-			var_dump(is_numeric($explodeValue[0]));
-			var_dump($explodeValue[0]+0 <= 31);
-			var_dump($explodeValue[0]+0 >= 1);
-			*/
+
 			
 			//check if Y m d
 			if(strlen($explodeValue[0])<=4

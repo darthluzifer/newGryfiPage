@@ -9,6 +9,11 @@ use User;
 use Core;
 use Concrete\Core\Package\Package as Package;
 
+/**
+ * Class Field
+ * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * A normal textfield, provides most of the methods for subfieldTypes
+ */
 class Field{
 	protected $sqlFieldname;
 	protected $label;

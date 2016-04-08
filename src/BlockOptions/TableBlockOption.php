@@ -12,6 +12,7 @@ use OpenCloud\Common\Log\Logger;
 use Punic\Exception;
 
 /**
+ * Abstract Entitty TableBlockOption that provides the link to BasicTableInstance for the subBlockOptions
  * @Entity
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")

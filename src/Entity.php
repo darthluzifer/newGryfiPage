@@ -32,6 +32,11 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 
+/**
+ * Class Entity
+ * @package Concrete\Package\BasicTablePackage\Src
+ * here are the most important methods for entities, so that they don't have to be implemented in every Entity, And that there are no errors if they are not implementet.
+ */
 abstract class Entity
 {
 

@@ -11,6 +11,12 @@ use File;
 use Concrete\Controller\SinglePage\Dashboard\Blocks\Permissions as Permissions;
 use Concrete\Core\Block\View\BlockView as View;
 
+/**
+ *
+ * Class DropdownField
+ * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * A Normal Dropdownfield for a form
+ */
 class DropdownField extends Field{
 	
 	protected $options = array();

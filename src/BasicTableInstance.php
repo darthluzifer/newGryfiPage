@@ -15,6 +15,7 @@ use Symfony\Component\Console\Helper\Table;
 
 /**
  * Class BasicTableInstance
+ * Just an Id to connect the Block with TableBlockOptions
  * @package Concrete\Package\BasicTablePackage\Src
  * @Entity
  * @Table(name="btBasicTableInstance")

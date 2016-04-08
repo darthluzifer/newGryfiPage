@@ -12,7 +12,9 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         
         
         <?php
-        
+		/**
+		 * @var $controller \Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Controller
+		 */
         $tabledata = $controller->displayTable();
 
         ?>
@@ -99,10 +101,24 @@ $(document).ready(function(e){
 				columnSelection : false,
 				rowCount:-1,
 				formatters : {
+					/**
+					 * Normally, bootgrid takes the text value of the td element. The library is changed that it takes the hmlt(). And the formatters again take the text() of the data, retrieved form the text elemet.
+					 * but for the commands, we need the html we provided.
+					 * @param column
+					 * @param row
+					 * @returns string
+					 */
 						commands: function(column, row){
 								return row[column.id];
 							},
 
+					/**
+					 * Normally, bootgrid takes the text value of the td element. The library is changed that it takes the hmlt(). And the formatters again take the text() of the data, retrieved form the text elemet.
+					 * but for the FileField, we need the html we provided.
+					 * @param column
+					 * @param row
+					 * @returns {*}
+					 */
 						FileField: function(column, row){
 								return row[column.id];
 							}
