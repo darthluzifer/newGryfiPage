@@ -250,6 +250,17 @@ class BasicTableInstance extends \Concrete\Package\BasicTablePackage\Src\BasicTa
     /**
      * {@inheritDoc}
      */
+    public function getIdFieldName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+
+        return parent::getIdFieldName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
     {
 
@@ -289,17 +300,6 @@ class BasicTableInstance extends \Concrete\Package\BasicTablePackage\Src\BasicTa
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
 
         return parent::getEntityManager();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getIdFieldName()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
-
-        return parent::getIdFieldName();
     }
 
     /**
