@@ -5,6 +5,7 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
+use Concrete\Package\EntitiesExample\Src\Entity;
 use Loader;
 use Page;
 use User;
@@ -103,7 +104,30 @@ class DropdownMultilinkField extends DropdownLinkField{
 
     public function getTableView(){
         $values = $this->getValues();
-        return implode(", ", $values);
+        $string = "";
+        if(is_array($values)){
+            $first = true;
+
+            foreach($values as $valuenum => $value){
+                $appendString = "";
+                if(is_object($value)){
+                    $classname = get_class($value);
+                    if($value instanceof  Entity){
+                        $function = $classname::getDefaultGetDisplayStringFunction();
+                        $appendString = $function($value);
+                    }
+                }else{
+                    $appendString = $value;
+                }
+
+                if($first){
+                    $first = false;
+                }else{
+                    $appendString.=", ";
+                }
+            }
+        }
+        return $appendString;
     }
 
 
