@@ -387,6 +387,7 @@ class Controller extends BlockController
 
 
             $error = false;
+            //test
             $errormsg = "";
             $savevalues = $_REQUEST;
 
