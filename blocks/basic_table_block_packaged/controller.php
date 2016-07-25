@@ -391,10 +391,11 @@ class Controller extends BlockController
             $savevalues = $_REQUEST;
 
             //add additional fields
-            foreach ($this->addFields as $key => $value) {
-                $savevalues[$key] = $value;
+            if(count($this->addFields)>0) {
+                foreach ($this->addFields as $key => $value) {
+                    $savevalues[$key] = $value;
+                }
             }
-
             //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
             $selfsavefields = array();
 
