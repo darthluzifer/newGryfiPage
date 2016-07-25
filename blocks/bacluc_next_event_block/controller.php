@@ -13,6 +13,7 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
 use OAuth\Common\Exception\Exception;
 use Page;
@@ -105,8 +106,17 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
     public function getNextEvent(){
         //get the groups
         $blockOptions = $this->getBlockOptions();
+        /**
+         * @var ArrayCollection $Groups
+         */
         $Groups = $blockOptions[0]->get('Groups');
-        $Event = $this->model->getNextEvent();
+        $Groups = $Groups->toArray();
+        $groupids = array();
+        foreach($Groups as $groupnum => $group){
+            $groupids[] = $group->gID;
+        }
+        $Event = $this->model->getNextEvent($groupids);
+        var_dump($Event);
     }
 
     public function view(){
