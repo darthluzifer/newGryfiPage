@@ -15,3 +15,5 @@ files/tmp/*
 concrete5.7.3.1/application/config/generated_overrides/concrete.php
 concrete5.7.3.1/application/config/generated_overrides/*
 owncloud/data/*
+/concrete5/application/config/
+/concrete5/application/files/
