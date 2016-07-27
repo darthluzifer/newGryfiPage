@@ -116,7 +116,7 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
             $groupids[] = $group->gID;
         }
         $Event = $this->model->getNextEvent($groupids);
-        var_dump($Event);
+        //var_dump($Event);
     }
 
     public function view(){
