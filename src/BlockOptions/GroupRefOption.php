@@ -54,6 +54,34 @@ class GroupRefOption extends TableBlockOption{
         if($Groups instanceof PersistentCollection){
             $Groups = new ArrayCollection($Groups->toArray());
         }
-        $this->Groups = $Groups;
+        if($Groups instanceof  Entity){
+
+            $idfieldname =$Groups->getIdFieldName();
+            $optionValue = $this->getEntityManager()
+                ->getRepository($Groups::getFullClassName())
+                ->findOne(array(
+                    $Groups->getIdFieldName() => $Groups->$idfieldname
+                ));
+        }elseif($Groups instanceof ArrayCollection){
+
+            foreach($this->Groups->toArray() as $key => $value){
+                $this->Groups->removeElement($value);
+            }
+            foreach($Groups->toArray() as $key => $value){
+                $idfieldname =$value->getIdFieldName();
+                $this->Groups->add(
+                    /*$this->getEntityManager()
+                    ->getRepository(get_class($value))
+                    ->findOneBy(array(
+                        $value->getIdFieldName() => $value->$idfieldname
+                    ))*/
+                    $this->getEntityManager()->getReference(get_class($value), $value->$idfieldname)
+                );
+            }
+
+        }
+
+
+
     }
 }

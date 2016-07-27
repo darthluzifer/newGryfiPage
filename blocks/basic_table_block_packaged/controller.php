@@ -1,16 +1,20 @@
 <?php
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
+use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
+use Concrete\Package\BasicTablePackage\Src\Group;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
 use OAuth\Common\Exception\Exception;
 use Page;
@@ -429,6 +433,13 @@ class Controller extends BlockController
 
             //save values
             foreach ($this->getFields() as $key => $value) {
+                if($v[$key] instanceof  Entity ){
+                    $this->entityManager->persist($v[$key]);
+                }elseif( $v[$key] instanceof  ArrayCollection){
+                    foreach($v[$key]->toArray() as $refnum =>$refObject){
+                        $this->entityManager->persist($refObject);
+                    }
+                }
                 $model->set($key, $v[$key]);
             }
 
@@ -632,6 +643,7 @@ class Controller extends BlockController
 
         parent::save($args);
 
+
         $this->getBasicTableInstance();
 
 
@@ -656,6 +668,7 @@ class Controller extends BlockController
                             $this->basicTableInstance->addBlockOption($blockOptionPostMap[$key]);
                         }
                         $blockOptionPostMap[$key]->getFieldType()->validatePost($value);
+                        $optionValue = $blockOptionPostMap[$key]->getFieldType()->getSQLValue();
                         $blockOptionPostMap[$key]->setValue(
                             $blockOptionPostMap[$key]->getFieldType()->getSQLValue()
                         );
@@ -666,6 +679,24 @@ class Controller extends BlockController
                 }
             }
         }
+        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
+        $Group->set("gName", "test");
+        $this->entityManager->persist($Group);
+        $this->entityManager->flush($Group);
+
+        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
+        $GroupRefOption = $this->entityManager->getRepository(get_class(new GroupRefOption()))->find(3);
+        $GroupRefOption->Groups->add($Group);
+        $this->entityManager->persist($GroupRefOption);
+        $this->entityManager->flush($GroupRefOption);
+
+
+
+
+
+
+
+        return;
 
         if (count($toPersist) > 0) {
             foreach ($toPersist as $num => $blockOption) {
@@ -674,7 +705,7 @@ class Controller extends BlockController
             }
         }
         $this->entityManager->persist($this->basicTableInstance);
-        $this->entityManager->flush();
+        $this->entityManager->flush($this->basicTableInstance);
 
     }
 

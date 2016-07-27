@@ -135,7 +135,17 @@ class DropdownMultilinkField extends DropdownLinkField{
         $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 
 
-        $values = $this->getValues()->toArray();
+
+        $values = $this->getValues();
+        if($values instanceof  ArrayCollection){
+
+            $values =$values->toArray();
+        }elseif(is_array($values)){
+
+        }else{
+
+            $values = array();
+        }
 
         $valueStrings = array();
 
@@ -212,7 +222,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 
     /**
      * get the Values of
-     * @return Ambigous <multitype:, unknown>
+     * @return ArrayCollection
      */
     private function getValues(){
         if(count($this->value)==0 && !is_null($this->rowid)) {
@@ -222,7 +232,7 @@ class DropdownMultilinkField extends DropdownLinkField{
              */
             $model = $this->getEntityManager()
                 ->getRepository($this->targetEntity)
-                ->findOne(array(
+                ->findOneBy(array(
                     $modelForIdField->getIdFieldName() => $this->rowid
                 ));
             $values = $model->get($this->sourceField);
@@ -248,6 +258,8 @@ class DropdownMultilinkField extends DropdownLinkField{
                 if(!$valueitem instanceof $this->targetEntity){
                     throw new InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
                 }
+
+                //s$this->em->persist($valueitem);
             }
             $this->value = $value;
         }
