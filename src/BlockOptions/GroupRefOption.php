@@ -18,16 +18,16 @@ class GroupRefOption extends TableBlockOption{
     protected $optionType =__CLASS__;
     /**
      * @var ArrayCollection of Group
-     * @ManyToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\Group",cascade="persist")
-     * @JoinTable(name="grouprefoption_groups",
+     * @OneToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup",cascade="persist")
+     * @JoinTable(name="grouprefoption_grouprefoptions_groups",
      *      joinColumns={@JoinColumn(name="tableblockoption_id", referencedColumnName="id", onDelete = "CASCADE")},
-     *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gID", onDelete = "CASCADE")}
+     *      inverseJoinColumns={@JoinColumn(name="grouprefoptions_group_id", referencedColumnName="group_id", onDelete = "CASCADE")}
      *      )
      */
-    protected $Groups;
+    protected $GroupAssociations;
     public function __construct()
     {
-        $this->Groups = new ArrayCollection();
+        $this->GroupAssociations = new ArrayCollection();
         $this->optionType == __CLASS__;
         $this->setDefaultFieldTypes();
     }
@@ -39,37 +39,37 @@ class GroupRefOption extends TableBlockOption{
             $this->setDefaultFieldTypes();
         }
         if($this->optionName != null){
-            $this->fieldTypes['Groups']->setLabel($this->optionName);
-            $this->fieldTypes['Groups']->setPostName(str_replace(" ", "", $this->optionName));
+            $this->fieldTypes['GroupAssociations']->setLabel($this->optionName);
+            $this->fieldTypes['GroupAssociations']->setPostName(str_replace(" ", "", $this->optionName));
         }
-        return $this->fieldTypes['Groups'];
+        return $this->fieldTypes['GroupAssociations'];
     }
     public function getValue(){
-        if($this->Groups instanceof PersistentCollection){
-            $this->Groups = new ArrayCollection($this->Groups->toArray());
+        if($this->GroupAssociations instanceof PersistentCollection){
+            $this->GroupAssociations = new ArrayCollection($this->GroupAssociations->toArray());
         }
-        return $this->Groups;
+        return $this->GroupAssociations;
     }
-    public function setValue($Groups){
-        if($Groups instanceof PersistentCollection){
-            $Groups = new ArrayCollection($Groups->toArray());
+    public function setValue($GroupAssociations){
+        if($GroupAssociations instanceof PersistentCollection){
+            $GroupAssociations = new ArrayCollection($GroupAssociations->toArray());
         }
-        if($Groups instanceof  Entity){
+        if($GroupAssociations instanceof  Entity){
 
-            $idfieldname =$Groups->getIdFieldName();
+            $idfieldname =$GroupAssociations->getIdFieldName();
             $optionValue = $this->getEntityManager()
-                ->getRepository($Groups::getFullClassName())
+                ->getRepository($GroupAssociations::getFullClassName())
                 ->findOne(array(
-                    $Groups->getIdFieldName() => $Groups->$idfieldname
+                    $GroupAssociations->getIdFieldName() => $GroupAssociations->$idfieldname
                 ));
-        }elseif($Groups instanceof ArrayCollection){
+        }elseif($GroupAssociations instanceof ArrayCollection){
 
-            foreach($this->Groups->toArray() as $key => $value){
-                $this->Groups->removeElement($value);
+            foreach($this->GroupAssociations->toArray() as $key => $value){
+                $this->GroupAssociations->removeElement($value);
             }
-            foreach($Groups->toArray() as $key => $value){
+            foreach($GroupAssociations->toArray() as $key => $value){
                 $idfieldname =$value->getIdFieldName();
-                $this->Groups->add(
+                $this->GroupAssociations->add(
                     /*$this->getEntityManager()
                     ->getRepository(get_class($value))
                     ->findOneBy(array(

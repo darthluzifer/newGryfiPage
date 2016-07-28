@@ -31,6 +31,8 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+
 
 /**
  * Class Entity
@@ -221,7 +223,15 @@ abstract class Entity
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
-                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                 //create instance of targetentity to check wether it is a assocationentity or a direct assocation
+                $targetEntityInstance = new $associationMeta['targetEntity'];
+                if($targetEntityInstance instanceof  ExtendedAssociationEntity){
+
+                }elseif($targetEntityInstance instanceof AssociationEntity){
+                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                }else {
+                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                }
                 $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
             }
         }

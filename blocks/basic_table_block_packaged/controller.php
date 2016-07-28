@@ -679,6 +679,7 @@ class Controller extends BlockController
                 }
             }
         }
+        /*
         $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
         $Group->set("gName", "test");
         $this->entityManager->persist($Group);
@@ -686,8 +687,11 @@ class Controller extends BlockController
 
         $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
         $GroupRefOption = $this->entityManager->getRepository(get_class(new GroupRefOption()))->find(3);
-        $GroupRefOption->Groups->add($Group);
+
         $this->entityManager->persist($GroupRefOption);
+        $this->entityManager->persist($Group);
+
+        $GroupRefOption->Groups->add($Group);
         $this->entityManager->flush($GroupRefOption);
 
 
@@ -695,9 +699,8 @@ class Controller extends BlockController
 
 
 
-
         return;
-
+*/
         if (count($toPersist) > 0) {
             foreach ($toPersist as $num => $blockOption) {
                 $blockOption->set('optionType', get_class($blockOption));

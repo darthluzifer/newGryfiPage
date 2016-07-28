@@ -2,6 +2,8 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Flysystem\Exception;
+use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
@@ -22,7 +24,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
-class DropdownMultilinkField extends DropdownLinkField{
+class DropdownMultilinkFieldAssociated extends DropdownLinkField{
     protected $linktable;
     protected $ntomtable;
     protected $sqlfilter = " 1=1 ";
@@ -36,163 +38,46 @@ class DropdownMultilinkField extends DropdownLinkField{
     protected $idfieldself;
     protected $values = array();
     protected $allowAdd = false;
+    protected $associationEntity;
+    protected $targetFieldAssociationEntity;
 
 
+    public function setLinkInfo(Entity $sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
+        $this->sourceEntity = $sourceEntity;
+        $this->sourceField = $sourceField;
 
-    /**
-     * set the tablename of the n to m table
-     * @param String $tablename
-     */
-    public function setNtoMTable( $tablename){
-        $this->ntomtable = $tablename;
-    }
+        $targetEntityObject = new $targetEntity();
 
-    /**
-     * set the colname of the column that points to the self table
-     * @param String $colname
-     */
-    public function setLinkFieldSelf( $colname){
-        $this->linkfieldself = $colname;
-    }
+        if(! ($targetEntityObject instanceof  AssociationEntity)){
+            throw new Exception("Cannot use ".get_class($this)." with an association pointing to a class which is not a subclass of AssociationEntity");
+        }
 
-    /**
-     * set the colname of the column that points to the extern table
-     * @param String $colname
-     */
-    public function setLinkFieldExt( $colname){
-        $this->linkfieldext = $colname;
-    }
+        //now get the entity the association points really to
+        $className = get_class($this);
+        $em = $this->getEntityManager();
 
+        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor($className);
 
-    /**
-     * set the colname of the idfield of the own table
-     * @param String $colname
-     */
-    public function setIdFieldSelf( $colname){
-        $this->idfieldself = $colname;
-    }
+        $associations = $metadata->getAssociationMappings();
+        if(count($associations)!=2){
+            throw new Exception("Cannot use ".get_class($this)." can only handle Association classes with 2 associations");
+        }
+        foreach($associations as $num => $associationMeta){
+            if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
+                if($associationMeta['targetEntity'] == $this->sourceEntity){
 
-    public function getIdFieldSelf(){
-        return $this->idfieldself;
-    }
-
-    /**
-     * set the colname id Field in the linktable
-     * @param String $colname
-     */
-    public function setIdFieldExt( $colname){
-        $this->idfieldext = $colname;
-    }
-
-    /**
-     * set the id of the row the col is in
-     * @param String $colname
-     */
-    public function setRowId( $id){
-        $this->rowid = $id;
-        $this->value = array();
-    }
-
-    public function setAllowAdd($isAllowed = true){
-        $this->allowAdd = $isAllowed;
-    }
-
-    public function setValue($value){
-
-        $this->value = $value;
-    }
-
-    public function getTableView(){
-        $values = $this->getValues();
-        $string = "";
-        if(is_array($values)){
-            $first = true;
-
-            foreach($values as $valuenum => $value){
-                $appendString = "";
-                if(is_object($value)){
-                    $classname = get_class($value);
-                    if($value instanceof  Entity){
-                        $function = $classname::getDefaultGetDisplayStringFunction();
-                        $appendString = $function($value);
-                    }
                 }else{
-                    $appendString = $value;
-                }
-
-                if($first){
-                    $first = false;
-                }else{
-                    $appendString.=", ";
+                    $this->targetEntity = $associationMeta['targetEntity'];
+                    $this->targetFieldAssociationEntity = $associationMeta['fieldName'];
+                    $this->associationEntity = $targetEntity;
                 }
             }
         }
-        return $appendString;
+
+        $this->targetField = $targetField;
+        $this->getDisplayString = $getDisplayString;
+        $this->filter = $filter;
     }
-
-
-    public function getFormView($form){
-        $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
-
-
-
-        $values = $this->getValues();
-        if($values instanceof  ArrayCollection){
-
-            $values =$values->toArray();
-        }elseif(is_array($values)){
-
-        }else{
-
-            $values = array();
-        }
-
-        $valueStrings = array();
-
-        //to display the values, we have to convert them to strings with our getDisplayString function
-        $displayFunction = $this->getDisplayString;
-        foreach($values as $num => $entity){
-
-            $valueStrings[]= $displayFunction($entity);
-        }
-
-
-        $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
-
-
-        $options = $this->getOptions();
-        $sourcetext = "'".implode("', '", $options)."'";
-        $allowadd = 'false';
-        if($this->allowAdd){
-            $allowadd = 'true';
-        }
-
-        $html .="
-				<script type = 'text/javascript'>
-					$(document).ready(function(e){
-						$('#".$this->getPostName()."').tagsinput({
-						  freeInput: $allowadd,
-						  typeahead: {
-						    source: [$sourcetext],
-						    showHintOnFocus:true
-						  }
-						});
-					});
-				</script>
-				";
-        return $html;
-    }
-
-
-
-    public function getValue(){
-        return $this->value;
-    }
-
-
-
-
 
     public function validatePost($value){
 
@@ -211,6 +96,9 @@ class DropdownMultilinkField extends DropdownLinkField{
                     ->findOneBy(array(
                         $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
                     ));
+                $associationEntity = new $this->associationEntity;
+                $associationEntity->set($this->targetField,$this->sourceEntity);
+                $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
                 $sqlArray->add($findItem);
             }else{
                //TODO throw exception, if invalid values should produce an error message
@@ -230,14 +118,24 @@ class DropdownMultilinkField extends DropdownLinkField{
             /**
              * @var $model \Entity
              */
+
+
+
             $model = $this->getEntityManager()
                 ->getRepository($this->targetEntity)
                 ->findOneBy(array(
                     $modelForIdField->getIdFieldName() => $this->rowid
                 ));
             $values = $model->get($this->sourceField);
-            if(count($values)>0 && $values != null) {
-                foreach ($model->get($this->sourceField) as $valnum => $value) {
+            //now we got the associated fields, now we want the real object behind
+            $realObjects = new ArrayCollection();
+            if(count($values)>0) {
+                foreach ($values->toArray() as $assnum => $associationObject) {
+                    $realObjects->add($associationObject->get($this->targetFieldAssociationEntity));
+                }
+            }
+            if(count($realObjects)>0 && $realObjects != null) {
+                foreach ($realObjects->toArray() as $valnum => $value) {
                     $this->value[$value->getId()]=$this->getDisplayString($value);
                 }
             }
