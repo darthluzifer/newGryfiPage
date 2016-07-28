@@ -18,7 +18,7 @@ class GroupRefOption extends TableBlockOption{
     protected $optionType =__CLASS__;
     /**
      * @var ArrayCollection of Group
-     * @OneToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup",cascade="persist")
+     * @OneToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup",cascade="persist", mappedBy="GroupRefOption")
      * @JoinTable(name="grouprefoption_grouprefoptions_groups",
      *      joinColumns={@JoinColumn(name="tableblockoption_id", referencedColumnName="id", onDelete = "CASCADE")},
      *      inverseJoinColumns={@JoinColumn(name="grouprefoptions_group_id", referencedColumnName="group_id", onDelete = "CASCADE")}

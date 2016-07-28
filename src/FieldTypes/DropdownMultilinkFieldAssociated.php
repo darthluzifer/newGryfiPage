@@ -42,7 +42,7 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
     protected $targetFieldAssociationEntity;
 
 
-    public function setLinkInfo(Entity $sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
 
