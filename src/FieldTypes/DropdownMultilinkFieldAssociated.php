@@ -101,6 +101,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                 $associationEntity = new $this->associationEntity;
                 $associationEntity->set($this->sourceEntityAssociationField,$this->sourceEntity);
                 $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
+                $this->getEntityManager()->persist($findItem);
                 $sqlArray->add($associationEntity);
             }else{
                //TODO throw exception, if invalid values should produce an error message

@@ -41,7 +41,7 @@ class GroupRefOptionGroup extends AssociationEntity
     /**
      *
      * @var Group
-     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group", cascade={"persist"})
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
      * @JoinColumn(name="group_id", referencedColumnName="gID")
      */
     protected $Group;

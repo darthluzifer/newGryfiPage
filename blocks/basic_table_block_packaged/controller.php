@@ -5,6 +5,7 @@ use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
@@ -111,7 +112,7 @@ class Controller extends BlockController
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $entityManager;
+    private $entityManager;
 
     /**
      * Array of \Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption
@@ -648,6 +649,17 @@ class Controller extends BlockController
 
 
         $toPersist = array();
+        $key = "groupoptions";
+        $blockOptionPostMap = $this->generateOptionsPostFieldMap();
+        if ($blockOptionPostMap[$key]->BasicTableInstance != null) {
+
+        } else {
+            //if not, link with instance
+            $blockOptionPostMap[$key]->set("BasicTableInstance", $this->basicTableInstance);
+            $this->basicTableInstance->addBlockOption($blockOptionPostMap[$key]);
+        }
+
+
         if (count($args) > 0) {
 
             $blockOptionPostMap = $this->generateOptionsPostFieldMap();
@@ -679,28 +691,7 @@ class Controller extends BlockController
                 }
             }
         }
-        /*
-        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
-        $Group->set("gName", "test");
-        $this->entityManager->persist($Group);
-        $this->entityManager->flush($Group);
 
-        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
-        $GroupRefOption = $this->entityManager->getRepository(get_class(new GroupRefOption()))->find(3);
-
-        $this->entityManager->persist($GroupRefOption);
-        $this->entityManager->persist($Group);
-
-        $GroupRefOption->Groups->add($Group);
-        $this->entityManager->flush($GroupRefOption);
-
-
-
-
-
-
-        return;
-*/
         if (count($toPersist) > 0) {
             foreach ($toPersist as $num => $blockOption) {
                 $blockOption->set('optionType', get_class($blockOption));
