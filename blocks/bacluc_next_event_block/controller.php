@@ -109,11 +109,11 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
         /**
          * @var ArrayCollection $Groups
          */
-        $Groups = $blockOptions[0]->get('Groups');
-        $Groups = $Groups->toArray();
+        $GroupAssociations = $blockOptions[0]->get('GroupAssociations');
+        $GroupAssociations = $GroupAssociations->toArray();
         $groupids = array();
-        foreach($Groups as $groupnum => $group){
-            $groupids[] = $group->gID;
+        foreach($GroupAssociations as $groupnum => $GroupAssociation){
+            $groupids[] = $GroupAssociation->Group->gID;
         }
         $Event = $this->model->getNextEvent($groupids);
         //var_dump($Event);
