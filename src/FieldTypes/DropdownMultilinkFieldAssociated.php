@@ -8,6 +8,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Concrete\Package\EntitiesExample\Src\Entity;
+use Doctrine\ORM\Proxy\Proxy;
 use Loader;
 use Page;
 use User;
@@ -190,7 +191,9 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         $displayFunction = $this->getDisplayString;
         foreach($associations as $num => $association){
             $realEntity = $association->get($this->targetFieldAssociationEntity);
-
+            if($realEntity instanceof  Proxy){
+                $realEntity->__load();
+            }
             $valueStrings[]= $displayFunction($realEntity);
         }
 

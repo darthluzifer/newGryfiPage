@@ -66,6 +66,7 @@ class GroupRefOption extends TableBlockOption{
 
             foreach($this->GroupAssociations->toArray() as $key => $value){
                 $this->GroupAssociations->removeElement($value);
+                $this->getEntityManager()->remove($value);
             }
             foreach($GroupAssociations->toArray() as $key => $value){
                 $idfieldname =$value->getIdFieldName();
