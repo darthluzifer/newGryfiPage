@@ -40,6 +40,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $allowAdd = false;
     protected $associationEntity;
     protected $targetFieldAssociationEntity;
+    protected $sourceEntityAssociationField;
 
 
     public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
@@ -65,7 +66,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         foreach($associations as $num => $associationMeta){
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
                 if($associationMeta['targetEntity'] == (is_object($this->sourceEntity)?get_class($this->sourceEntity):$this->sourceEntity)){
-
+                    $this->sourceEntityAssociationField = $associationMeta['fieldName'];
                 }else{
                     $this->targetEntity = $associationMeta['targetEntity'];
                     $this->targetFieldAssociationEntity = $associationMeta['fieldName'];
@@ -98,7 +99,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                         $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
                     ));
                 $associationEntity = new $this->associationEntity;
-                $associationEntity->set($this->targetField,$this->sourceEntity);
+                $associationEntity->set($this->sourceEntityAssociationField,$this->sourceEntity);
                 $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
                 $sqlArray->add($associationEntity);
             }else{
@@ -164,6 +165,60 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         }
 
 
+    }
+
+    public function getFormView($form){
+        $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
+
+
+
+        $associations = $this->getValues();
+        if($associations instanceof  ArrayCollection){
+
+            $associations =$associations->toArray();
+        }elseif(is_array($associations)){
+
+        }else{
+
+            $associations = array();
+        }
+
+        $valueStrings = array();
+
+        //to display the associations, we have to convert them to strings with our getDisplayString function
+        $displayFunction = $this->getDisplayString;
+        foreach($associations as $num => $association){
+            $realEntity = $association->get($this->targetFieldAssociationEntity);
+
+            $valueStrings[]= $displayFunction($realEntity);
+        }
+
+
+        $valuestring = implode(", ", $valueStrings);
+        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
+
+
+        $options = $this->getOptions();
+        $sourcetext = "'".implode("', '", $options)."'";
+        $allowadd = 'false';
+        if($this->allowAdd){
+            $allowadd = 'true';
+        }
+
+        $html .="
+				<script type = 'text/javascript'>
+					$(document).ready(function(e){
+						$('#".$this->getPostName()."').tagsinput({
+						  freeInput: $allowadd,
+						  typeahead: {
+						    source: [$sourcetext],
+						    showHintOnFocus:true
+						  }
+						});
+					});
+				</script>
+				";
+        return $html;
     }
 
 
