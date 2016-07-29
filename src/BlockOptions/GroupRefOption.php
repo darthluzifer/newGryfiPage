@@ -69,14 +69,7 @@ class GroupRefOption extends TableBlockOption{
             }
             foreach($GroupAssociations->toArray() as $key => $value){
                 $idfieldname =$value->getIdFieldName();
-                $this->GroupAssociations->add(
-                    /*$this->getEntityManager()
-                    ->getRepository(get_class($value))
-                    ->findOneBy(array(
-                        $value->getIdFieldName() => $value->$idfieldname
-                    ))*/
-                    $this->getEntityManager()->getReference(get_class($value), $value->$idfieldname)
-                );
+                $this->GroupAssociations->add($value);
             }
 
         }

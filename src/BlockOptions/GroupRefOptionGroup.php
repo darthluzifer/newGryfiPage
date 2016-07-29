@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\Entity;
  * Class EventGroup
  * @package Concrete\Package\BaclucEventPackage\Src
  * @Entity
- * @ORM\Table(name="grouprefoption_group")
+ * @Table(name="grouprefoption_group")
  *
  */
 class GroupRefOptionGroup extends AssociationEntity
@@ -27,22 +27,22 @@ class GroupRefOptionGroup extends AssociationEntity
     /**
      * @var int
      * @Id @Column(type="integer")
-     * @GEneratedValue(strategy="AUTO")
+     * @GeneratedValue(strategy="AUTO")
      */
     protected $id;
     /**
      *
      * @var GroupRefOption
-     * @ORM\ManyToOne(targetEntity="GroupRefOption", inversedBy="GroupAssociations")
-     * @ORM\JoinColumn(name="grouprefoption_id", referencedColumnName="id")
+     * @ManyToOne(targetEntity="GroupRefOption", inversedBy="GroupAssociations")
+     * @JoinColumn(name="grouprefoption_id", referencedColumnName="id")
      */
     protected $GroupRefOption;
 
     /**
      *
      * @var Group
-     * @ORM\ManyToOne(targetEntity="Group")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="gID")
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group", cascade={"persist"})
+     * @JoinColumn(name="group_id", referencedColumnName="gID")
      */
     protected $Group;
 

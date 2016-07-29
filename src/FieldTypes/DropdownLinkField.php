@@ -73,6 +73,9 @@ class DropdownLinkField extends DropdownField{
         $this->targetEntity = $targetEntity;
         $this->targetField = $targetField;
         $this->getDisplayString = $getDisplayString;
+        if($this->getDisplayString == null){
+            $this->getDisplayString = $targetEntity::getDefaultgetDisplayStringFunction();
+        }
         $this->filter = $filter;
     }
 

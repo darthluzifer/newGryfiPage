@@ -24,7 +24,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
-class DropdownMultilinkFieldAssociated extends DropdownLinkField{
+class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $linktable;
     protected $ntomtable;
     protected $sqlfilter = " 1=1 ";
@@ -53,7 +53,7 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
         }
 
         //now get the entity the association points really to
-        $className = get_class($this);
+        $className = $targetEntity;
         $em = $this->getEntityManager();
 
         $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor($className);
@@ -64,7 +64,7 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
         }
         foreach($associations as $num => $associationMeta){
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
-                if($associationMeta['targetEntity'] == $this->sourceEntity){
+                if($associationMeta['targetEntity'] == (is_object($this->sourceEntity)?get_class($this->sourceEntity):$this->sourceEntity)){
 
                 }else{
                     $this->targetEntity = $associationMeta['targetEntity'];
@@ -75,7 +75,8 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
         }
 
         $this->targetField = $targetField;
-        $this->getDisplayString = $getDisplayString;
+        $targetClassName =  $this->targetEntity;
+        $this->getDisplayString =$targetClassName::getDefaultgetDisplayStringFunction();
         $this->filter = $filter;
     }
 
@@ -99,7 +100,7 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
                 $associationEntity = new $this->associationEntity;
                 $associationEntity->set($this->targetField,$this->sourceEntity);
                 $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
-                $sqlArray->add($findItem);
+                $sqlArray->add($associationEntity);
             }else{
                //TODO throw exception, if invalid values should produce an error message
             }
@@ -153,8 +154,8 @@ class DropdownMultilinkFieldAssociated extends DropdownLinkField{
         }elseif($value instanceof ArrayCollection){
             //check if values are of the right entitiy
             foreach($value->toArray() as $valnum => $valueitem){
-                if(!$valueitem instanceof $this->targetEntity){
-                    throw new InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
+                if(!$valueitem instanceof $this->associationEntity){
+                    throw new \InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
                 }
 
                 //s$this->em->persist($valueitem);
