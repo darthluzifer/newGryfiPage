@@ -44,6 +44,11 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
      */
     protected $model;
 
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $entityManager;
+
 
     /**
      * set blocktypeset
