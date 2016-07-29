@@ -434,14 +434,16 @@ class Controller extends BlockController
 
             //save values
             foreach ($this->getFields() as $key => $value) {
-                if($v[$key] instanceof  Entity ){
-                    $this->entityManager->persist($v[$key]);
-                }elseif( $v[$key] instanceof  ArrayCollection){
-                    foreach($v[$key]->toArray() as $refnum =>$refObject){
-                        $this->entityManager->persist($refObject);
+                if($key != $model->getIdFieldName()) {
+                    if ($v[$key] instanceof Entity) {
+                        $this->entityManager->persist($v[$key]);
+                    } elseif ($v[$key] instanceof ArrayCollection) {
+                        foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                            $this->entityManager->persist($refObject);
+                        }
                     }
+                    $model->set($key, $v[$key]);
                 }
-                $model->set($key, $v[$key]);
             }
 
 
@@ -730,7 +732,11 @@ class Controller extends BlockController
      */
     public function getFields()
     {
-        return $this->model->getFieldTypes();
+        if ($this->editKey == null) {
+            return $this->model->getFieldTypes();
+        }
+         return $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey))->getFieldTypes();
+
     }
 
 

@@ -152,6 +152,9 @@ class DropdownMultilinkField extends DropdownLinkField{
         //to display the values, we have to convert them to strings with our getDisplayString function
         $displayFunction = $this->getDisplayString;
         foreach($values as $num => $entity){
+            if($entity instanceof  Proxy){
+                $entity->__load();
+            }
 
             $valueStrings[]= $displayFunction($entity);
         }

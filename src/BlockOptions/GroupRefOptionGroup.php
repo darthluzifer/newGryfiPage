@@ -34,7 +34,7 @@ class GroupRefOptionGroup extends AssociationEntity
      *
      * @var GroupRefOption
      * @ManyToOne(targetEntity="GroupRefOption", inversedBy="GroupAssociations")
-     * @JoinColumn(name="grouprefoption_id", referencedColumnName="id")
+     * @JoinColumn(name="grouprefoption_id", referencedColumnName="id",onDelete="CASCADE")
      */
     protected $GroupRefOption;
 
@@ -42,7 +42,7 @@ class GroupRefOptionGroup extends AssociationEntity
      *
      * @var Group
      * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
-     * @JoinColumn(name="group_id", referencedColumnName="gID")
+     * @JoinColumn(name="group_id", referencedColumnName="gID",onDelete="CASCADE")
      */
     protected $Group;
 
