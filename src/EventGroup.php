@@ -32,24 +32,22 @@ class EventGroup extends AssociationEntity
     /**
      *
      * @var Event
-     * @ORM\ManyToOne(targetEntity="Event", inversedBy="GroupAssociations")
-     * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
+     * @ManyToOne(targetEntity="Event", inversedBy="GroupAssociations")
+     * @JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $Event;
 
     /**
      *
      * @var Group
-     * @ORM\ManyToOne(targetEntity="Group")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="gID")
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
+     * @JoinColumn(name="group_id", referencedColumnName="gID", onDelete="CASCADE")
      */
     protected $Group;
 
 
     public function __construct(){
         parent::__construct();
-        $this->fieldTypes['id']=new FieldTypes\Field('id', 'ID', 'identifier');
-        $this->fieldTypes['value']=new FieldTypes\Field('value', 'Wert', 'wert');
     }
 
 

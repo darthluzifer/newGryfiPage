@@ -12,6 +12,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\FileField as FileField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\WysiwygField as WysiwygField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Expr\Expression;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Query\Expr;
 
 /**
@@ -71,14 +72,14 @@ class Event extends Entity
      */
     private $registerfile;
     /**
-     * @var ArrayCollection of Group
-     * @ManyToMany(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
-     * @JoinTable(name="event_groups",
+     * @var ArrayCollection of EventGroup
+     * @OneToMany(targetEntity="Concrete\Package\BaclucEventPackage\Src\EventGroup", mappedBy="Event")
+     * @JoinTable(name="event_eventgroups",
      *      joinColumns={@JoinColumn(name="event_id", referencedColumnName="id", onDelete = "CASCADE")},
      *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gID", onDelete = "CASCADE")}
      *      )
      */
-    protected $Groups;
+    protected $EventGroups;
     public function __construct(){
         parent::__construct();
         $this->setDefaultFieldTypes();
@@ -158,7 +159,8 @@ class Event extends Entity
         $qb
             ->select( 'Event')
             ->from('Concrete\Package\BaclucEventPackage\Src\Event', 'Event')
-            ->join('Event.Groups','g', Expr\Join::WITH, "1=1")
+            ->join('Event.EventGroups','eg', Expr\Join::WITH, "1=1")
+            ->join('eg.Group','g', Expr\Join::WITH, "1=1")
             ->where($qb->expr()->in('g.gID', ':Groups'))
             ->orderBy('Event.date_from')
             ->setMaxResults(1)
