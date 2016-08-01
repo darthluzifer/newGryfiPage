@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\Entity;
 
 /**
  * Class EventGroup
- * @package Concrete\Package\BaclucEventPackage\Src
+ * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
  * @Table(name="grouprefoption_group")
  *
