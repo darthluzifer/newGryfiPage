@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\Entity;
  * Class EventGroup
  * @package Concrete\Package\BaclucEventPackage\Src
  * @Entity
- * @ORM\Table(name="event_group")
+ * @Table(name="bacluc_event_group")
  */
 class EventGroup extends AssociationEntity
 {
@@ -32,7 +32,7 @@ class EventGroup extends AssociationEntity
     /**
      *
      * @var Event
-     * @ManyToOne(targetEntity="Event", inversedBy="GroupAssociations")
+     * @ManyToOne(targetEntity="Event", inversedBy="EventGroups")
      * @JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $Event;

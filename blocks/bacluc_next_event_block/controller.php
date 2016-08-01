@@ -46,9 +46,9 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
 
     /**
      * @var \Doctrine\ORM\EntityManager
-     */
-    private $entityManager;
 
+    private $entityManager;
+*/
 
     /**
      * set blocktypeset
@@ -70,12 +70,9 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
 
 
         //load the current options
-        $pkg = Package::getByHandle('bacluc_event_package');
-        $em = $pkg->getEntityManager();
-        $this->package = $pkg;
-        $this->entityManager = $em;
+
         if ($obj instanceof Block) {
-         $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
+         $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
 
             $this->basicTableInstance = $bt;
         }

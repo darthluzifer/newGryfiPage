@@ -4,6 +4,9 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 use Concrete\Core\Block\BlockType\BlockType;
 use Concrete\Core\Package\Package;
 use Concrete\Core\Foundation\ClassLoader;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Punic\Exception;
 use Loader;
 use Core;
@@ -36,6 +39,26 @@ class Controller extends Package
         //begin transaction, so when block install fails, but parent::install was successfully, you don't have to uninstall the package
         $em->getConnection()->beginTransaction();
         try {
+
+            /**
+             * @var EntityManager $em
+             */
+
+
+            //add basic_table_package/Src to the folder to look for entitiies
+            $em = $this->getEntityManager();
+
+            /**
+             * @var Configuration $conf
+             */
+            $conf = $em->getConfiguration();
+
+            /**
+             * @var AnnotationDriver $driver
+             */
+            $driver = $conf->getMetadataDriverImpl();
+
+            $driver->addPaths(array(__DIR__."/../basic_table_package/src"));
             $pkg = parent::install();
             //add blocktypeset
             if (!BlockTypeSet::getByHandle('bacluc_event_set')) {
@@ -76,4 +99,5 @@ class Controller extends Package
             throw $e;
         }
     }
+
 }

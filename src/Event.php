@@ -19,7 +19,7 @@ use Doctrine\ORM\Query\Expr;
  * Class Event
  * @package Concrete\Package\BaclucEventPackage\Src
  * @Entity
-@Table(name="BaclucEvents"
+@Table(name="bacluc_event"
 )
  *
  */
@@ -72,16 +72,16 @@ class Event extends Entity
      */
     private $registerfile;
     /**
-     * @var ArrayCollection of EventGroup
+     * @var EventGroup[]
      * @OneToMany(targetEntity="Concrete\Package\BaclucEventPackage\Src\EventGroup", mappedBy="Event")
-     * @JoinTable(name="event_eventgroups",
-     *      joinColumns={@JoinColumn(name="event_id", referencedColumnName="id", onDelete = "CASCADE")},
-     *      inverseJoinColumns={@JoinColumn(name="group_id", referencedColumnName="gID", onDelete = "CASCADE")}
-     *      )
+
      */
     protected $EventGroups;
     public function __construct(){
         parent::__construct();
+        if($this->EventGroups == null){
+            $this->EventGroups = new ArrayCollection();
+        }
         $this->setDefaultFieldTypes();
     }
     public function setDefaultFieldTypes(){
