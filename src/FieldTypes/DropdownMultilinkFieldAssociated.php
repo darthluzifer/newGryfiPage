@@ -8,6 +8,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Concrete\Package\EntitiesExample\Src\Entity;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
 use Loader;
 use Page;
@@ -154,6 +155,10 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
 
     public function setSQLValue($value){
+        if($value instanceof PersistentCollection){
+            $value = new ArrayCollection($value->toArray());
+        }
+
         if(count($value)==0){
             $this->value=new ArrayCollection();
         }elseif($value instanceof ArrayCollection){
@@ -225,6 +230,45 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 				</script>
 				";
         return $html;
+    }
+
+    public function getTableView(){
+        $values = $this->getValues();
+        if($values instanceof  PersistentCollection || $values instanceof  ArrayCollection){
+            $values = $values->toArray();
+        }
+
+        $string = "";
+        if(is_array($values)){
+            $first = true;
+
+            foreach($values as $valuenum => $value){
+                $appendString = "";
+
+
+                if(is_object($value)){
+                    $realEntity = $value->get($this->targetFieldAssociationEntity);
+                    if($realEntity instanceof  Proxy){
+                        $realEntity->__load();
+                    }
+                    $value = $realEntity;
+                    $classname = $this->targetEntity;
+                    $function = $classname::getDefaultGetDisplayStringFunction();
+                    $appendString = $function($value);
+
+                }else{
+                    $appendString = $value;
+                }
+
+                if($first){
+                    $first = false;
+                }else{
+                    $string.=", ";
+                }
+                $string.= $appendString;
+            }
+        }
+        return $string;
     }
 
 

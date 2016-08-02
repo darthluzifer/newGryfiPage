@@ -4,6 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
+use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
@@ -18,6 +19,10 @@ use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
 use User;
@@ -720,14 +725,69 @@ class Controller extends BlockController
 
 
     /**
+     * @return QueryBuilder
+     */
+    public function getBuildQueryWithJoinedAssociations(){
+        $selectEntities = array(get_class($this->model)=>null);
+
+        /**
+         * @var ClassMetadata $metadata
+         */
+        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($this->model));
+        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
+            $targetEntityInstance = new $mapping['targetEntity'];
+            $selectEntities[$mapping['targetEntity']] = $mapping['fieldName'];
+
+        }
+
+
+        /**
+         * @var QueryBuilder $query
+         */
+        $query = $this->getEntityManager()->createQueryBuilder();
+
+        //add select
+
+        $entities = array_keys($selectEntities);
+
+        $selectString = "";
+        $entityCounter = 0;
+        foreach($entities as $key => $entityName){
+            if($entityCounter > 0){
+                $selectString.=",";
+            }
+            $selectString.=" e".$entityCounter++;
+        }
+        $query->select($selectString);
+
+
+        $query->from(reset($entities), "e0");
+
+        $entityCounter = 1;
+        $lastEntityName = null;
+        foreach($selectEntities as $entityName => $fieldName){
+            if($lastEntityName == null){
+                $lastEntityName = $entityName;
+                continue;
+            }
+            $query->join("e0.".$fieldName, "e".$entityCounter++, Join::LEFT_JOIN);
+
+        }
+
+        return $query;
+    }
+
+
+    /**
      * funciton to retrieve the table data
      * @return array
      */
     public function displayTable()
     {
 
-        //TODO add filter
-        $modelList = $this->getEntityManager()->getRepository(get_class($this->model))->findAll();
+
+
+        $modelList = $this->getBuildQueryWithJoinedAssociations()->getQuery()->getResult();
 
 
         $tabledata = array();
@@ -787,7 +847,11 @@ class Controller extends BlockController
             }
 
         } else {
-            $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+            //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+            $query = $this->getBuildQueryWithJoinedAssociations();
+            $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+            $model = $query->getQuery()->getSingleResult();
+
             try {
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
