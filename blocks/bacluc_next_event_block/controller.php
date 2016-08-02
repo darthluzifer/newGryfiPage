@@ -119,6 +119,7 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
         }
         $Event = $this->model->getNextEvent($groupids);
         //var_dump($Event);
+        return $Event;
     }
 
     public function view(){
