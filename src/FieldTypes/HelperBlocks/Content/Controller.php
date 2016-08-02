@@ -112,6 +112,11 @@ use Concrete\Core\Legacy\Loader;
 			//parent::save($args);
 		}
 
+		public function getContent()
+		{
+			return LinkAbstractor::translateFrom($this->value);
+		}
+
 	}
 
 	

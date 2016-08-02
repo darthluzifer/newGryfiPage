@@ -45,12 +45,14 @@ class WysiwygField extends Field{
 		$this->isSQLValue = false;
 		$this->value = $value;
 		$this->blockController->setValue($value);
+        return $this;
 	}
 	
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
 		$this->blockController->setValue($value);
+        return $this;
 	}
 	
 	public function getSQLValue(){

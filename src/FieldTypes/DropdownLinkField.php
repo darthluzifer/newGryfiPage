@@ -77,18 +77,22 @@ class DropdownLinkField extends DropdownField{
             $this->getDisplayString = $targetEntity::getDefaultgetDisplayStringFunction();
         }
         $this->filter = $filter;
+        return $this;
     }
 
     public function setGetDisplayString(callable $getDisplayString){
         $this->getDisplayString = $getDisplayString;
+        return $this;
     }
 
     public function setFilter(array $filter){
         $this->filter = $filter;
+        return $this;
     }
 
     public function setIsBidirectional($bool){
         $this->isBidirectional = $bool;
+        return $this;
     }
 
     public function getIsBidirectional(){
@@ -101,6 +105,7 @@ class DropdownLinkField extends DropdownField{
      */
     public function setLinkTable( $tablename){
         $this->linktable = $tablename;
+        return $this;
     }
 
     /**
@@ -111,6 +116,7 @@ class DropdownLinkField extends DropdownField{
     public function setSQLFilter( $sqlfilter, array $sqlvars = array()){
         $this->sqlfilter = $sqlfilter;
         $this->sqlvars = $sqlvars;
+        return $this;
     }
 
     /**
@@ -119,6 +125,7 @@ class DropdownLinkField extends DropdownField{
      */
     public function setShowColumn( $showcolumnname){
         $this->showcolumn = $showcolumnname;
+        return $this;
     }
 
     /**
@@ -127,6 +134,7 @@ class DropdownLinkField extends DropdownField{
      */
     public function setNullable($isNullable = true){
         $this->isNullable = $isNullable;
+        return $this;
     }
 
     /**
@@ -143,6 +151,7 @@ class DropdownLinkField extends DropdownField{
      */
     public function setIdField( $idfieldname){
         $this->idField = $idfieldname;
+        return $this;
     }
 
     /**
@@ -202,6 +211,7 @@ class DropdownLinkField extends DropdownField{
         }else{
             throw new InvalidArgumentException("Parameter \$value is ".get_class($value).", should be ".$this->targetEntity." ");
         }
+        return $this;
     }
 
 
@@ -232,6 +242,7 @@ class DropdownLinkField extends DropdownField{
         }else{
             return false;
         }
+        return true;
     }
 
 

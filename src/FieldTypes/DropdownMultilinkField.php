@@ -46,6 +46,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setNtoMTable( $tablename){
         $this->ntomtable = $tablename;
+        return $this;
     }
 
     /**
@@ -54,6 +55,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setLinkFieldSelf( $colname){
         $this->linkfieldself = $colname;
+        return $this;
     }
 
     /**
@@ -62,6 +64,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setLinkFieldExt( $colname){
         $this->linkfieldext = $colname;
+        return $this;
     }
 
 
@@ -71,6 +74,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setIdFieldSelf( $colname){
         $this->idfieldself = $colname;
+        return $this;
     }
 
     public function getIdFieldSelf(){
@@ -83,6 +87,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setIdFieldExt( $colname){
         $this->idfieldext = $colname;
+        return $this;
     }
 
     /**
@@ -92,15 +97,18 @@ class DropdownMultilinkField extends DropdownLinkField{
     public function setRowId( $id){
         $this->rowid = $id;
         $this->value = array();
+        return $this;
     }
 
     public function setAllowAdd($isAllowed = true){
         $this->allowAdd = $isAllowed;
+        return $this;
     }
 
     public function setValue($value){
 
         $this->value = $value;
+        return $this;
     }
 
     public function getTableView(){
@@ -273,6 +281,7 @@ class DropdownMultilinkField extends DropdownLinkField{
             }
             $this->value = $value;
         }
+        return $this;
 
 
     }

@@ -175,6 +175,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         }
 
 
+        return $this;
     }
 
     public function getFormView($form){

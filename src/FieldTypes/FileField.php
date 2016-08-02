@@ -20,6 +20,7 @@ class FileField extends Field{
 	
 	public function setValue($value){
 		$this->value = $value;
+        return $this;
 	}
 	
 	public function getTableView(){
@@ -31,7 +32,7 @@ class FileField extends Field{
 				$cID = $c->getCollectionID();
 			}
 	
-			$returnString = "<a href=\"".View::url('/download_file', $this->getValue(),$cID)."\">".stripslashes($this->getLinkText())."</a>";
+			$returnString = "<a href=\"".View::url('/download_file', $this->getValue(),$cID)."\" target='_blank'>".stripslashes($this->getLinkText())."</a>";
 			
 		}else{
 			$returnString = "keine Berechtigung";
