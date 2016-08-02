@@ -68,6 +68,11 @@ class EventGroup extends AssociationEntity
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     public function set($name, $value)
     {
         if(property_exists($this, $name)
@@ -75,7 +80,13 @@ class EventGroup extends AssociationEntity
             && !in_array($name, $this->protectWrite)
             && !in_array($name, $this->fieldTypes)
         ) {
+            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
+                $this->$name = $this->mergeCollections($this->$name,$value);
+                return $this;
+            }
+
             $this->$name = $value;
+            return $this;
         }
     }
 
