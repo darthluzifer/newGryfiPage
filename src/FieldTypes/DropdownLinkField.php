@@ -67,12 +67,15 @@ class DropdownLinkField extends DropdownField{
      * @param callable|null $getDisplayString to overrride the default getDisplayStringFunction provided by the Entity
      * @param array|null $filter
      */
-    public function setLinkInfo(Entity $sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
         $this->targetEntity = $targetEntity;
         $this->targetField = $targetField;
         $this->getDisplayString = $getDisplayString;
+        if($this->getDisplayString == null){
+            $this->getDisplayString = $targetEntity::getDefaultgetDisplayStringFunction();
+        }
         $this->filter = $filter;
     }
 

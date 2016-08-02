@@ -6,6 +6,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Concrete\Package\EntitiesExample\Src\Entity;
+use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
 use User;
@@ -104,6 +105,10 @@ class DropdownMultilinkField extends DropdownLinkField{
 
     public function getTableView(){
         $values = $this->getValues();
+        if($values instanceof  PersistentCollection || $values instanceof  ArrayCollection){
+            $values = $values->toArray();
+        }
+
         $string = "";
         if(is_array($values)){
             $first = true;
@@ -123,11 +128,12 @@ class DropdownMultilinkField extends DropdownLinkField{
                 if($first){
                     $first = false;
                 }else{
-                    $appendString.=", ";
+                    $string.=", ";
                 }
+                $string.= $appendString;
             }
         }
-        return $appendString;
+        return $string;
     }
 
 
@@ -152,6 +158,9 @@ class DropdownMultilinkField extends DropdownLinkField{
         //to display the values, we have to convert them to strings with our getDisplayString function
         $displayFunction = $this->getDisplayString;
         foreach($values as $num => $entity){
+            if($entity instanceof  Proxy){
+                $entity->__load();
+            }
 
             $valueStrings[]= $displayFunction($entity);
         }
@@ -205,7 +214,8 @@ class DropdownMultilinkField extends DropdownLinkField{
 
         $sqlArray = new ArrayCollection();
         foreach($postvalues as $num => $postvalue){
-            if(in_array($postvalue, $options)){
+            $postvalue = trim($postvalue);
+            if(in_array($postvalue, $options) ){
                 $findItem = $this->getEntityManager()
                     ->getRepository($this->targetEntity)
                     ->findOneBy(array(

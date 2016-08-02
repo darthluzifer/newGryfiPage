@@ -31,6 +31,10 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
+
 
 /**
  * Class Entity
@@ -71,15 +75,25 @@ abstract class Entity
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     public function set($name, $value)
     {
-        $test = "a";
         if(property_exists($this, $name)
             && !in_array($name, $this->protect)
             && !in_array($name, $this->protectWrite)
             && !in_array($name, $this->fieldTypes)
         ) {
+            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
+                $this->$name = $this->mergeCollections($this->$name,$value);
+                return $this;
+            }
+
             $this->$name = $value;
+            return $this;
         }
     }
 
@@ -221,10 +235,57 @@ abstract class Entity
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
-                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                 //create instance of targetentity to check wether it is a assocationentity or a direct assocation
+                $targetEntityInstance = new $associationMeta['targetEntity'];
+                if($targetEntityInstance instanceof  ExtendedAssociationEntity){
+
+                }elseif($targetEntityInstance instanceof AssociationEntity){
+                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                }else {
+                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
+                }
                 $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
             }
         }
+
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $coll1
+     * @param ArrayCollection|PersistentCollection $coll2
+     * @return ArrayCollection;
+     */
+    public function mergeCollections($coll1, $coll2){
+        if($coll1 instanceof PersistentCollection){
+            $coll1 = new ArrayCollection($coll1->toArray());
+        }
+        if($coll2 instanceof PersistentCollection){
+            $coll2 = new ArrayCollection($coll2->toArray());
+        }
+        /**
+         * @var ArrayCollection $coll1
+         */
+        /**
+         * @var ArrayCollection $coll2;
+         */
+            $result = new ArrayCollection();
+            foreach($coll2->toArray() as $key => $value){
+                //wenn element in beiden Arrays
+                if(!$result->contains($value)){
+                    $result->add($value);
+                }
+            }
+
+            //now delete not anymore existent elements
+            foreach($coll1->toArray() as $key => $value){
+                if(!$result->contains($value)){
+                    if($value instanceof AssociationEntity){
+                        $this->getEntityManager()->remove($value);
+                    }
+                }
+            }
+
+            return $result;
 
     }
 

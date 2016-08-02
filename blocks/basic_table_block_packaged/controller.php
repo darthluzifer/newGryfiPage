@@ -3,8 +3,11 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
 use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
+use Concrete\Package\BaclucEventPackage\Src\EventGroup;
+use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
+use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
@@ -16,6 +19,10 @@ use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
 use User;
@@ -50,7 +57,6 @@ class Controller extends BlockController
      * Blockhandle, same name as the directory
      */
     protected $btHandle = 'basic_table_block_packaged';
-
 
 
     /**
@@ -97,7 +103,6 @@ class Controller extends BlockController
     protected $header = "BasicTablePackaged";
 
 
-
     /**
      * @var \Concrete\Package\BasicTablePackage\Src\BasicTableInstance
      */
@@ -111,7 +116,7 @@ class Controller extends BlockController
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $entityManager;
+    private $entityManager;
 
     /**
      * Array of \Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption
@@ -136,11 +141,9 @@ class Controller extends BlockController
         /*
          * if the basic table block is extended, $this->model is already set and should not be overwritted, that the name of the session variable is set right
          * */
-        if($this->model == null) {
+        if ($this->model == null) {
             $this->model = new ExampleEntity();
         }
-
-
 
 
         $this->generatePostFieldMap();
@@ -166,18 +169,15 @@ class Controller extends BlockController
 
 
         //load the current options
-        $pkg = Package::getByHandle('basic_table_package');
-        $em = $pkg->getEntityManager();
-        $this->package = $pkg;
-        $this->entityManager = $em;
+
         if ($obj instanceof Block) {
 
 
-            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
+            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
 
             $this->basicTableInstance = $bt;
         }
-    $this->requiredOptions = array();
+        $this->requiredOptions = array();
 
 
     }
@@ -201,12 +201,12 @@ class Controller extends BlockController
     public function getBasicTableInstance()
     {
         if ($this->basicTableInstance == null) {
-            $bt = $this->entityManager->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
+            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
             if ($bt == null) {
                 $bt = new BasicTableInstance();
                 $bt->set("bID", $this->bID);
-                $this->entityManager->persist($bt);
-                $this->entityManager->flush($bt);
+                $this->getEntityManager()->persist($bt);
+                $this->getEntityManager()->flush($bt);
             }
             $this->basicTableInstance = $bt;
         }
@@ -323,19 +323,19 @@ class Controller extends BlockController
      */
     function delete()
     {
-        $em = $this->entityManager;
+        $em = $this->getEntityManager();
 
         $em->beginTransaction();
-         try{
+        try {
             $em->remove($this->getBasicTableInstance());
             $em->flush();
 
             parent::delete();
-             $em->commit();
-         }catch(\Exception $e){
-             $em->rollback();
-             throw $e;
-         }
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+            throw $e;
+        }
     }
 
     /**
@@ -344,6 +344,34 @@ class Controller extends BlockController
      */
     function action_save_row()
     {
+
+//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
+//        $EventGroup = new EventGroup();
+//
+//        //$otherEntityManager = Package::getByHandle('bacluc_event_package')->getEntityManager();
+//
+//
+//        $this->getEntityManager()->persist($Event);
+//        $Group = $this->getEntityManager()->getRepository(get_class(new Group()))->findOneBy(array("gID" => 6));
+//        $EventGroup->Group = $Group;
+//        $this->getEntityManager()->persist($Group);
+//        $EventGroup->Event = $Event;
+//
+//        foreach($Event->EventGroups as $key => $groupAssociation){
+//            $Event->EventGroups->removeElement($groupAssociation);
+//            $this->entityManager->remove($groupAssociation);
+//        }
+//
+//
+//        $Event->EventGroups->add($EventGroup);
+//        $this->getEntityManager()->persist($EventGroup);
+//        $this->getEntityManager()->flush();
+//        $this->getEntityManager()->detach($Event);
+//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
+//
+//        return;
+
+
         //form view is over
         $this->isFormview = false;
         $u = new User();
@@ -396,7 +424,7 @@ class Controller extends BlockController
             $savevalues = $_REQUEST;
 
             //add additional fields
-            if(count($this->addFields)>0) {
+            if (count($this->addFields) > 0) {
                 foreach ($this->addFields as $key => $value) {
                     $savevalues[$key] = $value;
                 }
@@ -428,26 +456,28 @@ class Controller extends BlockController
             if ($this->editKey == null) {
 
             } else {
-                $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+                $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             }
 
             //save values
             foreach ($this->getFields() as $key => $value) {
-                if($v[$key] instanceof  Entity ){
-                    $this->entityManager->persist($v[$key]);
-                }elseif( $v[$key] instanceof  ArrayCollection){
-                    foreach($v[$key]->toArray() as $refnum =>$refObject){
-                        $this->entityManager->persist($refObject);
+                if ($key != $model->getIdFieldName()) {
+                    if ($v[$key] instanceof Entity) {
+                        $this->getEntityManager()->persist($v[$key]);
+                    } elseif ($v[$key] instanceof ArrayCollection) {
+                        foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                            $this->getEntityManager()->persist($refObject);
+                        }
                     }
+                    $model->set($key, $v[$key]);
                 }
-                $model->set($key, $v[$key]);
             }
 
 
             //if the data is inserted, the saveself fields can only save afterwards
 
-            $this->entityManager->persist($model);
-            $this->entityManager->flush();
+            $this->getEntityManager()->persist($model);
+            $this->getEntityManager()->flush();
 
 
             if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
@@ -489,7 +519,7 @@ class Controller extends BlockController
 
         if ($_POST['action'] == 'edit') {
             $this->prepareFormEdit();
-        } elseif($_POST['action'] == 'delete') {
+        } elseif ($_POST['action'] == 'delete') {
             $this->deleteRow();
         }
     }
@@ -503,9 +533,9 @@ class Controller extends BlockController
     public function deleteRow()
     {
 
-        $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
-        $this->entityManager->remove($model);
-        $this->entityManager->flush();
+        $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+        $this->getEntityManager()->remove($model);
+        $this->getEntityManager()->flush();
         $r = true;
         $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
         if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
@@ -648,6 +678,8 @@ class Controller extends BlockController
 
 
         $toPersist = array();
+
+
         if (count($args) > 0) {
 
             $blockOptionPostMap = $this->generateOptionsPostFieldMap();
@@ -679,34 +711,70 @@ class Controller extends BlockController
                 }
             }
         }
-        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
-        $Group->set("gName", "test");
-        $this->entityManager->persist($Group);
-        $this->entityManager->flush($Group);
-
-        $Group = $this->entityManager->getRepository(get_class(new Group()))->find(6);
-        $GroupRefOption = $this->entityManager->getRepository(get_class(new GroupRefOption()))->find(3);
-        $GroupRefOption->Groups->add($Group);
-        $this->entityManager->persist($GroupRefOption);
-        $this->entityManager->flush($GroupRefOption);
-
-
-
-
-
-
-
-        return;
 
         if (count($toPersist) > 0) {
             foreach ($toPersist as $num => $blockOption) {
                 $blockOption->set('optionType', get_class($blockOption));
-                $this->entityManager->persist($blockOption);
+                $this->getEntityManager()->persist($blockOption);
             }
         }
-        $this->entityManager->persist($this->basicTableInstance);
-        $this->entityManager->flush($this->basicTableInstance);
+        $this->getEntityManager()->persist($this->basicTableInstance);
+        $this->getEntityManager()->flush($this->basicTableInstance);
 
+    }
+
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getBuildQueryWithJoinedAssociations(){
+        $selectEntities = array(get_class($this->model)=>null);
+
+        /**
+         * @var ClassMetadata $metadata
+         */
+        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($this->model));
+        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
+            $targetEntityInstance = new $mapping['targetEntity'];
+            $selectEntities[$mapping['targetEntity']] = $mapping['fieldName'];
+
+        }
+
+
+        /**
+         * @var QueryBuilder $query
+         */
+        $query = $this->getEntityManager()->createQueryBuilder();
+
+        //add select
+
+        $entities = array_keys($selectEntities);
+
+        $selectString = "";
+        $entityCounter = 0;
+        foreach($entities as $key => $entityName){
+            if($entityCounter > 0){
+                $selectString.=",";
+            }
+            $selectString.=" e".$entityCounter++;
+        }
+        $query->select($selectString);
+
+
+        $query->from(reset($entities), "e0");
+
+        $entityCounter = 1;
+        $lastEntityName = null;
+        foreach($selectEntities as $entityName => $fieldName){
+            if($lastEntityName == null){
+                $lastEntityName = $entityName;
+                continue;
+            }
+            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
+
+        }
+
+        return $query;
     }
 
 
@@ -717,8 +785,9 @@ class Controller extends BlockController
     public function displayTable()
     {
 
-        //TODO add filter
-        $modelList = $this->entityManager->getRepository(get_class($this->model))->findAll();
+
+
+        $modelList = $this->getBuildQueryWithJoinedAssociations()->getQuery()->getResult();
 
 
         $tabledata = array();
@@ -736,7 +805,11 @@ class Controller extends BlockController
      */
     public function getFields()
     {
-        return $this->model->getFieldTypes();
+        if ($this->editKey == null) {
+            return $this->model->getFieldTypes();
+        }
+        return $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey))->getFieldTypes();
+
     }
 
 
@@ -774,7 +847,11 @@ class Controller extends BlockController
             }
 
         } else {
-            $model = $this->entityManager->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+            //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+            $query = $this->getBuildQueryWithJoinedAssociations();
+            $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+            $model = $query->getQuery()->getSingleResult();
+
             try {
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
@@ -880,6 +957,16 @@ class Controller extends BlockController
     }
 
 
+    public function getEntityManager()
+    {
+        if($this->entityManager == null) {
+            $pkg = Package::getByHandle('basic_table_package');
+            $em = $pkg->getEntityManager();
+            $this->package = $pkg;
+            $this->entityManager = $em;
+        }
+        return $this->entityManager;
+    }
 
 
 }

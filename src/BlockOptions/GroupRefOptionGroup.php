@@ -2,41 +2,54 @@
 /**
  * Created by PhpStorm.
  * User: lucius
- * Date: 21.12.15
- * Time: 14:53
+ * Date: 26.07.16
+ * Time: 08:21
  */
 
-namespace Concrete\Package\BasicTablePackage\Src;
+namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 
 
+use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\Group;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
- * Class ExampleEntity
- * @package Concrete\Package\BasicTablePackage\Src
+ * Class EventGroup
+ * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
- * @Table(name="btExampleEntity")
+ * @Table(name="grouprefoption_group")
+ *
  */
-class ExampleEntity extends Entity
+class GroupRefOptionGroup extends AssociationEntity
 {
+
     /**
      * @var int
      * @Id @Column(type="integer")
-     * @GEneratedValue(strategy="AUTO")
+     * @GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    /**
+     *
+     * @var GroupRefOption
+     * @ManyToOne(targetEntity="GroupRefOption", inversedBy="GroupAssociations")
+     * @JoinColumn(name="grouprefoption_id", referencedColumnName="id",onDelete="CASCADE")
+     */
+    protected $GroupRefOption;
 
     /**
-     * @var string
-     * @Column(type="string")
+     *
+     * @var Group
+     * @ManyToOne(targetEntity="Concrete\Package\BasicTablePackage\Src\Group")
+     * @JoinColumn(name="group_id", referencedColumnName="gID",onDelete="CASCADE")
      */
-    protected $value;
+    protected $Group;
 
 
 
     public function __construct(){
         parent::__construct();
-        $this->fieldTypes['id']=new FieldTypes\Field('id', 'ID', 'identifier');
-        $this->fieldTypes['value']=new FieldTypes\Field('value', 'Wert', 'wert');
     }
 
 
@@ -64,13 +77,7 @@ class ExampleEntity extends Entity
             && !in_array($name, $this->protectWrite)
             && !in_array($name, $this->fieldTypes)
         ) {
-            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
-                $this->$name = $this->mergeCollections($this->$name,$value);
-                return $this;
-            }
-
             $this->$name = $value;
-            return $this;
         }
     }
 
