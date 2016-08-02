@@ -74,7 +74,13 @@ class BasicTableInstance extends Entity
             && !in_array($name, $this->protectWrite)
             && !in_array($name, $this->fieldTypes)
         ) {
+            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
+                $this->$name = $this->mergeCollections($this->$name,$value);
+                return $this;
+            }
+
             $this->$name = $value;
+            return $this;
         }
     }
 

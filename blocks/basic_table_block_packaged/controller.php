@@ -770,7 +770,7 @@ class Controller extends BlockController
                 $lastEntityName = $entityName;
                 continue;
             }
-            $query->join("e0.".$fieldName, "e".$entityCounter++, Join::LEFT_JOIN);
+            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
 
         }
 

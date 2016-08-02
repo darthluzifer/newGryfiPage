@@ -94,7 +94,8 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
         $sqlArray = new ArrayCollection();
         foreach($postvalues as $num => $postvalue){
-            if(in_array($postvalue, $options)){
+            $postvalue = trim($postvalue);
+            if(in_array($postvalue, $options) ){
                 $findItem = $this->getEntityManager()
                     ->getRepository($this->targetEntity)
                     ->findOneBy(array(

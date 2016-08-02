@@ -163,6 +163,11 @@ class Group extends Entity
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     public function set($name, $value)
     {
         if(property_exists($this, $name)
@@ -170,7 +175,13 @@ class Group extends Entity
             && !in_array($name, $this->protectWrite)
             && !in_array($name, $this->fieldTypes)
         ) {
+            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
+                $this->$name = $this->mergeCollections($this->$name,$value);
+                return $this;
+            }
+
             $this->$name = $value;
+            return $this;
         }
     }
 
