@@ -127,6 +127,7 @@ class Schema extends AbstractAsset
     {
         $namespaceName = $table->getNamespaceName();
         $tableName = $table->getFullQualifiedName($this->getName());
+
         if (isset($this->_tables[$tableName])) {
             throw SchemaException::tableAlreadyExists($tableName);
         }
