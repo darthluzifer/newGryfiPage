@@ -3,7 +3,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\FileField;
 ?>
 
-<div class="table-responsive">
+<div class="table-responsive basic_table_package">
  
  
 

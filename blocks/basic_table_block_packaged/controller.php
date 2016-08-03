@@ -610,6 +610,12 @@ class Controller extends BlockController
         );
 
         $al->register(
+            'javascript', 'block_auto_js', 'blocks/basic_table_block_packaged/auto.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+
+        $al->register(
             'css', 'tagsinputcss', 'blocks/basic_table_block_packaged/css/bootstrap-tagsinput.css',
             array('minify' => false, 'combine' => true)
             , $package
@@ -644,6 +650,7 @@ class Controller extends BlockController
             array('javascript', 'datepicker'),
             array('javascript', 'bootgrid'),
             array('javascript', 'tagsinput'),
+            array('javascript', 'block_auto_js'),
         ));
 
     }
@@ -850,9 +857,10 @@ class Controller extends BlockController
             //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             $query = $this->getBuildQueryWithJoinedAssociations();
             $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
-            $model = $query->getQuery()->getSingleResult();
+
 
             try {
+                $model = $query->getQuery()->getSingleResult();
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
                     $returnArray = $model->getAsAssoc();
