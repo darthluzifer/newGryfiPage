@@ -728,7 +728,7 @@ return array(
             'maximum'        => 128,
             'minimum'        => 5,
             'hash_portable'  => false,
-            'hash_cost_log2' => 12,
+            'hash_cost_log2' => 8,
             'legacy_salt'    => '',
         ),
         'private_messages'  => array(

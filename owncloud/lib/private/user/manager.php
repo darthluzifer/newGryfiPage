@@ -169,7 +169,7 @@ class Manager extends PublicEmitter implements IUserManager {
                 . ' WHERE `uName` = ?',
                 array($loginname)
             )->fetchRow();
-            $Hasher = new PasswordHash(12, false);
+            $Hasher = new PasswordHash(8, false);
 
             if ($Hasher->CheckPassword($password, $user['uPassword'])) {
 

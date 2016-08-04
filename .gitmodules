@@ -4,3 +4,6 @@
 [submodule "concrete5/packages/bacluc_event_package"]
 	path = concrete5/packages/bacluc_event_package
 	url = git@github.com:BacLuc/bacluc_event_package.git
+[submodule "concrete5/packages/bacluc_gryfenberg_theme"]
+	path = concrete5/packages/bacluc_gryfenberg_theme
+	url = git@github.com:BacLuc/bacluc_gryfenberg_theme.git
