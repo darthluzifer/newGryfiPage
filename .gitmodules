@@ -10,3 +10,6 @@
 [submodule "concrete5/packages/theme_c57_bootstrap"]
 	path = concrete5/packages/theme_c57_bootstrap
 	url = git@github.com:dsgraham/theme_c57_bootstrap.git
+[submodule "concrete5/packages/concrete_bootstrap_boilerplate_theme"]
+	path = concrete5/packages/concrete_bootstrap_boilerplate_theme
+	url = git@github.com:BacLuc/concrete_bootstrap_boilerplate_theme.git
