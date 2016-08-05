@@ -59,14 +59,18 @@ class User extends \Concrete\Core\User\User
                 $app['director']->dispatch('on_user_enter_group', $ue);
                 //$l->addEntry($g->getGroupName());
                 if($g->getGroupName() === "owncloud"){
-                    $user = UserInfo::getByID($this->getUserID());
-                    $db->Replace("oc_users", array(
-                        'uid' => $this->getUserName(),
-                        'password' => $user->getUserPassword()
-                    ),
-                        array('uid'),
-                        true);
-                }
+                    try {
+                        $user = UserInfo::getByID($this->getUserID());
+                        $db->Replace("oc_users", array(
+                            'uid' => $this->getUserName(),
+                            'password' => $user->getUserPassword()
+                        ),
+                            array('uid'),
+                            true);
+                        }catch(\Exception $e){
+
+                        }
+                    }
             }
         }
     }
