@@ -7,3 +7,6 @@
 [submodule "concrete5/packages/bacluc_gryfenberg_theme"]
 	path = concrete5/packages/bacluc_gryfenberg_theme
 	url = git@github.com:BacLuc/bacluc_gryfenberg_theme.git
+[submodule "concrete5/packages/theme_c57_bootstrap"]
+	path = concrete5/packages/theme_c57_bootstrap
+	url = git@github.com:dsgraham/theme_c57_bootstrap.git
