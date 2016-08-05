@@ -1,9 +1,0 @@
-{
-    "config": {
-        "optimize-autoloader": true
-    },
-    "require": {
-        "php": ">=5.3.3",
-        "fzaninotto/faker": "1.4.0"
-    }
-}

@@ -1,7 +1,7 @@
 <?php
 namespace {
     die('Intended for use with IDE symbol matching only.');
-    //Generated on Thu, 07 Apr 2016 16:17:53 +0200
+    //Generated on Thu, 04 Aug 2016 12:49:18 +0200
 
     class Area extends \Concrete\Core\Area\Area
     {
@@ -270,9 +270,9 @@ namespace {
          *
          * @return Area[]
          */
-        public function getListOnPage(Concrete\Core\Page\Page $c)
+        public static function getListOnPage(Concrete\Core\Page\Page $c)
         {
-            return parent::getListOnPage($c);
+            return Concrete\Core\Area\Area::getListOnPage($c);
         }
         /**
          * This function removes all permissions records for the current Area
@@ -1097,11 +1097,11 @@ namespace {
             return Concrete\Core\Block\Block::populateManually($blockInfo, $c, $a);
         }
         /**
-         * Returns a global block.
+         * Returns a block.
          */
-        public static function getByName($globalBlockName)
+        public static function getByName($blockName)
         {
-            return Concrete\Core\Block\Block::getByName($globalBlockName);
+            return Concrete\Core\Block\Block::getByName($blockName);
         }
         public static function getByID($bID, $c = null, $a = null)
         {
@@ -1994,9 +1994,9 @@ namespace {
         {
             return parent::getQueryStringSortDirectionVariable();
         }
-        protected function getStickySearchNameSpace()
+        protected function getStickySearchNameSpace($namespace = "")
         {
-            return parent::getStickySearchNameSpace();
+            return parent::getStickySearchNameSpace($namespace);
         }
         public function resetSearchRequest($namespace = "")
         {
@@ -2236,6 +2236,17 @@ namespace {
         }
     }
 
+    /**
+     * Base class for the three caching layers present in Concrete5:
+     *   - ExpensiveCache
+     *   - ObjectCache
+     *   - RequestCache
+     *
+     * Cache storage is performed using the Stash Library, see http://www.stashphp.com/
+     *
+     * This class imports the various caching settings from Config class, sets
+     * up the Stash pools and provides a basic caching API for all of Concrete5.
+     */
     class Cache extends \Concrete\Core\Cache\Cache
     {
         /**
@@ -3641,13 +3652,14 @@ namespace {
 
     class CollectionAttributeKey extends \Concrete\Core\Attribute\Key\CollectionKey
     {
-        public function getIndexedSearchTable()
+        public static function getDefaultIndexedSearchTable()
         {
-            return parent::getIndexedSearchTable();
+            return Concrete\Core\Attribute\Key\CollectionKey::getDefaultIndexedSearchTable();
         }
         /**
          * Returns an attribute value list of attributes and values (duh) which a collection version can store
          * against its object.
+         *
          * @return AttributeValueList
          */
         public static function getAttributes($cID, $cvID, $method = "getValue")
@@ -3694,12 +3706,16 @@ namespace {
         {
             return parent::delete();
         }
+        public function getIndexedSearchTable()
+        {
+            return parent::getIndexedSearchTable();
+        }
         public function getSearchIndexFieldDefinition()
         {
             return parent::getSearchIndexFieldDefinition();
         }
         /**
-         * Returns the name for this attribute key
+         * Returns the name for this attribute key.
          */
         public function getAttributeKeyName()
         {
@@ -3709,6 +3725,7 @@ namespace {
          * @param string $format = 'html'
          *    Escape the result in html format (if $format is 'html').
          *    If $format is 'text' or any other value, the display name won't be escaped.
+         *
          * @return string
          */
         public function getAttributeKeyDisplayName($format = "html")
@@ -3716,21 +3733,21 @@ namespace {
             return parent::getAttributeKeyDisplayName($format);
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getAttributeKeyHandle()
         {
             return parent::getAttributeKeyHandle();
         }
         /**
-         * Deprecated. Going to be replaced by front end display name
+         * Deprecated. Going to be replaced by front end display name.
          */
         public function getAttributeKeyDisplayHandle()
         {
             return parent::getAttributeKeyDisplayHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getAttributeKeyID()
         {
@@ -3741,14 +3758,14 @@ namespace {
             return parent::getAttributeKeyCategoryID();
         }
         /**
-         * Returns whether the attribute key is searchable
+         * Returns whether the attribute key is searchable.
          */
         public function isAttributeKeySearchable()
         {
             return parent::isAttributeKeySearchable();
         }
         /**
-         * Returns whether the attribute key is internal
+         * Returns whether the attribute key is internal.
          */
         public function isAttributeKeyInternal()
         {
@@ -3787,7 +3804,7 @@ namespace {
             return parent::getComputedAttributeKeyCategoryHandle();
         }
         /**
-         * Loads the required attribute fields for this instantiated attribute
+         * Loads the required attribute fields for this instantiated attribute.
          */
         protected function load($akIdentifier, $loadBy = "akID")
         {
@@ -3806,14 +3823,14 @@ namespace {
             return Concrete\Core\Attribute\Key\Key::getInstanceByID($akID);
         }
         /**
-         * Returns an attribute type object
+         * Returns an attribute type object.
          */
         public function getAttributeType()
         {
             return parent::getAttributeType();
         }
         /**
-         * Returns the attribute type handle
+         * Returns the attribute type handle.
          */
         public function getAttributeTypeHandle()
         {
@@ -3822,6 +3839,13 @@ namespace {
         public function getAttributeKeyType()
         {
             return parent::getAttributeKeyType();
+        }
+        /**
+         * Returns a list of all attributes of this category.
+         */
+        public static function getAttributeKeyList($akCategoryHandle, $filters = array())
+        {
+            return Concrete\Core\Attribute\Key\Key::getAttributeKeyList($akCategoryHandle, $filters);
         }
         public function export($axml, $exporttype = "full")
         {
@@ -3845,6 +3869,13 @@ namespace {
         {
             return Concrete\Core\Attribute\Key\Key::import($ak);
         }
+        /**
+         * Adds an attribute key.
+         */
+        protected static function addAttributeKey($akCategoryHandle, $type, $args, $pkg = false)
+        {
+            return Concrete\Core\Attribute\Key\Key::addAttributeKey($akCategoryHandle, $type, $args, $pkg);
+        }
         public function refreshCache()
         {
             return parent::refreshCache();
@@ -3857,7 +3888,7 @@ namespace {
             return parent::update($args);
         }
         /**
-         * Duplicates an attribute key
+         * Duplicates an attribute key.
          */
         public function duplicate($args = array())
         {
@@ -3890,7 +3921,7 @@ namespace {
             return parent::getAttributeValueIDList();
         }
         /**
-         * Adds a generic attribute record (with this type) to the AttributeValues table
+         * Adds a generic attribute record (with this type) to the AttributeValues table.
          */
         public function addAttributeValue()
         {
@@ -3916,6 +3947,7 @@ namespace {
         }
         /**
          * Validates the request object to see if the current request fulfills the "requirement" portion of an attribute.
+         *
          * @return bool|\Concrete\Core\Error\Error
          */
         public function validateAttributeForm()
@@ -3967,14 +3999,14 @@ namespace {
             return parent::getKeyName();
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getKeyHandle()
         {
             return parent::getKeyHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getKeyID()
         {
@@ -4165,7 +4197,7 @@ namespace {
         {
             return parent::getHandle();
         }
-        public function deauthenticate(Concrete\Core\User\User $u)
+        public function deauthenticate(Application\Src\User\User $u)
         {
             return parent::deauthenticate($u);
         }
@@ -4173,7 +4205,7 @@ namespace {
         {
             return parent::getAuthenticationTypeIconHTML();
         }
-        public function verifyHash(Concrete\Core\User\User $u, $hash)
+        public function verifyHash(Application\Src\User\User $u, $hash)
         {
             return parent::verifyHash($u, $hash);
         }
@@ -4181,11 +4213,11 @@ namespace {
         {
             return parent::view();
         }
-        public function buildHash(Concrete\Core\User\User $u, $test = 1)
+        public function buildHash(Application\Src\User\User $u, $test = 1)
         {
             return parent::buildHash($u, $test);
         }
-        public function isAuthenticated(Concrete\Core\User\User $u)
+        public function isAuthenticated(Application\Src\User\User $u)
         {
             return parent::isAuthenticated($u);
         }
@@ -4228,7 +4260,7 @@ namespace {
         {
             return parent::getAuthenticationType();
         }
-        public function completeAuthentication(Concrete\Core\User\User $u)
+        public function completeAuthentication(Application\Src\User\User $u)
         {
             return parent::completeAuthentication($u);
         }
@@ -4354,6 +4386,15 @@ namespace {
         public function request($key = null)
         {
             return parent::request($key);
+        }
+        /**
+         * Set the application object
+         *
+         * @param \Concrete\Core\Application\Application $application
+         */
+        public function setApplication(Concrete\Core\Application\Application $application)
+        {
+            return parent::setApplication($application);
         }
     }
 
@@ -4481,6 +4522,15 @@ namespace {
         public function request($key = null)
         {
             return parent::request($key);
+        }
+        /**
+         * Set the application object
+         *
+         * @param \Concrete\Core\Application\Application $application
+         */
+        public function setApplication(Concrete\Core\Application\Application $application)
+        {
+            return parent::setApplication($application);
         }
     }
 
@@ -4891,6 +4941,10 @@ namespace {
         {
             return Concrete\Core\Conversation\Editor\Editor::getListByPackage($pkg);
         }
+        public function export($xml)
+        {
+            return parent::export($xml);
+        }
         /**
          * Adds a ConversationEditors node and all Editor records to the provided SimleXMLElement object provided.
          *
@@ -5005,6 +5059,10 @@ namespace {
         {
             return parent::getConversationMessageBody();
         }
+        public function getConversationMessageDateCreated()
+        {
+            return parent::getConversationMessageDateCreated();
+        }
         public function getConversationID()
         {
             return parent::getConversationID();
@@ -5072,6 +5130,10 @@ namespace {
         public function conversationMessageHasActiveChildren()
         {
             return parent::conversationMessageHasActiveChildren();
+        }
+        public function setMessageDateCreated($cnvMessageDateCreated)
+        {
+            return parent::setMessageDateCreated($cnvMessageDateCreated);
         }
         public function setMessageBody($cnvMessageBody)
         {
@@ -5223,6 +5285,10 @@ namespace {
         public static function getByID($cnvRatingTypeID)
         {
             return Concrete\Core\Conversation\Rating\Type::getByID($cnvRatingTypeID);
+        }
+        public function export($xml)
+        {
+            return parent::export($xml);
         }
         public static function exportList($xml)
         {
@@ -5559,7 +5625,7 @@ namespace {
          * @param \User $u
          * @return void
          */
-        public function deauthenticate(Concrete\Core\User\User $u)
+        public function deauthenticate(Application\Src\User\User $u)
         {
             return parent::deauthenticate($u);
         }
@@ -5569,7 +5635,7 @@ namespace {
          * @param \User $u
          * @return bool Returns true if user is authenticated, false if not
          */
-        public function isAuthenticated(Concrete\Core\User\User $u)
+        public function isAuthenticated(Application\Src\User\User $u)
         {
             return parent::isAuthenticated($u);
         }
@@ -5618,7 +5684,7 @@ namespace {
          *
          * @return string Unique hash to be used to verify the users identity
          */
-        public function buildHash(Concrete\Core\User\User $u)
+        public function buildHash(Application\Src\User\User $u)
         {
             return parent::buildHash($u);
         }
@@ -5630,7 +5696,7 @@ namespace {
          *
          * @return bool returns true if the hash is valid, false if not
          */
-        public function verifyHash(Concrete\Core\User\User $u, $hash)
+        public function verifyHash(Application\Src\User\User $u, $hash)
         {
             return parent::verifyHash($u, $hash);
         }
@@ -5743,7 +5809,7 @@ namespace {
          *
          * @return int|null
          */
-        public function bindUser(Concrete\Core\User\User $user, $binding)
+        public function bindUser(Application\Src\User\User $user, $binding)
         {
             return parent::bindUser($user, $binding);
         }
@@ -5765,7 +5831,7 @@ namespace {
         {
             return parent::getAuthenticationType();
         }
-        public function completeAuthentication(Concrete\Core\User\User $u)
+        public function completeAuthentication(Application\Src\User\User $u)
         {
             return parent::completeAuthentication($u);
         }
@@ -5892,6 +5958,15 @@ namespace {
         {
             return parent::request($key);
         }
+        /**
+         * Set the application object
+         *
+         * @param \Concrete\Core\Application\Application $application
+         */
+        public function setApplication(Concrete\Core\Application\Application $application)
+        {
+            return parent::setApplication($application);
+        }
     }
 
     /**
@@ -6014,6 +6089,10 @@ namespace {
         {
             return parent::getVersionToModify($forceCreateNew);
         }
+        public function createNewVersion($copyUnderlyingFile = false)
+        {
+            return parent::createNewVersion($copyUnderlyingFile);
+        }
         public function getFileID()
         {
             return parent::getFileID();
@@ -6094,13 +6173,14 @@ namespace {
 
     class FileAttributeKey extends \Concrete\Core\Attribute\Key\FileKey
     {
-        public function getIndexedSearchTable()
+        public static function getDefaultIndexedSearchTable()
         {
-            return parent::getIndexedSearchTable();
+            return Concrete\Core\Attribute\Key\FileKey::getDefaultIndexedSearchTable();
         }
         /**
          * Returns an attribute value list of attributes and values (duh) which a collection version can store
          * against its object.
+         *
          * @return AttributeValueList
          */
         public static function getAttributes($fID, $fvID, $method = "getValue")
@@ -6140,7 +6220,6 @@ namespace {
             return Concrete\Core\Attribute\Key\FileKey::getUserAddedList();
         }
         /**
-         * @access private
          */
         public static function get($akID)
         {
@@ -6162,12 +6241,16 @@ namespace {
         {
             return parent::delete();
         }
+        public function getIndexedSearchTable()
+        {
+            return parent::getIndexedSearchTable();
+        }
         public function getSearchIndexFieldDefinition()
         {
             return parent::getSearchIndexFieldDefinition();
         }
         /**
-         * Returns the name for this attribute key
+         * Returns the name for this attribute key.
          */
         public function getAttributeKeyName()
         {
@@ -6177,6 +6260,7 @@ namespace {
          * @param string $format = 'html'
          *    Escape the result in html format (if $format is 'html').
          *    If $format is 'text' or any other value, the display name won't be escaped.
+         *
          * @return string
          */
         public function getAttributeKeyDisplayName($format = "html")
@@ -6184,21 +6268,21 @@ namespace {
             return parent::getAttributeKeyDisplayName($format);
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getAttributeKeyHandle()
         {
             return parent::getAttributeKeyHandle();
         }
         /**
-         * Deprecated. Going to be replaced by front end display name
+         * Deprecated. Going to be replaced by front end display name.
          */
         public function getAttributeKeyDisplayHandle()
         {
             return parent::getAttributeKeyDisplayHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getAttributeKeyID()
         {
@@ -6209,14 +6293,14 @@ namespace {
             return parent::getAttributeKeyCategoryID();
         }
         /**
-         * Returns whether the attribute key is searchable
+         * Returns whether the attribute key is searchable.
          */
         public function isAttributeKeySearchable()
         {
             return parent::isAttributeKeySearchable();
         }
         /**
-         * Returns whether the attribute key is internal
+         * Returns whether the attribute key is internal.
          */
         public function isAttributeKeyInternal()
         {
@@ -6255,7 +6339,7 @@ namespace {
             return parent::getComputedAttributeKeyCategoryHandle();
         }
         /**
-         * Loads the required attribute fields for this instantiated attribute
+         * Loads the required attribute fields for this instantiated attribute.
          */
         protected function load($akIdentifier, $loadBy = "akID")
         {
@@ -6274,14 +6358,14 @@ namespace {
             return Concrete\Core\Attribute\Key\Key::getInstanceByID($akID);
         }
         /**
-         * Returns an attribute type object
+         * Returns an attribute type object.
          */
         public function getAttributeType()
         {
             return parent::getAttributeType();
         }
         /**
-         * Returns the attribute type handle
+         * Returns the attribute type handle.
          */
         public function getAttributeTypeHandle()
         {
@@ -6290,6 +6374,13 @@ namespace {
         public function getAttributeKeyType()
         {
             return parent::getAttributeKeyType();
+        }
+        /**
+         * Returns a list of all attributes of this category.
+         */
+        public static function getAttributeKeyList($akCategoryHandle, $filters = array())
+        {
+            return Concrete\Core\Attribute\Key\Key::getAttributeKeyList($akCategoryHandle, $filters);
         }
         public function export($axml, $exporttype = "full")
         {
@@ -6313,6 +6404,13 @@ namespace {
         {
             return Concrete\Core\Attribute\Key\Key::import($ak);
         }
+        /**
+         * Adds an attribute key.
+         */
+        protected static function addAttributeKey($akCategoryHandle, $type, $args, $pkg = false)
+        {
+            return Concrete\Core\Attribute\Key\Key::addAttributeKey($akCategoryHandle, $type, $args, $pkg);
+        }
         public function refreshCache()
         {
             return parent::refreshCache();
@@ -6325,7 +6423,7 @@ namespace {
             return parent::update($args);
         }
         /**
-         * Duplicates an attribute key
+         * Duplicates an attribute key.
          */
         public function duplicate($args = array())
         {
@@ -6358,7 +6456,7 @@ namespace {
             return parent::getAttributeValueIDList();
         }
         /**
-         * Adds a generic attribute record (with this type) to the AttributeValues table
+         * Adds a generic attribute record (with this type) to the AttributeValues table.
          */
         public function addAttributeValue()
         {
@@ -6384,6 +6482,7 @@ namespace {
         }
         /**
          * Validates the request object to see if the current request fulfills the "requirement" portion of an attribute.
+         *
          * @return bool|\Concrete\Core\Error\Error
          */
         public function validateAttributeForm()
@@ -6435,14 +6534,14 @@ namespace {
             return parent::getKeyName();
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getKeyHandle()
         {
             return parent::getKeyHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getKeyID()
         {
@@ -6802,11 +6901,16 @@ namespace {
         }
     }
 
+    /**
+     * Represents a file set.
+     *
+     * @method static Set add(string $setName, int $fsOverrideGlobalPermissions = 0, bool|\User $u = false, int $type = self::TYPE_PUBLIC) Deprecated method. Use Set::create instead.
+     */
     class FileSet extends \Concrete\Core\File\Set\Set
     {
         /**
          * Returns an object mapping to the global file set, fsID = 0.
-         * This is really only used for permissions mapping
+         * This is really only used for permissions mapping.
          */
         public static function getGlobal()
         {
@@ -6814,6 +6918,7 @@ namespace {
         }
         /**
          * @param bool|\User $u
+         *
          * @return array
          */
         public static function getMySets($u = false)
@@ -6821,7 +6926,7 @@ namespace {
             return Concrete\Core\File\Set\Set::getMySets($u);
         }
         /**
-         * Creats a new fileset if set doesn't exists
+         * Creats a new fileset if set doesn't exists.
          *
          * If we find a multiple groups with the same properties,
          * we return an array containing each group
@@ -6829,6 +6934,7 @@ namespace {
          * @param string $fs_name
          * @param int    $fs_type
          * @param int|bool    $fs_uid
+         *
          * @return Mixed
          *
          * Dev Note: This will create duplicate sets with the same name if a set exists owned by another user!!!
@@ -6838,9 +6944,10 @@ namespace {
             return Concrete\Core\File\Set\Set::createAndGetSet($fs_name, $fs_type, $fs_uid);
         }
         /**
-         * Get a file set object by a file set's id
+         * Get a file set object by a file set's id.
          *
          * @param int $fsID
+         *
          * @return Set
          */
         public static function getByID($fsID)
@@ -6848,21 +6955,24 @@ namespace {
             return Concrete\Core\File\Set\Set::getByID($fsID);
         }
         /**
-         * Adds a File set
+         * Adds a File set.
+         *
          * @param string $setName
          * @param int $fsOverrideGlobalPermissions
          * @param bool|\User $u
          * @param int $type
+         *
          * @return Set
          */
-        public static function add($setName, $fsOverrideGlobalPermissions = 0, $u = false, $type = self::TYPE_PUBLIC)
+        public static function create($setName, $fsOverrideGlobalPermissions = 0, $u = false, $type = self::TYPE_PUBLIC)
         {
-            return Concrete\Core\File\Set\Set::add($setName, $fsOverrideGlobalPermissions, $u, $type);
+            return Concrete\Core\File\Set\Set::create($setName, $fsOverrideGlobalPermissions, $u, $type);
         }
         /**
-         * Static method to return an array of File objects by the set id
+         * Static method to return an array of File objects by the set id.
          *
          * @param  int $fsID
+         *
          * @return array|void
          */
         public static function getFilesBySetID($fsID)
@@ -6870,10 +6980,11 @@ namespace {
             return Concrete\Core\File\Set\Set::getFilesBySetID($fsID);
         }
         /**
-         * Static method to return an array of File objects by the set name
+         * Static method to return an array of File objects by the set name.
          *
          * @param  string   $fsName
          * @param  int|bool $uID
+         *
          * @return array|void
          */
         public static function getFilesBySetName($fsName, $uID = false)
@@ -6881,10 +6992,11 @@ namespace {
             return Concrete\Core\File\Set\Set::getFilesBySetName($fsName, $uID);
         }
         /**
-         * Get a file set object by a file name
+         * Get a file set object by a file name.
          *
          * @param  string   $fsName
          * @param  int|bool $uID
+         *
          * @return Set
          */
         public static function getByName($fsName, $uID = false)
@@ -6892,7 +7004,7 @@ namespace {
             return Concrete\Core\File\Set\Set::getByName($fsName, $uID);
         }
         /**
-         * Returns an array of File objects from the current set
+         * Returns an array of File objects from the current set.
          *
          * @return ConcreteFile[]
          */
@@ -6966,8 +7078,10 @@ namespace {
             return parent::getFileSetName();
         }
         /**
-         * Returns the display name for this file set (localized and escaped accordingly to $format)
+         * Returns the display name for this file set (localized and escaped accordingly to $format).
+         *
          * @param string $format
+         *
          * @return string
          */
         public function getFileSetDisplayName($format = "html")
@@ -6976,6 +7090,7 @@ namespace {
         }
         /**
          * Updates a file set.
+         *
          * @return Set
          */
         public function update($setName, $fsOverrideGlobalPermissions = 0)
@@ -6983,9 +7098,10 @@ namespace {
             return parent::update($setName, $fsOverrideGlobalPermissions);
         }
         /**
-         * Adds the file to the set
+         * Adds the file to the set.
          *
          * @param int|\File $f_id //accepts an ID or a File object
+         *
          * @return File|mixed
          */
         public function addFileToSet($f_id)
@@ -7186,6 +7302,10 @@ namespace {
         {
             return parent::updateTitle($title);
         }
+        public function duplicateUnderlyingFile()
+        {
+            return parent::duplicateUnderlyingFile();
+        }
         public function logVersionUpdate($updateTypeID, $updateTypeAttributeID = 0)
         {
             return parent::logVersionUpdate($updateTypeID, $updateTypeAttributeID);
@@ -7274,6 +7394,13 @@ namespace {
         {
             return parent::getDetailThumbnailImage();
         }
+        /**
+         * Resolve a path using the default core path resolver.
+         * Avoid using this method when you have access to your a resolver instance.
+         *
+         * @param $type
+         * @return null|string
+         */
         public function getThumbnailURL($type)
         {
             return parent::getThumbnailURL($type);
@@ -7646,9 +7773,9 @@ namespace {
          *
          * @return Area[]
          */
-        public function getListOnPage(Concrete\Core\Page\Page $c)
+        public static function getListOnPage(Concrete\Core\Page\Page $c)
         {
-            return parent::getListOnPage($c);
+            return Concrete\Core\Area\Area::getListOnPage($c);
         }
         /**
          * This function removes all permissions records for the current Area
@@ -8478,9 +8605,9 @@ namespace {
         {
             return parent::getQueryStringSortDirectionVariable();
         }
-        protected function getStickySearchNameSpace()
+        protected function getStickySearchNameSpace($namespace = "")
         {
-            return parent::getStickySearchNameSpace();
+            return parent::getStickySearchNameSpace($namespace);
         }
         public function resetSearchRequest($namespace = "")
         {
@@ -9337,6 +9464,7 @@ namespace {
         }
         /** Returns the currently active locale
          * @return string
+         *
          * @example 'en_US'
          */
         public static function activeLocale()
@@ -9345,6 +9473,7 @@ namespace {
         }
         /** Returns the language for the currently active locale
          * @return string
+         *
          * @example 'en'
          */
         public static function activeLanguage()
@@ -9354,6 +9483,13 @@ namespace {
         public function setLocale($locale)
         {
             return parent::setLocale($locale);
+        }
+        /**
+         * Load the site language files (must be done after all packages called their setupPackageLocalization)
+         */
+        public static function setupSiteLocalization(Zend\I18n\Translator\Translator $translate = null)
+        {
+            return Concrete\Core\Localization\Localization::setupSiteLocalization($translate);
         }
         public function getLocale()
         {
@@ -9377,12 +9513,14 @@ namespace {
          *   "en_US" => "English (United States)",
          *   "fr_FR" => "Francais (France)"]
          * The result will be sorted by the key.
-         * If the $displayLocale is set, the language- and region-names will be returned in that language
+         * If the $displayLocale is set, the language- and region-names will be returned in that language.
+         *
          * @param string|null $displayLocale Language of the description.
          *                    Set to null to get each locale name in its own language,
          *                    set to '' to use the current locale,
          *                    set to a specific locale to get the names in that language
-         * @return Array An associative Array with locale as the key and description as content
+         *
+         * @return array An associative Array with locale as the key and description as content
          */
         public static function getAvailableInterfaceLanguageDescriptions($displayLocale = "")
         {
@@ -9390,12 +9528,14 @@ namespace {
         }
         /**
          * Get the description of a locale consisting of language and region description
-         * e.g. "French (France)"
+         * e.g. "French (France)".
+         *
          * @param string $locale Locale that should be described
          * @param string|null $displayLocale Language of the description.
          *                    Set to null to get each locale name in its own language,
          *                    set to '' to use the current locale,
          *                    set to a specific locale to get the names in that language
+         *
          * @return string Description of a language
          */
         public static function getLanguageDescription($locale, $displayLocale = "")
@@ -9410,7 +9550,7 @@ namespace {
             return Concrete\Core\Localization\Localization::getCache();
         }
         /**
-         * Clear the translations cache
+         * Clear the translations cache.
          */
         public static function clearCache()
         {
@@ -9429,7 +9569,7 @@ namespace {
             return Concrete\Core\Marketplace\Marketplace::downloadRemoteFile($file);
         }
         /**
-         * Runs through all packages on the marketplace, sees if they're installed here, and updates the available version number for them
+         * Runs through all packages on the marketplace, sees if they're installed here, and updates the available version number for them.
          */
         public static function checkPackageUpdates()
         {
@@ -9461,15 +9601,16 @@ namespace {
         }
         /**
          * @return bool|string
+         *
          * @throws \Concrete\Core\File\Exception\RequestTimeoutException
          */
         public function generateSiteToken()
         {
             return parent::generateSiteToken();
         }
-        public function getSiteToken()
+        public static function getSiteToken()
         {
-            return parent::getSiteToken();
+            return Concrete\Core\Marketplace\Marketplace::getSiteToken();
         }
         public function getMarketplacePurchaseFrame($mp, $width = "100%", $height = "530")
         {
@@ -9481,11 +9622,10 @@ namespace {
      * A package can contains related components that customize concrete5. They can br easily
      * installed and uninstall by a user.
      *
-     * @property int $pkgId ID of package
      * @property string $pkgName Installed name of package
      * @property string $pkgHandle Installed handle of package. This should be provided by the ending package.
      * @property string $pkgDescription Installed description of package
-     * @property boolean $pkgIsInstalled True if package is installed
+     * @property bool $pkgIsInstalled True if package is installed
      * @property string $pkgVersion Version of package installed
      * @property string $pkgAvailableVersion
      */
@@ -9494,6 +9634,7 @@ namespace {
         /** Returns the display name of a category of package items (localized and escaped accordingly to $format)
          * @param string $categoryHandle The category handle
          * @param string $format         = 'html' Escape the result in html format (if $format is 'html'). If $format is 'text' or any other value, the display name won't be escaped.
+         *
          * @return string
          */
         public static function getPackageItemsCategoryDisplayName($categoryHandle, $format = "html")
@@ -9501,8 +9642,10 @@ namespace {
             return Concrete\Core\Package\Package::getPackageItemsCategoryDisplayName($categoryHandle, $format);
         }
         /**
-         * Returns the name of an object belonging to a package
-         * @param $item
+         * Returns the name of an object belonging to a package.
+         *
+         * @param mixed $item
+         *
          * @return string
          */
         public static function getItemName($item)
@@ -9511,9 +9654,11 @@ namespace {
         }
         /**
          * This is the pre-test routine that packages run through before they are installed. Any errors that come here are
-         * to be returned in the form of an array so we can show the user. If it's all good we return true
+         * to be returned in the form of an array so we can show the user. If it's all good we return true.
+         *
          * @param string $package Package handle
          * @param bool $testForAlreadyInstalled
+         *
          * @return array|bool Returns an array of errors or true if the package can be installed
          */
         public static function testForInstall($package, $testForAlreadyInstalled = true)
@@ -9521,8 +9666,10 @@ namespace {
             return Concrete\Core\Package\Package::testForInstall($package, $testForAlreadyInstalled);
         }
         /**
-         * Returns a package's class
+         * Returns a package's class.
+         *
          * @param string $pkgHandle Handle of package
+         *
          * @return Package
          */
         public static function getClass($pkgHandle)
@@ -9530,7 +9677,8 @@ namespace {
             return Concrete\Core\Package\Package::getClass($pkgHandle);
         }
         /**
-         * Returns the version of concrete5 required by the package
+         * Returns the version of concrete5 required by the package.
+         *
          * @return string
          */
         public function getApplicationVersionRequired()
@@ -9538,9 +9686,10 @@ namespace {
             return parent::getApplicationVersionRequired();
         }
         /**
-         * returns a Package object for the given package handle, null if not found
+         * Returns a Package object for the given package handle, null if not found.
          *
          * @param string $pkgHandle
+         *
          * @return Package
          */
         public static function getByHandle($pkgHandle)
@@ -9549,7 +9698,8 @@ namespace {
         }
         /**
          * Returns an array of packages that have newer versions in the local packages directory
-         * than those which are in the Packages table. This means they're ready to be upgraded
+         * than those which are in the Packages table. This means they're ready to be upgraded.
+         *
          * @return Package[]
          */
         public static function getLocalUpgradeablePackages()
@@ -9557,8 +9707,10 @@ namespace {
             return Concrete\Core\Package\Package::getLocalUpgradeablePackages();
         }
         /**
-         * Returns all available packages
+         * Returns all available packages.
+         *
          * @param bool $filterInstalled True to only return installed packages
+         *
          * @return Package[]
          */
         public static function getAvailablePackages($filterInstalled = true)
@@ -9566,7 +9718,8 @@ namespace {
             return Concrete\Core\Package\Package::getAvailablePackages($filterInstalled);
         }
         /**
-         * Returns all installed package handles
+         * Returns all installed package handles.
+         *
          * @return string[]
          */
         public static function getInstalledHandles()
@@ -9574,7 +9727,8 @@ namespace {
             return Concrete\Core\Package\Package::getInstalledHandles();
         }
         /**
-         * Finds all packages that have an upgraded version available in the marketplace
+         * Finds all packages that have an upgraded version available in the marketplace.
+         *
          * @return Package[]
          */
         public static function getRemotelyUpgradeablePackages()
@@ -9582,7 +9736,8 @@ namespace {
             return Concrete\Core\Package\Package::getRemotelyUpgradeablePackages();
         }
         /**
-         * Returns an array of all installed packages
+         * Returns an array of all installed packages.
+         *
          * @return Package[]
          */
         public static function getInstalledList()
@@ -9590,7 +9745,8 @@ namespace {
             return Concrete\Core\Package\Package::getInstalledList();
         }
         /**
-         * Returns the path to the package's folder, relative to the install path
+         * Returns the path to the package's folder, relative to the install path.
+         *
          * @return string
          */
         public function getRelativePath()
@@ -9598,7 +9754,8 @@ namespace {
             return parent::getRelativePath();
         }
         /**
-         * Returns the package handle
+         * Returns the package handle.
+         *
          * @return string
          */
         public function getPackageHandle()
@@ -9606,7 +9763,7 @@ namespace {
             return parent::getPackageHandle();
         }
         /**
-         * Gets the date the package was added to the system,
+         * Gets the date the package was added to the system.
          *
          * @return string date formatted like: 2009-01-01 00:00:00
          */
@@ -9619,8 +9776,9 @@ namespace {
             return parent::getPackageVersionUpdateAvailable();
         }
         /**
-         * Returns true if the package is installed, false if not
-         * @return boolean
+         * Returns true if the package is installed, false if not.
+         *
+         * @return bool
          */
         public function isPackageInstalled()
         {
@@ -9628,6 +9786,7 @@ namespace {
         }
         /**
          * Gets the contents of the package's CHANGELOG file. If no changelog is available an empty string is returned.
+         *
          * @return string
          */
         public function getChangelogContents()
@@ -9641,6 +9800,7 @@ namespace {
         /**
          * Returns the currently installed package version.
          * NOTE: This function only returns a value if getLocalUpgradeablePackages() has been called first!
+         *
          * @return string
          */
         public function getPackageCurrentlyInstalledVersion()
@@ -9655,7 +9815,8 @@ namespace {
             return parent::providesCoreExtensionAutoloaderMapping();
         }
         /**
-         * Returns custom autoloader prefixes registered by the class loader
+         * Returns custom autoloader prefixes registered by the class loader.
+         *
          * @return array Keys represent the namespace, not relative to the package's namespace. Values are the path, and are relative to the package directory.
          */
         public function getPackageAutoloaderRegistries()
@@ -9663,7 +9824,8 @@ namespace {
             return parent::getPackageAutoloaderRegistries();
         }
         /**
-         * Returns true if the package has a post install screen
+         * Returns true if the package has a post install screen.
+         *
          * @return bool
          */
         public function hasInstallPostScreen()
@@ -9671,7 +9833,8 @@ namespace {
             return parent::hasInstallPostScreen();
         }
         /**
-         * Returns true if the package has an install options screen
+         * Returns true if the package has an install options screen.
+         *
          * @return bool
          */
         public function showInstallOptionsScreen()
@@ -9682,12 +9845,16 @@ namespace {
         {
             return parent::hasInstallNotes();
         }
+        public function hasUninstallNotes()
+        {
+            return parent::hasUninstallNotes();
+        }
         public function allowsFullContentSwap()
         {
             return parent::allowsFullContentSwap();
         }
         /**
-         * Loads package translation files into zend translate
+         * Loads package translation files into zend translate.
          *
          * @param string                                  $locale    = null The identifier of the locale to activate (used to build the language file path). If empty we'll use currently active locale.
          * @param \Zend\I18n\Translator\Translator|string $translate = 'current' The Zend Translator instance that holds the translations (set to 'current' to use the current one)
@@ -9711,7 +9878,8 @@ namespace {
             return parent::uninstall();
         }
         /**
-         * Returns an array of package items (e.g. blocks, themes)
+         * Returns an array of package items (e.g. blocks, themes).
+         *
          * @return array
          */
         public function getPackageItems()
@@ -9721,7 +9889,7 @@ namespace {
         /**
          * Destroys all the existing proxy classes for this package.
          *
-         * @return boolean
+         * @return bool
          */
         protected function destroyProxyClasses()
         {
@@ -9737,6 +9905,13 @@ namespace {
             return parent::getDatabaseStructureManager();
         }
         /**
+         * @return EntityManagerFactoryInterface
+         */
+        public function getEntityManagerFactory()
+        {
+            return parent::getEntityManagerFactory();
+        }
+        /**
          * Gets a package specific entity manager.
          *
          * @return \Doctrine\ORM\EntityManager
@@ -9746,20 +9921,26 @@ namespace {
             return parent::getEntityManager();
         }
         /**
-         * Removes any existing pages, files, stacks, block and page types and installs content from the package
+         * Removes any existing pages, files, stacks, block and page types and installs content from the package.
+         *
          * @param $options
          */
         public function swapContent($options)
         {
             return parent::swapContent($options);
         }
+        /**
+         * @param array $options
+         *
+         * @return bool
+         */
         protected function validateClearSiteContents($options)
         {
             return parent::validateClearSiteContents($options);
         }
         /**
          * Returns a path to where the packages files are located.
-         * @access public
+         *
          * @return string $path
          */
         public function contentProvidesFileThumbnails()
@@ -9767,16 +9948,19 @@ namespace {
             return parent::contentProvidesFileThumbnails();
         }
         /**
-         * Converts package install test errors to human-readable strings
+         * Converts package install test errors to human-readable strings.
+         *
          * @param $testResults Package install test errors
+         *
          * @return array
          */
-        public function mapError($testResults)
+        public static function mapError($testResults)
         {
-            return parent::mapError($testResults);
+            return Concrete\Core\Package\Package::mapError($testResults);
         }
         /**
-         * Returns the directory containing package entities
+         * Returns the directory containing package entities.
+         *
          * @return string
          */
         public function getPackageEntitiesPath()
@@ -9784,14 +9968,14 @@ namespace {
             return parent::getPackageEntitiesPath();
         }
         /**
-         * Called to enable package specific configuration
+         * Called to enable package specific configuration.
          */
         public function registerConfigNamespace()
         {
             return parent::registerConfigNamespace();
         }
         /**
-         * Get the standard database config liaison
+         * Get the standard database config liaison.
          *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
@@ -9800,7 +9984,8 @@ namespace {
             return parent::getConfig();
         }
         /**
-         * Get the standard database config liaison
+         * Get the standard database config liaison.
+         *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
         public function getDatabaseConfig()
@@ -9808,7 +9993,8 @@ namespace {
             return parent::getDatabaseConfig();
         }
         /**
-         * Get the standard filesystem config liaison
+         * Get the standard filesystem config liaison.
+         *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
         public function getFileConfig()
@@ -9818,6 +10004,7 @@ namespace {
         /**
          * Installs the package info row and installs the database. Packages installing additional content should override this method, call the parent method,
          * and use the resulting package object for further installs.
+         *
          * @return Package
          */
         public function install()
@@ -9825,7 +10012,8 @@ namespace {
             return parent::install();
         }
         /**
-         * Returns the translated name of the package
+         * Returns the translated name of the package.
+         *
          * @return string
          */
         public function getPackageName()
@@ -9833,7 +10021,8 @@ namespace {
             return parent::getPackageName();
         }
         /**
-         * Returns the translated package description
+         * Returns the translated package description.
+         *
          * @return string
          */
         public function getPackageDescription()
@@ -9841,7 +10030,8 @@ namespace {
             return parent::getPackageDescription();
         }
         /**
-         * Returns the installed package version
+         * Returns the installed package version.
+         *
          * @return string
          */
         public function getPackageVersion()
@@ -9849,8 +10039,10 @@ namespace {
             return parent::getPackageVersion();
         }
         /**
-         * returns a Package object for the given package id, null if not found
+         * Returns a Package object for the given package id, null if not found.
+         *
          * @param int $pkgID
+         *
          * @return Package
          */
         public static function getByID($pkgID)
@@ -9860,8 +10052,6 @@ namespace {
         /**
          * Installs the packages database through doctrine entities and db.xml
          * database definitions.
-         *
-         * @return void
          */
         public function installDatabase()
         {
@@ -9872,9 +10062,12 @@ namespace {
             return parent::installEntitiesDatabase();
         }
         /**
-         * Installs a package's database from an XML file
+         * Installs a package's database from an XML file.
+         *
          * @param string $xmlFile Path to the database XML file
+         *
          * @return bool|\stdClass Returns false if the XML file could not be found
+         *
          * @throws \Doctrine\DBAL\ConnectionException
          */
         public static function installDB($xmlFile)
@@ -9882,7 +10075,8 @@ namespace {
             return Concrete\Core\Package\Package::installDB($xmlFile);
         }
         /**
-         * Updates the available package number in the database
+         * Updates the available package number in the database.
+         *
          * @param string $vNum New version number
          */
         public function updateAvailableVersionNumber($vNum)
@@ -9890,15 +10084,25 @@ namespace {
             return parent::updateAvailableVersionNumber($vNum);
         }
         /**
-         * Returns the package ID
-         * @return integer
+         * Returns the package ID.
+         *
+         * @return int|null
          */
         public function getPackageID()
         {
             return parent::getPackageID();
         }
         /**
-         * Updates a package's name, description, version and ID using the current class properties
+         * Sets the package ID.
+         *
+         * @param int|null $value
+         */
+        public function setPackageID($value)
+        {
+            return parent::setPackageID($value);
+        }
+        /**
+         * Updates a package's name, description, version and ID using the current class properties.
          */
         public function upgradeCoreData()
         {
@@ -9912,7 +10116,8 @@ namespace {
             return parent::upgrade();
         }
         /**
-         * Updates a package's database using entities and a db.xml
+         * Updates a package's database using entities and a db.xml.
+         *
          * @throws \Doctrine\DBAL\ConnectionException
          * @throws \Exception
          */
@@ -9921,15 +10126,15 @@ namespace {
             return parent::upgradeDatabase();
         }
         /**
-         * moves the current package's directory to the trash directory renamed with the package handle and a date code.
+         * Moves the current package's directory to the trash directory renamed with the package handle and a date code.
          */
         public function backup()
         {
             return parent::backup();
         }
         /**
-         * if a package was just backed up by this instance of the package object and the packages/package handle directory doesn't exist, this will restore the
-         * package from the trash
+         * If a package was just backed up by this instance of the package object and the packages/package handle directory doesn't exist, this will restore the
+         * package from the trash.
          */
         public function restore()
         {
@@ -10243,7 +10448,7 @@ namespace {
         {
             return parent::queueForDuplication($destination, $includeParent);
         }
-        public function export($pageNode, $includePublicDate = false)
+        public function export($pageNode, $includePublicDate = true)
         {
             return parent::export($pageNode, $includePublicDate);
         }
@@ -10549,9 +10754,9 @@ namespace {
          *
          * @return int
          */
-        public function getCollectionParentIDFromChildID($cID)
+        public static function getCollectionParentIDFromChildID($cID)
         {
-            return parent::getCollectionParentIDFromChildID($cID);
+            return Concrete\Core\Page\Page::getCollectionParentIDFromChildID($cID);
         }
         /**
          * Returns an array of this cParentID and aliased parentIDs.
@@ -10877,9 +11082,9 @@ namespace {
         {
             return parent::getPageIndexContent();
         }
-        protected function _associateMasterCollectionBlocks($newCID, $masterCID)
+        protected function _associateMasterCollectionBlocks($newCID, $masterCID, $cAcquireComposerOutputControls)
         {
-            return parent::_associateMasterCollectionBlocks($newCID, $masterCID);
+            return parent::_associateMasterCollectionBlocks($newCID, $masterCID, $cAcquireComposerOutputControls);
         }
         protected function _associateMasterCollectionAttributes($newCID, $masterCID)
         {
@@ -11210,12 +11415,6 @@ namespace {
         {
             return Concrete\Core\Cache\Page\PageCache::getLibrary();
         }
-        /**
-         * Note: can't use the User object directly because it might query the database.
-         * Also can't use the Session wrapper because it starts session which triggers
-         * before package autoloaders and so certain access entities stored in session
-         * will break.
-         */
         public function shouldCheckCache(Concrete\Core\Http\Request $req)
         {
             return parent::shouldCheckCache($req);
@@ -11435,6 +11634,15 @@ namespace {
         {
             return parent::request($key);
         }
+        /**
+         * Set the application object
+         *
+         * @param \Concrete\Core\Application\Application $application
+         */
+        public function setApplication(Concrete\Core\Application\Application $application)
+        {
+            return parent::setApplication($application);
+        }
     }
 
     class PageEditResponse extends \Concrete\Core\Page\EditResponse
@@ -11498,9 +11706,7 @@ namespace {
     }
 
     /**
-     *
      * An object that allows a filtered list of pages to be returned.
-     *
      */
     class PageList extends \Concrete\Core\Page\PageList
     {
@@ -11554,7 +11760,8 @@ namespace {
         }
         /**
          * @param $queryRow
-         * @return \Concrete\Core\File\File
+         *
+         * @return \Concrete\Core\Page\Page
          */
         public function getResult($queryRow)
         {
@@ -11565,7 +11772,8 @@ namespace {
             return parent::checkPermissions($mixed);
         }
         /**
-         * Filters by type of collection (using the handle field)
+         * Filters by type of collection (using the handle field).
+         *
          * @param mixed $ptHandle
          */
         public function filterByPageTypeHandle($ptHandle)
@@ -11573,7 +11781,8 @@ namespace {
             return parent::filterByPageTypeHandle($ptHandle);
         }
         /**
-         * Filters by page template
+         * Filters by page template.
+         *
          * @param mixed $ptHandle
          */
         public function filterByPageTemplate(Concrete\Core\Page\Template $template)
@@ -11581,7 +11790,8 @@ namespace {
             return parent::filterByPageTemplate($template);
         }
         /**
-         * Filters by date added
+         * Filters by date added.
+         *
          * @param string $date
          */
         public function filterByDateAdded($date, $comparison = "=")
@@ -11590,6 +11800,7 @@ namespace {
         }
         /**
          * Filter by number of children.
+         *
          * @param $number
          * @param string $comparison
          */
@@ -11599,6 +11810,7 @@ namespace {
         }
         /**
          * Filter by last modified date.
+         *
          * @param $date
          * @param string $comparison
          */
@@ -11607,7 +11819,8 @@ namespace {
             return parent::filterByDateLastModified($date, $comparison);
         }
         /**
-         * Filters by public date
+         * Filters by public date.
+         *
          * @param string $date
          */
         public function filterByPublicDate($date, $comparison = "=")
@@ -11615,14 +11828,15 @@ namespace {
             return parent::filterByPublicDate($date, $comparison);
         }
         /**
-         * Displays only those pages that have style customizations
+         * Displays only those pages that have style customizations.
          */
         public function filterByPagesWithCustomStyles()
         {
             return parent::filterByPagesWithCustomStyles();
         }
         /**
-         * Filters by user ID)
+         * Filters by user ID).
+         *
          * @param mixed $uID
          */
         public function filterByUserID($uID)
@@ -11630,7 +11844,8 @@ namespace {
             return parent::filterByUserID($uID);
         }
         /**
-         * Filters by page type ID
+         * Filters by page type ID.
+         *
          * @param array | integer $cParentID
          */
         public function filterByPageTypeID($ptID)
@@ -11638,7 +11853,8 @@ namespace {
             return parent::filterByPageTypeID($ptID);
         }
         /**
-         * Filters by parent ID
+         * Filters by parent ID.
+         *
          * @param array | integer $cParentID
          */
         public function filterByParentID($cParentID)
@@ -11647,6 +11863,7 @@ namespace {
         }
         /**
          * Filters a list by page name.
+         *
          * @param $name
          * @param bool $exact
          */
@@ -11656,6 +11873,7 @@ namespace {
         }
         /**
          * Filter a list by page path.
+         *
          * @param $path
          * @param bool $includeAllChildren
          */
@@ -11665,6 +11883,7 @@ namespace {
         }
         /**
          * Filters keyword fields by keywords (including name, description, content, and attributes.
+         *
          * @param $keywords
          */
         public function filterByKeywords($keywords)
@@ -11683,14 +11902,14 @@ namespace {
             return parent::filterByTopic($topic);
         }
         /**
-         * Sorts this list by display order
+         * Sorts this list by display order.
          */
         public function sortByDisplayOrder()
         {
             return parent::sortByDisplayOrder();
         }
         /**
-         * Sorts this list by display order descending
+         * Sorts this list by display order descending.
          */
         public function sortByDisplayOrderDescending()
         {
@@ -11704,7 +11923,7 @@ namespace {
             return parent::sortByCollectionIDAscending();
         }
         /**
-         * Sorts this list by public date ascending order
+         * Sorts this list by public date ascending order.
          */
         public function sortByPublicDate()
         {
@@ -11725,14 +11944,14 @@ namespace {
             return parent::sortByNameDescending();
         }
         /**
-         * Sorts this list by public date descending order
+         * Sorts this list by public date descending order.
          */
         public function sortByPublicDateDescending()
         {
             return parent::sortByPublicDateDescending();
         }
         /**
-         * Sorts by fulltext relevance (requires that the query be fulltext-based
+         * Sorts by fulltext relevance (requires that the query be fulltext-based.
          */
         public function sortByRelevance()
         {
@@ -11754,6 +11973,7 @@ namespace {
         }
         /**
          * This does nothing.
+         *
          * @deprecated
          */
         public function ignoreAliases()
@@ -11903,6 +12123,10 @@ namespace {
         {
             return Concrete\Core\Page\Template::exportList($xml);
         }
+        public function export($node)
+        {
+            return parent::export($node);
+        }
         public function getPageTemplateID()
         {
             return parent::getPageTemplateID();
@@ -12012,7 +12236,7 @@ namespace {
         {
             return Concrete\Core\Page\Theme\Theme::getInstalledHandles();
         }
-        public function providesAsset($assetType, $assetHandle)
+        public function providesAsset($assetType, $assetHandle = null)
         {
             return parent::providesAsset($assetType, $assetHandle);
         }
@@ -12099,6 +12323,14 @@ namespace {
         {
             return parent::getThemeCustomStyleObject();
         }
+        /**
+         * Returns the value list of the custom style object if one exists.
+         * @return ValueList
+         */
+        public function getThemeCustomStyleObjectValues()
+        {
+            return parent::getThemeCustomStyleObjectValues();
+        }
         public function setCustomStyleObject(Concrete\Core\StyleCustomizer\Style\ValueList $valueList, $selectedPreset = false, $customCssRecord = false)
         {
             return parent::setCustomStyleObject($valueList, $selectedPreset, $customCssRecord);
@@ -12138,6 +12370,10 @@ namespace {
         public function getFilesInTheme()
         {
             return parent::getFilesInTheme();
+        }
+        public function export($node)
+        {
+            return parent::export($node);
         }
         public static function exportList($xml)
         {
@@ -12451,6 +12687,10 @@ namespace {
         {
             return Concrete\Core\Page\Type\Type::importContent($node);
         }
+        public function export($nxml)
+        {
+            return parent::export($nxml);
+        }
         public static function exportList($xml)
         {
             return Concrete\Core\Page\Type\Type::exportList($xml);
@@ -12473,9 +12713,9 @@ namespace {
          * @param array $data {
          *     @var string          $handle              A string which can be used to identify the page type
          *     @var string          $name                A user friendly display name
-         *     @var \PageTemplate   $defaultTemplate     The default template object
+         *     @var \PageTemplate   $defaultTemplate     The default template object or handle
          *     @var string          $allowedTemplates    (A|C|X) A for all, C for selected only, X for non-selected only
-         *     @var \PageTemplate[] $templates           Array or Iterator of selected templates, see `$allowedTemplates`
+         *     @var \PageTemplate[] $templates           Array or Iterator of selected templates, see `$allowedTemplates`, or Page Template Handles
          *     @var bool            $internal            Is this an internal only page type? Default: `false`
          *     @var bool            $ptLaunchInComposer  Does this launch in composer? Default: `false`
          *     @var bool            $ptIsFrequentlyAdded Should this always be displayed in the pages panel? Default: `false`
@@ -12596,6 +12836,10 @@ namespace {
 
     class PermissionAccess extends \Concrete\Core\Permission\Access\Access
     {
+        public function setListItems($listItems)
+        {
+            return parent::setListItems($listItems);
+        }
         public function setPermissionKey($permissionKey)
         {
             return parent::setPermissionKey($permissionKey);
@@ -12640,7 +12884,7 @@ namespace {
         {
             return Concrete\Core\Permission\Access\Access::createByMerge($permissions);
         }
-        public function getAccessListItems($accessType = PermissionKey::ACCESS_TYPE_INCLUDE, $filterEntities = array())
+        public function getAccessListItems($accessType = Concrete\Core\Permission\Key\Key::ACCESS_TYPE_INCLUDE, $filterEntities = array())
         {
             return parent::getAccessListItems($accessType, $filterEntities);
         }
@@ -12668,7 +12912,7 @@ namespace {
         {
             return parent::markAsInUse();
         }
-        public function addListItem(Concrete\Core\Permission\Access\Entity\Entity $pae, $durationObject = false, $accessType = PermissionKey::ACCESS_TYPE_INCLUDE)
+        public function addListItem(Concrete\Core\Permission\Access\Entity\Entity $pae, $durationObject = false, $accessType = Concrete\Core\Permission\Key\Key::ACCESS_TYPE_INCLUDE)
         {
             return parent::addListItem($pae, $durationObject, $accessType);
         }
@@ -13089,16 +13333,6 @@ namespace {
         }
     }
 
-    /**
-     *
-     * The job class is essentially sub-dispatcher for certain maintenance tasks that need to be run at specified intervals. Examples include indexing a search engine or generating a sitemap page.
-     * @package Utilities
-     * @author Andrew Embler <andrew@concrete5.org>
-     * @author Tony Trupp <tony@concrete5.org>
-     * @link http://www.concrete5.org
-     * @license http://www.opensource.org/licenses/mit-license.php MIT
-     *
-     */
     class QueueableJob extends \Concrete\Core\Job\QueueableJob
     {
         public function getJobQueueBatchSize()
@@ -14760,9 +14994,23 @@ namespace {
         {
             return parent::setRequest($req);
         }
-        public function register($rtPath, $callback, $rtHandle = null, $additionalAttributes = array())
+        /**
+         * Register a symfony route with as little as a path and a callback.
+         *
+         * @param string $path The full path for the route
+         * @param \Closure|string $callback `\Closure` or "dispatcher" or "\Namespace\Controller::action_method"
+         * @param string|null $handle The route handle, if one is not provided the handle is generated from the path "/" => "_"
+         * @param array $requirements The Parameter requirements, see Symfony Route constructor
+         * @param array $options The route options, see Symfony Route constructor
+         * @param string $host The host pattern this route requires, see Symfony Route constructor
+         * @param array|string $schemes The schemes or scheme this route requires, see Symfony Route constructor
+         * @param array|string $methods The HTTP methods this route requires, see see Symfony Route constructor
+         * @param string $condition see Symfony Route constructor
+         * @return \Symfony\Component\Routing\Route
+         */
+        public function register($path, $callback, $handle = null, array $requirements = array(), array $options = array(), $host = "", $schemes = array(), $methods = array(), $condition = null)
         {
-            return parent::register($rtPath, $callback, $rtHandle, $additionalAttributes);
+            return parent::register($path, $callback, $handle, $requirements, $options, $host, $schemes, $methods, $condition);
         }
         public function registerMultiple(array $routes)
         {
@@ -14873,7 +15121,8 @@ namespace {
         /**
          * @param string $stackName
          * @param string $cvID
-         * @param integer $multilingualContentSource
+         * @param int $multilingualContentSource
+         *
          * @return Page
          */
         public static function getByName($stackName, $cvID = "RECENT", $multilingualContentSource = self::MULTILINGUAL_CONTENT_SOURCE_CURRENT)
@@ -14899,15 +15148,19 @@ namespace {
         {
             return Concrete\Core\Page\Stack\Stack::isValidStack($stack);
         }
+        protected function getMultilingualSectionFromType($type)
+        {
+            return parent::getMultilingualSectionFromType($type);
+        }
         /**
          * @param string $stackName
          * @param int    $type
          *
          * @return Page
          */
-        public static function addStack($stackName, $type = 0)
+        public static function addStack($stackName, $type = 0, $multilingualStackToReturn = self::MULTILINGUAL_CONTENT_SOURCE_CURRENT)
         {
-            return Concrete\Core\Page\Stack\Stack::addStack($stackName, $type);
+            return Concrete\Core\Page\Stack\Stack::addStack($stackName, $type, $multilingualStackToReturn);
         }
         /**
          * @param |\Concrete\Core\Page\Collection $nc
@@ -15546,9 +15799,9 @@ namespace {
          *
          * @return int
          */
-        public function getCollectionParentIDFromChildID($cID)
+        public static function getCollectionParentIDFromChildID($cID)
         {
-            return parent::getCollectionParentIDFromChildID($cID);
+            return Concrete\Core\Page\Page::getCollectionParentIDFromChildID($cID);
         }
         /**
          * Returns an array of this cParentID and aliased parentIDs.
@@ -15862,9 +16115,9 @@ namespace {
         {
             return parent::getPageIndexContent();
         }
-        protected function _associateMasterCollectionBlocks($newCID, $masterCID)
+        protected function _associateMasterCollectionBlocks($newCID, $masterCID, $cAcquireComposerOutputControls)
         {
-            return parent::_associateMasterCollectionBlocks($newCID, $masterCID);
+            return parent::_associateMasterCollectionBlocks($newCID, $masterCID, $cAcquireComposerOutputControls);
         }
         protected function _associateMasterCollectionAttributes($newCID, $masterCID)
         {
@@ -16501,9 +16754,9 @@ namespace {
         {
             return parent::getQueryStringSortDirectionVariable();
         }
-        protected function getStickySearchNameSpace()
+        protected function getStickySearchNameSpace($namespace = "")
         {
-            return parent::getStickySearchNameSpace();
+            return parent::getStickySearchNameSpace($namespace);
         }
         public function resetSearchRequest($namespace = "")
         {
@@ -16625,10 +16878,18 @@ namespace {
         {
             return Concrete\Core\Package\StartingPointPackage::getAvailableList();
         }
+        /**
+         * @param string $pkgHandle
+         *
+         * @return static|null
+         */
         public static function getClass($pkgHandle)
         {
             return Concrete\Core\Package\StartingPointPackage::getClass($pkgHandle);
         }
+        /**
+         * @return StartingPointInstallRoutine[]
+         */
         public function getInstallRoutines()
         {
             return parent::getInstallRoutines();
@@ -16720,6 +16981,7 @@ namespace {
         /** Returns the display name of a category of package items (localized and escaped accordingly to $format)
          * @param string $categoryHandle The category handle
          * @param string $format         = 'html' Escape the result in html format (if $format is 'html'). If $format is 'text' or any other value, the display name won't be escaped.
+         *
          * @return string
          */
         public static function getPackageItemsCategoryDisplayName($categoryHandle, $format = "html")
@@ -16727,8 +16989,10 @@ namespace {
             return Concrete\Core\Package\Package::getPackageItemsCategoryDisplayName($categoryHandle, $format);
         }
         /**
-         * Returns the name of an object belonging to a package
-         * @param $item
+         * Returns the name of an object belonging to a package.
+         *
+         * @param mixed $item
+         *
          * @return string
          */
         public static function getItemName($item)
@@ -16737,9 +17001,11 @@ namespace {
         }
         /**
          * This is the pre-test routine that packages run through before they are installed. Any errors that come here are
-         * to be returned in the form of an array so we can show the user. If it's all good we return true
+         * to be returned in the form of an array so we can show the user. If it's all good we return true.
+         *
          * @param string $package Package handle
          * @param bool $testForAlreadyInstalled
+         *
          * @return array|bool Returns an array of errors or true if the package can be installed
          */
         public static function testForInstall($package, $testForAlreadyInstalled = true)
@@ -16747,7 +17013,8 @@ namespace {
             return Concrete\Core\Package\Package::testForInstall($package, $testForAlreadyInstalled);
         }
         /**
-         * Returns the version of concrete5 required by the package
+         * Returns the version of concrete5 required by the package.
+         *
          * @return string
          */
         public function getApplicationVersionRequired()
@@ -16755,9 +17022,10 @@ namespace {
             return parent::getApplicationVersionRequired();
         }
         /**
-         * returns a Package object for the given package handle, null if not found
+         * Returns a Package object for the given package handle, null if not found.
          *
          * @param string $pkgHandle
+         *
          * @return Package
          */
         public static function getByHandle($pkgHandle)
@@ -16766,7 +17034,8 @@ namespace {
         }
         /**
          * Returns an array of packages that have newer versions in the local packages directory
-         * than those which are in the Packages table. This means they're ready to be upgraded
+         * than those which are in the Packages table. This means they're ready to be upgraded.
+         *
          * @return Package[]
          */
         public static function getLocalUpgradeablePackages()
@@ -16774,8 +17043,10 @@ namespace {
             return Concrete\Core\Package\Package::getLocalUpgradeablePackages();
         }
         /**
-         * Returns all available packages
+         * Returns all available packages.
+         *
          * @param bool $filterInstalled True to only return installed packages
+         *
          * @return Package[]
          */
         public static function getAvailablePackages($filterInstalled = true)
@@ -16783,7 +17054,8 @@ namespace {
             return Concrete\Core\Package\Package::getAvailablePackages($filterInstalled);
         }
         /**
-         * Returns all installed package handles
+         * Returns all installed package handles.
+         *
          * @return string[]
          */
         public static function getInstalledHandles()
@@ -16791,7 +17063,8 @@ namespace {
             return Concrete\Core\Package\Package::getInstalledHandles();
         }
         /**
-         * Finds all packages that have an upgraded version available in the marketplace
+         * Finds all packages that have an upgraded version available in the marketplace.
+         *
          * @return Package[]
          */
         public static function getRemotelyUpgradeablePackages()
@@ -16799,7 +17072,8 @@ namespace {
             return Concrete\Core\Package\Package::getRemotelyUpgradeablePackages();
         }
         /**
-         * Returns an array of all installed packages
+         * Returns an array of all installed packages.
+         *
          * @return Package[]
          */
         public static function getInstalledList()
@@ -16807,7 +17081,8 @@ namespace {
             return Concrete\Core\Package\Package::getInstalledList();
         }
         /**
-         * Returns the path to the package's folder, relative to the install path
+         * Returns the path to the package's folder, relative to the install path.
+         *
          * @return string
          */
         public function getRelativePath()
@@ -16815,7 +17090,8 @@ namespace {
             return parent::getRelativePath();
         }
         /**
-         * Returns the package handle
+         * Returns the package handle.
+         *
          * @return string
          */
         public function getPackageHandle()
@@ -16823,7 +17099,7 @@ namespace {
             return parent::getPackageHandle();
         }
         /**
-         * Gets the date the package was added to the system,
+         * Gets the date the package was added to the system.
          *
          * @return string date formatted like: 2009-01-01 00:00:00
          */
@@ -16836,8 +17112,9 @@ namespace {
             return parent::getPackageVersionUpdateAvailable();
         }
         /**
-         * Returns true if the package is installed, false if not
-         * @return boolean
+         * Returns true if the package is installed, false if not.
+         *
+         * @return bool
          */
         public function isPackageInstalled()
         {
@@ -16845,6 +17122,7 @@ namespace {
         }
         /**
          * Gets the contents of the package's CHANGELOG file. If no changelog is available an empty string is returned.
+         *
          * @return string
          */
         public function getChangelogContents()
@@ -16858,6 +17136,7 @@ namespace {
         /**
          * Returns the currently installed package version.
          * NOTE: This function only returns a value if getLocalUpgradeablePackages() has been called first!
+         *
          * @return string
          */
         public function getPackageCurrentlyInstalledVersion()
@@ -16872,7 +17151,8 @@ namespace {
             return parent::providesCoreExtensionAutoloaderMapping();
         }
         /**
-         * Returns custom autoloader prefixes registered by the class loader
+         * Returns custom autoloader prefixes registered by the class loader.
+         *
          * @return array Keys represent the namespace, not relative to the package's namespace. Values are the path, and are relative to the package directory.
          */
         public function getPackageAutoloaderRegistries()
@@ -16880,7 +17160,8 @@ namespace {
             return parent::getPackageAutoloaderRegistries();
         }
         /**
-         * Returns true if the package has a post install screen
+         * Returns true if the package has a post install screen.
+         *
          * @return bool
          */
         public function hasInstallPostScreen()
@@ -16888,7 +17169,8 @@ namespace {
             return parent::hasInstallPostScreen();
         }
         /**
-         * Returns true if the package has an install options screen
+         * Returns true if the package has an install options screen.
+         *
          * @return bool
          */
         public function showInstallOptionsScreen()
@@ -16899,12 +17181,16 @@ namespace {
         {
             return parent::hasInstallNotes();
         }
+        public function hasUninstallNotes()
+        {
+            return parent::hasUninstallNotes();
+        }
         public function allowsFullContentSwap()
         {
             return parent::allowsFullContentSwap();
         }
         /**
-         * Loads package translation files into zend translate
+         * Loads package translation files into zend translate.
          *
          * @param string                                  $locale    = null The identifier of the locale to activate (used to build the language file path). If empty we'll use currently active locale.
          * @param \Zend\I18n\Translator\Translator|string $translate = 'current' The Zend Translator instance that holds the translations (set to 'current' to use the current one)
@@ -16928,7 +17214,8 @@ namespace {
             return parent::uninstall();
         }
         /**
-         * Returns an array of package items (e.g. blocks, themes)
+         * Returns an array of package items (e.g. blocks, themes).
+         *
          * @return array
          */
         public function getPackageItems()
@@ -16938,7 +17225,7 @@ namespace {
         /**
          * Destroys all the existing proxy classes for this package.
          *
-         * @return boolean
+         * @return bool
          */
         protected function destroyProxyClasses()
         {
@@ -16954,6 +17241,13 @@ namespace {
             return parent::getDatabaseStructureManager();
         }
         /**
+         * @return EntityManagerFactoryInterface
+         */
+        public function getEntityManagerFactory()
+        {
+            return parent::getEntityManagerFactory();
+        }
+        /**
          * Gets a package specific entity manager.
          *
          * @return \Doctrine\ORM\EntityManager
@@ -16963,20 +17257,26 @@ namespace {
             return parent::getEntityManager();
         }
         /**
-         * Removes any existing pages, files, stacks, block and page types and installs content from the package
+         * Removes any existing pages, files, stacks, block and page types and installs content from the package.
+         *
          * @param $options
          */
         public function swapContent($options)
         {
             return parent::swapContent($options);
         }
+        /**
+         * @param array $options
+         *
+         * @return bool
+         */
         protected function validateClearSiteContents($options)
         {
             return parent::validateClearSiteContents($options);
         }
         /**
          * Returns a path to where the packages files are located.
-         * @access public
+         *
          * @return string $path
          */
         public function contentProvidesFileThumbnails()
@@ -16984,16 +17284,19 @@ namespace {
             return parent::contentProvidesFileThumbnails();
         }
         /**
-         * Converts package install test errors to human-readable strings
+         * Converts package install test errors to human-readable strings.
+         *
          * @param $testResults Package install test errors
+         *
          * @return array
          */
-        public function mapError($testResults)
+        public static function mapError($testResults)
         {
-            return parent::mapError($testResults);
+            return Concrete\Core\Package\Package::mapError($testResults);
         }
         /**
-         * Returns the directory containing package entities
+         * Returns the directory containing package entities.
+         *
          * @return string
          */
         public function getPackageEntitiesPath()
@@ -17001,14 +17304,14 @@ namespace {
             return parent::getPackageEntitiesPath();
         }
         /**
-         * Called to enable package specific configuration
+         * Called to enable package specific configuration.
          */
         public function registerConfigNamespace()
         {
             return parent::registerConfigNamespace();
         }
         /**
-         * Get the standard database config liaison
+         * Get the standard database config liaison.
          *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
@@ -17017,7 +17320,8 @@ namespace {
             return parent::getConfig();
         }
         /**
-         * Get the standard database config liaison
+         * Get the standard database config liaison.
+         *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
         public function getDatabaseConfig()
@@ -17025,7 +17329,8 @@ namespace {
             return parent::getDatabaseConfig();
         }
         /**
-         * Get the standard filesystem config liaison
+         * Get the standard filesystem config liaison.
+         *
          * @return \Concrete\Core\Config\Repository\Liaison
          */
         public function getFileConfig()
@@ -17035,6 +17340,7 @@ namespace {
         /**
          * Installs the package info row and installs the database. Packages installing additional content should override this method, call the parent method,
          * and use the resulting package object for further installs.
+         *
          * @return Package
          */
         public function install()
@@ -17042,7 +17348,8 @@ namespace {
             return parent::install();
         }
         /**
-         * Returns the translated name of the package
+         * Returns the translated name of the package.
+         *
          * @return string
          */
         public function getPackageName()
@@ -17050,7 +17357,8 @@ namespace {
             return parent::getPackageName();
         }
         /**
-         * Returns the translated package description
+         * Returns the translated package description.
+         *
          * @return string
          */
         public function getPackageDescription()
@@ -17058,7 +17366,8 @@ namespace {
             return parent::getPackageDescription();
         }
         /**
-         * Returns the installed package version
+         * Returns the installed package version.
+         *
          * @return string
          */
         public function getPackageVersion()
@@ -17066,8 +17375,10 @@ namespace {
             return parent::getPackageVersion();
         }
         /**
-         * returns a Package object for the given package id, null if not found
+         * Returns a Package object for the given package id, null if not found.
+         *
          * @param int $pkgID
+         *
          * @return Package
          */
         public static function getByID($pkgID)
@@ -17077,8 +17388,6 @@ namespace {
         /**
          * Installs the packages database through doctrine entities and db.xml
          * database definitions.
-         *
-         * @return void
          */
         public function installDatabase()
         {
@@ -17089,9 +17398,12 @@ namespace {
             return parent::installEntitiesDatabase();
         }
         /**
-         * Installs a package's database from an XML file
+         * Installs a package's database from an XML file.
+         *
          * @param string $xmlFile Path to the database XML file
+         *
          * @return bool|\stdClass Returns false if the XML file could not be found
+         *
          * @throws \Doctrine\DBAL\ConnectionException
          */
         public static function installDB($xmlFile)
@@ -17099,7 +17411,8 @@ namespace {
             return Concrete\Core\Package\Package::installDB($xmlFile);
         }
         /**
-         * Updates the available package number in the database
+         * Updates the available package number in the database.
+         *
          * @param string $vNum New version number
          */
         public function updateAvailableVersionNumber($vNum)
@@ -17107,15 +17420,25 @@ namespace {
             return parent::updateAvailableVersionNumber($vNum);
         }
         /**
-         * Returns the package ID
-         * @return integer
+         * Returns the package ID.
+         *
+         * @return int|null
          */
         public function getPackageID()
         {
             return parent::getPackageID();
         }
         /**
-         * Updates a package's name, description, version and ID using the current class properties
+         * Sets the package ID.
+         *
+         * @param int|null $value
+         */
+        public function setPackageID($value)
+        {
+            return parent::setPackageID($value);
+        }
+        /**
+         * Updates a package's name, description, version and ID using the current class properties.
          */
         public function upgradeCoreData()
         {
@@ -17129,7 +17452,8 @@ namespace {
             return parent::upgrade();
         }
         /**
-         * Updates a package's database using entities and a db.xml
+         * Updates a package's database using entities and a db.xml.
+         *
          * @throws \Doctrine\DBAL\ConnectionException
          * @throws \Exception
          */
@@ -17138,15 +17462,15 @@ namespace {
             return parent::upgradeDatabase();
         }
         /**
-         * moves the current package's directory to the trash directory renamed with the package handle and a date code.
+         * Moves the current package's directory to the trash directory renamed with the package handle and a date code.
          */
         public function backup()
         {
             return parent::backup();
         }
         /**
-         * if a package was just backed up by this instance of the package object and the packages/package handle directory doesn't exist, this will restore the
-         * package from the trash
+         * If a package was just backed up by this instance of the package object and the packages/package handle directory doesn't exist, this will restore the
+         * package from the trash.
          */
         public function restore()
         {
@@ -17215,12 +17539,21 @@ namespace {
         }
     }
 
-    class User extends \Concrete\Core\User\User
+    class User extends \Application\Src\User\User
     {
+        public function enterGroup($g)
+        {
+            return parent::enterGroup($g);
+        }
+        public function exitGroup($g)
+        {
+            return parent::exitGroup($g);
+        }
         /** Return an User instance given its id (or null if it's not found)
          * @param int $uID The id of the user
-         * @param boolean $login = false Set to true to make the user the current one
-         * @param boolean $cacheItemsOnLogin = false Set to true to cache some items when $login is true
+         * @param bool $login = false Set to true to make the user the current one
+         * @param bool $cacheItemsOnLogin = false Set to true to cache some items when $login is true
+         *
          * @return User|null
          */
         public static function getByUserID($uID, $login = false, $cacheItemsOnLogin = true)
@@ -17229,11 +17562,12 @@ namespace {
         }
         /**
          * @param int $uID
+         *
          * @return User
          */
-        public function loginByUserID($uID)
+        public static function loginByUserID($uID)
         {
-            return parent::loginByUserID($uID);
+            return Concrete\Core\User\User::loginByUserID($uID);
         }
         public static function isLoggedIn()
         {
@@ -17242,6 +17576,10 @@ namespace {
         public function checkLogin()
         {
             return parent::checkLogin();
+        }
+        public function getUserInfoObject()
+        {
+            return parent::getUserInfoObject();
         }
         public function recordLogin()
         {
@@ -17315,9 +17653,9 @@ namespace {
         {
             return parent::invalidateSession($hard);
         }
-        public function verifyAuthTypeCookie()
+        public static function verifyAuthTypeCookie()
         {
-            return parent::verifyAuthTypeCookie();
+            return Concrete\Core\User\User::verifyAuthTypeCookie();
         }
         public function getUserGroupObjects()
         {
@@ -17328,21 +17666,21 @@ namespace {
             return parent::getUserGroups();
         }
         /**
-         * Sets a default language for a user record
+         * Sets a default language for a user record.
          */
         public function setUserDefaultLanguage($lang)
         {
             return parent::setUserDefaultLanguage($lang);
         }
         /**
-         * Gets the default language for the logged-in user
+         * Gets the default language for the logged-in user.
          */
         public function getUserDefaultLanguage()
         {
             return parent::getUserDefaultLanguage();
         }
         /**
-         * Gets the default language for the logged-in user
+         * Gets the default language for the logged-in user.
          */
         public function getLastPasswordChange()
         {
@@ -17367,14 +17705,6 @@ namespace {
         public function _getUserGroups($disableLogin = false)
         {
             return parent::_getUserGroups($disableLogin);
-        }
-        public function enterGroup($g)
-        {
-            return parent::enterGroup($g);
-        }
-        public function exitGroup($g)
-        {
-            return parent::exitGroup($g);
         }
         public function inGroup($g)
         {
@@ -17426,7 +17756,8 @@ namespace {
             return parent::getUserPasswordHasher();
         }
         /**
-         * Manage user session writing
+         * Manage user session writing.
+         *
          * @param bool $cache_interface
          */
         public function persist($cache_interface = true)
@@ -17465,9 +17796,9 @@ namespace {
 
     class UserAttributeKey extends \Concrete\Core\Attribute\Key\UserKey
     {
-        public function getIndexedSearchTable()
+        public static function getDefaultIndexedSearchTable()
         {
-            return parent::getIndexedSearchTable();
+            return Concrete\Core\Attribute\Key\UserKey::getDefaultIndexedSearchTable();
         }
         public static function getAttributes($uID, $method = "getValue")
         {
@@ -17601,12 +17932,16 @@ namespace {
         {
             return Concrete\Core\Attribute\Key\UserKey::updateAttributesDisplayOrder($uats);
         }
+        public function getIndexedSearchTable()
+        {
+            return parent::getIndexedSearchTable();
+        }
         public function getSearchIndexFieldDefinition()
         {
             return parent::getSearchIndexFieldDefinition();
         }
         /**
-         * Returns the name for this attribute key
+         * Returns the name for this attribute key.
          */
         public function getAttributeKeyName()
         {
@@ -17616,6 +17951,7 @@ namespace {
          * @param string $format = 'html'
          *    Escape the result in html format (if $format is 'html').
          *    If $format is 'text' or any other value, the display name won't be escaped.
+         *
          * @return string
          */
         public function getAttributeKeyDisplayName($format = "html")
@@ -17623,21 +17959,21 @@ namespace {
             return parent::getAttributeKeyDisplayName($format);
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getAttributeKeyHandle()
         {
             return parent::getAttributeKeyHandle();
         }
         /**
-         * Deprecated. Going to be replaced by front end display name
+         * Deprecated. Going to be replaced by front end display name.
          */
         public function getAttributeKeyDisplayHandle()
         {
             return parent::getAttributeKeyDisplayHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getAttributeKeyID()
         {
@@ -17648,14 +17984,14 @@ namespace {
             return parent::getAttributeKeyCategoryID();
         }
         /**
-         * Returns whether the attribute key is searchable
+         * Returns whether the attribute key is searchable.
          */
         public function isAttributeKeySearchable()
         {
             return parent::isAttributeKeySearchable();
         }
         /**
-         * Returns whether the attribute key is internal
+         * Returns whether the attribute key is internal.
          */
         public function isAttributeKeyInternal()
         {
@@ -17706,14 +18042,14 @@ namespace {
             return Concrete\Core\Attribute\Key\Key::getInstanceByID($akID);
         }
         /**
-         * Returns an attribute type object
+         * Returns an attribute type object.
          */
         public function getAttributeType()
         {
             return parent::getAttributeType();
         }
         /**
-         * Returns the attribute type handle
+         * Returns the attribute type handle.
          */
         public function getAttributeTypeHandle()
         {
@@ -17722,6 +18058,13 @@ namespace {
         public function getAttributeKeyType()
         {
             return parent::getAttributeKeyType();
+        }
+        /**
+         * Returns a list of all attributes of this category.
+         */
+        public static function getAttributeKeyList($akCategoryHandle, $filters = array())
+        {
+            return Concrete\Core\Attribute\Key\Key::getAttributeKeyList($akCategoryHandle, $filters);
         }
         public static function exportList($xml)
         {
@@ -17737,12 +18080,19 @@ namespace {
         {
             return Concrete\Core\Attribute\Key\Key::getListByPackage($pkg);
         }
+        /**
+         * Adds an attribute key.
+         */
+        protected static function addAttributeKey($akCategoryHandle, $type, $args, $pkg = false)
+        {
+            return Concrete\Core\Attribute\Key\Key::addAttributeKey($akCategoryHandle, $type, $args, $pkg);
+        }
         public function refreshCache()
         {
             return parent::refreshCache();
         }
         /**
-         * Duplicates an attribute key
+         * Duplicates an attribute key.
          */
         public function duplicate($args = array())
         {
@@ -17775,7 +18125,7 @@ namespace {
             return parent::getAttributeValueIDList();
         }
         /**
-         * Adds a generic attribute record (with this type) to the AttributeValues table
+         * Adds a generic attribute record (with this type) to the AttributeValues table.
          */
         public function addAttributeValue()
         {
@@ -17801,6 +18151,7 @@ namespace {
         }
         /**
          * Validates the request object to see if the current request fulfills the "requirement" portion of an attribute.
+         *
          * @return bool|\Concrete\Core\Error\Error
          */
         public function validateAttributeForm()
@@ -17852,14 +18203,14 @@ namespace {
             return parent::getKeyName();
         }
         /**
-         * Returns the handle for this attribute key
+         * Returns the handle for this attribute key.
          */
         public function getKeyHandle()
         {
             return parent::getKeyHandle();
         }
         /**
-         * Returns the ID for this attribute key
+         * Returns the ID for this attribute key.
          */
         public function getKeyID()
         {
@@ -17868,309 +18219,6 @@ namespace {
         public static function exportTranslations()
         {
             return Concrete\Core\Attribute\Key\Key::exportTranslations();
-        }
-        public function loadError($error)
-        {
-            return parent::loadError($error);
-        }
-        public function isError()
-        {
-            return parent::isError();
-        }
-        public function getError()
-        {
-            return parent::getError();
-        }
-        public function setPropertiesFromArray($arr)
-        {
-            return parent::setPropertiesFromArray($arr);
-        }
-        public static function camelcase($file)
-        {
-            return Concrete\Core\Foundation\Object::camelcase($file);
-        }
-        public static function uncamelcase($string)
-        {
-            return Concrete\Core\Foundation\Object::uncamelcase($string);
-        }
-    }
-
-    class UserInfo extends \Concrete\Core\User\UserInfo
-    {
-        public function getPermissionObjectIdentifier()
-        {
-            return parent::getPermissionObjectIdentifier();
-        }
-        public function getPermissionResponseClassName()
-        {
-            return parent::getPermissionResponseClassName();
-        }
-        public function getPermissionAssignmentClassName()
-        {
-            return parent::getPermissionAssignmentClassName();
-        }
-        public function getPermissionObjectKeyCategoryHandle()
-        {
-            return parent::getPermissionObjectKeyCategoryHandle();
-        }
-        /**
-         * returns the UserInfo object for a give user's uID
-         * @param int $uID
-         * @return UserInfo
-         */
-        public static function getByID($uID)
-        {
-            return Concrete\Core\User\UserInfo::getByID($uID);
-        }
-        /**
-         * returns the UserInfo object for a give user's username
-         * @param string $uName
-         * @return UserInfo
-         */
-        public static function getByUserName($uName)
-        {
-            return Concrete\Core\User\UserInfo::getByUserName($uName);
-        }
-        /**
-         * returns the UserInfo object for a give user's email address
-         * @param string $uEmail
-         * @return UserInfo
-         */
-        public static function getByEmail($uEmail)
-        {
-            return Concrete\Core\User\UserInfo::getByEmail($uEmail);
-        }
-        /**
-         * @param string $uHash
-         * @param boolean $unredeemedHashesOnly
-         * @return UserInfo
-         */
-        public static function getByValidationHash($uHash, $unredeemedHashesOnly = true)
-        {
-            return Concrete\Core\User\UserInfo::getByValidationHash($uHash, $unredeemedHashesOnly);
-        }
-        public function getUserBadges()
-        {
-            return parent::getUserBadges();
-        }
-        /**
-         * @param array $data
-         * @return UserInfo
-         */
-        public static function add($data)
-        {
-            return Concrete\Core\User\UserInfo::add($data);
-        }
-        public function addSuperUser($uPasswordEncrypted, $uEmail)
-        {
-            return parent::addSuperUser($uPasswordEncrypted, $uEmail);
-        }
-        /**
-         * Deletes a user
-         * @return void
-         */
-        public function delete()
-        {
-            return parent::delete();
-        }
-        /**
-         * Called only by the getGroupMembers function it sets the "type" of member for this group. Typically only used programmatically
-         * @param string $type
-         * @return void
-         */
-        public function setGroupMemberType($type)
-        {
-            return parent::setGroupMemberType($type);
-        }
-        public function getGroupMemberType()
-        {
-            return parent::getGroupMemberType();
-        }
-        public function canReadPrivateMessage($msg)
-        {
-            return parent::canReadPrivateMessage($msg);
-        }
-        public function updateUserAvatar(Imagine\Image\ImageInterface $image)
-        {
-            return parent::updateUserAvatar($image);
-        }
-        public function sendPrivateMessage($recipient, $subject, $text, $inReplyTo = false)
-        {
-            return parent::sendPrivateMessage($recipient, $subject, $text, $inReplyTo);
-        }
-        /**
-         * gets the user object of the current UserInfo object ($this)
-         * @return User
-         */
-        public function getUserObject()
-        {
-            return parent::getUserObject();
-        }
-        /**
-         * Sets the attribute of a user info object to the specified value, and saves it in the database
-         */
-        public function setAttribute($ak, $value)
-        {
-            return parent::setAttribute($ak, $value);
-        }
-        public function clearAttribute($ak)
-        {
-            return parent::clearAttribute($ak);
-        }
-        /**
-         * Reindex the attributes on this file.
-         * @return void
-         */
-        public function reindex()
-        {
-            return parent::reindex();
-        }
-        /**
-         * Gets the value of the attribute for the user
-         */
-        public function getAttribute($ak, $displayMode = false)
-        {
-            return parent::getAttribute($ak, $displayMode);
-        }
-        public function getAttributeField($ak)
-        {
-            return parent::getAttributeField($ak);
-        }
-        public function getAttributeValueObject($ak, $createIfNotFound = false)
-        {
-            return parent::getAttributeValueObject($ak, $createIfNotFound);
-        }
-        public function update($data)
-        {
-            return parent::update($data);
-        }
-        public function updateGroups($groupArray)
-        {
-            return parent::updateGroups($groupArray);
-        }
-        public function saveUserAttributesForm($attributes)
-        {
-            return parent::saveUserAttributesForm($attributes);
-        }
-        /**
-         * @param array $data
-         * @return UserInfo
-         */
-        public function register($data)
-        {
-            return parent::register($data);
-        }
-        public function setupValidation()
-        {
-            return parent::setupValidation();
-        }
-        public function markValidated()
-        {
-            return parent::markValidated();
-        }
-        public function changePassword($newPassword)
-        {
-            return parent::changePassword($newPassword);
-        }
-        public function activate()
-        {
-            return parent::activate();
-        }
-        public function deactivate()
-        {
-            return parent::deactivate();
-        }
-        public function resetUserPassword()
-        {
-            return parent::resetUserPassword();
-        }
-        public function hasAvatar()
-        {
-            return parent::hasAvatar();
-        }
-        public function getLastLogin()
-        {
-            return parent::getLastLogin();
-        }
-        public function getLastIPAddress()
-        {
-            return parent::getLastIPAddress();
-        }
-        public function getPreviousLogin()
-        {
-            return parent::getPreviousLogin();
-        }
-        public function isActive()
-        {
-            return parent::isActive();
-        }
-        public function isValidated()
-        {
-            return parent::isValidated();
-        }
-        public function isFullRecord()
-        {
-            return parent::isFullRecord();
-        }
-        public function getNumLogins()
-        {
-            return parent::getNumLogins();
-        }
-        public function getUserID()
-        {
-            return parent::getUserID();
-        }
-        public function getUserName()
-        {
-            return parent::getUserName();
-        }
-        public function getUserDisplayName()
-        {
-            return parent::getUserDisplayName();
-        }
-        public function getUserPassword()
-        {
-            return parent::getUserPassword();
-        }
-        public function getUserEmail()
-        {
-            return parent::getUserEmail();
-        }
-        /**
-         * returns the user's timezone
-         * @return string timezone
-         */
-        public function getUserTimezone()
-        {
-            return parent::getUserTimezone();
-        }
-        public function getUserDefaultLanguage()
-        {
-            return parent::getUserDefaultLanguage();
-        }
-        /**
-         * Gets the date a user was added to the system,
-         * @return string date formated like: 2009-01-01 00:00:00
-         */
-        public function getUserDateAdded()
-        {
-            return parent::getUserDateAdded();
-        }
-        public function getUserStartDate()
-        {
-            return parent::getUserStartDate();
-        }
-        /**
-         * Gets the date a user was last active on the site
-         * @return string date formated like: 2009-01-01 00:00:00
-         */
-        public function getLastOnline()
-        {
-            return parent::getLastOnline();
-        }
-        public function getUserEndDate()
-        {
-            return parent::getUserEndDate();
         }
         public function loadError($error)
         {
@@ -18323,6 +18371,10 @@ namespace {
         public function sortByUserName()
         {
             return parent::sortByUserName();
+        }
+        public function sortByDateAdded()
+        {
+            return parent::sortByDateAdded();
         }
         /**
          * Filters by a attribute.
@@ -18633,9 +18685,8 @@ namespace {
         }
         /**
          * Returns the value of the item in the POST array.
-         * @access public
+         *
          * @param $key
-         * @return void
          */
         public function post($key, $defaultValue = null)
         {
@@ -18654,15 +18705,18 @@ namespace {
             return parent::render($state);
         }
         /**
-         * url is a utility function that is used inside a view to setup urls w/tasks and parameters
+         * url is a utility function that is used inside a view to setup urls w/tasks and parameters.
+         *
          * @deprecated
+         *
          * @param string $action
          * @param string $task
+         *
          * @return string $url
          */
-        public function url($action, $task = null)
+        public static function url($action, $task = null)
         {
-            return parent::url($action, $task);
+            return Concrete\Core\View\AbstractView::url($action, $task);
         }
         public function setThemeByPath($path, $theme = null, $wrapper = FILENAME_THEMES_VIEW)
         {
@@ -18673,14 +18727,12 @@ namespace {
             return parent::renderError($title, $error, $errorObj);
         }
         /**
-         * @access private
          */
         public function addHeaderItem($item)
         {
             return parent::addHeaderItem($item);
         }
         /**
-         * @access private
          */
         public function addFooterItem($item)
         {
@@ -18719,8 +18771,8 @@ namespace {
         /**
          * Returns the display name for this workflow (localized and escaped accordingly to $format)
          * @param string $format = 'html'
-         *	Escape the result in html format (if $format is 'html').
-         *	If $format is 'text' or any other value, the display name won't be escaped.
+         *    Escape the result in html format (if $format is 'html').
+         *    If $format is 'text' or any other value, the display name won't be escaped.
          * @return string
          */
         public function getWorkflowDisplayName($format = "html")
@@ -18951,6 +19003,19 @@ namespace {
             return static::$instance->detectEnvironment($environments);
         }
         /**
+         * Instantiate a concrete instance of the given type.
+         *
+         * @param  string $concrete
+         * @param  array $parameters
+         * @return mixed
+         *
+         * @throws BindingResolutionException
+         */
+        public static function build($concrete, $parameters = array())
+        {
+            return static::$instance->build($concrete, $parameters);
+        }
+        /**
          * Determine if a given string is resolvable.
          *
          * @param  string  $abstract
@@ -19176,19 +19241,6 @@ namespace {
         protected static function missingLeadingSlash($abstract)
         {
             return static::$instance->missingLeadingSlash($abstract);
-        }
-        /**
-         * Instantiate a concrete instance of the given type.
-         *
-         * @param  string  $concrete
-         * @param  array   $parameters
-         * @return mixed
-         *
-         * @throws BindingResolutionException
-         */
-        public static function build($concrete, $parameters = array())
-        {
-            return static::$instance->build($concrete, $parameters);
         }
         /**
          * Resolve all of the dependencies from the ReflectionParameters.
@@ -20197,9 +20249,23 @@ namespace {
         {
             return static::$instance->setRequest($req);
         }
-        public static function register($rtPath, $callback, $rtHandle = null, $additionalAttributes = array())
+        /**
+         * Register a symfony route with as little as a path and a callback.
+         *
+         * @param string $path The full path for the route
+         * @param \Closure|string $callback `\Closure` or "dispatcher" or "\Namespace\Controller::action_method"
+         * @param string|null $handle The route handle, if one is not provided the handle is generated from the path "/" => "_"
+         * @param array $requirements The Parameter requirements, see Symfony Route constructor
+         * @param array $options The route options, see Symfony Route constructor
+         * @param string $host The host pattern this route requires, see Symfony Route constructor
+         * @param array|string $schemes The schemes or scheme this route requires, see Symfony Route constructor
+         * @param array|string $methods The HTTP methods this route requires, see see Symfony Route constructor
+         * @param string $condition see Symfony Route constructor
+         * @return \Symfony\Component\Routing\Route
+         */
+        public static function register($path, $callback, $handle = null, array $requirements = array(), array $options = array(), $host = "", $schemes = array(), $methods = array(), $condition = null)
         {
-            return static::$instance->register($rtPath, $callback, $rtHandle, $additionalAttributes);
+            return static::$instance->register($path, $callback, $handle, $requirements, $options, $host, $schemes, $methods, $condition);
         }
         public static function registerMultiple(array $routes)
         {
@@ -20240,6 +20306,146 @@ namespace {
         public static function getFacadeAccessor()
         {
             return Concrete\Core\Support\Facade\Route::getFacadeAccessor();
+        }
+        /**
+         * Get the root object behind the facade.
+         *
+         * @return mixed
+         */
+        public static function getFacadeRoot()
+        {
+            return Concrete\Core\Support\Facade\Facade::getFacadeRoot();
+        }
+        /**
+         * Resolve the facade root instance from the container.
+         *
+         * @param  string $name
+         * @return mixed
+         */
+        protected static function resolveFacadeInstance($name)
+        {
+            return Concrete\Core\Support\Facade\Facade::resolveFacadeInstance($name);
+        }
+        /**
+         * Clear a resolved facade instance.
+         *
+         * @param  string  $name
+         * @return void
+         */
+        public static function clearResolvedInstance($name)
+        {
+            return Concrete\Core\Support\Facade\Facade::clearResolvedInstance($name);
+        }
+        /**
+         * Clear all of the resolved instances.
+         *
+         * @return void
+         */
+        public static function clearResolvedInstances()
+        {
+            return Concrete\Core\Support\Facade\Facade::clearResolvedInstances();
+        }
+        /**
+         * Get the application instance behind the facade.
+         *
+         * @return \Concrete\Core\Application\Application
+         */
+        public static function getFacadeApplication()
+        {
+            return Concrete\Core\Support\Facade\Facade::getFacadeApplication();
+        }
+        /**
+         * Set the application instance.
+         *
+         * @param  \Concrete\Core\Application\Application $app
+         * @return void
+         */
+        public static function setFacadeApplication($app)
+        {
+            return Concrete\Core\Support\Facade\Facade::setFacadeApplication($app);
+        }
+    }
+
+    class UserInfo extends Concrete\Core\User\UserInfoFactory
+    {
+        /**
+         * @var Concrete\Core\User\UserInfoFactory
+         */
+        protected static $instance;
+        /**
+         * Returns the UserInfo object for a give user's uID.
+         *
+         * @param int $uID
+         *
+         * @return UserInfo|null
+         */
+        public static function getByID($uID)
+        {
+            return static::$instance->getByID($uID);
+        }
+        /**
+         * Returns the UserInfo object for a give user's username.
+         *
+         * @param string $uName
+         *
+         * @return UserInfo|null
+         */
+        public static function getByName($uName)
+        {
+            return static::$instance->getByName($uName);
+        }
+        /**
+         * @deprecated
+         */
+        public static function getByUserName($uName)
+        {
+            return static::$instance->getByUserName($uName);
+        }
+        /**
+         * Returns the UserInfo object for a give user's email address.
+         *
+         * @param string $uEmail
+         *
+         * @return UserInfo|null
+         */
+        public static function getByEmail($uEmail)
+        {
+            return static::$instance->getByEmail($uEmail);
+        }
+        /**
+         * @param string $uHash
+         * @param bool $unredeemedHashesOnly
+         *
+         * @return UserInfo|null
+         */
+        public static function getByValidationHash($uHash, $unredeemedHashesOnly = true)
+        {
+            return static::$instance->getByValidationHash($uHash, $unredeemedHashesOnly);
+        }
+        public static function getFacadeAccessor()
+        {
+            return Concrete\Core\Support\Facade\UserInfoFactory::getFacadeAccessor();
+        }
+        /**
+         * @deprecated
+         */
+        public static function add($data)
+        {
+            return Concrete\Core\Support\Facade\UserInfoFactory::add($data);
+        }
+        /**
+         * @deprecated
+         */
+        public static function addSuperUser($uPasswordEncrypted, $uEmail)
+        {
+            return Concrete\Core\Support\Facade\UserInfoFactory::addSuperUser($uPasswordEncrypted, $uEmail);
+        }
+        /**
+         * @deprecated
+         */
+        public static function register($data)
+        {
+            return Concrete\Core\Support\Facade\UserInfoFactory::register($data);
         }
         /**
          * Get the root object behind the facade.
@@ -21009,6 +21215,15 @@ namespace {
         public static function getSaver()
         {
             return static::$instance->getSaver();
+        }
+        /**
+         * Set the saver instance
+         *
+         * @param \Concrete\Core\Config\SaverInterface $saver
+         */
+        public static function setSaver(Concrete\Core\Config\SaverInterface $saver)
+        {
+            return static::$instance->setSaver($saver);
         }
         protected static function parsePackageSegments($key, $namespace, $item)
         {

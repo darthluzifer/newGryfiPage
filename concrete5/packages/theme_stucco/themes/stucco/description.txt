@@ -1,2 +1,0 @@
-Stucco Business Theme
-Simple, business theme with Theme Customizer. support for blogs, portfolios, layouts and more.
