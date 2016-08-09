@@ -11,6 +11,7 @@ use Concrete\Core\User\User;
 
         <link rel="stylesheet" href="<?php echo $view->getThemePath(); ?>/css/vendor/bootstrap/bootstrap.min.css">
         <?php echo $html->css($view->getStylesheet('main.less'));?>
+        <?php echo $html->css($view->getStylesheet('menu.css'));?>
         <?php echo $html->css($view->getStylesheet('submenu.css'));?>
         <?php View::element('header_required'); ?>
     </head>
@@ -31,11 +32,13 @@ use Concrete\Core\User\User;
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         </button>
-                       <?php
-                       $a = new GlobalArea('Header Site Title');
-                       $a->display();
+                        <div class="navbar-brand">
+                           <?php
+                           $a = new GlobalArea('Header Site Title');
+                           $a->display();
 
-                       ?>
+                           ?>
+                        </div>
                     </div>
                     
                     <!-- nav items -->
