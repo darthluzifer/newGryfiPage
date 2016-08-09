@@ -1,5 +1,5 @@
-<?php 
-namespace Concrete\Package\ConcreteBootstrapBoilerplateTheme\Theme\BoilerplateBootstrap;
+<?php
+namespace Concrete\Package\BaclucGryfenbergTheme\Theme\BaclucGryfenbergTheme;
 
 use Concrete\Core\Page\Theme\Theme;
 
