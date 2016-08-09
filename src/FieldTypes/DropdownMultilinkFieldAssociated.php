@@ -103,9 +103,9 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                     ));
                 $associationEntity = new $this->associationEntity;
                 $associationEntity->set($this->sourceEntityAssociationField,$this->sourceEntity);
-                $this->getEntityManager()->persist($this->sourceEntity);
+                //$this->getEntityManager()->persist($this->sourceEntity);
                 $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
-                $this->getEntityManager()->persist($findItem);
+                //$this->getEntityManager()->persist($findItem);
                // $this->getEntityManager()->persist($associationEntity);
                 $sqlArray->add($associationEntity);
             }else{

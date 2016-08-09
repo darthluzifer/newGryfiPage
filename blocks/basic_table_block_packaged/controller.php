@@ -136,13 +136,29 @@ class Controller extends BlockController
      */
     function __construct($obj = null)
     {
+
+
+
         parent::__construct($obj);
+        if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
+            $this->editKey = $_SESSION[$this->getHTMLId() . "rowid"];
+        }
 
         /*
          * if the basic table block is extended, $this->model is already set and should not be overwritted, that the name of the session variable is set right
          * */
         if ($this->model == null) {
-            $this->model = new ExampleEntity();
+            if($this->editKey == null){
+                $this->model = new ExampleEntity();
+            }else{
+                $this->model = $this->getEntityManager()->find("Concrete\\Package\\BasicTablePackage\\Src\\ExampleEntity", $this->editKey);
+            }
+
+        }else{
+            if($this->editKey == null){
+            }else{
+                $this->model = $this->getEntityManager()->find(get_class($this->model), $this->editKey);
+            }
         }
 
 
@@ -156,9 +172,7 @@ class Controller extends BlockController
         }
 
         //if editkey is set in session, save in property
-        if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
-            $this->editKey = $_SESSION[$this->getHTMLId() . "rowid"];
-        }
+
 
         //check if it is in form view
         if (isset($_SESSION[$this->getHTMLId()]['prepareFormEdit'])) {
@@ -451,14 +465,13 @@ class Controller extends BlockController
                 $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
                 return false;
             }
-            $classname = get_class($this->model);
-            $model = new $classname;
             if ($this->editKey == null) {
-
+                $model = $this->model;
             } else {
                 $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             }
 
+            $this->getEntityManager()->persist($model);
             //save values
             foreach ($this->getFields() as $key => $value) {
                 if ($key != $model->getIdFieldName()) {
@@ -476,7 +489,7 @@ class Controller extends BlockController
 
             //if the data is inserted, the saveself fields can only save afterwards
 
-            $this->getEntityManager()->persist($model);
+
             $this->getEntityManager()->flush();
 
 
@@ -532,7 +545,6 @@ class Controller extends BlockController
 
     public function deleteRow()
     {
-
         $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
         $this->getEntityManager()->remove($model);
         $this->getEntityManager()->flush();
@@ -540,7 +552,10 @@ class Controller extends BlockController
         $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
         if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
             unset($_SESSION[$this->getHTMLId() . "rowid"]);
+
         }
+        $this->editKey = null;
+
         if ($r) {
             return true;
         } else {
@@ -914,7 +929,7 @@ class Controller extends BlockController
      */
     protected function generatePostFieldMap()
     {
-        $fields = $this->model->getFieldTypes();
+        $fields = $this->getFields();
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
                 $this->postFieldMap[$field->getPostName()] = $key;
