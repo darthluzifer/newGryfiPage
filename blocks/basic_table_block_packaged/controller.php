@@ -616,6 +616,13 @@ class Controller extends BlockController
         );
 
         $al->register(
+            'css', 'fontawesome', 'font-awesome'       , array(
+                array('css', 'css/font-awesome.css', array('minify' => false))
+            )
+        );
+
+
+        $al->register(
             'css', 'tagsinputcss', 'blocks/basic_table_block_packaged/css/bootstrap-tagsinput.css',
             array('minify' => false, 'combine' => true)
             , $package
@@ -640,6 +647,7 @@ class Controller extends BlockController
         );
 
         $al->registerGroup('basictable', array(
+            array('css', 'font-awesome'),
             array('css', 'tagsinputcss'),
             array('css', 'datepickercss'),
             array('css', 'bootgridcss'),
