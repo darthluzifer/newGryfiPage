@@ -8,7 +8,7 @@ $logfile = "emaillog.txt";
 
 //open database properties of concrete5
 $logtext = "";
-$dbprop = (include('../testNewGryfiPage/concrete5/application/config/database.php'));
+$dbprop = (include('concrete5/application/config/database.php'));
 
 $dbprop = $dbprop['connections']['concrete'];
 //open stream
