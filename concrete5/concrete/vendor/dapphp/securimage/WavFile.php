@@ -446,7 +446,7 @@ class WavFile
         // logarithmic compression
         if ($threshold >= 0 && $threshold < 1 && $sampleAbs > $threshold) {
             $loga = self::$LOOKUP_LOGBASE[(int)($threshold * 20)]; // log base modifier
-            return $sign * ($threshold + (1 - $threshold) * log(1 + $loga * ($sampleAbs - $threshold) / (2 - $threshold)) / log(1 + $loga));
+            return $sign * ($threshold + (1 - $threshold) * logtext(1 + $loga * ($sampleAbs - $threshold) / (2 - $threshold)) / logtext(1 + $loga));
         }
 
         // linear compression
