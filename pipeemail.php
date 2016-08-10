@@ -3,7 +3,9 @@
 defined('C5_EXECUTE') or die("Access Denied.");
 //vars
 chdir(__DIR__);
-$dbprop = (include('concrete5.7.3.1/application/config/database.php'));
+
+$logtext = "";
+$dbprop = (include('../testNewGryfiPage/concrete5/application/config/database.php'));
 
 $dbprop = $dbprop['connections']['concrete'];
 
@@ -87,13 +89,32 @@ $dbh = new PDO($dsn, $username, $password/*, $options*/);
 //get the emails of the group
 $sql = "SELECT u.uEmail FROM Groups g JOIN UserGroups ug ON g.gID = ug.gID JOIN Users u ON u.uID = ug.uID WHERE LOWER(g.gName) = LOWER(?)";
 
+$logtext.="\n";
+$logtext.="SQL STATEMENT: $sql";
+
 $statement = $dbh->prepare($sql);
 $statement->bindParam(1, $group);
+$logtext.="\n";
+$logtext.="Group is: $group";
+
+$group = checkgroup($group);
+
+$logtext.="\n";
+$logtext.="Checked Group is: $group";
+
+
 $statement->execute();
 if($statement->errorCode() != '00000'){
 	exit();
 }
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+ob_start();
+var_dump($result);
+$vardumpres = ob_get_contents();
+$logtext.="\n";
+$logtext.="SQL Result: $vardumpres";
+
 $emails = array();
 $skipped = false;
 foreach($result as $rownum => $value){
@@ -125,16 +146,25 @@ $message
 
 ";
 
-send_mail($from, "Confirmation of Email forwarding of $subject ", $confirmtext, "lucius.bachmann@clubpage.ch");
+$logtext .= $confirmtext;
 
+
+
+send_mail($from, "Confirmation of Email forwarding of $subject ", $confirmtext, "lucius.bachmann@gmx.ch");
+
+if(file_exists("emaillog.txt")){
+	unlink("emaillog.txt");
+}
+file_put_contents("emaillog.txt", $logtext);
 
 function send_mail($to, $subject, $message, $from, $headers){
+	global $logtext;
 	require 'class.phpmailer.php';
 
 	$mail = new PHPMailer;
 
 //$mail->SMTPDebug = 3;                               // Enable verbose debug output
-	$mail->wrapText()
+	$mail->wrapText();
 
 	$mail->setFrom($from);
 	$mail->addAddress($to);     // Add a recipient
@@ -152,9 +182,27 @@ function send_mail($to, $subject, $message, $from, $headers){
 	if(!$mail->send()) {
 		echo 'Message could not be sent.';
 		echo 'Mailer Error: ' . $mail->ErrorInfo;
+		$logtext.= '\n';
+		$logtext.= 'Message could not be sent.';
+		$logtext.= '\n';
+		$logtext.= 'Mailer Error: ' . $mail->ErrorInfo;
+
 	} else {
 		echo 'Message has been sent';
+		$logtext.= '\n';
+		$logtext.= 'Message sent.';
+
 	}
+}
+
+
+function checkgroup($group){
+	for($i=0;$i < strlen($group); $i++){
+		if(preg_match("/[a-z]/i", $group[$i])){
+			break;
+		}
+	}
+	return substr($group,$i);
 }
 
 ?>
