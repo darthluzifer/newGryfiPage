@@ -315,6 +315,10 @@ function checkgroup($group){
 	*/
 	$group = str_replace('"', "", $group);
 	$group = trim($group);
+
+	if(strtolower($group) == "wölf" || strtolower($group) == "wolf" || strtolower($group) == "woelf"){
+		$group = "wölf";
+	}
 	return $group;
 }
 
