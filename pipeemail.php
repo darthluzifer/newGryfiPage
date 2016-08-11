@@ -110,6 +110,10 @@ $subject = $Parser->getHeader("subject");
 
 $message = $Parser->getMessageBody("html");
 $messageplain = $Parser->getMessageBody("text");
+
+if(strlen(trim($message))==0){
+	$message = $messageplain;
+}
 logtext("Attachement dir ist $attachementDir");
 $attachements = $Parser->saveAttachments($attachementDir);
 
@@ -252,54 +256,54 @@ send_mail("lucius.bachmann@clubpage.ch", $subject, $message,"lucius.bachmann@clu
 
 
 function send_mail($to, $subject, $message, $from, $emails, $messageplain, $attachements){
-	global $logtext;
 	require 'class.phpmailer.php';
 
-	$mail = new PHPMailer;
 
-//$mail->SMTPDebug = 3;                               // Enable verbose debug output
-	$mail->wrapText();
-
-	$mail->setFrom($from);
-	$mail->addAddress($to);     // Add a recipient
-	/*$mail->addAddress('ellen@example.com');               // Name is optional
-	$mail->addReplyTo('info@example.com', 'Information');
-	$mail->addCC('cc@example.com');
-	$mail->addBCC('bcc@example.com');
-*/
-	                                // Set email format to HTML
-
-	foreach($emails as $email){
-		$mail->addBCC($email);
-	}
-
-
-	$mail->Subject = $subject;
-
-	$mail->Body=$message;
-
-	$mail->AltBody = $messageplain;
-
-	$attachmentdir = "";
-	foreach ($attachements as $path) {
-		$attachmentdir = dir($path);
-		$mail->addAttachment($path);
-	}
-
-	$mail->CharSet = "utf8";
 
 
 
 	//$mail->addCustomHeader("Content-Type", 'multipart/mixed');
+	foreach ($emails as $email) {
+		$mail = new PHPMailer;
 
-	if(!$mail->send()) {
-		logtext("Sending failed");
-	} else {
-		logtext("Sending successful");
+//$mail->SMTPDebug = 3;                               // Enable verbose debug output
+		$mail->wrapText();
+
+		$mail->addAddress($email);
+		$mail->setFrom($from);  // Add a recipient
+		/*$mail->addAddress('ellen@example.com');               // Name is optional
+        $mail->addReplyTo('info@example.com', 'Information');
+        $mail->addCC('cc@example.com');
+        $mail->addBCC('bcc@example.com');
+    */
+		// Set email format to HTML
+
+
+
+
+		$mail->Subject = $subject;
+
+		$mail->Body=$message;
+
+		$mail->AltBody = $messageplain;
+
+		$attachmentdir = "";
+		foreach ($attachements as $path) {
+			$attachmentdir = dir($path);
+			$mail->addAttachment($path);
+		}
+
+		$mail->CharSet = "utf8";
+		if (!$mail->send()) {
+			logtext("Sending to $email failed");
+		} else {
+			logtext("Sending to $email successful");
+		}
 	}
 	foreach($attachements as $path){
 		unlink($path);
 	}
+
 	rmdir($attachmentdir);
 }
 
