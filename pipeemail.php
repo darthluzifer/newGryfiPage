@@ -163,11 +163,11 @@ if($statement->errorCode() != '00000'){
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 logtext("Result of emailcheck is ".json_encode($result));
-
+/*
 if($result[0]['number']< 1){
 	logtext("Misuse of email forwarding from address $from");
 	exit();
-}
+}*/
 //get the emails of the group
 $sql = "SELECT u.uEmail FROM Groups g JOIN UserGroups ug ON g.gID = ug.gID JOIN Users u ON u.uID = ug.uID WHERE LOWER(g.gName) = LOWER(?)";
 
