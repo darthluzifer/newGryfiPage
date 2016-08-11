@@ -252,7 +252,7 @@ logtext($logtext);
 
 
 
-send_mail("lucius.bachmann@clubpage.ch", $subject, $message,"lucius.bachmann@clubpage.ch", $emails, $messageplain, $attachements);
+send_mail("lucius.bachmann@clubpage.ch", $subject, $message,$from, $emails, $messageplain, $attachements);
 
 
 function send_mail($to, $subject, $message, $from, $emails, $messageplain, $attachements){
