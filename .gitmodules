@@ -13,3 +13,6 @@
 [submodule "concrete5/packages/concrete_bootstrap_boilerplate_theme"]
 	path = concrete5/packages/concrete_bootstrap_boilerplate_theme
 	url = git@github.com:BacLuc/concrete_bootstrap_boilerplate_theme.git
+[submodule "concrete5/packages/bacluc_person_package"]
+	path = concrete5/packages/bacluc_person_package
+	url = git@github.com:BacLuc/bacluc_person_package.git
