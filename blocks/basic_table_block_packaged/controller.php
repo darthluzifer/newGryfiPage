@@ -207,7 +207,7 @@ class Controller extends BlockController
      */
     public static function setModelFieldTypes(Entity $model)
     {
-        $model->__construct();
+        $model->setDefaultFieldTypes();
         return $model;
     }
 
@@ -765,7 +765,7 @@ class Controller extends BlockController
         $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($this->model));
         foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
             $targetEntityInstance = new $mapping['targetEntity'];
-            $selectEntities[$mapping['targetEntity']] = $mapping['fieldName'];
+            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
 
         }
 
@@ -777,11 +777,11 @@ class Controller extends BlockController
 
         //add select
 
-        $entities = array_keys($selectEntities);
+        $entities = $selectEntities;
 
         $selectString = "";
         $entityCounter = 0;
-        foreach($entities as $key => $entityName){
+        foreach($entities as $fieldname => $entityName){
             if($entityCounter > 0){
                 $selectString.=",";
             }
@@ -790,13 +790,14 @@ class Controller extends BlockController
         $query->select($selectString);
 
 
-        $query->from(reset($entities), "e0");
+        $query->from(reset(array_keys($entities)), "e0");
 
         $entityCounter = 1;
-        $lastEntityName = null;
-        foreach($selectEntities as $entityName => $fieldName){
-            if($lastEntityName == null){
-                $lastEntityName = $entityName;
+        $first = true;
+        foreach($selectEntities as $fieldName => $entityName){
+            if($first){
+                //first entity is the from clause, so no join required
+                $first = false;
                 continue;
             }
             $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);

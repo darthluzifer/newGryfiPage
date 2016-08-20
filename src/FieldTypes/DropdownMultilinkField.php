@@ -5,7 +5,7 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
-use Concrete\Package\EntitiesExample\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\Entity;
 use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
@@ -151,7 +151,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 
 
         $values = $this->getValues();
-        if($values instanceof  ArrayCollection){
+        if($values instanceof  ArrayCollection || $values instanceof PersistentCollection){
 
             $values =$values->toArray();
         }elseif(is_array($values)){
@@ -270,7 +270,7 @@ class DropdownMultilinkField extends DropdownLinkField{
     public function setSQLValue($value){
         if(count($value)==0){
             $this->value=new ArrayCollection();
-        }elseif($value instanceof ArrayCollection){
+        }elseif($value instanceof ArrayCollection || $value instanceof PersistentCollection){
             //check if values are of the right entitiy
             foreach($value->toArray() as $valnum => $valueitem){
                 if(!$valueitem instanceof $this->targetEntity){

@@ -72,7 +72,7 @@ abstract class Entity
 
     public function getFieldTypes(){
         if(count($this->fieldTypes) == 0){
-            $this->__construct();
+            $this->setDefaultFieldTypes();
         }
         return $this->fieldTypes;
     }
