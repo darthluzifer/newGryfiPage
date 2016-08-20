@@ -1,8 +1,9 @@
 <?php
-namespace Concrete\Package\BaclucEventPackage\Block\BaclucEventBlock;
+namespace Concrete\Package\BaclucPersonPackage\Block\BaclucPersonBlock;
 
 use Concrete\Core\Package\Package;
 use Concrete\Package\BaclucEventPackage\Src\Event;
+use Concrete\Package\BaclucPersonPackage\Src\Person;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
@@ -58,7 +59,7 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
     {
         //$this->model has to be instantiated before, that session handling works right
 
-        $this->model = new ExampleEntity();
+        $this->model = new Person();
         parent::__construct($obj);
 
 
@@ -88,8 +89,9 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
         $this->requiredOptions[2]->set('optionName', "testlink");
 */
 
-
     }
+
+
 
 
 
