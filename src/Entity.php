@@ -43,6 +43,7 @@ use Doctrine\ORM\PersistentCollection;
  */
 abstract class Entity
 {
+    use EntityGetterSetter;
 
     protected $protect = array();
     protected $protectRead = array();
@@ -58,56 +59,6 @@ abstract class Entity
         return get_class();
     }
 
-    public function get($name)
-    {
-        $test = "a";
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectRead)
-            && !in_array($name, $this->fieldTypes)) {
-
-            $returnvar = $this->{$name};
-            if(property_exists($this, "gID")){
-                    $returnvar2 = $this->gID;
-            }
-
-            return $returnvar;
-        }
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function set($name, $value)
-    {
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectWrite)
-            && !in_array($name, $this->fieldTypes)
-        ) {
-            if($this->$name instanceof ArrayCollection || $this->$name instanceof  PersistentCollection){
-                $this->$name = $this->mergeCollections($this->$name,$value);
-                return $this;
-            }
-
-            $this->$name = $value;
-            return $this;
-        }
-    }
-
-    public function __get($name)
-    {
-        $test = "a";
-        $returnvar = $this->get($name);
-        return $returnvar;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->set($name, $value);
-    }
 
     public function setControllerFieldType($name, Field $field){
         if(property_exists($this, $name)

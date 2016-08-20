@@ -3,6 +3,7 @@ namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 defined('C5_EXECUTE') or die(_("Access Denied."));
 
 use Concrete\Core\Support\Facade\Log;
+use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionException;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionSetOrderException;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionValueException;
@@ -19,6 +20,7 @@ use Punic\Exception;
  * @Table(name="TableBlockOption")
  */
 class TableBlockOption extends Entity{
+    use EntityGetterSetter;
     /**
      * @var int
      * @Id @Column(type="integer")
