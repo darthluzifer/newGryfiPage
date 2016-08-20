@@ -8,6 +8,7 @@ use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionValueException;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
+use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use OpenCloud\Common\Log\Logger;
 
 /**
@@ -17,6 +18,7 @@ use OpenCloud\Common\Log\Logger;
  * @Table(name="TextBlockOptions")
  */
 class TextBlockOption extends TableBlockOption{
+    use EntityGetterSetter;
 
 
 

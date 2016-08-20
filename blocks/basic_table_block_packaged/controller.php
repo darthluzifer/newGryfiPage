@@ -235,9 +235,8 @@ class Controller extends BlockController
      */
     function getHTMLId()
     {
-        $classstring = get_class($this->model);
-        $namespaceArray = explode("\\", $classstring);
-        return $namespaceArray[count($namespaceArray) - 1] . $this->bID;
+        //because model is not always set, and bID plus blockhandle should be unique, we use this for identifiying the block
+        return $this->btHandle . $this->bID;
     }
 
     /**
