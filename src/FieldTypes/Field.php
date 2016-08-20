@@ -131,6 +131,24 @@ class Field{
         }
     }
 
+    /**
+     * @param boolean $showInForm
+     * @return $this
+     */
+    public function setShowInForm($showInForm){
+        $this->showInForm = $showInForm;
+        return $this;
+    }
+
+    /**
+     * @param boolean $showInTable
+     * @return $this
+     */
+    public function setShowInTable($showInTable){
+        $this->showInTable = $showInTable;
+        return $this;
+    }
+
 
 
 }
