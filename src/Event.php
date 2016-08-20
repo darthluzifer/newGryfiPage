@@ -7,6 +7,7 @@
  */
 namespace Concrete\Package\BaclucEventPackage\Src;
 use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\FileField as FileField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\WysiwygField as WysiwygField;
@@ -25,6 +26,7 @@ use Doctrine\ORM\Query\Expr;
  */
 class Event extends Entity
 {
+    use EntityGetterSetter;
     /**
      * @var int
      * @Id @Column(type="integer", nullable=false, options={"unsigned":true})
@@ -94,52 +96,7 @@ class Event extends Entity
         $this->fieldTypes['infofile']= new FileField("infofile", t('Info'), "info");
         $this->fieldTypes['registerfile']= new FileField("registerfile", t('Anmeldung'), "register");
     }
-    /**
-     * the getters and setters and der magic equivalent have to be copied to every subclass, because property_exists does not find variabels of the subclasses
-     * @param $name
-     * @return mixed
-     */
-    public function get($name)
-    {
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectRead)
-            && !in_array($name, $this->fieldTypes)) {
-            $returnvar = $this->{$name};
-            return $returnvar;
-        }
-    }
 
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function set($name, $value)
-    {
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectWrite)
-            && !in_array($name, $this->fieldTypes)
-        ) {
-            if($this->$name instanceof ArrayCollection || $this->$name instanceof  \Doctrine\ORM\PersistentCollection){
-                $this->$name = $this->mergeCollections($this->$name,$value);
-                return $this;
-            }
-
-            $this->$name = $value;
-            return $this;
-        }
-    }
-    public function __get($name)
-    {
-        $returnvar = $this->get($name);
-        return $returnvar;
-    }
-    public function __set($name, $value)
-    {
-        $this->set($name, $value);
-    }
     public function getId(){
         return $this->id;
     }
