@@ -64,6 +64,7 @@ class Controller extends Package
             if (!BlockTypeSet::getByHandle('bacluc_person_set')) {
                 BlockTypeSet::add('bacluc_person_set', 'People', $pkg);
             }
+            BlockType::installBlockType("bacluc_person_block", $pkg);
             $em->getConnection()->commit();
         }catch(Exception $e){
             $em->getConnection()->rollBack();
@@ -73,17 +74,18 @@ class Controller extends Package
     public function uninstall()
     {
         $em = $this->getEntityManager();
+        $personblock = BlockType::getByHandle("bacluc_person_block");
         //begin transaction, so when block install fails, but parent::install was successfully, you don't have to uninstall the package
         $em->getConnection()->beginTransaction();
         try{
 
             $db = Core::make('database');
-//
-//            if(is_object($eventblock)) {
-//                $blockId = $eventblock->getBlockTypeID();
-//                //delete of blocktype not in orm way, because there is no entity BlockType
-//                $db->query("DELETE FROM BlockTypes WHERE btID = ?", array($blockId));
-//            }
+
+            if(is_object($personblock)) {
+                $blockId = $personblock->getBlockTypeID();
+                //delete of blocktype not in orm way, because there is no entity BlockType
+                $db->query("DELETE FROM BlockTypes WHERE btID = ?", array($blockId));
+            }
 //            if(is_object($nextEventblock)) {
 //                $blockId = $nextEventblock->getBlockTypeID();
 //                //delete of blocktype not in orm way, because there is no entity BlockType
