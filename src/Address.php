@@ -22,7 +22,7 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
  * @DiscriminatorColumn(name="discr", type="string")
  * @Table(name="bacluc_address")
  */
-class Address extends Entity
+class Address extends Entity implements  AddressInterface
 {
     use EntityGetterSetter;
     /**
@@ -86,8 +86,11 @@ class Address extends Entity
         return $function;
     }
 
-
-
+    public static function getFieldTypeClass()
+    {
+        // TODO: Implement getFieldTypeClass() method.
+        return "Concrete\\Package\\BasicTablePackage\\Src\\FieldTypes\\AddressField\\AddressField";
+    }
 
 
 }

@@ -8,6 +8,8 @@
 
 namespace Concrete\Package\BaclucPersonPackage\Src;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField;
@@ -123,6 +125,13 @@ class Person extends Entity
      */
     protected $Addresses;
 
+
+    /**
+     * @var Address
+     * @ManyToOne(targetEntity="Concrete\Package\BaclucPersonPackage\Src\Address")
+     */
+    protected $testAddress;
+
 //
 //    /**
 //     * @var Note[]
@@ -183,6 +192,14 @@ class Person extends Entity
         $this->fieldTypes['PhonenumberAddresses']->setLabel("Phone Numbers");
         $this->fieldTypes['EmailAddresses']->setLabel("Emails");
         $this->fieldTypes['Addresses']->setLabel("Other Addresses");
+
+        /**
+         * @var DropdownLinkField $testAddressfield
+         */
+        $testAddressfield = $this->fieldTypes['testAddress'];
+        $directEditField = new DirectEditAssociatedEntityField($testAddressfield->getSQLFieldName(), "Test Adresse", $testAddressfield->getPostName());
+        DropdownLinkField::copyLinkInfo($testAddressfield,$directEditField);
+        $this->fieldTypes['testAddress']=$directEditField;
     }
 
 
