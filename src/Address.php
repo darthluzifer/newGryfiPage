@@ -68,6 +68,25 @@ class Address extends Entity
     }
 
 
+    public static function getDefaultGetDisplayStringFunction(){
+        $function = function(Address $item){
+
+            $returnString ="";
+            if(strlen($item->type)>0){
+                $returnString.=$item->type." ";
+            }
+            if(strlen($item->organisation!=null)>0){
+                $returnString.=$item->organisation." ";
+            }
+            if(strlen($item->info!=null)){
+                $returnString.=$item->info;
+            }
+            return $returnString;
+        };
+        return $function;
+    }
+
+
 
 
 
