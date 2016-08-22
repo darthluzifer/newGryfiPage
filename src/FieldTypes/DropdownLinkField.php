@@ -182,7 +182,7 @@ class DropdownLinkField extends DropdownField{
                 foreach ($modelList as $model) {
                     if ($this->getDisplayString != null) {
                         $displayFunction = $this->getDisplayString;
-                        $options[$model->getId()] = $displayFunction($model);
+                        $options[$model->getId()] = trim($displayFunction($model));
                     }
                 }
             }
