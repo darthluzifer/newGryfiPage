@@ -498,6 +498,8 @@ class Controller extends BlockController
             //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
 
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+            $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
+            unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
             $this->redirect($c->getCollectionPath());
         }
 
