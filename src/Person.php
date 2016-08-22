@@ -79,6 +79,50 @@ class Person extends Entity
      *
      */
     protected $Children;
+
+
+    /**
+     * @var PostalAddress[]
+     * @ManyToMany(targetEntity="Concrete\Package\BaclucPersonPackage\Src\PostalAddress")
+     * @JoinTable(name="bacluc_person_postal_address",
+     *     joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
+     *     )
+     */
+    protected $PostalAddresses;
+
+
+    /**
+     * @var PhonenumberAddress[]
+     * @ManyToMany(targetEntity="Concrete\Package\BaclucPersonPackage\Src\PhonenumberAddress")
+     * @JoinTable(name="bacluc_person_phonenumber_address",
+     *     joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
+     *     )
+     */
+    protected $PhonenumberAddresses;
+
+
+    /**
+     * @var EmailAddress[]
+     * @ManyToMany(targetEntity="Concrete\Package\BaclucPersonPackage\Src\EmailAddress")
+     * @JoinTable(name="bacluc_person_email_address",
+     *     joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
+     *     )
+     */
+    protected $EmailAddresses;
+
+    /**
+     * @var Address[]
+     * @ManyToMany(targetEntity="Concrete\Package\BaclucPersonPackage\Src\Address")
+     * @JoinTable(name="bacluc_person_address",
+     *     joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
+     *     )
+     */
+    protected $Addresses;
+
 //
 //    /**
 //     * @var Note[]
@@ -100,6 +144,24 @@ class Person extends Entity
             $this->Children = new ArrayCollection();
         }
 
+        if($this->PostalAddresses == null){
+            $this->PostalAddresses = new ArrayCollection();
+        }
+
+        if($this->PhonenumberAddresses == null){
+            $this->PhonenumberAddresses = new ArrayCollection();
+        }
+
+        if($this->EmailAddresses == null){
+            $this->EmailAddresses = new ArrayCollection();
+        }
+
+        if($this->Addresses == null){
+            $this->Addresses = new ArrayCollection();
+        }
+
+
+
 //        if($this->Notes == null){
 //            $this->Notes = new ArrayCollection();
 //        }
@@ -117,6 +179,10 @@ class Person extends Entity
         $this->fieldTypes['public_picture_allowed']->setShowInTable(false);
         $this->fieldTypes['Parents']->setLabel("Parents");
         $this->fieldTypes['Children']->setLabel("Children");
+        $this->fieldTypes['PostalAddresses']->setLabel("Postal Address");
+        $this->fieldTypes['PhonenumberAddresses']->setLabel("Phone Numbers");
+        $this->fieldTypes['EmailAddresses']->setLabel("Emails");
+        $this->fieldTypes['Addresses']->setLabel("Other Addresses");
     }
 
 
