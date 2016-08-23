@@ -42,7 +42,7 @@
             }
 
             //now rename id and name of new row
-            $(hiddenrowcopy).each(function (e) {
+            $(hiddenrowcopy).find('*').each(function (e) {
 
 
                 if ($(this).is('[id]')) {
