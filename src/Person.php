@@ -208,8 +208,8 @@ class Person extends Entity
          * @var DropdownMultilinkField $addresses
          */
         $addresses = $this->fieldTypes['Addresses'];
-        $directEditField = new DirectEditAssociatedEntityMultipleField($testAddressfield->getSQLFieldName(), "Other Addresses", $testAddressfield->getPostName());
-        DropdownLinkField::copyLinkInfo($testAddressfield,$directEditField);
+        $directEditField = new DirectEditAssociatedEntityMultipleField($addresses->getSQLFieldName(), "Other Addresses", $addresses->getPostName());
+        DropdownLinkField::copyLinkInfo($addresses,$directEditField);
         $this->fieldTypes['Addresses']=$directEditField;
     }
 
