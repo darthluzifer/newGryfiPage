@@ -26,6 +26,8 @@
 	color: green;
 }
 
+
+
 .bootstrap-tagsinput{
 	display:block !important;
 }
@@ -42,4 +44,14 @@
 
 .basic_table_package .bootstrap-tagsinput input{
     border:none !important;
+}
+
+
+/*for subrow form*/
+div.hidden_form_row{
+    display: none;
+}
+
+div.hiddenforminfo{
+    display:none;
 }

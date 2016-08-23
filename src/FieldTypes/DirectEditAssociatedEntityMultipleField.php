@@ -10,20 +10,139 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
 use Concrete\Core\Device\DeviceInterface;
+use Concrete\Core\Html\Object\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 
 class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
 {
+    const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
 
     public function getFormView($form){
-        //begin with some html stuff to wrap it
 
-        //foreach value, create a direct edit field
 
-        //add add button
+        /**
+         * @var Entity $value
+         */
+        $values = $this->getSQLValue();
 
-        //close html stuff
+        if($values instanceof  \Doctrine\Common\Collections\Collection ){
+            $values = $values->toArray();
+        }
+        $html = "
+        <div class='subentityedit col-xs-12'>
+            
+            <label>".$this->getLabel()."</label>
+            <div class='row'>
+            
+        ";
+        if(count($values)>0){
+            $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton add'><i class ='fa fa-plus'></i></button>";
+        }
 
-        //return the html stuff
+        $classname = $this->targetEntity;
+
+        /**
+         * @var Entity $entityForFields
+         */
+        $entityForFields = new $classname();
+
+
+        //get the fields to show in the form
+
+        $fields = $entityForFields->getFieldTypes();
+
+
+        $html.="<div class='bacluc-realrows '>";
+        //build the forms
+        $rownum = 0;
+        if(count($values)>0) {
+
+            foreach($values as $value) {
+                $html.="<div class='col-xs-12'>
+                    <div class='subentityrowedit row'>
+                ";
+                /**
+                 * @var Field $field
+                 */
+                foreach ($fields as $field) {
+                    //if id or another directedit possibility, skip (because of possible circle)
+                    if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+                        continue;
+                    }
+
+                    if (is_null($value)) {
+                        $setValue = null;
+                    } else {
+                        $setValue = $value->get($field->getSQLFieldName());
+                    }
+                    //set the value
+                    $field->setSQLValue($setValue);
+                    //change the post name
+                    $field->setPostName($this->getPostName() . "[".$rownum++."][" . $field->getPostName() . "]");
+                    //get the form view
+                    $html .= $field->getFormView($form);
+                }
+                //add delete button
+                $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
+
+                //close row
+                $html.="</div>
+                </div>";
+
+
+            }
+
+        }
+        $html.="</div>";
+
+        //now add empty hidden rowform to add
+        $html.="<div class='hidden_form_row'> ";
+        $html.="<div class='col-xs-12'>
+                    <div class='subentityrowedit row'>
+                ";
+        foreach ($fields as $field) {
+            //if id or another directedit possibility, skip (because of possible circle)
+            if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+                continue;
+            }
+            //set the value
+            $field->setSQLValue(null);
+            //change the post name
+            $field->setPostName( static::PREPEND_BEFORE_REALNAME.$field->getPostName());
+            //get the form view
+            $html .= $field->getFormView($form);
+        }
+        $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
+
+        //now add information to add new row
+        $html.="<div class='rownum hiddenforminfo'>".$rownum."</div>";
+        $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
+        $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
+        $html.="</div>
+        </div>";
+        $html.="</div>";
+
+        //now add add button
+        $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton add'><i class ='fa fa-plus'></i></button>";
+
+
+        $html.="";
+
+
+
+
+
+
+
+        // TODO put the id in the form somehow
+
+        $html.="</div class='lastclosed'>
+           </div>
+        ";
+        //TODO get javascript logic for editing existing object or create new one
+
+        return $html;
     }
 
     public function validatePost($value)

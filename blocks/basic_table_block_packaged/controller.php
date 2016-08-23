@@ -602,6 +602,7 @@ class Controller extends BlockController
     {
         $package = Package::getByHandle("basic_table_package");
         $al = \Concrete\Core\Asset\AssetList::getInstance();
+
         $al->register(
             'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
             array('minify' => false, 'combine' => true)
@@ -627,6 +628,11 @@ class Controller extends BlockController
 
         $al->register(
             'javascript', 'block_auto_js', 'blocks/basic_table_block_packaged/auto.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+        $al->register(
+            'javascript', 'block_auto_js', 'blocks/basic_table_block_packaged/js/DirectEditAssociatedEntityMultipleField.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
