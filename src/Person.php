@@ -9,7 +9,9 @@
 namespace Concrete\Package\BaclucPersonPackage\Src;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField;
@@ -200,6 +202,15 @@ class Person extends Entity
         $directEditField = new DirectEditAssociatedEntityField($testAddressfield->getSQLFieldName(), "Test Adresse", $testAddressfield->getPostName());
         DropdownLinkField::copyLinkInfo($testAddressfield,$directEditField);
         $this->fieldTypes['testAddress']=$directEditField;
+
+
+        /**
+         * @var DropdownMultilinkField $addresses
+         */
+        $addresses = $this->fieldTypes['Addresses'];
+        $directEditField = new DirectEditAssociatedEntityMultipleField($testAddressfield->getSQLFieldName(), "Other Addresses", $testAddressfield->getPostName());
+        DropdownLinkField::copyLinkInfo($testAddressfield,$directEditField);
+        $this->fieldTypes['Addresses']=$directEditField;
     }
 
 
