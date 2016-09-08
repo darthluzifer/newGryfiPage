@@ -80,6 +80,20 @@ class DropdownLinkField extends DropdownField{
         return $this;
     }
 
+    /**
+     * @param DropdownLinkField $source
+     * @param DropdownLinkField $target
+     */
+    public static function copyLinkInfo(DropdownLinkField $source, DropdownLinkField &$target){
+        $target->setLinkInfo($source->getSourceEntity()
+            , $source->getSourceField()
+            ,$source->getTargetEntity()
+            , $source->getTargetField()
+            ,$source->getGetDisplayStringFunction()
+            ,$source->getFilter()
+        );
+    }
+
     public function setGetDisplayString(callable $getDisplayString){
         $this->getDisplayString = $getDisplayString;
         return $this;
@@ -126,6 +140,18 @@ class DropdownLinkField extends DropdownField{
     public function setShowColumn( $showcolumnname){
         $this->showcolumn = $showcolumnname;
         return $this;
+    }
+
+    public function getTableView(){
+        $value = $this->getSQLValue();
+        if(is_null($value)){
+            return "";
+        }
+        /**
+         * @var callable $displayStringFunction
+         */
+        $displayStringFunction = $this->getDisplayString;
+      return $displayStringFunction($value);
     }
 
     /**
@@ -200,13 +226,16 @@ class DropdownLinkField extends DropdownField{
     }
 
 
+    /**
+     * @return Entity
+     */
     public function getSQLValue(){
         return $this->value;
 
     }
 
     public function setSQLValue($value){
-        if($value instanceof $this->targetEntity){
+        if($value instanceof $this->targetEntity || is_null($value)){
             $this->value = $value;
         }else{
             throw new InvalidArgumentException("Parameter \$value is ".get_class($value).", should be ".$this->targetEntity." ");
@@ -216,6 +245,10 @@ class DropdownLinkField extends DropdownField{
 
 
     public function getValue(){
+        if(is_null($this->value)){
+            return "";
+        }
+
         if($this->options == null){
             $this->getOptions();
         }
@@ -243,6 +276,30 @@ class DropdownLinkField extends DropdownField{
             return false;
         }
         return true;
+    }
+
+    public function getSourceEntity(){
+        return $this->sourceEntity;
+    }
+
+    public function getSourceField(){
+        return $this->sourceField;
+    }
+
+    public function getTargetEntity(){
+        return $this->targetEntity;
+    }
+
+    public function getTargetField(){
+        return $this->targetField;
+    }
+
+    public function getGetDisplayStringFunction(){
+        return $this->getDisplayString;
+    }
+
+    public function getFilter(){
+        return $this->filter;
     }
 
 

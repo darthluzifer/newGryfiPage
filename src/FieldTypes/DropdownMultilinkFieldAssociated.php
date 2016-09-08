@@ -120,7 +120,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
      * get the Values of
      * @return ArrayCollection
      */
-    private function getValues(){
+    protected function getValues(){
         if(count($this->value)==0 && !is_null($this->rowid)) {
             $modelForIdField = new $this->targetEntity;
             /**

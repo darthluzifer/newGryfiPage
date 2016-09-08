@@ -498,6 +498,8 @@ class Controller extends BlockController
             //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
 
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+            $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
+            unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
             $this->redirect($c->getCollectionPath());
         }
 
@@ -600,6 +602,7 @@ class Controller extends BlockController
     {
         $package = Package::getByHandle("basic_table_package");
         $al = \Concrete\Core\Asset\AssetList::getInstance();
+
         $al->register(
             'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
             array('minify' => false, 'combine' => true)
@@ -625,6 +628,11 @@ class Controller extends BlockController
 
         $al->register(
             'javascript', 'block_auto_js', 'blocks/basic_table_block_packaged/auto.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+        $al->register(
+            'javascript', 'block_auto_js', 'blocks/basic_table_block_packaged/js/DirectEditAssociatedEntityMultipleField.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
@@ -680,7 +688,7 @@ class Controller extends BlockController
     /**
      * register needed javascript
      */
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
         $this->requireAsset('basictable');
     }
@@ -896,7 +904,7 @@ class Controller extends BlockController
                 foreach ($this->getFields() as $key => $value) {
                     if ($key == 'id') {
                     } else {
-                        $returnArray[$key] = "";
+                        $returnArray[$key] = null;
                     }
                 }
             }
