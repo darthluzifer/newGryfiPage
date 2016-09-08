@@ -162,34 +162,36 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
         //for first version, create for every post new entity, and persist it
         $collectarraycollection = new ArrayCollection();
-
-        foreach($value as $postvalues) {
-            if(!is_array($postvalues)){
-                continue;
-            }
-            //create entity or modify it
-            $newModel = new $this->targetEntity;
-
-            $fields = $newModel->getFieldTypes();
-
-            /**
-             * @var Field $field
-             */
-            foreach ($fields as $field) {
-                if ($field->getSQLFieldName() == $newModel->getIdFieldName()
-                    || $field instanceof DirectEditInterface) {
+        if(count($value)>0) {
+            foreach ($value as $postvalues) {
+                if (!is_array($postvalues)) {
                     continue;
                 }
-                if ($field->validatePost($postvalues[$field->getPostName()])) {
-                    $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                //create entity or modify it
+                $newModel = new $this->targetEntity;
+
+                $fields = $newModel->getFieldTypes();
+
+                /**
+                 * @var Field $field
+                 */
+                foreach ($fields as $field) {
+                    if ($field->getSQLFieldName() == $newModel->getIdFieldName()
+                        || $field instanceof DirectEditInterface
+                    ) {
+                        continue;
+                    }
+                    if ($field->validatePost($postvalues[$field->getPostName()])) {
+                        $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                    }
                 }
+
+
+                //persist it
+
+                $this->getEntityManager()->persist($newModel);
+                $collectarraycollection->add($newModel);
             }
-
-
-            //persist it
-
-            $this->getEntityManager()->persist($newModel);
-            $collectarraycollection->add($newModel);
         }
         //set the value
         $this->setSQLValue($collectarraycollection);

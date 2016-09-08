@@ -688,7 +688,7 @@ class Controller extends BlockController
     /**
      * register needed javascript
      */
-    public function registerViewAssets()
+    public function registerViewAssets($outputContent = '')
     {
         $this->requireAsset('basictable');
     }
@@ -904,7 +904,7 @@ class Controller extends BlockController
                 foreach ($this->getFields() as $key => $value) {
                     if ($key == 'id') {
                     } else {
-                        $returnArray[$key] = "";
+                        $returnArray[$key] = null;
                     }
                 }
             }
