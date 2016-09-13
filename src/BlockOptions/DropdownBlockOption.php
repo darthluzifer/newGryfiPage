@@ -6,6 +6,7 @@ use Concrete\Core\Support\Facade\Log;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionSetOrderException;
 use Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Exceptions\InvalidBlockOptionValueException;
+use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
@@ -19,6 +20,7 @@ use OpenCloud\Common\Log\Logger;
  */
 class DropdownBlockOption extends TableBlockOption{
 
+    use EntityGetterSetter;
 
 
 

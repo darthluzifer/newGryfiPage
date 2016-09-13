@@ -1,5 +1,5 @@
 
-<div class="form-group">
+<div class="form-group basic_table_package">
 	
 	<form action=<?php echo $this->action('save_row') ?> method='POST'>
 	

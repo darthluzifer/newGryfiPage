@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
+use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\ORM\Mapping\Table;
 use Concrete\Package\BasicTablePackage\Src\Group as Group;
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
@@ -15,6 +16,7 @@ use Doctrine\ORM\PersistentCollection;
  * @Entity
  */
 class CanEditOption extends TableBlockOption{
+    use EntityGetterSetter;
     protected $possibleValues = array(
         "test" => 1,
         "test2" => 1,

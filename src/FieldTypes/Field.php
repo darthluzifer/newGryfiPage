@@ -43,6 +43,7 @@ class Field{
 	public function setValue($value){
 		$this->isSQLValue = false;
 		$this->value = $value;
+        return $this;
 	}
 
 
@@ -50,14 +51,17 @@ class Field{
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
+        return $this;
 	}
 
 	public function setLabel($label){
 		$this->label = $label;
+        return $this;
 	}
 
 	public function setPostName($postname){
 		$this->postName = $postname;
+        return $this;
 	}
 	
 	public function getSQLValue(){
@@ -125,6 +129,24 @@ class Field{
         }else{
             return $this->em;
         }
+    }
+
+    /**
+     * @param boolean $showInForm
+     * @return $this
+     */
+    public function setShowInForm($showInForm){
+        $this->showInForm = $showInForm;
+        return $this;
+    }
+
+    /**
+     * @param boolean $showInTable
+     * @return $this
+     */
+    public function setShowInTable($showInTable){
+        $this->showInTable = $showInTable;
+        return $this;
     }
 
 

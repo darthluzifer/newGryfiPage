@@ -43,7 +43,7 @@ use Concrete\Core\Legacy\Loader;
 			return t("TableContent");
 		}
 
-        public function registerViewAssets($outputContent)
+        public function registerViewAssets($outputContent='')
         {
             if (preg_match('/data-concrete5-link-launch/i', $outputContent)) {
                 $this->requireAsset('core/lightbox');
@@ -82,7 +82,7 @@ use Concrete\Core\Legacy\Loader;
 			return $this->value;
 		}
 		
-		public function getImportData($blockNode) {
+		public function getImportData($blockNode,$page) {
 			//$content = $blockNode->data->record->content;
 			/*
 			if(!is_null($this->targetId)){
@@ -110,6 +110,11 @@ use Concrete\Core\Legacy\Loader;
 			$this->value = LinkAbstractor::translateTo($args['content']);
 			
 			//parent::save($args);
+		}
+
+		public function getContent()
+		{
+			return LinkAbstractor::translateFrom($this->value);
 		}
 
 	}

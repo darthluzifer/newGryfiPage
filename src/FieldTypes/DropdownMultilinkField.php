@@ -5,6 +5,8 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
+use Concrete\Package\BasicTablePackage\Src\Entity;
+use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
 use User;
@@ -44,6 +46,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setNtoMTable( $tablename){
         $this->ntomtable = $tablename;
+        return $this;
     }
 
     /**
@@ -52,6 +55,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setLinkFieldSelf( $colname){
         $this->linkfieldself = $colname;
+        return $this;
     }
 
     /**
@@ -60,6 +64,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setLinkFieldExt( $colname){
         $this->linkfieldext = $colname;
+        return $this;
     }
 
 
@@ -69,6 +74,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setIdFieldSelf( $colname){
         $this->idfieldself = $colname;
+        return $this;
     }
 
     public function getIdFieldSelf(){
@@ -81,6 +87,7 @@ class DropdownMultilinkField extends DropdownLinkField{
      */
     public function setIdFieldExt( $colname){
         $this->idfieldext = $colname;
+        return $this;
     }
 
     /**
@@ -90,20 +97,51 @@ class DropdownMultilinkField extends DropdownLinkField{
     public function setRowId( $id){
         $this->rowid = $id;
         $this->value = array();
+        return $this;
     }
 
     public function setAllowAdd($isAllowed = true){
         $this->allowAdd = $isAllowed;
+        return $this;
     }
 
     public function setValue($value){
 
         $this->value = $value;
+        return $this;
     }
 
     public function getTableView(){
         $values = $this->getValues();
-        return implode(", ", $values);
+        if($values instanceof  PersistentCollection || $values instanceof  ArrayCollection){
+            $values = $values->toArray();
+        }
+
+        $string = "";
+        if(is_array($values)){
+            $first = true;
+
+            foreach($values as $valuenum => $value){
+                $appendString = "";
+                if(is_object($value)){
+                    $classname = get_class($value);
+                    if($value instanceof  Entity){
+                        $function = $classname::getDefaultGetDisplayStringFunction();
+                        $appendString = $function($value);
+                    }
+                }else{
+                    $appendString = $value;
+                }
+
+                if($first){
+                    $first = false;
+                }else{
+                    $string.=", ";
+                }
+                $string.= $appendString;
+            }
+        }
+        return $string;
     }
 
 
@@ -111,13 +149,26 @@ class DropdownMultilinkField extends DropdownLinkField{
         $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 
 
-        $values = $this->getValues()->toArray();
+
+        $values = $this->getValues();
+        if($values instanceof  ArrayCollection || $values instanceof PersistentCollection){
+
+            $values =$values->toArray();
+        }elseif(is_array($values)){
+
+        }else{
+
+            $values = array();
+        }
 
         $valueStrings = array();
 
         //to display the values, we have to convert them to strings with our getDisplayString function
         $displayFunction = $this->getDisplayString;
         foreach($values as $num => $entity){
+            if($entity instanceof  Proxy){
+                $entity->__load();
+            }
 
             $valueStrings[]= $displayFunction($entity);
         }
@@ -171,7 +222,8 @@ class DropdownMultilinkField extends DropdownLinkField{
 
         $sqlArray = new ArrayCollection();
         foreach($postvalues as $num => $postvalue){
-            if(in_array($postvalue, $options)){
+            $postvalue = trim($postvalue);
+            if(in_array($postvalue, $options) ){
                 $findItem = $this->getEntityManager()
                     ->getRepository($this->targetEntity)
                     ->findOneBy(array(
@@ -188,7 +240,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 
     /**
      * get the Values of
-     * @return Ambigous <multitype:, unknown>
+     * @return ArrayCollection
      */
     private function getValues(){
         if(count($this->value)==0 && !is_null($this->rowid)) {
@@ -198,7 +250,7 @@ class DropdownMultilinkField extends DropdownLinkField{
              */
             $model = $this->getEntityManager()
                 ->getRepository($this->targetEntity)
-                ->findOne(array(
+                ->findOneBy(array(
                     $modelForIdField->getIdFieldName() => $this->rowid
                 ));
             $values = $model->get($this->sourceField);
@@ -218,15 +270,18 @@ class DropdownMultilinkField extends DropdownLinkField{
     public function setSQLValue($value){
         if(count($value)==0){
             $this->value=new ArrayCollection();
-        }elseif($value instanceof ArrayCollection){
+        }elseif($value instanceof ArrayCollection || $value instanceof PersistentCollection){
             //check if values are of the right entitiy
             foreach($value->toArray() as $valnum => $valueitem){
                 if(!$valueitem instanceof $this->targetEntity){
                     throw new InvalidArgumentException("Item number $valnum is ".get_class($valueitem).", should be ".$this->targetEntity." sein");
                 }
+
+                //s$this->em->persist($valueitem);
             }
             $this->value = $value;
         }
+        return $this;
 
 
     }

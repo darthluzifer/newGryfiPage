@@ -27,6 +27,7 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
  */
 class Group extends Entity
 {
+    use EntityGetterSetter;
 
     /**
      * @var int
@@ -147,43 +148,6 @@ class Group extends Entity
 
 
 
-    public function get($name)
-    {
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectRead)
-            && !in_array($name, $this->fieldTypes)) {
-
-            $returnvar = $this->{$name};
-            if(property_exists($this, "gID")){
-                $returnvar2 = $this->gID;
-            }
-
-            return $returnvar;
-        }
-    }
-
-    public function set($name, $value)
-    {
-        if(property_exists($this, $name)
-            && !in_array($name, $this->protect)
-            && !in_array($name, $this->protectWrite)
-            && !in_array($name, $this->fieldTypes)
-        ) {
-            $this->$name = $value;
-        }
-    }
-
-    public function __get($name)
-    {
-        $returnvar = $this->get($name);
-        return $returnvar;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->set($name, $value);
-    }
 
     public function getId(){
         return $this->gID;
@@ -204,7 +168,14 @@ class Group extends Entity
         return $function;
     }
 
-
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+        return $this->gName;
+    }
 
 
 }

@@ -33,6 +33,7 @@ class DropdownField extends Field{
 	 */
 	public function setOptions (array $options){
 		$this->options = $options;
+        return $this;
 	}
 	
 	
@@ -44,6 +45,7 @@ class DropdownField extends Field{
 	public function setValue($value){
 		
 		$this->value = $value;
+        return $this;
 	}
 
 	public function getTableView(){
