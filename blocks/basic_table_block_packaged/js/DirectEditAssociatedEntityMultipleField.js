@@ -17,8 +17,8 @@
 
 
         $('button.btn.bacluc-inlineform.actionbutton.add').click(function(e) {
-            var hiddenrow = $('button.bacluc-inlineform').parent().find('div.hidden_form_row');
-            var hiddenrowcopy = $($('button.bacluc-inlineform').parent().find('div.hidden_form_row').html());
+            var hiddenrow = $(this).parent().find('div.hidden_form_row');
+            var hiddenrowcopy = $($(this).parent().find('div.hidden_form_row').html());
             var parentpostname = $(hiddenrow).find('div.parent_postname').text();
             var rownum = $(hiddenrow).find('div.rownum').text();
             var prepend_before_realname = $(hiddenrow).find('div.prepended_before_realname').text();
