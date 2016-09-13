@@ -128,11 +128,6 @@ class Person extends Entity
     protected $Addresses;
 
 
-    /**
-     * @var Address
-     * @ManyToOne(targetEntity="Concrete\Package\BaclucPersonPackage\Src\Address")
-     */
-    protected $testAddress;
 
 //
 //    /**
@@ -195,14 +190,36 @@ class Person extends Entity
         $this->fieldTypes['EmailAddresses']->setLabel("Emails");
         $this->fieldTypes['Addresses']->setLabel("Other Addresses");
 
-        /**
-         * @var DropdownLinkField $testAddressfield
-         */
-        $testAddressfield = $this->fieldTypes['testAddress'];
-        $directEditField = new DirectEditAssociatedEntityField($testAddressfield->getSQLFieldName(), "Test Adresse", $testAddressfield->getPostName());
-        DropdownLinkField::copyLinkInfo($testAddressfield,$directEditField);
-        $this->fieldTypes['testAddress']=$directEditField;
 
+
+
+
+
+
+        /**
+         * @var DropdownMultilinkField $addresses
+         */
+        $addresses = $this->fieldTypes['PostalAddresses'];
+        $directEditField = new DirectEditAssociatedEntityMultipleField($addresses->getSQLFieldName(), "Postal Addresses", $addresses->getPostName());
+        DropdownLinkField::copyLinkInfo($addresses,$directEditField);
+        $this->fieldTypes['PostalAddresses']=$directEditField;
+
+        /**
+         * @var DropdownMultilinkField $addresses
+         */
+        $addresses = $this->fieldTypes['PhonenumberAddresses'];
+        $directEditField = new DirectEditAssociatedEntityMultipleField($addresses->getSQLFieldName(), "Phone numbers", $addresses->getPostName());
+        DropdownLinkField::copyLinkInfo($addresses,$directEditField);
+        $this->fieldTypes['PhonenumberAddresses']=$directEditField;
+
+
+        /**
+         * @var DropdownMultilinkField $addresses
+         */
+        $addresses = $this->fieldTypes['EmailAddresses'];
+        $directEditField = new DirectEditAssociatedEntityMultipleField($addresses->getSQLFieldName(), "Email Addresses", $addresses->getPostName());
+        DropdownLinkField::copyLinkInfo($addresses,$directEditField);
+        $this->fieldTypes['EmailAddresses']=$directEditField;
 
         /**
          * @var DropdownMultilinkField $addresses
