@@ -24,22 +24,23 @@ class Field{
 	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
+	protected $lastErrorMessage = "testerror";
 
     /**
      * @var EntityManager
      */
     protected $em;
-	
+
 	public function __construct($sqlFieldname,$label, $postName, $showInTable = true, $showInForm = true){
-		
+
 		$this->sqlFieldname = $sqlFieldname;
 		$this->label = $label;
 		$this->postName = $postName;
 		$this->showInTable = $showInTable;
 		$this->showInForm = $showInForm;
-		
+
 	}
-	
+
 	public function setValue($value){
 		$this->isSQLValue = false;
 		$this->value = $value;
@@ -47,7 +48,7 @@ class Field{
 	}
 
 
-	
+
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
@@ -63,17 +64,17 @@ class Field{
 		$this->postName = $postname;
         return $this;
 	}
-	
+
 	public function getSQLValue(){
 		return $this->value;
 	}
-	
+
 	public function getTableView(){
 		return $this->getValue();
 	}
-	
-	
-	
+
+
+
 	public function getFormView($form){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$returnString.=$form->text($this->getPostName(), $this->getValue(),array('title' => $this->getPostName(),
@@ -81,38 +82,43 @@ class Field{
 				'id' => $this->getPostName()
 			)
 		);
+		if($this->lastErrorMessage != null){
+			$returnString.="
+				<div class='alert alert-danger'>".$this->lastErrorMessage."</div>
+			";
+		}
 		return $returnString;
 	}
-	
+
 	public function getLabel(){
 		return $this->label;
 	}
-	
+
 	public function getValue(){
 		return $this->value;
 	}
-	
+
 	public function getPostName(){
 		return $this->postName;
 	}
-	
+
 	public function getSQLFieldName(){
 		return $this->sqlFieldname;
 	}
-	
+
 	public function validatePost($value){
 		$this->setValue($value);
 		return true;
 	}
-	
+
 	public function getErrorMsg(){
 		return $this->errorMsg;
 	}
-	
+
 	public function showInForm(){
 		return $this->showInForm;
 	}
-	
+
 	public function showInTable(){
 		return $this->showInTable;
 	}
@@ -148,6 +154,17 @@ class Field{
         $this->showInTable = $showInTable;
         return $this;
     }
+
+
+		/**
+		 * set the error message to display
+     * @param string $msg
+     * @return $this
+     */
+		public function setErrorMessage($msg){
+			$this->lastErrorMessage = $msg;
+			return $this;
+		}
 
 
 

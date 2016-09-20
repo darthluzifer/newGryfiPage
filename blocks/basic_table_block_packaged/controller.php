@@ -305,8 +305,8 @@ class Controller extends BlockController
     function getEditActionIcon($row)
     {
         return "<button type='submit'
-    					value = 'edit' 
-    					class='btn inlinebtn actionbutton edit' 
+    					value = 'edit'
+    					class='btn inlinebtn actionbutton edit'
     					onclick=\"
     								$('#action_" . $row['id'] . "').val('edit');
     			\">
@@ -453,7 +453,7 @@ class Controller extends BlockController
                         $v[$key] = $value->getSQLValue();
                     } else {
                         $error = true;
-                        $this->errorMsg[] = $value->getErrorMsg();
+                        $this->errorFields[$value->getPostName()] = $value;
                     }
                 }
             }
