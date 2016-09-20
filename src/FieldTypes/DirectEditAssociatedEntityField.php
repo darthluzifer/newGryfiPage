@@ -27,7 +27,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $value = $this->getSQLValue();
         $html = "
         <div class='subentityedit col-xs-12'>
-            
+
             <label>".$this->getLabel()."</label>
             <div class='row'>
         ";
@@ -82,6 +82,10 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
            </div>
         ";
         //TODO get javascript logic for editing existing object or create new one
+
+
+    		$html.=$this->getHtmlErrorMsg();  
+
 
         return $html;
     }

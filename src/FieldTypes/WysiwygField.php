@@ -24,12 +24,12 @@ use Concrete\Core\Editor\RedactorEditor;
  */
 class WysiwygField extends Field{
 	/**
-	 * 
+	 *
 	 * @var \ContentController
 	 */
-	protected $blockController;	
+	protected $blockController;
 	public function __construct($sqlFieldname,$label, $postName, $showInTable = false, $showInForm = true){
-		
+
 		$this->sqlFieldname = $sqlFieldname;
 		$this->label = $label;
 		$this->postName = $postName;
@@ -37,34 +37,34 @@ class WysiwygField extends Field{
 		$this->showInForm = $showInForm;
 		$this->blockController = new ContentController();
 		//$this->blockController->setSQLParams($targetTable, $targetCol, $targetIdField, $targetId)
-		
+
 	}
-	
-	
+
+
 	public function setValue($value){
 		$this->isSQLValue = false;
 		$this->value = $value;
 		$this->blockController->setValue($value);
         return $this;
 	}
-	
+
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
 		$this->blockController->setValue($value);
         return $this;
 	}
-	
+
 	public function getSQLValue(){
 		return $this->value;
 	}
-	
+
 	public function getTableView(){
 		return $this->blockController->getContent();
 	}
-	
 
-	
+
+
 	public function getFormView($form){
 		$fp = FilePermissions::getGlobal();
 		$tp = new TaskPermission();
@@ -76,16 +76,17 @@ class WysiwygField extends Field{
 		$html.=$form->label($this->getPostName(), t($this->getLabel()));
 		$editor = new RedactorEditor();
 		$html.=$editor->outputStandardEditor($this->getPostName(), $this->getValue());
-		
+
+	  $html.=$this->getHtmlErrorMsg();
 		return $html;
 	}
-	
-	
-	
+
+
+
 	public function getValue(){
 		$this->value = $this->blockController->getValue();
-	
+
 		return $this->value;
 	}
-	
+
 }

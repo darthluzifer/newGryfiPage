@@ -198,6 +198,9 @@ class DropdownMultilinkField extends DropdownLinkField{
 					});
 				</script>
 				";
+
+
+	      $html.=$this->getHtmlErrorMsg();
         return $html;
     }
 

@@ -82,12 +82,17 @@ class Field{
 				'id' => $this->getPostName()
 			)
 		);
+		$returnString.=$this->getHtmlErrorMsg();
+		return $returnString;
+	}
+
+
+	public function getHtmlErrorMsg(){
 		if($this->lastErrorMessage != null){
-			$returnString.="
+			return "
 				<div class='alert alert-danger'>".$this->lastErrorMessage."</div>
 			";
 		}
-		return $returnString;
 	}
 
 	public function getLabel(){

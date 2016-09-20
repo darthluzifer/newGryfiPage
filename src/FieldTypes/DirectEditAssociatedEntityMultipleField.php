@@ -31,10 +31,10 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         }
         $html = "
         <div class='subentityedit col-xs-12'>
-            
+
             <label>".$this->getLabel()."</label>
             <div class='row'>
-            
+
         ";
         if(count($values)>0){
             $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton add'><i class ='fa fa-plus'></i></button>";
@@ -146,6 +146,11 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
            </div>
         ";
         //TODO get javascript logic for editing existing object or create new one
+
+
+
+
+	      $html.=$this->getHtmlErrorMsg();
 
         return $html;
     }
