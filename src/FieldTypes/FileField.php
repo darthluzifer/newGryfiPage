@@ -60,6 +60,7 @@ class FileField extends Field{
 		$token = $valt->generate();
 		//$form->addHeaderItem('<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>');
 		$returnString.='<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>';
+        $returnString.=$this->getHtmlErrorMsg();
 		return $returnString;
 	}
 
