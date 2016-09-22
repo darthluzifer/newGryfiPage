@@ -164,7 +164,7 @@ class DateField extends Field{
 			if($this->isNullable){
 				return true;
 			}else{
-				$this->errMsg = t("Das Datum muss angegeben werden");
+				$this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
 				return false;
 			}
 		}
@@ -210,9 +210,7 @@ class DateField extends Field{
 		return true;
 	}
 
-	public function getErrorMsg(){
-		return $this->errorMsg;
-	}
+
 
 
 	public function getSQLValue(){
