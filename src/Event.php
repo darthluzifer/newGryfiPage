@@ -88,6 +88,7 @@ class Event extends Entity
     }
     public function setDefaultFieldTypes(){
         parent::setDefaultFieldTypes();
+        $this->fieldTypes['title']->setNullable(false);
         /**
          * because Entity::setDefaultFieldTypes does not detect special field types like Wysiwyg field or filefield, they have to be set here manually.
          * The only Fields Entity::setDefaultFieldTypes detects are date, DropdownLinkField (m:1 relation), DropdownMulitLInkField (n:m relation)
