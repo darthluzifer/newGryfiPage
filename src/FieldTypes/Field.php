@@ -20,11 +20,13 @@ class Field{
 	protected $validation;
 	protected $value;
 	protected $postName;
-	protected $errMsg="";
+	protected $errMsg=null;
 	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
-	protected $lastErrorMessage = "testerror";
+    protected $nullable = true;
+
+    const NULLERRORMSG = ' cannot be empty.';
 
     /**
      * @var EntityManager
@@ -88,9 +90,9 @@ class Field{
 
 
 	public function getHtmlErrorMsg(){
-		if($this->lastErrorMessage != null){
+		if($this->errMsg != null){
 			return "
-				<div class='alert alert-danger'>".$this->lastErrorMessage."</div>
+				<div class='alert alert-danger'>".$this->errMsg."</div>
 			";
 		}
 	}
@@ -112,12 +114,17 @@ class Field{
 	}
 
 	public function validatePost($value){
+	    if(!$this->nullable && strlen($value)==0) {
+	        $this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
+	        return false;
+        }
+
 		$this->setValue($value);
 		return true;
 	}
 
 	public function getErrorMsg(){
-		return $this->errorMsg;
+		return $this->errMsg;
 	}
 
 	public function showInForm(){
@@ -167,9 +174,19 @@ class Field{
      * @return $this
      */
 		public function setErrorMessage($msg){
-			$this->lastErrorMessage = $msg;
+			$this->errMsg = $msg;
 			return $this;
 		}
+
+
+    /**
+     * @param boolean $nullable
+     * @return $this
+     */
+		public function setNullable($nullable){
+		    $this->nullable = $nullable;
+            return $this;
+        }
 
 
 

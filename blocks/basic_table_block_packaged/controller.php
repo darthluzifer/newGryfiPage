@@ -130,6 +130,11 @@ class Controller extends BlockController
     protected $model;
 
     /**
+     * @var Field[]
+     */
+    protected $errorFields;
+
+    /**
      *
      * Controller constructor.
      * @param null $obj
@@ -1005,6 +1010,13 @@ class Controller extends BlockController
             $this->entityManager = $em;
         }
         return $this->entityManager;
+    }
+     /**
+     * @return \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field[]
+     */
+    public function getErrorFields()
+    {
+        return $this->errorFields;
     }
 
 
