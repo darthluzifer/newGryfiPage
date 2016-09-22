@@ -15,6 +15,9 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 {
 
 
+    const SUBFORMERROR = " has an Error.";
+
+    protected $subErrorMsg = null;
 
     /**
      * @param $form
@@ -64,6 +67,11 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $field->setSQLValue($setValue);
             //change the post name
             $field->setPostName($this->getPostName()."[".$field->getPostName()."]");
+
+            if(isset($this->subErrorMsg[$field->getPostName()])){
+                $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
+            }
+
             //get the form view
             $html.=$field->getFormView($form);
         }
@@ -101,7 +109,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $newModel = new $this->targetEntity;
 
         $fields = $newModel->getFieldTypes();
-
+        $error = false;
         /**
          * @var Field $field
          */
@@ -111,7 +119,15 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             }
             if($field->validatePost($value[$field->getPostName()])){
                 $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+            }else{
+                $this->subErrorMsg[$field->getPostName()] = $field->getErrorMsg();
+                $error = true;
             }
+        }
+
+        if($error){
+            $this->errMsg = $this->getLabel().t(static::SUBFORMERROR);
+            return false;
         }
 
 

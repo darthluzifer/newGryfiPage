@@ -82,6 +82,11 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $oldpostname = $field->getPostName();
                     //change the post name
                     $field->setPostName($this->getPostName() . "[".$rownum."][" . $field->getPostName() . "]");
+
+                    if(isset($this->subErrorMsg[$rownum][$field->getPostName()])){
+                        $field->setErrorMessage($this->subErrorMsg[$rownum][$field->getPostName()]);
+                    }
+
                     //get the form view
                     $html .= $field->getFormView($form);
                     //reset the post name
@@ -167,8 +172,10 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
         //for first version, create for every post new entity, and persist it
         $collectarraycollection = new ArrayCollection();
+        $error = false;
+
         if(count($value)>0) {
-            foreach ($value as $postvalues) {
+            foreach ($value as $rownum =>$postvalues) {
                 if (!is_array($postvalues)) {
                     continue;
                 }
@@ -188,7 +195,15 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     }
                     if ($field->validatePost($postvalues[$field->getPostName()])) {
                         $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                    }else{
+                        $this->subErrorMsg[$rownum][$field->getPostName()] = $field->getErrorMsg();
+                        $error = true;
                     }
+                }
+
+                if($error){
+                    $this->errMsg = $this->getLabel().t(DirectEditAssociatedEntityField::SUBFORMERROR);
+                    return false;
                 }
 
 
