@@ -144,10 +144,11 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
 
+        $html.=$this->getHtmlErrorMsg();
 
         // TODO put the id in the form somehow
 
-        $html.="</div class='lastclosed'>
+        $html.="</div>
            </div>
         ";
         //TODO get javascript logic for editing existing object or create new one
@@ -155,7 +156,6 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
 
-	      $html.=$this->getHtmlErrorMsg();
 
         return $html;
     }
