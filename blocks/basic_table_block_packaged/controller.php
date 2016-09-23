@@ -884,7 +884,7 @@ class Controller extends BlockController
         if (isset($_SESSION['BasicTableFormData'][$this->bID]['inputValues'])) {
 
             foreach ($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value) {
-                if (is_object($this->postFieldMap[$key])) {
+                if (isset($this->postFieldMap[$key])) {
                     $returnArray[$this->postFieldMap[$key]] = $value;
                 }
             }
