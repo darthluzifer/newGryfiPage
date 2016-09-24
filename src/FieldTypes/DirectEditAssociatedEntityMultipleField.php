@@ -13,10 +13,14 @@ use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use Concrete\Core\Support\Facade\Application;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
 {
     const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
+
+    protected $subErrorMsg = array();
 
     public function getFormView($form){
 
@@ -25,6 +29,8 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
          * @var Entity $value
          */
         $values = $this->getSQLValue();
+
+        $this->loadSubErrorMsg();
 
         if($values instanceof  \Doctrine\Common\Collections\Collection ){
             $values = $values->toArray();
@@ -120,6 +126,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
             $field->setSQLValue(null);
             //change the post name
             $field->setPostName( static::PREPEND_BEFORE_REALNAME.$field->getPostName());
+
             //get the form view
             $html .= $field->getFormView($form);
         }
@@ -203,6 +210,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
                 if($error){
                     $this->errMsg = $this->getLabel().t(DirectEditAssociatedEntityField::SUBFORMERROR);
+                    $this->saveSubErrorMsg();
                     return false;
                 }
 
@@ -216,6 +224,36 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         //set the value
         $this->setSQLValue($collectarraycollection);
         return true;
+
+    }
+
+    protected function saveSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+
+        $session->set($this->postName."subformerrors", $this->subErrorMsg);
+    }
+
+    protected function loadSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+        if(count($this->subErrorMsg)>0){
+            $session->remove($this->postName."subformerrors");
+            return $this->subErrorMsg;
+        }
+
+
+        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
+        $session->remove($this->postName."subformerrors");
+        return $this->subErrorMsg;
 
     }
 

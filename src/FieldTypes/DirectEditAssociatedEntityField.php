@@ -9,7 +9,10 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
+use Concrete\Core\Session\SessionFactory;
 use Concrete\Package\BasicTablePackage\Src\Entity;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Concrete\Core\Support\Facade\Application;
 
 class DirectEditAssociatedEntityField extends DropdownLinkField implements DirectEditInterface
 {
@@ -17,7 +20,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
     const SUBFORMERROR = " has an Error.";
 
-    protected $subErrorMsg = null;
+    protected $subErrorMsg = array();
 
     /**
      * @param $form
@@ -28,6 +31,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          * @var Entity $value
          */
         $value = $this->getSQLValue();
+        $this->loadSubErrorMsg();
         $html = "
         <div class='subentityedit col-xs-12'>
 
@@ -127,6 +131,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
         if($error){
             $this->errMsg = $this->getLabel().t(static::SUBFORMERROR);
+            $this->saveSubErrorMsg();
             return false;
         }
 
@@ -139,4 +144,36 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $this->setSQLValue($newModel);
         return true;
     }
+
+
+    protected function saveSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+
+        $session->set($this->postName."subformerrors", $this->subErrorMsg);
+    }
+
+    protected function loadSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+        if(count($this->subErrorMsg)>0){
+            $session->remove($this->postName."subformerrors");
+            return $this->subErrorMsg;
+        }
+
+
+        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
+        $session->remove($this->postName."subformerrors");
+        return $this->subErrorMsg;
+
+    }
 }
+
