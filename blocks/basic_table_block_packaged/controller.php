@@ -134,6 +134,11 @@ class Controller extends BlockController
      */
     protected $errorFields;
 
+
+    protected $clientSideValidationActivated = true;
+
+
+
     /**
      *
      * Controller constructor.
@@ -643,6 +648,12 @@ class Controller extends BlockController
         );
 
         $al->register(
+            'javascript', 'parsley', 'blocks/basic_table_block_packaged/js/parsley.min.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+
+        $al->register(
             'css', 'fontawesome', 'font-awesome'       , array(
                 array('css', 'css/font-awesome.css', array('minify' => false))
             )
@@ -673,7 +684,7 @@ class Controller extends BlockController
             , $package
         );
 
-        $al->registerGroup('basictable', array(
+        $groupAssets = array(
             array('css', 'font-awesome'),
             array('css', 'tagsinputcss'),
             array('css', 'datepickercss'),
@@ -686,7 +697,13 @@ class Controller extends BlockController
             array('javascript', 'bootgrid'),
             array('javascript', 'tagsinput'),
             array('javascript', 'block_auto_js'),
-        ));
+        );
+
+        if($this->isClientSideValidationActivated()){
+            $groupAssets[]=array("javascript", "parsley");
+        }
+
+        $al->registerGroup('basictable', $groupAssets);
 
     }
 
@@ -1017,6 +1034,24 @@ class Controller extends BlockController
     public function getErrorFields()
     {
         return $this->errorFields;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isClientSideValidationActivated()
+    {
+        return $this->clientSideValidationActivated;
+    }
+
+    /**
+     * @param boolean $clientSideActivated
+     * @return $this
+     */
+    public function setClientSideValidationActivated($clientSideActivated)
+    {
+        $this->clientSideValidationActivated = $clientSideActivated;
+        return $this;
     }
 
 
