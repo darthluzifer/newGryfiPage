@@ -13,10 +13,14 @@ use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use Concrete\Core\Support\Facade\Application;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
 {
     const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
+
+    protected $subErrorMsg = array();
 
     public function getFormView($form){
 
@@ -26,15 +30,17 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
          */
         $values = $this->getSQLValue();
 
+        $this->loadSubErrorMsg();
+
         if($values instanceof  \Doctrine\Common\Collections\Collection ){
             $values = $values->toArray();
         }
         $html = "
         <div class='subentityedit col-xs-12'>
-            
+
             <label>".$this->getLabel()."</label>
             <div class='row'>
-            
+
         ";
         if(count($values)>0){
             $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton add'><i class ='fa fa-plus'></i></button>";
@@ -82,10 +88,16 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $oldpostname = $field->getPostName();
                     //change the post name
                     $field->setPostName($this->getPostName() . "[".$rownum."][" . $field->getPostName() . "]");
+
+                    if(isset($this->subErrorMsg[$rownum][$oldpostname])){
+                        $field->setErrorMessage($this->subErrorMsg[$rownum][$oldpostname]);
+                    }
+
                     //get the form view
                     $html .= $field->getFormView($form);
                     //reset the post name
                     $field->setPostName($oldpostname);
+                    $field->setErrorMessage(null);
                 }
                 //add delete button
                 $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
@@ -115,6 +127,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
             $field->setSQLValue(null);
             //change the post name
             $field->setPostName( static::PREPEND_BEFORE_REALNAME.$field->getPostName());
+
             //get the form view
             $html .= $field->getFormView($form);
         }
@@ -139,13 +152,18 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
 
+        $html.=$this->getHtmlErrorMsg();
 
         // TODO put the id in the form somehow
 
-        $html.="</div class='lastclosed'>
+        $html.="</div>
            </div>
         ";
         //TODO get javascript logic for editing existing object or create new one
+
+
+
+
 
         return $html;
     }
@@ -162,8 +180,10 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
         //for first version, create for every post new entity, and persist it
         $collectarraycollection = new ArrayCollection();
+        $error = false;
+
         if(count($value)>0) {
-            foreach ($value as $postvalues) {
+            foreach ($value as $rownum =>$postvalues) {
                 if (!is_array($postvalues)) {
                     continue;
                 }
@@ -183,7 +203,16 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     }
                     if ($field->validatePost($postvalues[$field->getPostName()])) {
                         $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                    }else{
+                        $this->subErrorMsg[$rownum][$field->getPostName()] = $field->getErrorMsg();
+                        $error = true;
                     }
+                }
+
+                if($error){
+                    $this->errMsg = $this->getLabel().t(DirectEditAssociatedEntityField::SUBFORMERROR);
+                    $this->saveSubErrorMsg();
+                    return false;
                 }
 
 
@@ -196,6 +225,36 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         //set the value
         $this->setSQLValue($collectarraycollection);
         return true;
+
+    }
+
+    protected function saveSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+
+        $session->set($this->postName."subformerrors", $this->subErrorMsg);
+    }
+
+    protected function loadSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+        if(count($this->subErrorMsg)>0){
+            $session->remove($this->postName."subformerrors");
+            return $this->subErrorMsg;
+        }
+
+
+        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
+        $session->remove($this->postName."subformerrors");
+        return $this->subErrorMsg;
 
     }
 

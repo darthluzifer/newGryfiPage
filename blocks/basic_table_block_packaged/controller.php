@@ -130,6 +130,11 @@ class Controller extends BlockController
     protected $model;
 
     /**
+     * @var Field[]
+     */
+    protected $errorFields;
+
+    /**
      *
      * Controller constructor.
      * @param null $obj
@@ -305,8 +310,8 @@ class Controller extends BlockController
     function getEditActionIcon($row)
     {
         return "<button type='submit'
-    					value = 'edit' 
-    					class='btn inlinebtn actionbutton edit' 
+    					value = 'edit'
+    					class='btn inlinebtn actionbutton edit'
     					onclick=\"
     								$('#action_" . $row['id'] . "').val('edit');
     			\">
@@ -453,7 +458,7 @@ class Controller extends BlockController
                         $v[$key] = $value->getSQLValue();
                     } else {
                         $error = true;
-                        $this->errorMsg[] = $value->getErrorMsg();
+                        $this->errorFields[$value->getPostName()] = $value;
                     }
                 }
             }
@@ -879,7 +884,7 @@ class Controller extends BlockController
         if (isset($_SESSION['BasicTableFormData'][$this->bID]['inputValues'])) {
 
             foreach ($_SESSION['BasicTableFormData'][$this->bID]['inputValues'] as $key => $value) {
-                if (is_object($this->postFieldMap[$key])) {
+                if (isset($this->postFieldMap[$key])) {
                     $returnArray[$this->postFieldMap[$key]] = $value;
                 }
             }
@@ -1005,6 +1010,13 @@ class Controller extends BlockController
             $this->entityManager = $em;
         }
         return $this->entityManager;
+    }
+     /**
+     * @return \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field[]
+     */
+    public function getErrorFields()
+    {
+        return $this->errorFields;
     }
 
 

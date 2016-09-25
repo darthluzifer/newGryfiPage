@@ -198,6 +198,9 @@ class DropdownMultilinkField extends DropdownLinkField{
 					});
 				</script>
 				";
+
+
+	      $html.=$this->getHtmlErrorMsg();
         return $html;
     }
 
@@ -280,6 +283,31 @@ class DropdownMultilinkField extends DropdownLinkField{
                 //s$this->em->persist($valueitem);
             }
             $this->value = $value;
+        }elseif(is_array($value)){
+            $arrayColl = new ArrayCollection();
+            foreach($value as $rownum => $row){
+                 if(is_object($row)) {
+                     if ($row instanceof $this->targetEntity) {
+                        $arrayColl->add($row);
+                     }elseif($row instanceof \stdClass){
+                         $newitem = new $this->targetEntity;
+                         foreach($row as $key => $value){
+                             $newitem->set($key,$value);
+                         }
+                         $arrayColl->add($newitem);
+                     }else{
+                         throw new InvalidArgumentException("Item number $rownum is ".get_class($row).", should be ".$this->targetEntity." or \stdClass sein");
+
+                     }
+                 }elseif(is_array($row)){
+                     $newitem = new $this->targetEntity;
+                     foreach($row as $key => $value){
+                         $newitem->set($key,$value);
+                     }
+                     $arrayColl->add($newitem);
+                 }
+            }
+            $this->value = $arrayColl;
         }
         return $this;
 

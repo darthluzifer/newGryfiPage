@@ -39,7 +39,7 @@ class DateField extends Field{
 		$this->label = $label;
 		$this->postName = $postName;
 	}
-	
+
 	/**
 	 * set if the col is nullable
 	 * @param Boolean $isNullable
@@ -48,7 +48,7 @@ class DateField extends Field{
 		$this->isNullable = $isNullable;
         return $this;
 	}
-	
+
 	/**
 	 *
 	 * @return boolean
@@ -56,7 +56,7 @@ class DateField extends Field{
 	public function getNullable(){
 		return $this->isNullable;
 	}
-	
+
 	public function setValue($value){
 		//var_dump($value);
 		if($value == '' OR $value == null){
@@ -68,7 +68,7 @@ class DateField extends Field{
 		}else{
 			$explodeValue = explode(self::$seperator, $value);
 
-			
+
 			//check if Y m d
 			if(strlen($explodeValue[0])<=4
 				&& strlen($explodeValue[0])>=2
@@ -83,7 +83,7 @@ class DateField extends Field{
 							new \DateTime($explodeValue[0]."-".$explodeValue[1]."-".$explodeValue[2])
 							)->format('Y-m-d');
 				}catch(Exception $e){
-					
+
 				}
 			//check if d m Y
 			}elseif(strlen($explodeValue[2])<=4
@@ -122,11 +122,11 @@ class DateField extends Field{
 			}
 
 		}
-		
+
 		$this->setSQLValue($this->value);
         return $this;
 	}
-	
+
 	public function getTableView(){
 		if($this->getValue() == null){
 			return null;
@@ -135,9 +135,9 @@ class DateField extends Field{
 		//return $this->getValue();
 		return (new \DateTime($this->getValue()))->format(self::$userFormat);
 	}
-	
-	
-	
+
+
+
 	public function getFormView($form){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$returnString .= '
@@ -153,24 +153,25 @@ class DateField extends Field{
 
 				</script>
 				';
+		$returnString.=$this->getHtmlErrorMsg();		
 		return $returnString;
 	}
-	
-	
-	
+
+
+
 	public function validatePost($value){
 		if(is_null($value) || $value == ''){
 			if($this->isNullable){
 				return true;
 			}else{
-				$this->errMsg = t("Das Datum muss angegeben werden");
+				$this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
 				return false;
 			}
 		}
 		$explodePattern = explode(self::$seperator,self::$userFormat);
-		
+
 		$explodeValue = explode(self::$seperator, $value);
-		
+
 		if(count($explodeValue)>3){
 			$this->errMsg = self::$formatErrorMessage;
 			return false;
@@ -199,7 +200,7 @@ class DateField extends Field{
 						return false;
 					}
 					break;
-					
+
 			}
 		}
 		//var_dump($value);
@@ -208,12 +209,10 @@ class DateField extends Field{
 		//exit();
 		return true;
 	}
-	
-	public function getErrorMsg(){
-		return $this->errorMsg;
-	}
-	
-	
+
+
+
+
 	public function getSQLValue(){
 		if($this->value == null){
 			return null;
@@ -232,5 +231,5 @@ class DateField extends Field{
 
 
 
-	
+
 }

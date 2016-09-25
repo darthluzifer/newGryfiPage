@@ -231,6 +231,9 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 					});
 				</script>
 				";
+
+
+        $html.=$this->getHtmlErrorMsg();
         return $html;
     }
 
