@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Core\Localization\Service\Date;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Loader;
 use Page;
@@ -23,8 +24,15 @@ class DateField extends Field{
 	protected $errMsg="";
 
 	protected $isNullable = true;
+
+
+
 	/*TODO make userFormat configurable*/
 	public static $userFormat = 'd.m.Y';
+    public static $currentFormat = array('phpdatetime' =>'Y-m-d',
+        'regex' =>'/\d{4}-\d{2}-\d{2}/',
+        'bootstrapdatepicker' =>'yyyy-mm-dd',
+    );
 	public static $seperator = '.';
 	public static $formatErrorMessage = 'Bitte geben Sie ein gültiges Datum im Format d.m.Y an, also z.b. 23.01.2015';
 
@@ -38,6 +46,33 @@ class DateField extends Field{
 		$this->sqlFieldname = $sqlFieldname;
 		$this->label = $label;
 		$this->postName = $postName;
+        static::detectDateFormat();
+	}
+
+
+	public final static function detectDateFormat(){
+	    $date = new Date();
+        $format = $date->formatDate(new DateTime('2016-01-31'), true);
+
+        //first detect seperator
+        if(count(explode("/",$format ))==3){
+            static::$seperator = '/';
+        }elseif(count(explode(".",$format ))==3){
+            static::$seperator = '.';
+        }elseif(count(explode("-",$format ))==3){
+            static::$seperator = '-';
+        }else{
+            throw new \Exception("Seperator of Date format could not be detected");
+        }
+
+        //now detect format
+        $parts = explode(static::$seperator,$format);
+        $supportedFormats = static::getSupportedFormats();
+        if(intval($parts[0])==1 && intval($parts[1]) == 31 && intval($parts[2])==2016){
+            static::$currentFormat = $supportedFormats['us'];
+        }else{
+            static::$currentFormat = $supportedFormats['other'];
+        }
 	}
 
 	/**
@@ -247,6 +282,19 @@ class DateField extends Field{
 		$this->value = $value;
         return $this;
 	}
+
+	protected static function getSupportedFormats(){
+        return array(
+            'us' => array('phpdatetime' =>'m'.self::$seperator.'d'.self::$seperator.'Y',
+                'regex' =>'\d{2}'.self::$seperator.'\d{2}'.self::$seperator.'\d{4}',
+                'bootstrapdatepicker' =>'mm'.self::$seperator.'dd'.self::$seperator.'yyyy',
+            ),
+            'other' => array('phpdatetime' =>'d'.self::$seperator.'m'.self::$seperator.'Y',
+                'regex' =>'\d{2}'.self::$seperator.'\d{2}'.self::$seperator.'\d{4}',
+                'bootstrapdatepicker' =>'dd'.self::$seperator.'mm'.self::$seperator.'yyyy',
+            ),
+        );
+    }
 
 
 
