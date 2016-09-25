@@ -65,7 +65,7 @@ class WysiwygField extends Field{
 
 
 
-	public function getFormView($form){
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$fp = FilePermissions::getGlobal();
 		$tp = new TaskPermission();
 

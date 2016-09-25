@@ -138,7 +138,7 @@ class DateField extends Field{
 
 
 
-	public function getFormView($form){
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$returnString .= '
 				<div  class="input-append date datepickerdiv" data-date-format="dd.mm.yyyy" data-date="' . $this->getTableView() . '">

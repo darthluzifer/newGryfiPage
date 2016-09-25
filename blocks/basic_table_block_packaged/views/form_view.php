@@ -1,7 +1,9 @@
 
 <div class="form-group basic_table_package">
 	
-	<form action=<?php echo $this->action('save_row') ?> method='POST'>
+	<form action=<?php echo $this->action('save_row') ?> method='POST' class="
+	<?php echo $controller->isClientSideValidationActivated()?'bacluc-client-side-validation':'';  ?>
+	">
 	
 	<?php
 	/**
@@ -25,7 +27,7 @@
 					$FieldObject->setErrorMessage($errorFields[$FieldObject->getPostName()]->getErrorMsg());
 				}
 				
-				echo $FieldObject->getFormView($form);
+				echo $FieldObject->getFormView($form, true, $controller->isClientSideValidationActivated());
 			}
 			
 		}	

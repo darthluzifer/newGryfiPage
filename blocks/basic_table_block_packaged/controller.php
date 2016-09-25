@@ -654,6 +654,12 @@ class Controller extends BlockController
         );
 
         $al->register(
+            'javascript', 'clientSideValidation', 'blocks/basic_table_block_packaged/js/clientSideValidation.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+
+        $al->register(
             'css', 'fontawesome', 'font-awesome'       , array(
                 array('css', 'css/font-awesome.css', array('minify' => false))
             )
@@ -701,6 +707,7 @@ class Controller extends BlockController
 
         if($this->isClientSideValidationActivated()){
             $groupAssets[]=array("javascript", "parsley");
+            $groupAssets[]=array("javascript", "clientSideValidation");
         }
 
         $al->registerGroup('basictable', $groupAssets);

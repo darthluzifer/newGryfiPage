@@ -75,15 +75,32 @@ class Field{
 		return $this->getValue();
 	}
 
+	public function addValidationAttributes($attributes){
+
+            if(!$this->nullable){
+                $attributes['required']='true';
+                $attributes['data-parsley-required']='true';
+            }
+
+            return $attributes;
+    }
 
 
-	public function getFormView($form){
+
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
-		$returnString.=$form->text($this->getPostName(), $this->getValue(),array('title' => $this->getPostName(),
-				'value' => $this->getValue(),
-				'id' => $this->getPostName()
-			)
-		);
+
+        $attributes = array('title' => $this->getPostName(),
+            'value' => $this->getValue(),
+            'id' => $this->getPostName(),
+        );
+
+        if($clientSideValidationActivated){
+            $attributes = $this->addValidationAttributes($attributes);
+        }
+
+
+		$returnString.=$form->text($this->getPostName(), $this->getValue(),$attributes);
 		$returnString.=$this->getHtmlErrorMsg();
 		return $returnString;
 	}
