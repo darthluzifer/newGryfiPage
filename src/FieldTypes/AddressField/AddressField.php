@@ -14,7 +14,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAsso
 
 class AddressField extends DropdownMultilinkFieldAssociated
 {
-    public function getFormView($form)
+    public function getFormView($form, $clientSideValidationActivated = true)
     {
         $addresses = $this->getValue();
         //make html before rows
