@@ -89,8 +89,8 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     //change the post name
                     $field->setPostName($this->getPostName() . "[".$rownum."][" . $field->getPostName() . "]");
 
-                    if(isset($this->subErrorMsg[$rownum][$field->getPostName()])){
-                        $field->setErrorMessage($this->subErrorMsg[$rownum][$field->getPostName()]);
+                    if(isset($this->subErrorMsg[$rownum][$oldpostname])){
+                        $field->setErrorMessage($this->subErrorMsg[$rownum][$oldpostname]);
                     }
 
                     //get the form view
