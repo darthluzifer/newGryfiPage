@@ -97,6 +97,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $html .= $field->getFormView($form);
                     //reset the post name
                     $field->setPostName($oldpostname);
+                    $field->setErrorMessage(null);
                 }
                 //add delete button
                 $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";

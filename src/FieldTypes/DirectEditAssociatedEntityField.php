@@ -78,6 +78,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
             //get the form view
             $html.=$field->getFormView($form);
+            $field->setErrorMessage(null);
         }
 
 
