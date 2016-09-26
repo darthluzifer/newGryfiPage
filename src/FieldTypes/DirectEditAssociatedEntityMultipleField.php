@@ -22,7 +22,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
     protected $subErrorMsg = array();
 
-    public function getFormView($form){
+    public function getFormView($form, $clientSideValidationActivated = true){
 
 
         /**
@@ -94,7 +94,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     }
 
                     //get the form view
-                    $html .= $field->getFormView($form);
+                    $html .= $field->getFormView($form, $clientSideValidationActivated);
                     //reset the post name
                     $field->setPostName($oldpostname);
                     $field->setErrorMessage(null);
@@ -129,7 +129,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
             $field->setPostName( static::PREPEND_BEFORE_REALNAME.$field->getPostName());
 
             //get the form view
-            $html .= $field->getFormView($form);
+            $html .= $field->getFormView($form, $clientSideValidationActivated);
         }
         $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 

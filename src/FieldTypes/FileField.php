@@ -43,7 +43,7 @@ class FileField extends Field{
 	}
 
 
-	public function getFormView($form){
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$al = Loader::helper('concrete/asset_library');
 		$bf = null;
 		if ($this->getValue() > 0) {

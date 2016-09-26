@@ -178,7 +178,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         return $this;
     }
 
-    public function getFormView($form){
+    public function getFormView($form, $clientSideValidationActivated = true){
         $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 
 

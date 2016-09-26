@@ -54,7 +54,7 @@ class DropdownField extends Field{
 	}
 
 
-	public function getFormView($form){
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$html .=$form->select($this->getPostName(), $this->getOptions(),$this->getValue());
 

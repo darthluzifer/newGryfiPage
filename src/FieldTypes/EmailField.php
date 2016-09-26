@@ -14,7 +14,7 @@ class EmailField extends Field
     const EMAILFORMATERROR = " has to be a valid email address";
 
 
-    public function getFormView($form){
+    public function getFormView($form, $clientSideValidationActivated = true){
         $returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
         $returnString.=$form->text($this->getPostName(), $this->getValue(),array('title' => $this->getPostName(),
                 'value' => $this->getValue(),

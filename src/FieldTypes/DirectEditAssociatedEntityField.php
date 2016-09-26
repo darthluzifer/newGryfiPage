@@ -24,9 +24,10 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
     /**
      * @param $form
+     * @param bool $clientSideValidationActivated
      * @return string
      */
-    public function getFormView($form){
+    public function getFormView($form, $clientSideValidationActivated = true){
         /**
          * @var Entity $value
          */
@@ -77,7 +78,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             }
 
             //get the form view
-            $html.=$field->getFormView($form);
+            $html.=$field->getFormView($form, $clientSideValidationActivated);
             $field->setErrorMessage(null);
         }
 
