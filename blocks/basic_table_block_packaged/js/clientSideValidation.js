@@ -2,6 +2,18 @@
  * Created by lucius on 25.09.16.
  */
 (function($){
+    window.Parsley.addValidator('datestring', {
+        validateString: function(value, requirement) {
+            if(value.match(requirement)){
+                return true;
+            }
+            return false;
+        },
+        messages: {
+            en: 'Invalid Date Format.',
+        }
+    });
+
     $('form').each(function(){
         if($(this).hasClass('bacluc-client-side-validation') && !$(this).hasClass('bacluc-parsley-activated')){
             $(this).parsley({
