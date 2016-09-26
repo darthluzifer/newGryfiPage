@@ -8,6 +8,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Concrete\Package\EntitiesExample\Src\Entity;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
 use Loader;
@@ -112,6 +113,17 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                //TODO throw exception, if invalid values should produce an error message
             }
         }
+        //delete the existing
+        $toDelete = $this->sourceEntity->get($this->getSQLFieldName());
+        if(count($toDelete)>0){
+            if($toDelete instanceof Collection){
+                $toDelete = $toDelete->toArray();
+            }
+            foreach($toDelete as $todelnum => $delItem){
+                $this->getEntityManager()->remove($delItem);
+            }
+        }
+
         $this->setSQLValue($sqlArray);
         return true;
     }
