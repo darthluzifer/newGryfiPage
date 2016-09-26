@@ -20,26 +20,29 @@ class Field{
 	protected $validation;
 	protected $value;
 	protected $postName;
-	protected $errMsg="";
+	protected $errMsg=null;
 	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
+    protected $nullable = true;
+
+    const NULLERRORMSG = ' cannot be empty.';
 
     /**
      * @var EntityManager
      */
     protected $em;
-	
+
 	public function __construct($sqlFieldname,$label, $postName, $showInTable = true, $showInForm = true){
-		
+
 		$this->sqlFieldname = $sqlFieldname;
 		$this->label = $label;
 		$this->postName = $postName;
 		$this->showInTable = $showInTable;
 		$this->showInForm = $showInForm;
-		
+
 	}
-	
+
 	public function setValue($value){
 		$this->isSQLValue = false;
 		$this->value = $value;
@@ -47,7 +50,7 @@ class Field{
 	}
 
 
-	
+
 	public function setSQLValue($value){
 		$this->isSQLValue = true;
 		$this->value = $value;
@@ -63,56 +66,88 @@ class Field{
 		$this->postName = $postname;
         return $this;
 	}
-	
+
 	public function getSQLValue(){
 		return $this->value;
 	}
-	
+
 	public function getTableView(){
 		return $this->getValue();
 	}
-	
-	
-	
-	public function getFormView($form){
+
+	public function addValidationAttributes($attributes){
+
+            if(!$this->nullable){
+                $attributes['required']='true';
+                $attributes['data-parsley-required']='true';
+            }
+
+            return $attributes;
+    }
+
+
+
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
-		$returnString.=$form->text($this->getPostName(), $this->getValue(),array('title' => $this->getPostName(),
-				'value' => $this->getValue(),
-				'id' => $this->getPostName()
-			)
-		);
+
+        $attributes = array('title' => $this->getPostName(),
+            'value' => $this->getValue(),
+            'id' => $this->getPostName(),
+        );
+
+        if($clientSideValidationActivated){
+            $attributes = $this->addValidationAttributes($attributes);
+        }
+
+
+		$returnString.=$form->text($this->getPostName(), $this->getValue(),$attributes);
+		$returnString.=$this->getHtmlErrorMsg();
 		return $returnString;
 	}
-	
+
+
+	public function getHtmlErrorMsg(){
+		if($this->errMsg != null){
+			return "
+				<div class='alert alert-danger'>".$this->errMsg."</div>
+			";
+		}
+	}
+
 	public function getLabel(){
 		return $this->label;
 	}
-	
+
 	public function getValue(){
 		return $this->value;
 	}
-	
+
 	public function getPostName(){
 		return $this->postName;
 	}
-	
+
 	public function getSQLFieldName(){
 		return $this->sqlFieldname;
 	}
-	
+
 	public function validatePost($value){
+	    if(!$this->nullable && strlen($value)==0) {
+	        $this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
+	        return false;
+        }
+
 		$this->setValue($value);
 		return true;
 	}
-	
+
 	public function getErrorMsg(){
-		return $this->errorMsg;
+		return $this->errMsg;
 	}
-	
+
 	public function showInForm(){
 		return $this->showInForm;
 	}
-	
+
 	public function showInTable(){
 		return $this->showInTable;
 	}
@@ -148,6 +183,27 @@ class Field{
         $this->showInTable = $showInTable;
         return $this;
     }
+
+
+		/**
+		 * set the error message to display
+     * @param string $msg
+     * @return $this
+     */
+		public function setErrorMessage($msg){
+			$this->errMsg = $msg;
+			return $this;
+		}
+
+
+    /**
+     * @param boolean $nullable
+     * @return $this
+     */
+		public function setNullable($nullable){
+		    $this->nullable = $nullable;
+            return $this;
+        }
 
 
 

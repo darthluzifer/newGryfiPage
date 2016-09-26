@@ -9,25 +9,33 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
+use Concrete\Core\Session\SessionFactory;
 use Concrete\Package\BasicTablePackage\Src\Entity;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Concrete\Core\Support\Facade\Application;
 
 class DirectEditAssociatedEntityField extends DropdownLinkField implements DirectEditInterface
 {
 
 
+    const SUBFORMERROR = " has an Error.";
+
+    protected $subErrorMsg = array();
 
     /**
      * @param $form
+     * @param bool $clientSideValidationActivated
      * @return string
      */
-    public function getFormView($form){
+    public function getFormView($form, $clientSideValidationActivated = true){
         /**
          * @var Entity $value
          */
         $value = $this->getSQLValue();
+        $this->loadSubErrorMsg();
         $html = "
         <div class='subentityedit col-xs-12'>
-            
+
             <label>".$this->getLabel()."</label>
             <div class='row'>
         ";
@@ -64,8 +72,14 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $field->setSQLValue($setValue);
             //change the post name
             $field->setPostName($this->getPostName()."[".$field->getPostName()."]");
+
+            if(isset($this->subErrorMsg[$field->getPostName()])){
+                $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
+            }
+
             //get the form view
-            $html.=$field->getFormView($form);
+            $html.=$field->getFormView($form, $clientSideValidationActivated);
+            $field->setErrorMessage(null);
         }
 
 
@@ -83,6 +97,10 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         ";
         //TODO get javascript logic for editing existing object or create new one
 
+
+    		$html.=$this->getHtmlErrorMsg();  
+
+
         return $html;
     }
 
@@ -97,7 +115,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $newModel = new $this->targetEntity;
 
         $fields = $newModel->getFieldTypes();
-
+        $error = false;
         /**
          * @var Field $field
          */
@@ -107,7 +125,16 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             }
             if($field->validatePost($value[$field->getPostName()])){
                 $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+            }else{
+                $this->subErrorMsg[$field->getPostName()] = $field->getErrorMsg();
+                $error = true;
             }
+        }
+
+        if($error){
+            $this->errMsg = $this->getLabel().t(static::SUBFORMERROR);
+            $this->saveSubErrorMsg();
+            return false;
         }
 
 
@@ -119,4 +146,36 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $this->setSQLValue($newModel);
         return true;
     }
+
+
+    protected function saveSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+
+        $session->set($this->postName."subformerrors", $this->subErrorMsg);
+    }
+
+    protected function loadSubErrorMsg(){
+        $app = Application::getFacadeApplication();
+
+        /**
+         * @var Session $session
+         */
+        $session = $app['session'];
+        if(count($this->subErrorMsg)>0){
+            $session->remove($this->postName."subformerrors");
+            return $this->subErrorMsg;
+        }
+
+
+        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
+        $session->remove($this->postName."subformerrors");
+        return $this->subErrorMsg;
+
+    }
 }
+

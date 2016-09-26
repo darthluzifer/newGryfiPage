@@ -18,14 +18,14 @@ use Concrete\Core\Block\View\BlockView as View;
  * A Normal Dropdownfield for a form
  */
 class DropdownField extends Field{
-	
+
 	protected $options = array();
 
 	public function __construct($sqlFieldname,$label, $postName){
 		parent::__construct($sqlFieldname, $label, $postName);
 
 	}
-	
+
 	/**
 	 * Set the possible Options to choose from.
 	 * @param array $options array of the options like array('dbvalue' => 'displayvalue')
@@ -35,15 +35,15 @@ class DropdownField extends Field{
 		$this->options = $options;
         return $this;
 	}
-	
-	
+
+
 	public function getOptions(){
 		return $this->options;
 	}
 
-	
+
 	public function setValue($value){
-		
+
 		$this->value = $value;
         return $this;
 	}
@@ -54,9 +54,11 @@ class DropdownField extends Field{
 	}
 
 
-	public function getFormView($form){
+	public function getFormView($form, $clientSideValidationActivated = true){
 		$html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$html .=$form->select($this->getPostName(), $this->getOptions(),$this->getValue());
+
+		$returnString.=$this->getHtmlErrorMsg();
 		return $html;
 	}
 

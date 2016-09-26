@@ -51,9 +51,16 @@
                 if ($(this).is('label[for]')) {
                     $(this).attr('for', renameAttribute(parentpostname, rownum, prepend_before_realname, $(this).attr('for')));
                 }
-                if ($(this).is('input[name]')) {
+                if ($(this).is('input[name]') || $(this).is('textarea[name]') || $(this).is('select[name]')) {
                     $(this).attr('name', renameAttribute(parentpostname, rownum, prepend_before_realname, $(this).attr('name')));
+                    if(window.parsley) {
+                        $(this).on('change, keyup', function (e) {
+                            $(this).parsley().validate();
+                        });
+                    }
                 }
+
+
 
             });
             $(hiddenrow).parent().find('div.bacluc-realrows ').append(hiddenrowcopy);
