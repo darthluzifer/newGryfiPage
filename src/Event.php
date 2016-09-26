@@ -32,47 +32,47 @@ class Event extends Entity
      * @Id @Column(type="integer", nullable=false, options={"unsigned":true})
      * @GEneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
     /**
      * @var DateTime
      * @Column(type="date")
      */
-    private $date_from;
+    protected $date_from;
     /**
      * @var DateTime
      * @Column(type="date")
      */
-    private $date_to;
+    protected $date_to;
     /**
      * @var DateTime
      * @Column(type="text", length=12)
      */
-    private $time_from;
+    protected $time_from;
     /**
      * @var DateTime
      * @Column(type="text", length=12)
      */
-    private $time_to;
+    protected $time_to;
     /**
      * @var string
      * @Column(type="string", length=1000)
      */
-    private $title;
+    protected $title;
     /**
      * @var string
      * @Column(type="text")
      */
-    private $description;
+    protected $description;
     /**
      * @var int
      * @Column(type="integer")
      */
-    private $infofile;
+    protected $infofile;
     /**
      * @var int
      * @Column(type="integer")
      */
-    private $registerfile;
+    protected $registerfile;
     /**
      * @var EventGroup[]
      * @OneToMany(targetEntity="Concrete\Package\BaclucEventPackage\Src\EventGroup", mappedBy="Event")
@@ -88,6 +88,7 @@ class Event extends Entity
     }
     public function setDefaultFieldTypes(){
         parent::setDefaultFieldTypes();
+        $this->fieldTypes['title']->setNullable(false);
         /**
          * because Entity::setDefaultFieldTypes does not detect special field types like Wysiwyg field or filefield, they have to be set here manually.
          * The only Fields Entity::setDefaultFieldTypes detects are date, DropdownLinkField (m:1 relation), DropdownMulitLInkField (n:m relation)
