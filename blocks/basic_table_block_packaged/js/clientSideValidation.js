@@ -17,7 +17,7 @@
     $('form').each(function(){
         if($(this).hasClass('bacluc-client-side-validation') && !$(this).hasClass('bacluc-parsley-activated')){
             $(this).parsley({
-
+                errorsWrapper: '<ul class="parsley-errors-list alert alert-danger"></ul>',
             });
             $(this).addClass('bacluc-parsley-activated');
 
