@@ -34,8 +34,8 @@
 	
 	}
 	
-	echo $form->submit('submit', t("speichern"));
-	echo $form->submit('cancel', t("abbrechen"));
+	echo $form->submit('submit', t("save"));
+	echo $form->submit('cancel', t("cancel"));
 	?>
 	
 	
