@@ -65,7 +65,7 @@ class CanEditOption extends TableBlockOption{
     }
 */
     public function getLabel(){
-        return t('Welche Gruppen können Eintäge editieren?');
+        return t('Which groups can edit entries?');
     }
 
     public function getFieldType(){

@@ -58,7 +58,7 @@ class DropdownField extends Field{
 		$html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 		$html .=$form->select($this->getPostName(), $this->getOptions(),$this->getValue());
 
-		$returnString.=$this->getHtmlErrorMsg();
+        $html.=$this->getHtmlErrorMsg();
 		return $html;
 	}
 

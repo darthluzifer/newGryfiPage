@@ -36,14 +36,14 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
 	        	if($fieldname == 'id'){
 	        		
 	        	?>
-	        	<th width='20%'  data-column-id="commands" data-formatter="commands" data-sortable="false"><?php echo t('Aktion'); ?></th>
+	        	<th width='20%'  data-column-id="commands" data-formatter="commands" data-sortable="false"><?php echo t('Action'); ?></th>
 	        
 	        	
 	        	<?php }else{
 	        		if($type->showInTable()){
 	        		?>
 	        	
-	        		<th data-column-id='<?php echo $type->getPostName();?>' data-formatter="<?php echo (new ReflectionClass($type))->getShortName();?>"><?php echo $type->getLabel(); ?></th>
+	        		<th data-column-id='<?php echo $type->getPostName();?>' data-formatter="<?php echo (new ReflectionClass($type))->getShortName();?>"><?php echo t($type->getLabel()); ?></th>
 	        <?php 
 	        		}
 	        	}

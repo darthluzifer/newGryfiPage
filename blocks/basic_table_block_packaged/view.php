@@ -29,6 +29,7 @@ if(!$controller->isExecuted()){
 ?>
 
 <script type="text/javascript">
+	/*
 //test the ajax funcitonality
 	$(document).ready(function(e){
 		$.ajax({
@@ -50,9 +51,7 @@ if(!$controller->isExecuted()){
 	
 });
 
-<!--
-
-//-->
+*/
 </script>
 
 

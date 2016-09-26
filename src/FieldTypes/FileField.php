@@ -35,7 +35,7 @@ class FileField extends Field{
 			$returnString = "<a href=\"".View::url('/download_file', $this->getValue(),$cID)."\" target='_blank'>".stripslashes($this->getLinkText())."</a>";
 			
 		}else{
-			$returnString = "keine Berechtigung";
+			$returnString = t("permission denied");
 		}
 
 		$returnString.=$this->getHtmlErrorMsg();
@@ -53,7 +53,7 @@ class FileField extends Field{
 
 		$returnString = "
 		<div class=\"form-group\">
-		".$form->label($this->getPostName(), t('File'))."
+		".$form->label($this->getPostName(), t($this->getLabel()))."
 		".$al->file($this->getPostName(), $this->getPostName(), t('Choose File'), $bf)."
 		</div>";
 		$valt = Loader::helper('validation/token');
@@ -92,7 +92,7 @@ class FileField extends Field{
 		if(is_object($f)){
 			return $f->getTitle();
 		}else{
-			return t("keine Datei");
+			return t("no File");
 		}
 
 	}

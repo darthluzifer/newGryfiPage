@@ -27,9 +27,7 @@ trait EntityGetterSetter
             && !in_array($name, $this->fieldTypes)) {
 
             $returnvar = $this->{$name};
-            if(property_exists($this, "gID")){
-                $returnvar2 = $this->gID;
-            }
+
 
             return $returnvar;
         }

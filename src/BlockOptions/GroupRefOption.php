@@ -31,7 +31,7 @@ class GroupRefOption extends TableBlockOption{
         $this->setDefaultFieldTypes();
     }
     public function getLabel(){
-        return t('Welche Gruppen betrifft dieser Block?');
+        return t('Which groups are used in this block?');
     }
     public function getFieldType(){
         if($this->fieldTypes['optionValue']==null){

@@ -40,7 +40,7 @@ class BasicTableInstance extends Entity
     {
         $this->tableBlockOptions = new ArrayCollection();
         $this->fieldTypes['bID']=new FieldTypes\Field('bID', 'bID', 'identifier');
-        $this->fieldTypes['tableBlockOptions']=new FieldTypes\Field('value', 'Wert', 'wert');
+        $this->fieldTypes['tableBlockOptions']=new FieldTypes\Field('value', 'Value', 'value');
 
     }
     public function addBlockOption(TableBlockOption $option){
