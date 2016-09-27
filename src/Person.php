@@ -22,6 +22,8 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
  * Class Person
  * @package Concrete\Package\BaclucPersonPackage\Src
  * @Entity
+ *  @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
  * @Table(name="bacluc_person")
  */
 class Person extends Entity
