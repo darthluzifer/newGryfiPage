@@ -19,6 +19,8 @@ use Doctrine\ORM\Mapping\Entity;
  * Class EventGroup
  * @package Concrete\Package\BaclucEventPackage\Src
  * @Entity
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
  * @Table(name="bacluc_event_group")
  */
 class EventGroup extends AssociationEntity

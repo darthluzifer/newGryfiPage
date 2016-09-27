@@ -19,6 +19,8 @@ use Doctrine\ORM\Query\Expr;
 /**
  * Class Event
  * @package Concrete\Package\BaclucEventPackage\Src
+ *  @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
  * @Entity
 @Table(name="bacluc_event"
 )
