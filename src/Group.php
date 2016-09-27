@@ -13,6 +13,8 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
  * Class Group
  * @package Concrete\Package\BasicTablePackage\Src
  * @Entity
+ *  @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
   @Table(name="Groups"
   , indexes={
            @Index(name="gName",
