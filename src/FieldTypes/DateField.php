@@ -98,7 +98,7 @@ class DateField extends Field{
 			return;
 		}
 
-        $explodeValue = explode(self::$seperator, $value);
+        $explodeValue = explode(static::$seperator, $value);
 
 
         //check if Y m d
@@ -165,7 +165,7 @@ class DateField extends Field{
 		}
 		//var_dump($this->getValue());
 		//return $this->getValue();
-		return (new \DateTime($this->getValue()))->format(self::$currentFormat['phpdatetime']);
+		return (new \DateTime($this->getValue()))->format(static::$currentFormat['phpdatetime']);
 	}
 
 
@@ -178,7 +178,7 @@ class DateField extends Field{
             $validationAttributes = $this->addValidationAttributes(array());
         }
         $returnString .= '
-				<div  class="input-append date datepickerdiv" data-date-format="'.self::$currentFormat['bootstrapdatepicker'].'" data-date="' . $this->getTableView() . '">
+				<div  class="input-append date datepickerdiv" data-date-format="'.static::$currentFormat['bootstrapdatepicker'].'" data-date="' . $this->getTableView() . '">
 				<input id="'.$this->getPostName().'" name="'.$this->getPostName().'"  type="text" value="' . $this->getTableView() . '" size="16"
 				';
         if(count($validationAttributes)>0){
@@ -192,7 +192,7 @@ class DateField extends Field{
 				</div>
 				<script>
 					$(function(e){
-						$("#'.$this->getPostName().'").datepicker({format:"'.self::$currentFormat['bootstrapdatepicker'].'"});
+						$("#'.$this->getPostName().'").datepicker({format:"'.static::$currentFormat['bootstrapdatepicker'].'"});
 
 					});
 
@@ -220,12 +220,12 @@ class DateField extends Field{
 				return false;
 			}
 		}
-		$explodePattern = explode(self::$seperator,self::$userFormat);
+		$explodePattern = explode(static::$seperator,static::$userFormat);
 
-		$explodeValue = explode(self::$seperator, $value);
+		$explodeValue = explode(static::$seperator, $value);
 
 		if(count($explodeValue)>3){
-			$this->errMsg = self::$formatErrorMessage;
+			$this->errMsg = static::$formatErrorMessage;
 			return false;
 		}
 		for($i = 0; $i < count($explodeValue);$i++){
@@ -233,14 +233,14 @@ class DateField extends Field{
 				case 'd':
 					if(!(is_numeric($explodeValue[$i]+0)
 						 && $explodeValue[$i]+0<= 31) ){
-						$this->errMsg = t(self::$formatErrorMessage);
+						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
 				break;
 				case 'm':
 					if(!(is_numeric($explodeValue[$i]+0)
 						&& $explodeValue[$i]+0<= 12) ){
-						$this->errMsg = t(self::$formatErrorMessage);
+						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
 					break;
@@ -248,7 +248,7 @@ class DateField extends Field{
 					if(!(is_numeric($explodeValue[$i]+0)
 					&& strlen($explodeValue[$i]) <= 4
 					)){
-						$this->errMsg = t(self::$formatErrorMessage);
+						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
 					break;
@@ -283,13 +283,13 @@ class DateField extends Field{
 
 	protected static function getSupportedFormats(){
         return array(
-            'us' => array('phpdatetime' =>'m'.self::$seperator.'d'.self::$seperator.'Y',
-                'regex' =>'\d{2}'.self::$seperator.'\d{2}'.self::$seperator.'\d{4}',
-                'bootstrapdatepicker' =>'mm'.self::$seperator.'dd'.self::$seperator.'yyyy',
+            'us' => array('phpdatetime' =>'m'.static::$seperator.'d'.static::$seperator.'Y',
+                'regex' =>'\d{2}'.static::$seperator.'\d{2}'.static::$seperator.'\d{4}',
+                'bootstrapdatepicker' =>'mm'.static::$seperator.'dd'.static::$seperator.'yyyy',
             ),
-            'other' => array('phpdatetime' =>'d'.self::$seperator.'m'.self::$seperator.'Y',
-                'regex' =>'\d{2}'.self::$seperator.'\d{2}'.self::$seperator.'\d{4}',
-                'bootstrapdatepicker' =>'dd'.self::$seperator.'mm'.self::$seperator.'yyyy',
+            'other' => array('phpdatetime' =>'d'.static::$seperator.'m'.static::$seperator.'Y',
+                'regex' =>'\d{2}'.static::$seperator.'\d{2}'.static::$seperator.'\d{4}',
+                'bootstrapdatepicker' =>'dd'.static::$seperator.'mm'.static::$seperator.'yyyy',
             ),
         );
     }
