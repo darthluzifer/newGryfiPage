@@ -230,17 +230,42 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
             $allowadd = 'true';
         }
 
+
         $html .="
 				<script type = 'text/javascript'>
 					$(document).ready(function(e){
-						$('#".$this->getPostName()."').tagsinput({
-						  freeInput: $allowadd,
-						  typeahead: {
-						    source: [$sourcetext],
-						    showHintOnFocus:true
-						  }
-						});
+					    var values = [$sourcetext];
+					    values = new Bloodhound({
+                          datumTokenizer: Bloodhound.tokenizers.whitespace,
+                          queryTokenizer: Bloodhound.tokenizers.whitespace,
+                          local: values
+                        });
+                        values.initialize();
+
+                        $('#".$this->getPostName()."').tagsinput({
+                          freeInput: $allowadd,
+                          typeaheadjs: [{
+                           
+                            minLength:0,
+                            highlight:true,
+                            limit:10000,
+                          },{
+                           name: '".$this->getPostName()."',
+                            source: function (q, sync) {
+                                  if (q === '' ||q === '*' ) {
+                                    sync(values.get($sourcetext));
+                                  }
+                                
+                                  else {
+                                    values.search(q, sync);
+                                }
+                               },
+                            limit:10000,
+                          }]
+                        });
+                        
 					});
+					
 				</script>
 				";
 

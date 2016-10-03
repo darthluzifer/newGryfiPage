@@ -197,7 +197,7 @@ class DropdownLinkField extends DropdownField{
          */
         $em = $this->getEntityManager();
 
-        
+
 //TODO implement filter for options
         $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 

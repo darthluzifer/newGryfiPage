@@ -614,7 +614,7 @@ class Controller extends BlockController
         $al = \Concrete\Core\Asset\AssetList::getInstance();
 
         $al->register(
-            'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
+            'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/typeahead.bundle.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
@@ -625,7 +625,7 @@ class Controller extends BlockController
         );
 
         $al->register(
-            'javascript', 'tagsinput', 'blocks/basic_table_block_packaged/js/bootstrap-tagsinput.min.js',
+            'javascript', 'tagsinput', 'blocks/basic_table_block_packaged/js/bootstrap-tagsinput.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
@@ -671,6 +671,11 @@ class Controller extends BlockController
             array('minify' => false, 'combine' => true)
             , $package
         );
+        $al->register(
+            'css', 'typeaheadcss', 'blocks/basic_table_block_packaged/css/typeahead.css',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
 
         $al->register(
             'css', 'datepickercss', 'blocks/basic_table_block_packaged/css/datepicker.css',
@@ -696,6 +701,7 @@ class Controller extends BlockController
             array('css', 'datepickercss'),
             array('css', 'bootgridcss'),
             array('css', 'basicTablecss'),
+            array('css', 'typeaheadcss'),
             array('javascript', 'jquery'),
             array('javascript', 'bootstrap'),
             array('javascript', 'typeahead'),
@@ -1059,6 +1065,19 @@ class Controller extends BlockController
     {
         $this->clientSideValidationActivated = $clientSideActivated;
         return $this;
+    }
+
+    /**
+     * @return Entity|null|object
+     */
+    public function getModel(){
+        return $this->model;
+    }
+
+    public function install($path)
+    {
+        $res = parent::install($path);
+
     }
 
 
