@@ -137,6 +137,8 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $html.="<div class='rownum hiddenforminfo'>".$rownum."</div>";
         $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
         $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
+        $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."&fieldname=".$this->getPostName()."</div>";
+
         $html.="</div>
         </div>";
         $html.="</div>";

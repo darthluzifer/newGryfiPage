@@ -14,6 +14,10 @@ use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
@@ -1077,7 +1081,28 @@ class Controller extends BlockController
     public function install($path)
     {
         $res = parent::install($path);
+        //throw model through AssociationCache to get Associations
+    }
 
+    public function action_get_options_of_field(){
+
+        $field = $this->request->query->get('fieldname');
+
+
+
+        $fieldTypes = $this->getFields();
+        /**
+         * @var DropdownLinkField $fieldType
+         */
+        $fieldType = $fieldTypes[$this->postFieldMap[$field]];
+
+        $options = array();
+        if($fieldType instanceof  DirectEditInterface){
+            $options = $fieldType->getFullOptions();
+        }else{
+            throw new \InvalidArgumentException("Invalid field name");
+        }
+        return new \Symfony\Component\HttpFoundation\JsonResponse($options);
     }
 
 

@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Core\Block\View\BlockView;
 use Doctrine\ORM\EntityManager;
 use Loader;
 use Page;
@@ -25,6 +26,12 @@ class Field{
 	protected $showInForm = true;
 	protected $showInTable = true;
     protected $nullable = true;
+    /**
+     * @var BlockView
+     */
+    protected $view;
+
+
 
     const NULLERRORMSG = ' cannot be empty.';
 
@@ -206,5 +213,22 @@ class Field{
         }
 
 
+    /**
+     * @return BlockView
+     */
+    public function getView()
+    {
+        return $this->view;
+    }
+
+    /**
+     * @param BlockView $view
+     * @return $this
+     */
+    public function setView($view)
+    {
+        $this->view = $view;
+        return $this;
+    }
 
 }

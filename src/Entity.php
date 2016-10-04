@@ -240,4 +240,15 @@ abstract class Entity
 
     }
 
+    public function toTableAssoc(){
+        $jsonObj = new \stdClass();
+        if(count($this->fieldTypes)>0){
+            foreach ($this->fieldTypes as $sqlfieldname => $value){
+
+                $jsonObj->{$value->getPostname()}=$value->setSQLValue($this->get($sqlfieldname))->getTableView();
+            }
+        }
+        return $jsonObj;
+    }
+
 }
