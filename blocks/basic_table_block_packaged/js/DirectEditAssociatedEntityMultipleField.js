@@ -111,7 +111,12 @@
                             }
                         )
                             .on('typeahead:select', function(e,object){
-
+                                var row = $(this).closest('div.row');
+                                for(var i in object){
+                                    row.find('[name*="['+i+']"]').val(object[i]);
+                                    row.find('[name*="['+i+']"]').typeahead('val',object[i]);
+                                }
+                                return false;
                             });
                         ;
                     }
