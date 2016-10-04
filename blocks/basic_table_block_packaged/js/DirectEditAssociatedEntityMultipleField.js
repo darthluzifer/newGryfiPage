@@ -38,16 +38,16 @@
              * @returns {string}
              */
             function renameAttribute(parentpostname, rownum, prependet_before_realname, currentpostname, replace_brace_in_id_with) {
-                if(replace_brace_in_id_with == undefined){
-                    var newprepend = parentpostname + "[" + rownum + "][";
-                }else{
-                    var newprepend = parentpostname + replace_brace_in_id_with + rownum + replace_brace_in_id_with+replace_brace_in_id_with;
-                }
+
+                var newprepend = parentpostname + replace_brace_in_id_with + rownum + replace_brace_in_id_with+replace_brace_in_id_with;
+
 
                 var postname = currentpostname.substr(prependet_before_realname.length);
-                if(replace_brace_in_id_with == undefined) {
-                    return newprepend + postname + "]";
+
+                if(replace_brace_in_id_with !== undefined){
+                    replace_brace_in_id_with = replace_brace_in_id_with.replace(new RegExp("(\[|\])", "g"), replace_brace_in_id_with);
                 }
+
                 return newprepend + postname + replace_brace_in_id_with;
             }
 
@@ -76,13 +76,13 @@
                         });
                         values.initialize();
 
-                        $(this).typeahead([{
+                        $(this).typeahead({
 
                                 minLength: 0,
                                 highlight: true,
                                 limit: 10000,
                             }, {
-                                name: renameAttribute(parentpostname, rownum, prepend_before_realname, $(this).attr('name')),
+                                name: renameAttribute(parentpostname, rownum, prepend_before_realname, $(this).attr('name'), ""),
                                 source: function (q, sync) {
                                     if (q === '' || q === '*') {
                                         sync(values.index.all());
@@ -92,9 +92,9 @@
                                         values.search(q, sync);
                                     }
                                 },
-                                display:'postemail',
+                                //display:'postemail',
                                 limit: 10000,
-                            }]
+                            }
                         );
                     }
                 }
