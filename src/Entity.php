@@ -32,6 +32,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 
@@ -167,6 +168,9 @@ abstract class Entity
                     default:
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
+                }
+                if($fieldname == static::getIdFieldName()){
+                    $this->fieldTypes[$fieldname] = new HiddenField($fieldname, t($fieldname), t("post" . $fieldname));
                 }
             }catch(MappingException $e){
                 //wenn das feld ein association mapping ist, dann gibts error

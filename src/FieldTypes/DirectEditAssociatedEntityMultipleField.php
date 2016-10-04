@@ -74,7 +74,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                  */
                 foreach ($fields as $field) {
                     //if id or another directedit possibility, skip (because of possible circle)
-                    if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+                    if ($field instanceof DirectEditInterface) {
                         continue;
                     }
 
@@ -121,7 +121,9 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                 ";
         foreach ($fields as $field) {
             //if id or another directedit possibility, skip (because of possible circle)
-            if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+            if ( $field instanceof DirectEditInterface) {
+
+
                 continue;
             }
             //set the value

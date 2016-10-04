@@ -40,16 +40,19 @@
              */
             function renameAttribute(parentpostname, rownum, prependet_before_realname, currentpostname, replace_brace_in_id_with) {
 
-                var newprepend = parentpostname + replace_brace_in_id_with + rownum + replace_brace_in_id_with+replace_brace_in_id_with;
+                var newprepend = parentpostname + "[" + rownum + "][";
 
 
                 var postname = currentpostname.substr(prependet_before_realname.length);
 
-                if(replace_brace_in_id_with !== undefined){
-                    replace_brace_in_id_with = replace_brace_in_id_with.replace(new RegExp("(\[|\])", "g"), replace_brace_in_id_with);
-                }
 
-                return newprepend + postname + replace_brace_in_id_with;
+
+                var returnstring = newprepend + postname + "]";
+                if(replace_brace_in_id_with === undefined && replace_brace_in_id_with!=="" ){
+                    return returnstring;
+                }
+                return returnstring.replace(new RegExp("(\\\[|\\\])", "g"), replace_brace_in_id_with);
+
             }
 
             //now rename id and name of new row
@@ -69,7 +72,7 @@
                             $(this).parsley().validate();
                         });
                     }
-                    if($(this).is('input[name]') || $(this).is('textarea[name]') ) {
+                    if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
                         var values = new Bloodhound({
                             datumTokenizer: Bloodhound.tokenizers.whitespace,
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -106,7 +109,11 @@
                                 },
 
                             }
-                        );
+                        )
+                            .on('typeahead:select', function(e,object){
+
+                            });
+                        ;
                     }
                 }
 
