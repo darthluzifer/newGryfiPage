@@ -251,4 +251,11 @@ abstract class Entity
         return $jsonObj;
     }
 
+    public function getTypeaheadTemplate(){
+
+        $template = "<div>{{uniqueIdString}}</div>";
+
+        return $template;
+    }
+
 }

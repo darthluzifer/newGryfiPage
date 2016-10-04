@@ -25,6 +25,7 @@
             var rownum = $(hiddenrow).find('div.rownum').text();
             var prepend_before_realname = $(hiddenrow).find('div.prepended_before_realname').text();
             var options_url = $(hiddenrow).find('div.options_url').text();
+            var options_template = $(hiddenrow).find('div.options_template').html();
             rownum = parseInt(rownum);
 
             //update the old rownum
@@ -75,7 +76,7 @@
                             prefetch: options_url
                         });
                         values.initialize();
-
+                        //eval("templatefunction = "+options_template+";");
                         $(this).typeahead({
 
                                 minLength: 0,
@@ -94,6 +95,16 @@
                                 },
                                 //display:'postemail',
                                 limit: 10000,
+                                templates:{
+                                    suggestion: function(data){
+                                        var localtemplate = options_template;
+                                        for(var i in data){
+                                            localtemplate = localtemplate.replace(new RegExp("\{\{+"+i+"\}\}", "g"), data[i]);
+                                        }
+                                      return localtemplate;
+                                    },
+                                },
+
                             }
                         );
                     }

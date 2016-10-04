@@ -11,6 +11,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
+use Concrete\Package\BasicTablePackage\Src\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Concrete\Core\Support\Facade\Application;
@@ -140,6 +141,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $html.="<div class='replace_brace_in_id_with hiddenforminfo'>".static::REPLACE_BRACE_IN_ID_WITH."</div>";
         $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
         $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."?fieldname=".$this->getPostName()."</div>";
+        $html.="<div class='options_template hiddenforminfo'>".$entityForFields->getTypeaheadTemplate()."</div>";
 
         $html.="</div>
         </div>";

@@ -245,6 +245,8 @@ class DropdownLinkField extends DropdownField{
             foreach ($modelList as $model) {
                 $model->setDefaultFieldTypes();
                 $options[$model->getId()] = $model->toTableAssoc();
+                $displayStringFunction = $this->getDisplayString;
+                $options[$model->getId()]->uniqueIdString=$displayStringFunction($model);
 
             }
         }
