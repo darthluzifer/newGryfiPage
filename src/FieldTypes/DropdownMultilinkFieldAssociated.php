@@ -253,7 +253,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                            name: '".$this->getPostName()."',
                             source: function (q, sync) {
                                   if (q === '' ||q === '*' ) {
-                                    sync(values.get($sourcetext));
+                                    sync(values.index.all());
                                   }
                                 
                                   else {
