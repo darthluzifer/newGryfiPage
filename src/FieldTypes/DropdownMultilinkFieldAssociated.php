@@ -191,7 +191,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     }
 
     public function getFormView($form, $clientSideValidationActivated = true){
-        $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
+        $html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
 
 
@@ -220,7 +220,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
 
         $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
+        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
 
         $options = $this->getOptions();
@@ -242,7 +242,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                         });
                         values.initialize();
 
-                        $('#".$this->getPostName()."').tagsinput({
+                        $('#".$this->getHtmlId()."').tagsinput({
                           freeInput: $allowadd,
                           typeaheadjs: [{
                            

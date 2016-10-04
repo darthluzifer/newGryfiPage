@@ -1099,6 +1099,8 @@ class Controller extends BlockController
         $options = array();
         if($fieldType instanceof  DirectEditInterface){
             $options = $fieldType->getFullOptions();
+            //look that it is an array in javascript
+            $options = array_values($options);
         }else{
             throw new \InvalidArgumentException("Invalid field name");
         }

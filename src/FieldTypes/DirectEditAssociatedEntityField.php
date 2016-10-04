@@ -36,7 +36,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $html = "
         <div class='subentityedit col-xs-12'>
 
-            <label>".$this->getLabel()."</label>
+            <label>".$this->getHtmlId()."</label>
             <div class='row'>
         ";
 

@@ -26,6 +26,7 @@ class Field{
 	protected $showInForm = true;
 	protected $showInTable = true;
     protected $nullable = true;
+    const REPLACE_BRACE_IN_ID_WITH='-';
     /**
      * @var BlockView
      */
@@ -95,11 +96,11 @@ class Field{
 
 
 	public function getFormView($form, $clientSideValidationActivated = true){
-		$returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
+		$returnString = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
         $attributes = array('title' => $this->getPostName(),
             'value' => $this->getValue(),
-            'id' => $this->getPostName(),
+            'id' => $this->getHtmlId(),
         );
 
         if($clientSideValidationActivated){
@@ -229,6 +230,10 @@ class Field{
     {
         $this->view = $view;
         return $this;
+    }
+
+    public function getHtmlId(){
+        return str_replace(array('[',']'), static::REPLACE_BRACE_IN_ID_WITH, $this->getPostName());
     }
 
 }

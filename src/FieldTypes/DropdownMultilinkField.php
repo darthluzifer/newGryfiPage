@@ -175,7 +175,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 
 
         $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
+        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
 
         $options = $this->getOptions();
@@ -197,7 +197,7 @@ class DropdownMultilinkField extends DropdownLinkField{
                         values.initialize();
                         
 
-                         $('#".$this->getPostName()."').tagsinput({
+                         $('#".$this->getHtmlId()."').tagsinput({
                           freeInput: $allowadd,
                           typeaheadjs: [{
                            
