@@ -215,27 +215,54 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $collectarraycollection = new ArrayCollection();
         $error = false;
 
+        /**
+         * @var Entity $instanceforidfield;
+         */
+        $instanceforidfield = new $this->targetEntity;
+        $idfieldname = $instanceforidfield->getIdFieldName();
+
         if(count($value)>0) {
             foreach ($value as $rownum =>$postvalues) {
                 if (!is_array($postvalues)) {
                     continue;
                 }
-                //create entity or modify it
-                $newModel = new $this->targetEntity;
 
-                $fields = $newModel->getFieldTypes();
+
+
+                $fields = $instanceforidfield->getFieldTypes();
+                $idpostname = $fields[$idfieldname]->getPostName();
+                $toSaveModel = null;
+                if($postvalues['newentrycheckbox'] || filter_var($postvalues[$idpostname], FILTER_VALIDATE_INT) === false) {
+                    //create entity or modify it
+                    $toSaveModel = new $this->targetEntity;
+                }else{
+                    $options = $this->getOptions();
+
+                    if(isset($options[$postvalues[$idpostname]])){
+                        $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($postvalues[$idpostname]);
+                        if($model != null && $model instanceof Entity){
+                            $toSaveModel = $model;
+                        }
+                    }
+                    if($toSaveModel == null){
+                        $toSaveModel = new $this->targetEntity;
+                    }
+
+                }
+
+
 
                 /**
                  * @var Field $field
                  */
                 foreach ($fields as $field) {
-                    if ($field->getSQLFieldName() == $newModel->getIdFieldName()
+                    if ($field->getSQLFieldName() == $toSaveModel->getIdFieldName()
                         || $field instanceof DirectEditInterface
                     ) {
                         continue;
                     }
                     if ($field->validatePost($postvalues[$field->getPostName()])) {
-                        $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                        $toSaveModel->set($field->getSQLFieldName(), $field->getSQLValue());
                     }else{
                         $this->subErrorMsg[$rownum][$field->getPostName()] = $field->getErrorMsg();
                         $error = true;
@@ -251,8 +278,8 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
                 //persist it
 
-                $this->getEntityManager()->persist($newModel);
-                $collectarraycollection->add($newModel);
+                $this->getEntityManager()->persist($toSaveModel);
+                $collectarraycollection->add($toSaveModel);
             }
         }
         //set the value
