@@ -9,12 +9,16 @@ namespace Concrete\Package\BaclucEventPackage\Src;
 use Concrete\Package\BasicTablePackage\Src\Entity;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\FileField as FileField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\WysiwygField as WysiwygField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Expr\Expression;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Query\Expr;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
+use Concrete\Package\BaclucPersonPackage\Src\Address;
+use Concrete\Package\BaclucPersonPackage\Src\PostalAddress;
 
 /**
  * Class Event
@@ -81,6 +85,14 @@ class Event extends Entity
 
      */
     protected $EventGroups;
+
+
+    /**
+     * @var PostalAddress
+     * @ManyToOne(targetEntity="Concrete\Package\BaclucPersonPackage\Src\PostalAddress")
+     *
+     */
+    protected $PostalAddress;
     public function __construct(){
         parent::__construct();
         if($this->EventGroups == null){
@@ -98,6 +110,11 @@ class Event extends Entity
         $this->fieldTypes['description']=new WysiwygField("description",t("Description"),"description");
         $this->fieldTypes['infofile']= new FileField("infofile", t('Info'), "info");
         $this->fieldTypes['registerfile']= new FileField("registerfile", t('Anmeldung'), "register");
+
+        $address = $this->fieldTypes['PostalAddress'];
+        $directEditField = new DirectEditAssociatedEntityField($address->getSQLFieldName(), "Address", $address->getPostName());
+        DropdownLinkField::copyLinkInfo($address,$directEditField);
+        $this->fieldTypes['PostalAddress']=$directEditField;
     }
 
     public function getId(){
