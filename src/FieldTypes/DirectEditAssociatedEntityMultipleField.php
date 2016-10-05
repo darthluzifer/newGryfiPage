@@ -100,6 +100,21 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $field->setPostName($oldpostname);
                     $field->setErrorMessage(null);
                 }
+                $idNewEntryCheckbox = $this->getPostName()
+                    .static::REPLACE_BRACE_IN_ID_WITH
+                    .$rownum
+                    .static::REPLACE_BRACE_IN_ID_WITH.static::REPLACE_BRACE_IN_ID_WITH
+                    .$field->getPostName().static::REPLACE_BRACE_IN_ID_WITH;
+                $nameNewEntryCheckbox = $this->getPostName(). "[".$rownum."][newentrycheckbox]";
+
+
+                $html.="
+                <div class='basic-table-newentrycheckbox'>
+                <label for=''>".t("Create new entry of %s",$this->getLabel())."</label>
+                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                </div>
+                ";
+
                 //add delete button
                 $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
@@ -134,6 +149,16 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
             //get the form view
             $html .= $field->getFormView($form, $clientSideValidationActivated);
         }
+        $idNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME."newentrycheckbox";
+        $nameNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME."newentrycheckbox";
+
+
+        $html.="
+                <div class='basic-table-newentrycheckbox'>
+                <label for='$idNewEntryCheckbox'>".t("Create new entry of%s",$this->getLabel())."</label>
+                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                </div>
+                ";
         $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
         //now add information to add new row

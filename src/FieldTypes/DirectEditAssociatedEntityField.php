@@ -81,6 +81,17 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $html.=$field->getFormView($form, $clientSideValidationActivated);
             $field->setErrorMessage(null);
         }
+        $idNewEntryCheckbox = $this->getPostName()
+            .static::REPLACE_BRACE_IN_ID_WITH
+            ."newentrycheckbox"
+            .static::REPLACE_BRACE_IN_ID_WITH;
+        $nameNewEntryCheckbox = $this->getPostName()."[newentrycheckbox]";
+        $html.="
+        <div class='basic-table-newentrycheckbox'>
+            <label for='$idNewEntryCheckbox'>".t("Create new entry of %s",$this->getLabel())."</label>
+            <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+            </div>
+        ";
 
 
 

@@ -6,6 +6,9 @@
     $(function(e) {
 
         function addTypeaheadMultipleRemote(element,options_url,options_template) {
+            if($(element).is('input[type="hidden"],input[type="checkbox"],input[type="button"] ')){
+                return;
+            }
             var values = new Bloodhound({
                 datumTokenizer: function (datum) {
                     var tokens = [];
@@ -134,7 +137,7 @@
                             $(this).parsley().validate();
                         });
                     }
-                    if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
+                    if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]')  ) {
                         addTypeaheadMultipleRemote(this,options_url,options_template);
 
                     }
