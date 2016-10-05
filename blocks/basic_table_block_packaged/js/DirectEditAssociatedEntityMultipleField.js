@@ -74,7 +74,17 @@
                     }
                     if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
                         var values = new Bloodhound({
-                            datumTokenizer: Bloodhound.tokenizers.whitespace,
+                            datumTokenizer: function(datum){
+                                var tokens = [];
+                                if(typeof(datum) == 'object'){
+                                    for(var i in datum){
+                                        tokens.push(datum[i]+"");
+                                    }
+                                }else{
+                                    tokens = [datum];
+                                }
+                                return tokens;
+                            },
                             queryTokenizer: Bloodhound.tokenizers.whitespace,
                             prefetch: options_url
                         });
@@ -93,6 +103,7 @@
                                     }
 
                                     else {
+
                                         values.search(q, sync);
                                     }
                                 },
