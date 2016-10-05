@@ -36,7 +36,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $html = "
         <div class='subentityedit col-xs-12'>
 
-            <label>".$this->getHtmlId()."</label>
+            <label>".$this->getLabel()."</label>
             <div class='row'>
         ";
 
@@ -59,7 +59,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          */
         foreach ($fields as $field){
             //if id or another directedit possibility, skip (because of possible circle)
-            if($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface){
+            if($field instanceof DirectEditInterface){
                 continue;
             }
 
@@ -83,6 +83,13 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         }
 
 
+
+        $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
+        $html.="<div class='parent_idname hiddenforminfo'>".$this->getHtmlId()."</div>";
+        $html.="<div class='replace_brace_in_id_with hiddenforminfo'>".static::REPLACE_BRACE_IN_ID_WITH."</div>";
+        $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
+        $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."?fieldname=".$this->getPostName()."</div>";
+        $html.="<div class='options_template hiddenforminfo'>".$entityForFields->getTypeaheadTemplate()."</div>";
 
 
 

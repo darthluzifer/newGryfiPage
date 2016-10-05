@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
 {
-    const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
+
 
     protected $subErrorMsg = array();
 

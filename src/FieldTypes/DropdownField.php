@@ -63,7 +63,7 @@ class DropdownField extends Field{
 	public function getFormView($form, $clientSideValidationActivated = true){
 		$html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
-		$html .=$this->select($this->getHtmlId(),$this->getPostName(), $this->getOptions(),$this->getValue());
+		$html .=static::select($this->getHtmlId(),$this->getPostName(), $this->getOptions(),$this->getValue());
 
         $html.=$this->getHtmlErrorMsg();
 		return $html;
@@ -80,7 +80,7 @@ class DropdownField extends Field{
      *@param Form $form
      * @return $html
      */
-    public function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array(), $form)
+    public static function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array(), $form)
     {
         if (!is_array($optionValues)) {
             $optionValues = array();
@@ -94,18 +94,9 @@ class DropdownField extends Field{
         if ($selectedValue !== '') {
             $miscFields['ccm-passed-value'] = $selectedValue;
         }
-        $requestValue = $form->getRequestValue($key);
-        if (is_array($requestValue) && isset($requestValue[0]) && is_string($requestValue[0])) {
-            $selectedValue = (string) $requestValue[0];
-        } elseif ($requestValue !== false) {
-            if (!is_array($requestValue)) {
-                $selectedValue = (string)$requestValue;
-            } else {
-                $selectedValue = '';
-            }
-        }
 
-        $str = '<select id="' . $id . '" name="' . $key . '"' . $this->parseMiscFields('form-control', $miscFields) . '>';
+
+        $str = '<select id="' . $id . '" name="' . $key . '"' . static::parseMiscFields('form-control', $miscFields) . '>';
         foreach ($optionValues as $k => $text) {
             $str .= '<option value="' . $k . '"';
             if ((string) $k === (string) $selectedValue) {
@@ -116,28 +107,6 @@ class DropdownField extends Field{
         $str .= '</select>';
 
         return $str;
-    }
-
-/**
-* Create an HTML fragment of attribute values, merging any CSS class names as necessary.
-*
-* @param string $defaultClass Default CSS class name
-* @param array $attributes A hash array of attributes (name => value), possibly including 'class'.
-*
-* @return string A fragment of attributes suitable to put inside of an HTML tag
-*/
-    protected function parseMiscFields($defaultClass, $attributes)
-    {
-        $attributes = (array) $attributes;
-        if ($defaultClass) {
-            $attributes['class'] = trim((isset($attributes['class']) ? $attributes['class'] : '') . ' ' . $defaultClass);
-        }
-        $attr = '';
-        foreach ($attributes as $k => $v) {
-            $attr .= " $k=\"$v\"";
-        }
-
-        return $attr;
     }
 
 

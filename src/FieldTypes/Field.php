@@ -3,6 +3,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
 use Concrete\Core\Block\View\BlockView;
+use Concrete\Core\Form\Service\Form;
 use Doctrine\ORM\EntityManager;
 use Loader;
 use Page;
@@ -108,7 +109,10 @@ class Field{
         }
 
 
-		$returnString.=$form->text($this->getPostName(), $this->getValue(),$attributes);
+        /**
+         * @var Form $form
+         */
+        $returnString.=static::inputType($this->getHtmlId(),$this->getPostName(),"text",$this->getValue(),$attributes,$form);
 		$returnString.=$this->getHtmlErrorMsg();
 		return $returnString;
 	}
@@ -235,5 +239,55 @@ class Field{
     public function getHtmlId(){
         return str_replace(array('[',']'), static::REPLACE_BRACE_IN_ID_WITH, $this->getPostName());
     }
+
+
+    /**
+     * Create an HTML fragment of attribute values, merging any CSS class names as necessary.
+     *
+     * @param string $defaultClass Default CSS class name
+     * @param array $attributes A hash array of attributes (name => value), possibly including 'class'.
+     *
+     * @return string A fragment of attributes suitable to put inside of an HTML tag
+     */
+    public static function parseMiscFields($defaultClass, $attributes)
+    {
+        $attributes = (array) $attributes;
+        if ($defaultClass) {
+            $attributes['class'] = trim((isset($attributes['class']) ? $attributes['class'] : '') . ' ' . $defaultClass);
+        }
+        $attr = '';
+        foreach ($attributes as $k => $v) {
+            $attr .= " $k=\"$v\"";
+        }
+
+        return $attr;
+    }
+
+    /**
+     * Internal function that creates an <input> element of type $type. Handles the messiness of evaluating $valueOrMiscFields. Assigns a default class of ccm-input-$type.
+     *
+     * @param string $key The name/id of the element.
+     * @param string $type Accepted value for HTML attribute "type"
+     * @param string|array $valueOrMiscFields The value of the element or an array with additional fields appended to the element (a hash array of attributes name => value), possibly including 'class'.
+     * @param array $miscFields (used if $valueOrMiscFields is not an array) Additional fields appended to the element (a hash array of attributes name => value), possibly including 'class'.
+     * @param Form $form
+     *
+     * @return string
+
+     */
+    public static function inputType($id,$key, $type, $valueOrMiscFields, $miscFields,$form)
+    {
+        if (is_array($valueOrMiscFields)) {
+            $value = '';
+            $miscFields = $valueOrMiscFields;
+        } else {
+            $value = $valueOrMiscFields;
+        }
+
+        $value = h($value);
+
+        return "<input type=\"$type\" id=\"$id\" name=\"$key\" value=\"$value\"" . static::parseMiscFields("form-control ccm-input-$type", $miscFields) . ' />';
+    }
+
 
 }
