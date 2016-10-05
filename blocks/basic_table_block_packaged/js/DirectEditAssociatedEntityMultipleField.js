@@ -4,6 +4,66 @@
 
 (function($){
     $(function(e) {
+
+        function addTypeaheadMultipleRemote(element,options_url,options_template) {
+            var values = new Bloodhound({
+                datumTokenizer: function (datum) {
+                    var tokens = [];
+                    if (typeof(datum) == 'object') {
+                        for (var i in datum) {
+                            tokens.push(datum[i] + "");
+                        }
+                    } else {
+                        tokens = [datum];
+                    }
+                    return tokens;
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: options_url
+            });
+            values.initialize();
+            //eval("templatefunction = "+options_template+";");
+            $(element).typeahead({
+
+                    minLength: 0,
+                    highlight: true,
+                    limit: 10000,
+                }, {
+                    name:  $(this).attr('id'),
+                    source: function (q, sync) {
+                        if (q === '' || q === '*') {
+                            sync(values.index.all());
+                        }
+
+                        else {
+
+                            values.search(q, sync);
+                        }
+                    },
+                    //display:'postemail',
+                    limit: 10000,
+                    templates: {
+                        suggestion: function (data) {
+                            var localtemplate = options_template;
+                            for (var i in data) {
+                                localtemplate = localtemplate.replace(new RegExp("\{\{+" + i + "\}\}", "g"), data[i]);
+                            }
+                            return localtemplate;
+                        },
+                    },
+
+                }
+            )
+                .on('typeahead:select', function (e, object) {
+                    var row = $(this).closest('div.row');
+                    for (var i in object) {
+                        row.find('[name*="[' + i + ']"]').val(object[i]);
+                        row.find('[name*="[' + i + ']"]').typeahead('val', object[i]);
+                    }
+                    return false;
+                });
+        }
+
         function add_remove_on_click_handler(){
             $('button.btn.bacluc-inlineform.actionbutton.delete').off("click");
             $('button.btn.bacluc-inlineform.actionbutton.delete').click(function(e){
@@ -56,6 +116,8 @@
             }
 
             //now rename id and name of new row
+
+
             $(hiddenrowcopy).find('*').each(function (e) {
 
 
@@ -73,62 +135,7 @@
                         });
                     }
                     if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
-                        var values = new Bloodhound({
-                            datumTokenizer: function(datum){
-                                var tokens = [];
-                                if(typeof(datum) == 'object'){
-                                    for(var i in datum){
-                                        tokens.push(datum[i]+"");
-                                    }
-                                }else{
-                                    tokens = [datum];
-                                }
-                                return tokens;
-                            },
-                            queryTokenizer: Bloodhound.tokenizers.whitespace,
-                            prefetch: options_url
-                        });
-                        values.initialize();
-                        //eval("templatefunction = "+options_template+";");
-                        $(this).typeahead({
-
-                                minLength: 0,
-                                highlight: true,
-                                limit: 10000,
-                            }, {
-                                name: renameAttribute(parentpostname, rownum, prepend_before_realname, $(this).attr('name'), ""),
-                                source: function (q, sync) {
-                                    if (q === '' || q === '*') {
-                                        sync(values.index.all());
-                                    }
-
-                                    else {
-
-                                        values.search(q, sync);
-                                    }
-                                },
-                                //display:'postemail',
-                                limit: 10000,
-                                templates:{
-                                    suggestion: function(data){
-                                        var localtemplate = options_template;
-                                        for(var i in data){
-                                            localtemplate = localtemplate.replace(new RegExp("\{\{+"+i+"\}\}", "g"), data[i]);
-                                        }
-                                      return localtemplate;
-                                    },
-                                },
-
-                            }
-                        )
-                            .on('typeahead:select', function(e,object){
-                                var row = $(this).closest('div.row');
-                                for(var i in object){
-                                    row.find('[name*="['+i+']"]').val(object[i]);
-                                    row.find('[name*="['+i+']"]').typeahead('val',object[i]);
-                                }
-                                return false;
-                            });
+                        addTypeaheadMultipleRemote(this,options_url,options_template);
 
                     }
                 }
@@ -143,6 +150,27 @@
         add_remove_on_click_handler();
 
 
+
+
+        //go through the single DirectEdit Areas and add autocompletion there:
+        $('div.subentityedit').each(function(){
+
+            //first read information
+
+            var parentpostname = $(this).find('div.parent_postname.hiddenforminfo').text();
+            var parentidname = $(this).find('div.parent_idname.hiddenforminfo').text();
+            var replace_brace_in_id_with = $(this).find('div.replace_brace_in_id_with.hiddenforminfo').text();
+            var prepend_before_realname = $(this).find('div.prepended_before_realname.hiddenforminfo').text();
+            var options_url = $(this).find('div.options_url.hiddenforminfo').text();
+            var options_template = $(this).find('div.options_template.hiddenforminfo').html();
+            //now loop through the input fields
+            $(this).find("input,textarea").each(function(){
+                if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
+                    addTypeaheadMultipleRemote(this,options_url,options_template);
+
+                }
+            });
+        });
 
 
 
