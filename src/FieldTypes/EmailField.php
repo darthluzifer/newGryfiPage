@@ -18,7 +18,7 @@ class EmailField extends Field
         $returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
         $attributes = array('title' => $this->getPostName(),
             'value' => $this->getValue(),
-            'id' => $this->getPostName(),
+            'id' => $this->getHtmlId(),
         );
 
         if($clientSideValidationActivated){

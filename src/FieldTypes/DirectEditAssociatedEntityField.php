@@ -59,7 +59,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          */
         foreach ($fields as $field){
             //if id or another directedit possibility, skip (because of possible circle)
-            if($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface){
+            if($field instanceof DirectEditInterface){
                 continue;
             }
 
@@ -81,8 +81,26 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $html.=$field->getFormView($form, $clientSideValidationActivated);
             $field->setErrorMessage(null);
         }
+        $idNewEntryCheckbox = $this->getPostName()
+            .static::REPLACE_BRACE_IN_ID_WITH
+            ."newentrycheckbox"
+            .static::REPLACE_BRACE_IN_ID_WITH;
+        $nameNewEntryCheckbox = $this->getPostName()."[newentrycheckbox]";
+        $html.="
+        <div class='basic-table-newentrycheckbox'>
+            <label for='$idNewEntryCheckbox'>".t("Create new entry of %s",$this->getLabel())."</label>
+            <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+            </div>
+        ";
 
 
+
+        $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
+        $html.="<div class='parent_idname hiddenforminfo'>".$this->getHtmlId()."</div>";
+        $html.="<div class='replace_brace_in_id_with hiddenforminfo'>".static::REPLACE_BRACE_IN_ID_WITH."</div>";
+        $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
+        $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."?fieldname=".$this->getPostName()."</div>";
+        $html.="<div class='options_template hiddenforminfo'>".$entityForFields->getTypeaheadTemplate()."</div>";
 
 
 
@@ -109,22 +127,44 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         if($value == null || !is_array($value)){
             $this->setSQLValue(null);
         }
-        //TODO first check if new entry or existing should be used
 
-        //create entity or modify it
-        $newModel = new $this->targetEntity;
+        /**
+         * @var Entity $instanceforidfield;
+         */
+        $instanceforidfield = new $this->targetEntity;
+        $idfieldname = $instanceforidfield->getIdFieldName();
 
-        $fields = $newModel->getFieldTypes();
+
+        $fields = $instanceforidfield->getFieldTypes();
         $error = false;
+        $idpostname = $fields[$idfieldname]->getPostName();
+        $toSaveModel = null;
+        if($value['newentrycheckbox'] || filter_var($value[$idpostname], FILTER_VALIDATE_INT) === false) {
+            //create entity or modify it
+            $toSaveModel = new $this->targetEntity;
+        }else{
+            $options = $this->getOptions();
+
+            if(isset($options[$value[$idpostname]])){
+                $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($value[$idpostname]);
+                if($model != null && $model instanceof Entity){
+                    $toSaveModel = $model;
+                }
+            }
+            if($toSaveModel == null){
+                $toSaveModel = new $this->targetEntity;
+            }
+
+        }
         /**
          * @var Field $field
          */
         foreach ($fields as $field){
-            if($field->getSQLFieldName() == $newModel->getIdFieldName() || $field instanceof DirectEditInterface){
+            if($field->getSQLFieldName() == $toSaveModel->getIdFieldName() || $field instanceof DirectEditInterface){
                 continue;
             }
             if($field->validatePost($value[$field->getPostName()])){
-                $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                $toSaveModel->set($field->getSQLFieldName(), $field->getSQLValue());
             }else{
                 $this->subErrorMsg[$field->getPostName()] = $field->getErrorMsg();
                 $error = true;
@@ -141,9 +181,9 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
         //persist it
 
-        $this->getEntityManager()->persist($newModel);
+        $this->getEntityManager()->persist($toSaveModel);
         //set the value
-        $this->setSQLValue($newModel);
+        $this->setSQLValue($toSaveModel);
         return true;
     }
 

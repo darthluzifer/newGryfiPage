@@ -197,7 +197,7 @@ class DropdownLinkField extends DropdownField{
          */
         $em = $this->getEntityManager();
 
-        
+
 //TODO implement filter for options
         $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 
@@ -224,6 +224,37 @@ class DropdownLinkField extends DropdownField{
 
 
     }
+
+
+    public function getFullOptions(){
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getEntityManager();
+
+
+//TODO implement filter for options
+        $modelList=$this->em->getRepository($this->targetEntity)->findAll();
+
+        $options = array();
+        if (count($modelList) > 0) {
+
+            /**
+             * @var Entity $model
+             */
+            foreach ($modelList as $model) {
+                $model->setDefaultFieldTypes();
+                $options[$model->getId()] = $model->toTableAssoc();
+                $displayStringFunction = $this->getDisplayString;
+                $options[$model->getId()]->uniqueIdString=$displayStringFunction($model);
+
+            }
+        }
+
+
+        return $options;
+    }
+
 
 
     /**

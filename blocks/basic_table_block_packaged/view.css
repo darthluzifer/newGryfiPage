@@ -46,6 +46,13 @@
     border:none !important;
 }
 
+.basic_table_package .twitter-typeahead{
+    display: block !important;
+}
+.basic_table_package .twitter-typeahead input{
+    background-color: unset;
+}
+
 
 /*for subrow form*/
 div.hidden_form_row{

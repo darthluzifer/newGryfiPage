@@ -73,7 +73,7 @@ class WysiwygField extends Field{
 		$controller = $this->blockController;
 		$html = '';
 		//$html = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
-		$html.=$form->label($this->getPostName(), t($this->getLabel()));
+		$html.=$form->label($this->getHtmlId(), t($this->getLabel()));
 		$editor = new RedactorEditor();
 		$html.=$editor->outputStandardEditor($this->getPostName(), $this->getValue());
 

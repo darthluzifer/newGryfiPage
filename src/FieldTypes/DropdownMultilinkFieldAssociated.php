@@ -191,7 +191,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     }
 
     public function getFormView($form, $clientSideValidationActivated = true){
-        $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
+        $html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
 
 
@@ -220,7 +220,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
 
         $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
+        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
 
         $options = $this->getOptions();
@@ -230,17 +230,42 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
             $allowadd = 'true';
         }
 
+
         $html .="
 				<script type = 'text/javascript'>
 					$(document).ready(function(e){
-						$('#".$this->getPostName()."').tagsinput({
-						  freeInput: $allowadd,
-						  typeahead: {
-						    source: [$sourcetext],
-						    showHintOnFocus:true
-						  }
-						});
+					    var values = [$sourcetext];
+					    values = new Bloodhound({
+                          datumTokenizer: Bloodhound.tokenizers.whitespace,
+                          queryTokenizer: Bloodhound.tokenizers.whitespace,
+                          local: values
+                        });
+                        values.initialize();
+
+                        $('#".$this->getHtmlId()."').tagsinput({
+                          freeInput: $allowadd,
+                          typeaheadjs: [{
+                           
+                            minLength:0,
+                            highlight:true,
+                            limit:10000,
+                          },{
+                           name: '".$this->getPostName()."',
+                            source: function (q, sync) {
+                                  if (q === '' ||q === '*' ) {
+                                    sync(values.index.all());
+                                  }
+                                
+                                  else {
+                                    values.search(q, sync);
+                                }
+                               },
+                            limit:10000,
+                          }]
+                        });
+                        
 					});
+					
 				</script>
 				";
 
