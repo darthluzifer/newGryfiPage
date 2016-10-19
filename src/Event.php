@@ -6,7 +6,7 @@
  * Time: 23:08
  */
 namespace Concrete\Package\BaclucEventPackage\Src;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
@@ -19,18 +19,24 @@ use Doctrine\ORM\Query\Expr;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BaclucPersonPackage\Src\Address;
 use Concrete\Package\BaclucPersonPackage\Src\PostalAddress;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class Event
- * @package Concrete\Package\BaclucEventPackage\Src
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BaclucEventPackage\Src
  *  @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorEntry(value="Concrete\Package\BaclucEventPackage\Src\Event")
  * @Entity
 @Table(name="bacluc_event"
 )
  *
  */
-class Event extends Entity
+class Event extends BaseEntity
 {
     use EntityGetterSetter;
     /**
