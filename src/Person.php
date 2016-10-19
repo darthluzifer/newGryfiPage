@@ -15,18 +15,23 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
-
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class Person
- * @package Concrete\Package\BaclucPersonPackage\Src
+ * package Concrete\Package\BaclucPersonPackage\Src
  * @Entity
  *  @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorEntry( value = "Concrete\Package\BaclucPersonPackage\Src\Person")
  * @Table(name="bacluc_person")
  */
-class Person extends Entity
+class Person extends BaseEntity
 {
     use EntityGetterSetter;
     /**
@@ -113,9 +118,9 @@ class Person extends Entity
      * @var EmailAddress[]
      * @ManyToMany(targetEntity="Concrete\Package\BaclucPersonPackage\Src\EmailAddress")
      * @JoinTable(name="bacluc_person_email_address",
-     *     joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
-     *     inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
-     *     )
+         joinColumns={@JoinColumn(name="person_id" , referencedColumnName="id")},
+        inverseJoinColumns={@JoinColumn(name="address_id" , referencedColumnName="id")}
+        )
      */
     protected $EmailAddresses;
 

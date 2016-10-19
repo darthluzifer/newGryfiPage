@@ -11,13 +11,19 @@ use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 
 /**
  * Class Address
- * @package Concrete\Package\BaclucPersonPackage\Src
+ * package Concrete\Package\BaclucPersonPackage\Src
  * @Entity
+ *  * @DiscriminatorEntry( value = "Concrete\Package\BaclucPersonPackage\Src\PhonenumberAddress" )
  * @Table(name="bacluc_phonenumber_address")
  */
 class PhonenumberAddress extends Address
