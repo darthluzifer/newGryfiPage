@@ -13,7 +13,8 @@ use Concrete\Core\Package\Package as Package;
 
 /**
  * Class Field
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")
+ *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A normal textfield, provides most of the methods for subfieldTypes
  */
 class Field{

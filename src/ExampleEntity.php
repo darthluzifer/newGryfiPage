@@ -12,11 +12,12 @@ namespace Concrete\Package\BasicTablePackage\Src;
 
 /**
  * Class ExampleEntity
- * @package Concrete\Package\BasicTablePackage\Src
- * @Entity
- * @Table(name="btExampleEntity")
+ * @IgnoreAnnotation("package")
+ *  Concrete\Package\BasicTablePackage\Src
+ * @ORM\Entity
+ * @ORM\Table(name="btExampleEntity")
  */
-class ExampleEntity extends Entity
+class ExampleEntity extends BaseEntity
 {
     use EntityGetterSetter;
     /**

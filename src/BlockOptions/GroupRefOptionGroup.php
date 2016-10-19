@@ -9,20 +9,24 @@
 namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
 
 
-use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
 
 /**
- * Class EventGroup
- * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
+ * Class
+ *  Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
  * @Table(name="grouprefoption_group")
  *
  */
-class GroupRefOptionGroup extends AssociationEntity
+class GroupRefOptionGroup extends AssociationBaseEntity
 {
     use EntityGetterSetter;
 

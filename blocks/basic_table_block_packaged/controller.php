@@ -4,7 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
-use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
@@ -12,7 +12,7 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
@@ -129,7 +129,7 @@ class Controller extends BlockController
     protected $requiredOptions = array();
 
     /**
-     * @var \Concrete\Package\BasicTablePackage\Src\Entity
+     * @var \Concrete\Package\BasicTablePackage\Src\BaseEntity
      */
     protected $model;
 
@@ -216,10 +216,10 @@ class Controller extends BlockController
      * here the standard way. If you want to add special field types,
      * use model->setFieldType('id' => new Field("id", "ID", "nr"));
      * $model->__construct sets the default field types defined in the model
-     * @param Entity $model
-     * @return Entity
+     * @param BaseEntity $model
+     * @return BaseEntity
      */
-    public static function setModelFieldTypes(Entity $model)
+    public static function setModelFieldTypes(BaseEntity $model)
     {
         $model->setDefaultFieldTypes();
         return $model;
@@ -488,7 +488,7 @@ class Controller extends BlockController
             //save values
             foreach ($this->getFields() as $key => $value) {
                 if ($key != $model->getIdFieldName()) {
-                    if ($v[$key] instanceof Entity) {
+                    if ($v[$key] instanceof BaseEntity) {
                         $this->getEntityManager()->persist($v[$key]);
                     } elseif ($v[$key] instanceof ArrayCollection) {
                         foreach ($v[$key]->toArray() as $refnum => $refObject) {
@@ -1072,7 +1072,7 @@ class Controller extends BlockController
     }
 
     /**
-     * @return Entity|null|object
+     * @return BaseEntity|null|object
      */
     public function getModel(){
         return $this->model;

@@ -9,18 +9,22 @@
 namespace Concrete\Package\BasicTablePackage\Src;
 
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Console\Helper\Table;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class BasicTableInstance
  * Just an Id to connect the Block with TableBlockOptions
- * @package Concrete\Package\BasicTablePackage\Src
+ * Concrete\Package\BasicTablePackage\Src
  * @Entity
  * @Table(name="btBasicTableInstance")
  */
-class BasicTableInstance extends Entity
+class BasicTableInstance extends BaseEntity
 {
     use EntityGetterSetter;
     /**

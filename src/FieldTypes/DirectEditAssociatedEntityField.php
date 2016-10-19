@@ -10,7 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
 use Concrete\Core\Session\SessionFactory;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Concrete\Core\Support\Facade\Application;
 
@@ -29,7 +29,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
      */
     public function getFormView($form, $clientSideValidationActivated = true){
         /**
-         * @var Entity $value
+         * @var BaseEntity $value
          */
         $value = $this->getSQLValue();
         $this->loadSubErrorMsg();
@@ -43,7 +43,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $classname = $this->targetEntity;
 
         /**
-         * @var Entity $entityForFields
+         * @var BaseEntity $entityForFields
          */
         $entityForFields = new $classname();
 
@@ -129,7 +129,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         }
 
         /**
-         * @var Entity $instanceforidfield;
+         * @var BaseEntity $instanceforidfield;
          */
         $instanceforidfield = new $this->targetEntity;
         $idfieldname = $instanceforidfield->getIdFieldName();
@@ -147,7 +147,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
             if(isset($options[$value[$idpostname]])){
                 $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($value[$idpostname]);
-                if($model != null && $model instanceof Entity){
+                if($model != null && $model instanceof BaseEntity){
                     $toSaveModel = $model;
                 }
             }

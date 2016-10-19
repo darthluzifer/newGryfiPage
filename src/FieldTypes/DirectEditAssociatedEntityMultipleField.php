@@ -11,7 +11,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Concrete\Core\Support\Facade\Application;
@@ -27,7 +27,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
         /**
-         * @var Entity $value
+         * @var BaseEntity $value
          */
         $values = $this->getSQLValue();
 
@@ -50,7 +50,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $classname = $this->targetEntity;
 
         /**
-         * @var Entity $entityForFields
+         * @var BaseEntity $entityForFields
          */
         $entityForFields = new $classname();
 
@@ -216,7 +216,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $error = false;
 
         /**
-         * @var Entity $instanceforidfield;
+         * @var BaseEntity $instanceforidfield;
          */
         $instanceforidfield = new $this->targetEntity;
         $idfieldname = $instanceforidfield->getIdFieldName();
@@ -240,7 +240,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
                     if(isset($options[$postvalues[$idpostname]])){
                         $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($postvalues[$idpostname]);
-                        if($model != null && $model instanceof Entity){
+                        if($model != null && $model instanceof BaseEntity){
                             $toSaveModel = $model;
                         }
                     }

@@ -8,15 +8,19 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
-
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class ExampleEntity
- * @package Concrete\Package\BasicTablePackage\Src
- * @Entity
- * @Table(name="basic_table_association_cache")
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src
+ * @ORM\Entity
+ * @ORM\Table(name="basic_table_association_cache")
  */
-class AssociationCache extends Entity
+class AssociationCache extends BaseEntity
 {
     use EntityGetterSetter;
     /**
@@ -45,7 +49,7 @@ class AssociationCache extends Entity
         parent::__construct();
     }
 
-    public static function saveAssociationsOfModel(Entity $model){
+    public static function saveAssociationsOfModel(BaseEntity $model){
 
     }
 
