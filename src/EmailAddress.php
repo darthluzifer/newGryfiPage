@@ -12,14 +12,23 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\EmailField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 
 /**
  * Class EmailAddress
- * @package Concrete\Package\BaclucPersonPackage\Src
+ * package Concrete\Package\BaclucPersonPackage\Src
  * @Entity
  * @Table(name="bacluc_email_address")
+ * @DiscriminatorEntry( value = "Concrete\Package\BaclucPersonPackage\Src\EmailAddress" )
  */
 class EmailAddress extends Address
 {
