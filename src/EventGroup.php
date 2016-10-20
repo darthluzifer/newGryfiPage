@@ -9,19 +9,29 @@
 namespace Concrete\Package\BaclucEventPackage\Src;
 
 
-use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Doctrine\ORM\Mapping as ORM;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class EventGroup
- * @package Concrete\Package\BaclucEventPackage\Src
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BaclucEventPackage\Src
  * @Entity
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
+ *  * @DiscriminatorEntry(value="Concrete\Package\BaclucEventPackage\Src\EventGroup")
  * @Table(name="bacluc_event_group")
  */
-class EventGroup extends AssociationEntity
+class EventGroup extends AssociationBaseEntity
 {
     use EntityGetterSetter;
     /**
