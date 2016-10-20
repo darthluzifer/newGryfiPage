@@ -10,6 +10,9 @@ use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use OpenCloud\Common\Log\Logger;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;

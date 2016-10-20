@@ -8,7 +8,8 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
-
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 /**

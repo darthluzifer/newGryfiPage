@@ -8,6 +8,9 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;

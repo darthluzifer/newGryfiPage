@@ -5,6 +5,9 @@ use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\ORM\Mapping\Table;
 use Concrete\Package\BasicTablePackage\Src\Group as Group;
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\InheritanceType;
