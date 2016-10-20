@@ -33,6 +33,11 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         $this->cachedMap    = Array();
     }
 
+    /**
+     *
+     * @param $class
+     * @return array
+     */
     public static function getSubClasses($class){
         $subclasses = array();
 
@@ -118,11 +123,16 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
     }
 
     private function checkChildren( $class ) {
+        /*
+        Because $this->driver->getAllClassNames() did not work, implemented own method to get subclasses
+        attention, getSubClasses returns all Child Classes, not only the direct Child classes
+        */
         foreach( static::getSubClasses($class) as $name ) {
             $cRc = new \ReflectionClass( $name );
             $cParent = $cRc->getParentClass()->name;
 
             // Haven't done this class yet? Go for it.
+            //removed the check if it is a direct child. It does not really matter (and didn't work somehow)
             if( !array_key_exists( $name, $this->map )  && $this->extractEntry( $name ) ) {
                 $this->checkChildren( $name );
             }
@@ -134,6 +144,7 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
 
         $annotations = Annotation::getAnnotationsForClass($class);
         /*
+         * getAnnotationsForClass gives back an array like this. There is no key called class
          * Array
 (
     [0] => Doctrine\ORM\Mapping\Entity Object
@@ -165,6 +176,7 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         $success = false;
         foreach($annotations as $key => $annotation){
             if(get_class($annotation) == self::ENTRY_ANNOTATION){
+                //TODO check for duplicates
                 $this->map[$class] = $annotation->getValue();
                 $success = true;
             }

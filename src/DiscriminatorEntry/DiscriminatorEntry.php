@@ -11,6 +11,8 @@ namespace Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry;
 /**
  * Class DiscriminatorEntry
  * package Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry
+ * added Target Annotation that it only should have effect on class annotations
+ * if you want to use an attribute, you need to define it, and the type, else you have an exception
  * @Annotation
  * @Target({"CLASS"})
  * @Attributes({

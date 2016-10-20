@@ -30,6 +30,7 @@ class Annotation
     }
 
 }
-
+//set the reader. Externally, because you cannot set a static property as a return value of a function
 Annotation::$reader = new AnnotationReader();
+//the function with the default namespace does not exist anymore
 //Annotation::$reader->setDefaultAnnotationNamespace( __NAMESPACE__ . "" );
