@@ -8,8 +8,8 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
-use Concrete\Package\BasicTablePackage\Src\Entity;
-use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\ExampleBaseEntity;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\DBAL\Schema\Table;
@@ -38,7 +38,7 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
     protected $requiredOptions = array();
 
     /**
-     * @var \Concrete\Package\BasicTablePackage\Src\Entity
+     * @var \Concrete\Package\BasicTablePackage\Src\BaseEntity
      */
     protected $model;
 
