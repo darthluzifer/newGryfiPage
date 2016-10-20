@@ -80,7 +80,7 @@ class DropdownField extends Field{
      *@param Form $form
      * @return $html
      */
-    public static function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array(), $form)
+    public static function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array())
     {
         if (!is_array($optionValues)) {
             $optionValues = array();
