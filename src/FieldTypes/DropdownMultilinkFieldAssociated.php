@@ -3,7 +3,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
 use Concrete\Flysystem\Exception;
-use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class DropdownMultilinkField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
@@ -52,7 +52,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
         $targetEntityObject = new $targetEntity();
 
-        if(! ($targetEntityObject instanceof  AssociationEntity)){
+        if(! ($targetEntityObject instanceof  AssociationBaseEntity)){
             throw new Exception("Cannot use ".get_class($this)." with an association pointing to a class which is not a subclass of AssociationEntity");
         }
 

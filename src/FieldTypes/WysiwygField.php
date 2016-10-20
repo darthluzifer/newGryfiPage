@@ -17,7 +17,7 @@ use Concrete\Core\Editor\RedactorEditor;
 //use Application\Block\BasicTableBlock\FieldTypes\HelperbBlock\Content\Test as Test;
 /**
  * Class WysiwygField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A Wysiwyg field, uses Helperclass which extends the ContentController of the Concrete Core,
  * so that he doesn't store the content in the Database himself,
  * but provides a method for this fieldtype to get the content and provide it for the blockcontroller to save it in the model

@@ -6,13 +6,20 @@ use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\ORM\Mapping\Table;
 use Concrete\Package\BasicTablePackage\Src\Group as Group;
 use Doctrine\Common\Collections\ArrayCollection as ArrayCollection;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
 
 /**
  * Class CanEditOption
  * Test Option to Link to another entity.
  * TODO add functionality, that users which are not in this group get false on  a funciton checkCondition
- * @package Concrete\Package\BasicTablePackage\Src\BlockOptions
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
  */
 class CanEditOption extends TableBlockOption{

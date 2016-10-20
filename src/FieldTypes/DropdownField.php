@@ -15,7 +15,7 @@ use Concrete\Core\Block\View\BlockView as View;
 /**
  *
  * Class DropdownField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A Normal Dropdownfield for a form
  */
 class DropdownField extends Field{

@@ -5,7 +5,7 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class DropdownMultilinkField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
@@ -125,7 +125,7 @@ class DropdownMultilinkField extends DropdownLinkField{
                 $appendString = "";
                 if(is_object($value)){
                     $classname = get_class($value);
-                    if($value instanceof  Entity){
+                    if($value instanceof  BaseEntity){
                         $function = $classname::getDefaultGetDisplayStringFunction();
                         $appendString = $function($value);
                     }

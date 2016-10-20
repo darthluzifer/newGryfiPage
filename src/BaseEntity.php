@@ -39,10 +39,10 @@ use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class Entity
- * @package Concrete\Package\BasicTablePackage\Src
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src
  * here are the most important methods for entities, so that they don't have to be implemented in every Entity, And that there are no errors if they are not implementet.
  */
-abstract class Entity
+abstract class BaseEntity
 {
     use EntityGetterSetter;
 
@@ -79,7 +79,7 @@ abstract class Entity
     }
 
     public static function getDefaultGetDisplayStringFunction(){
-        $function = function(Entity $item){
+        $function = function(BaseEntity $item){
             $returnString = "";
             $metadata = $item->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($item));
             $fieldTypes = $item->get('fieldTypes');
@@ -194,7 +194,7 @@ abstract class Entity
                 $targetEntityInstance = new $associationMeta['targetEntity'];
                 if($targetEntityInstance instanceof  ExtendedAssociationEntity){
 
-                }elseif($targetEntityInstance instanceof AssociationEntity){
+                }elseif($targetEntityInstance instanceof AssociationBaseEntity){
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 }else {
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
@@ -234,7 +234,7 @@ abstract class Entity
             //now delete not anymore existent elements
             foreach($coll1->toArray() as $key => $value){
                 if(!$result->contains($value)){
-                    if($value instanceof AssociationEntity){
+                    if($value instanceof AssociationBaseEntity){
                         $this->getEntityManager()->remove($value);
                     }
                 }
