@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 
 /**
  * This Listener listens to the loadClassMetadata event. Upon this event
@@ -32,10 +33,30 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         $this->cachedMap    = Array();
     }
 
+    public static function getSubClasses($class){
+        $subclasses = array();
+
+        foreach(get_declared_classes() as $potentialSubclass)
+        {
+
+            $reflection = new \ReflectionClass($potentialSubclass);
+            if($reflection ->isSubclassOf($class)){
+                $subclasses[] = $potentialSubclass;
+            }
+
+        }
+        return $subclasses;
+    }
+
     public function loadClassMetadata( \Doctrine\ORM\Event\LoadClassMetadataEventArgs $event ) {
         // Reset the temporary calculation map and get the classname
         $this->map  = Array();
         $class      = $event->getClassMetadata()->name;
+
+        $reflection = new \ReflectionClass($class);
+        if(!$reflection->isSubclassOf("Concrete\\Package\\BasicTablePackage\\Src\\BaseEntity")){
+            return;
+        }
 
         // Did we already calculate the map for this element?
         if( array_key_exists( $class, $this->cachedMap ) ) {
@@ -44,8 +65,8 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         }
 
         // Do we have to process this class?
-        if( count( $event->getClassMetadata()->discriminatorMap ) == 0
-                || $this->extractEntry( $class ) ) {
+        if( count( $event->getClassMetadata()->discriminatorMap ) < 2
+                && $this->extractEntry( $class ) ) {
             // Now build the whole map
             $this->checkFamily( $class );
         } else {
@@ -73,6 +94,9 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         if( isset( $this->cachedMap[$class]['isParent'] ) && $this->cachedMap[$class]['isParent'] === true ) {
             $subclasses = $this->cachedMap[$class]['map'];
             unset( $subclasses[$this->cachedMap[$class]['discr']] );
+            if(!is_array($subclasses)){
+                $subclasses = array();
+            }
             $event->getClassMetadata()->subClasses = array_values( $subclasses );
         }
     }
@@ -94,12 +118,12 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
     }
 
     private function checkChildren( $class ) {
-        foreach( $this->driver->getAllClassNames() as $name ) {
+        foreach( static::getSubClasses($class) as $name ) {
             $cRc = new \ReflectionClass( $name );
             $cParent = $cRc->getParentClass()->name;
 
             // Haven't done this class yet? Go for it.
-            if( !array_key_exists( $name, $this->map ) && $cParent == $class && $this->extractEntry( $name ) ) {
+            if( !array_key_exists( $name, $this->map )  && $this->extractEntry( $name ) ) {
                 $this->checkChildren( $name );
             }
         }

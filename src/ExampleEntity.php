@@ -9,13 +9,14 @@
 namespace Concrete\Package\BasicTablePackage\Src;
 
 
-
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 /**
  * Class ExampleEntity
  * @IgnoreAnnotation("package")
  *  Concrete\Package\BasicTablePackage\Src
- * @ORM\Entity
- * @ORM\Table(name="btExampleEntity")
+ * @Entity
+ * @Table(name="btExampleEntity")
  */
 class ExampleEntity extends BaseEntity
 {

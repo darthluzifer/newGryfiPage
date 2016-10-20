@@ -17,8 +17,8 @@ use Doctrine\ORM\Mapping\Table;
 /**
  * Class ExampleEntity
  * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src
- * @ORM\Entity
- * @ORM\Table(name="basic_table_association_cache")
+ * @Entity
+ * @Table(name="basic_table_association_cache")
  */
 class AssociationCache extends BaseEntity
 {
