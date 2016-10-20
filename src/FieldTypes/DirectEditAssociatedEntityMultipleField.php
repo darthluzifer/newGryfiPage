@@ -11,6 +11,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Concrete\Core\Support\Facade\Application;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
 {
-    const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
+
 
     protected $subErrorMsg = array();
 
@@ -26,7 +27,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
         /**
-         * @var Entity $value
+         * @var BaseEntity $value
          */
         $values = $this->getSQLValue();
 
@@ -49,7 +50,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $classname = $this->targetEntity;
 
         /**
-         * @var Entity $entityForFields
+         * @var BaseEntity $entityForFields
          */
         $entityForFields = new $classname();
 
@@ -73,7 +74,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                  */
                 foreach ($fields as $field) {
                     //if id or another directedit possibility, skip (because of possible circle)
-                    if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+                    if ($field instanceof DirectEditInterface) {
                         continue;
                     }
 
@@ -99,6 +100,21 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $field->setPostName($oldpostname);
                     $field->setErrorMessage(null);
                 }
+                $idNewEntryCheckbox = $this->getPostName()
+                    .static::REPLACE_BRACE_IN_ID_WITH
+                    .$rownum
+                    .static::REPLACE_BRACE_IN_ID_WITH.static::REPLACE_BRACE_IN_ID_WITH
+                    .$field->getPostName().static::REPLACE_BRACE_IN_ID_WITH;
+                $nameNewEntryCheckbox = $this->getPostName(). "[".$rownum."][newentrycheckbox]";
+
+
+                $html.="
+                <div class='basic-table-newentrycheckbox'>
+                <label for=''>".t("Create new entry of %s",$this->getLabel())."</label>
+                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                </div>
+                ";
+
                 //add delete button
                 $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
@@ -120,7 +136,9 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                 ";
         foreach ($fields as $field) {
             //if id or another directedit possibility, skip (because of possible circle)
-            if ($field->getSQLFieldName() == $entityForFields->getIdFieldName() || $field instanceof DirectEditInterface) {
+            if ( $field instanceof DirectEditInterface) {
+
+
                 continue;
             }
             //set the value
@@ -131,12 +149,27 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
             //get the form view
             $html .= $field->getFormView($form, $clientSideValidationActivated);
         }
+        $idNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME."newentrycheckbox";
+        $nameNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME."newentrycheckbox";
+
+
+        $html.="
+                <div class='basic-table-newentrycheckbox'>
+                <label for='$idNewEntryCheckbox'>".t("Create new entry of%s",$this->getLabel())."</label>
+                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                </div>
+                ";
         $html.="<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
         //now add information to add new row
         $html.="<div class='rownum hiddenforminfo'>".$rownum."</div>";
         $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
+        $html.="<div class='parent_idname hiddenforminfo'>".$this->getHtmlId()."</div>";
+        $html.="<div class='replace_brace_in_id_with hiddenforminfo'>".static::REPLACE_BRACE_IN_ID_WITH."</div>";
         $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
+        $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."?fieldname=".$this->getPostName()."</div>";
+        $html.="<div class='options_template hiddenforminfo'>".$entityForFields->getTypeaheadTemplate()."</div>";
+
         $html.="</div>
         </div>";
         $html.="</div>";
@@ -182,27 +215,54 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $collectarraycollection = new ArrayCollection();
         $error = false;
 
+        /**
+         * @var BaseEntity $instanceforidfield;
+         */
+        $instanceforidfield = new $this->targetEntity;
+        $idfieldname = $instanceforidfield->getIdFieldName();
+
         if(count($value)>0) {
             foreach ($value as $rownum =>$postvalues) {
                 if (!is_array($postvalues)) {
                     continue;
                 }
-                //create entity or modify it
-                $newModel = new $this->targetEntity;
 
-                $fields = $newModel->getFieldTypes();
+
+
+                $fields = $instanceforidfield->getFieldTypes();
+                $idpostname = $fields[$idfieldname]->getPostName();
+                $toSaveModel = null;
+                if($postvalues['newentrycheckbox'] || filter_var($postvalues[$idpostname], FILTER_VALIDATE_INT) === false) {
+                    //create entity or modify it
+                    $toSaveModel = new $this->targetEntity;
+                }else{
+                    $options = $this->getOptions();
+
+                    if(isset($options[$postvalues[$idpostname]])){
+                        $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($postvalues[$idpostname]);
+                        if($model != null && $model instanceof BaseEntity){
+                            $toSaveModel = $model;
+                        }
+                    }
+                    if($toSaveModel == null){
+                        $toSaveModel = new $this->targetEntity;
+                    }
+
+                }
+
+
 
                 /**
                  * @var Field $field
                  */
                 foreach ($fields as $field) {
-                    if ($field->getSQLFieldName() == $newModel->getIdFieldName()
+                    if ($field->getSQLFieldName() == $toSaveModel->getIdFieldName()
                         || $field instanceof DirectEditInterface
                     ) {
                         continue;
                     }
                     if ($field->validatePost($postvalues[$field->getPostName()])) {
-                        $newModel->set($field->getSQLFieldName(), $field->getSQLValue());
+                        $toSaveModel->set($field->getSQLFieldName(), $field->getSQLValue());
                     }else{
                         $this->subErrorMsg[$rownum][$field->getPostName()] = $field->getErrorMsg();
                         $error = true;
@@ -218,8 +278,8 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
                 //persist it
 
-                $this->getEntityManager()->persist($newModel);
-                $collectarraycollection->add($newModel);
+                $this->getEntityManager()->persist($toSaveModel);
+                $collectarraycollection->add($toSaveModel);
             }
         }
         //set the value

@@ -4,7 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Loader;
 use Page;
@@ -16,7 +16,8 @@ use Concrete\Core\Block\View\BlockView as View;
 
 /**
  * Class DropdownLinkField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")
+ *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A Dropdownfield which lists other instances
  */
 class DropdownLinkField extends DropdownField{
@@ -27,7 +28,7 @@ class DropdownLinkField extends DropdownField{
     protected $isNullable = false;
     protected $idField = 'id';
     /**
-     * @var Entity
+     * @var BaseEntity
      */
     protected $sourceEntity;
 
@@ -60,7 +61,7 @@ class DropdownLinkField extends DropdownField{
     //TODO check if $callable's first parameter is of class Entity
     /**
      * set the Info for the Link table
-     * @param Entity $sourceEntity
+     * @param BaseEntity $sourceEntity
      * @param $sourceField
      * @param $targetEntity
      * @param null $targetField
@@ -197,7 +198,7 @@ class DropdownLinkField extends DropdownField{
          */
         $em = $this->getEntityManager();
 
-        
+
 //TODO implement filter for options
         $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 
@@ -226,8 +227,39 @@ class DropdownLinkField extends DropdownField{
     }
 
 
+    public function getFullOptions(){
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getEntityManager();
+
+
+//TODO implement filter for options
+        $modelList=$this->em->getRepository($this->targetEntity)->findAll();
+
+        $options = array();
+        if (count($modelList) > 0) {
+
+            /**
+             * @var BaseEntity $model
+             */
+            foreach ($modelList as $model) {
+                $model->setDefaultFieldTypes();
+                $options[$model->getId()] = $model->toTableAssoc();
+                $displayStringFunction = $this->getDisplayString;
+                $options[$model->getId()]->uniqueIdString=$displayStringFunction($model);
+
+            }
+        }
+
+
+        return $options;
+    }
+
+
+
     /**
-     * @return Entity
+     * @return BaseEntity
      */
     public function getSQLValue(){
         return $this->value;

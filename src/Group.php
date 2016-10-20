@@ -7,12 +7,24 @@
  */
 
 namespace Concrete\Package\BasicTablePackage\Src;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * Class Group
- * @package Concrete\Package\BasicTablePackage\Src
+ * package Concrete\Package\BasicTablePackage\Src
  * @Entity
+ *  @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorEntry( value = "Concrete\Package\BasicTablePackage\Src\Group" )
   @Table(name="Groups"
   , indexes={
            @Index(name="gName",
@@ -25,7 +37,7 @@ use Concrete\Package\BasicTablePackage\Src\Entity;
   )
  *
  */
-class Group extends Entity
+class Group extends BaseEntity
 {
     use EntityGetterSetter;
 

@@ -7,10 +7,18 @@ use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionException;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionSetOrderException;
 use Concrete\Package\BasicTablePackage\Src\Exceptions\InvalidBlockOptionValueException;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use OpenCloud\Common\Log\Logger;
 use Punic\Exception;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Abstract Entitty TableBlockOption that provides the link to BasicTableInstance for the subBlockOptions
@@ -19,7 +27,7 @@ use Punic\Exception;
  * @DiscriminatorColumn(name="discr", type="string")
  * @Table(name="TableBlockOption")
  */
-class TableBlockOption extends Entity{
+class TableBlockOption extends BaseEntity{
     use EntityGetterSetter;
     /**
      * @var int

@@ -12,4 +12,5 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 interface DirectEditInterface
 {
 
+    const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";
 }

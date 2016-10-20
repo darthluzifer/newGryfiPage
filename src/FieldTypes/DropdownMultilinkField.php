@@ -5,7 +5,7 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class DropdownMultilinkField
- * @package Concrete\Package\BasicTablePackage\Src\FieldTypes
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
@@ -125,7 +125,7 @@ class DropdownMultilinkField extends DropdownLinkField{
                 $appendString = "";
                 if(is_object($value)){
                     $classname = get_class($value);
-                    if($value instanceof  Entity){
+                    if($value instanceof  BaseEntity){
                         $function = $classname::getDefaultGetDisplayStringFunction();
                         $appendString = $function($value);
                     }
@@ -175,7 +175,7 @@ class DropdownMultilinkField extends DropdownLinkField{
 
 
         $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getPostName()."' name ='".$this->getPostName()."' value='$valuestring'/>";
+        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
 
 
         $options = $this->getOptions();
@@ -188,13 +188,36 @@ class DropdownMultilinkField extends DropdownLinkField{
         $html .="
 				<script type = 'text/javascript'>
 					$(document).ready(function(e){
-						$('#".$this->getPostName()."').tagsinput({
-						  freeInput: $allowadd,
-						  typeahead: {
-						    source: [$sourcetext],
-						    showHintOnFocus:true
-						  }
-						});
+					    var values = [$sourcetext];
+					    values = new Bloodhound({
+                          datumTokenizer: Bloodhound.tokenizers.whitespace,
+                          queryTokenizer: Bloodhound.tokenizers.whitespace,
+                          local: values
+                        });
+                        values.initialize();
+                        
+
+                         $('#".$this->getHtmlId()."').tagsinput({
+                          freeInput: $allowadd,
+                          typeaheadjs: [{
+                           
+                            minLength:0,
+                            highlight:true,
+                            limit:0,
+                          },{
+                           name: '".$this->getPostName()."',
+                            source: function (q, sync) {
+                                  if (q === '' ||q === '*' ) {
+                                    sync(values.get($sourcetext));
+                                  }
+                                
+                                  else {
+                                    values.search(q, sync);
+                                }
+                               },
+                          }]
+                        });
+                        
 					});
 				</script>
 				";

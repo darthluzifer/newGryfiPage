@@ -10,7 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src;
 
 /**
  * Class EntityGetterSetter
- * @package Concrete\Package\BasicTablePackage\Src
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src
  * Because the getter and setter method of Class Entity has only access to their members, and not to the members of the subclasses
  * (where the getters and setters are really needed), one hat to copy the getters and setters to every class.
  * Now, they are extracted to this trait
@@ -27,9 +27,7 @@ trait EntityGetterSetter
             && !in_array($name, $this->fieldTypes)) {
 
             $returnvar = $this->{$name};
-            if(property_exists($this, "gID")){
-                $returnvar2 = $this->gID;
-            }
+
 
             return $returnvar;
         }

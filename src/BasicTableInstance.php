@@ -9,18 +9,25 @@
 namespace Concrete\Package\BasicTablePackage\Src;
 
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Console\Helper\Table;
+
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Class BasicTableInstance
  * Just an Id to connect the Block with TableBlockOptions
- * @package Concrete\Package\BasicTablePackage\Src
+ * Concrete\Package\BasicTablePackage\Src
  * @Entity
  * @Table(name="btBasicTableInstance")
  */
-class BasicTableInstance extends Entity
+class BasicTableInstance extends BaseEntity
 {
     use EntityGetterSetter;
     /**
@@ -40,7 +47,7 @@ class BasicTableInstance extends Entity
     {
         $this->tableBlockOptions = new ArrayCollection();
         $this->fieldTypes['bID']=new FieldTypes\Field('bID', 'bID', 'identifier');
-        $this->fieldTypes['tableBlockOptions']=new FieldTypes\Field('value', 'Wert', 'wert');
+        $this->fieldTypes['tableBlockOptions']=new FieldTypes\Field('value', 'Value', 'value');
 
     }
     public function addBlockOption(TableBlockOption $option){

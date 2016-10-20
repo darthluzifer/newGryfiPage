@@ -32,16 +32,17 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 
 
 /**
  * Class Entity
- * @package Concrete\Package\BasicTablePackage\Src
+ * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src
  * here are the most important methods for entities, so that they don't have to be implemented in every Entity, And that there are no errors if they are not implementet.
  */
-abstract class Entity
+abstract class BaseEntity
 {
     use EntityGetterSetter;
 
@@ -78,7 +79,7 @@ abstract class Entity
     }
 
     public static function getDefaultGetDisplayStringFunction(){
-        $function = function(Entity $item){
+        $function = function(BaseEntity $item){
             $returnString = "";
             $metadata = $item->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($item));
             $fieldTypes = $item->get('fieldTypes');
@@ -168,6 +169,9 @@ abstract class Entity
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
                 }
+                if($fieldname == static::getIdFieldName()){
+                    $this->fieldTypes[$fieldname] = new HiddenField($fieldname, t($fieldname), t("post" . $fieldname));
+                }
             }catch(MappingException $e){
                 //wenn das feld ein association mapping ist, dann gibts error
                // $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
@@ -190,7 +194,7 @@ abstract class Entity
                 $targetEntityInstance = new $associationMeta['targetEntity'];
                 if($targetEntityInstance instanceof  ExtendedAssociationEntity){
 
-                }elseif($targetEntityInstance instanceof AssociationEntity){
+                }elseif($targetEntityInstance instanceof AssociationBaseEntity){
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 }else {
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
@@ -230,7 +234,7 @@ abstract class Entity
             //now delete not anymore existent elements
             foreach($coll1->toArray() as $key => $value){
                 if(!$result->contains($value)){
-                    if($value instanceof AssociationEntity){
+                    if($value instanceof AssociationBaseEntity){
                         $this->getEntityManager()->remove($value);
                     }
                 }
@@ -238,6 +242,24 @@ abstract class Entity
 
             return $result;
 
+    }
+
+    public function toTableAssoc(){
+        $jsonObj = new \stdClass();
+        if(count($this->fieldTypes)>0){
+            foreach ($this->fieldTypes as $sqlfieldname => $value){
+
+                $jsonObj->{$value->getPostname()}=$value->setSQLValue($this->get($sqlfieldname))->getTableView();
+            }
+        }
+        return $jsonObj;
+    }
+
+    public function getTypeaheadTemplate(){
+
+        $template = "<div>{{uniqueIdString}}</div>";
+
+        return $template;
     }
 
 }

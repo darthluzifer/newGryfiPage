@@ -8,15 +8,18 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
-
-
+/*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
+properly imported*/
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
 /**
  * Class ExampleEntity
- * @package Concrete\Package\BasicTablePackage\Src
+ * @IgnoreAnnotation("package")
+ *  Concrete\Package\BasicTablePackage\Src
  * @Entity
  * @Table(name="btExampleEntity")
  */
-class ExampleEntity extends Entity
+class ExampleEntity extends BaseEntity
 {
     use EntityGetterSetter;
     /**
@@ -37,7 +40,7 @@ class ExampleEntity extends Entity
     public function __construct(){
         parent::__construct();
         $this->fieldTypes['id']=new FieldTypes\Field('id', 'ID', 'identifier');
-        $this->fieldTypes['value']=new FieldTypes\Field('value', 'Wert', 'wert');
+        $this->fieldTypes['value']=new FieldTypes\Field('value', 'Value', 'value');
     }
 
 

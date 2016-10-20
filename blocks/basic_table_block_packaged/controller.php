@@ -4,7 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 use Concrete\Controller\Search\Groups;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
-use Concrete\Package\BasicTablePackage\Src\AssociationEntity;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
@@ -12,8 +12,12 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\BasicTablePackage\Src\BasicTableInstance;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption;
-use Concrete\Package\BasicTablePackage\Src\Entity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\ExampleEntity;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
@@ -125,7 +129,7 @@ class Controller extends BlockController
     protected $requiredOptions = array();
 
     /**
-     * @var \Concrete\Package\BasicTablePackage\Src\Entity
+     * @var \Concrete\Package\BasicTablePackage\Src\BaseEntity
      */
     protected $model;
 
@@ -212,10 +216,10 @@ class Controller extends BlockController
      * here the standard way. If you want to add special field types,
      * use model->setFieldType('id' => new Field("id", "ID", "nr"));
      * $model->__construct sets the default field types defined in the model
-     * @param Entity $model
-     * @return Entity
+     * @param BaseEntity $model
+     * @return BaseEntity
      */
-    public static function setModelFieldTypes(Entity $model)
+    public static function setModelFieldTypes(BaseEntity $model)
     {
         $model->setDefaultFieldTypes();
         return $model;
@@ -484,7 +488,7 @@ class Controller extends BlockController
             //save values
             foreach ($this->getFields() as $key => $value) {
                 if ($key != $model->getIdFieldName()) {
-                    if ($v[$key] instanceof Entity) {
+                    if ($v[$key] instanceof BaseEntity) {
                         $this->getEntityManager()->persist($v[$key]);
                     } elseif ($v[$key] instanceof ArrayCollection) {
                         foreach ($v[$key]->toArray() as $refnum => $refObject) {
@@ -614,7 +618,7 @@ class Controller extends BlockController
         $al = \Concrete\Core\Asset\AssetList::getInstance();
 
         $al->register(
-            'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/bootstrap3-typeahead.min.js',
+            'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/typeahead.bundle.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
@@ -625,7 +629,7 @@ class Controller extends BlockController
         );
 
         $al->register(
-            'javascript', 'tagsinput', 'blocks/basic_table_block_packaged/js/bootstrap-tagsinput.min.js',
+            'javascript', 'tagsinput', 'blocks/basic_table_block_packaged/js/bootstrap-tagsinput.js',
             array('minify' => false, 'combine' => true)
             , $package
         );
@@ -671,6 +675,11 @@ class Controller extends BlockController
             array('minify' => false, 'combine' => true)
             , $package
         );
+        $al->register(
+            'css', 'typeaheadcss', 'blocks/basic_table_block_packaged/css/typeahead.css',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
 
         $al->register(
             'css', 'datepickercss', 'blocks/basic_table_block_packaged/css/datepicker.css',
@@ -696,6 +705,7 @@ class Controller extends BlockController
             array('css', 'datepickercss'),
             array('css', 'bootgridcss'),
             array('css', 'basicTablecss'),
+            array('css', 'typeaheadcss'),
             array('javascript', 'jquery'),
             array('javascript', 'bootstrap'),
             array('javascript', 'typeahead'),
@@ -1059,6 +1069,43 @@ class Controller extends BlockController
     {
         $this->clientSideValidationActivated = $clientSideActivated;
         return $this;
+    }
+
+    /**
+     * @return BaseEntity|null|object
+     */
+    public function getModel(){
+        return $this->model;
+    }
+
+    public function install($path)
+    {
+        $res = parent::install($path);
+        //throw model through AssociationCache to get Associations
+    }
+
+    public function action_get_options_of_field(){
+
+        $field = $this->request->query->get('fieldname');
+
+
+
+        $fieldTypes = $this->getFields();
+        /**
+         * @var DropdownLinkField $fieldType
+         */
+        $fieldType = $fieldTypes[$this->postFieldMap[$field]];
+
+        $options = array();
+        if($fieldType instanceof  DirectEditInterface){
+            $options = $fieldType->getFullOptions();
+            //look that it is an array in javascript
+            $options = array_values($options);
+
+        }else{
+            throw new \InvalidArgumentException("Invalid field name");
+        }
+        return new \Symfony\Component\HttpFoundation\JsonResponse($options);
     }
 
 
