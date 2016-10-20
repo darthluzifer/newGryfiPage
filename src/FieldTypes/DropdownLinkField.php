@@ -294,7 +294,7 @@ class DropdownLinkField extends DropdownField{
             $modelForIdField = new $this->targetEntity;
             $model = $this->getEntityManager()
                 ->getRepository($this->targetEntity)
-                ->findOne(array(
+                ->findOneBy(array(
                     $modelForIdField->getIdFieldName() => $value
                 ));
 

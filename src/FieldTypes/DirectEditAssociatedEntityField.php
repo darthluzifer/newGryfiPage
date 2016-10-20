@@ -59,7 +59,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          */
         foreach ($fields as $field){
             //if id or another directedit possibility, skip (because of possible circle)
-            if($field instanceof DirectEditInterface){
+            if($field instanceof DirectEditInterface || !$field->showInForm()){
                 continue;
             }
 
@@ -160,7 +160,22 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          * @var Field $field
          */
         foreach ($fields as $field){
-            if($field->getSQLFieldName() == $toSaveModel->getIdFieldName() || $field instanceof DirectEditInterface){
+            if($field->getSQLFieldName() == $toSaveModel->getIdFieldName()
+                || $this->targetField == $field->getSQLFieldName()
+                || $field instanceof DirectEditInterface){
+                if($this->targetField == $field->getSQLFieldName()){
+                    //first determine if targetfield is arraycollection
+                    $currentValue = $toSaveModel->get($this->targetField);
+                    if(is_object($currentValue)){
+
+                        if($currentValue instanceof  \Doctrine\Common\Collections\Collection){
+                            $currentValue->add($this->sourceEntity);
+                            $toSaveModel->set($this->targetField,$currentValue);
+                        }
+                    }elseif($currentValue == null){
+                        $toSaveModel->set($this->targetField,$this->sourceEntity);
+                    }
+                }
                 continue;
             }
             if($field->validatePost($value[$field->getPostName()])){

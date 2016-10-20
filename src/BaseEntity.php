@@ -188,7 +188,7 @@ abstract class BaseEntity
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
 
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
                  //create instance of targetentity to check wether it is a assocationentity or a direct assocation
                 $targetEntityInstance = new $associationMeta['targetEntity'];
@@ -199,7 +199,7 @@ abstract class BaseEntity
                 }else {
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 }
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
             }
         }
 

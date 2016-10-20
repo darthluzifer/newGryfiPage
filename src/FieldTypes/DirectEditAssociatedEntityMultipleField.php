@@ -74,7 +74,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                  */
                 foreach ($fields as $field) {
                     //if id or another directedit possibility, skip (because of possible circle)
-                    if ($field instanceof DirectEditInterface) {
+                    if ($field instanceof DirectEditInterface || !$field->showInForm()) {
                         continue;
                     }
 
@@ -136,7 +136,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                 ";
         foreach ($fields as $field) {
             //if id or another directedit possibility, skip (because of possible circle)
-            if ( $field instanceof DirectEditInterface) {
+            if ( $field instanceof DirectEditInterface || !$field->showInForm()) {
 
 
                 continue;
@@ -257,8 +257,24 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                  */
                 foreach ($fields as $field) {
                     if ($field->getSQLFieldName() == $toSaveModel->getIdFieldName()
+                        || $this->targetField == $field->getSQLFieldName()
                         || $field instanceof DirectEditInterface
                     ) {
+                        //$toSaveModel->set($this->targetField,$this->sourceEntity);
+                        if($this->targetField == $field->getSQLFieldName()){
+                            //first determine if targetfield is arraycollection
+                            $currentValue = $toSaveModel->get($this->targetField);
+                            if(is_object($currentValue)){
+
+                                if($currentValue instanceof  \Doctrine\Common\Collections\Collection){
+                                    $currentValue->add($this->sourceEntity);
+                                    $toSaveModel->set($this->targetField,$currentValue);
+                                }
+                            }elseif($currentValue == null){
+                                $toSaveModel->set($this->targetField,$this->sourceEntity);
+                            }
+                        }
+
                         continue;
                     }
                     if ($field->validatePost($postvalues[$field->getPostName()])) {
