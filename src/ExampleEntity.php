@@ -10,6 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src;
 
 /*because of the hack with @DiscriminatorEntry Annotation, all Doctrine Annotations need to be
 properly imported*/
+use Concrete\Package\BasicTablePackage\Src\EntityViews\ExampleEntityFormView;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 /**
@@ -41,6 +42,8 @@ class ExampleEntity extends BaseEntity
         parent::__construct();
         $this->fieldTypes['id']=new FieldTypes\Field('id', 'ID', 'identifier');
         $this->fieldTypes['value']=new FieldTypes\Field('value', 'Value', 'value');
+
+        $this->defaultFormView = new ExampleEntityFormView($this);
     }
 
 

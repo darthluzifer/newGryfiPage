@@ -10,6 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src;
 
 
 use Concrete\Core\Form\Service\Form;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
 abstract class AbstractFormView
 {
@@ -39,8 +40,11 @@ abstract class AbstractFormView
         $fields =$this->entity->getFieldTypes();
         $variables =array();
         foreach ($fields as $field){
+            /**
+             * @var Field $field
+             */
             //if id or another directedit possibility, skip (because of possible circle)
-            if(($field instanceof DirectEditInterface && $this instanceof AbstractSubFormView) || !$field->showInForm()){
+            if(($field instanceof DirectEditInterface && strlen($this->parentpostname)>0) || !$field->showInForm()){
                 continue;
             }
 
@@ -61,12 +65,14 @@ abstract class AbstractFormView
             }
 
             //get the form view
-            $variables[$field->getSQLFieldName]['input'] = $field->getFormView($this->form, $this->clientSideValidationActivated);
-
+            $variables[$field->getSQLFieldName()]['input'] = $field->getInputHtml($this->form, $this->clientSideValidationActivated);
+            $variables[$field->getSQLFieldName()]['label']=$field->getLabel();
             $field->setErrorMessage(null);
         }
 
+        return $variables;
+
     }
 
-    abstract public function getFormView($form);
+    abstract public function getFormView($form, $clientSideValidationActivated=true);
 }
