@@ -51,6 +51,8 @@ abstract class BaseEntity
     protected $protectWrite = array();
     protected $fieldTypes = array();
     protected $em;
+    protected $defaultFormView = false;
+    protected $defaultSubFormView = false;
 
     public function __construct(){
        // $this->setDefaultFieldTypes();
@@ -260,6 +262,22 @@ abstract class BaseEntity
         $template = "<div>{{uniqueIdString}}</div>";
 
         return $template;
+    }
+
+
+    public function getDefaultFormView($form){
+        if($this->defaultFormView !== false){
+            return $this->defaultFormView->getFormView($form);
+        }
+    }
+
+
+    public function getDefaultSubFormView($form){
+        if($this->defaultSubFormView !== false){
+            return $this->defaultSubFormView->getFormView($form);
+        }
+        return $this->getDefaultFormView($form);
+
     }
 
 }

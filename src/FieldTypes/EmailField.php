@@ -16,19 +16,7 @@ class EmailField extends Field
 
     public function getFormView($form, $clientSideValidationActivated = true){
         $returnString = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
-        $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
-            'id' => $this->getHtmlId(),
-        );
-
-        if($clientSideValidationActivated){
-            $attributes = $this->addValidationAttributes($attributes);
-        }
-
-
-        $returnString.=$form->text($this->getPostName(), $this->getValue(),$attributes);
-
-        $returnString.=$this->getHtmlErrorMsg();
+        $returnString.= $this->getInputHtml($form, $clientSideValidationActivated);
         return $returnString;
     }
 
@@ -54,5 +42,29 @@ class EmailField extends Field
 
         $this->setValue($value);
         return true;
+    }
+
+    /**
+     * @param $form
+     * @param $clientSideValidationActivated
+     * @param $returnString
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated)
+    {
+        $attributes = array('title' => $this->getPostName(),
+            'value' => $this->getValue(),
+            'id' => $this->getHtmlId(),
+        );
+
+        if ($clientSideValidationActivated) {
+            $attributes = $this->addValidationAttributes($attributes);
+        }
+
+
+        $returnString = $form->text($this->getPostName(), $this->getValue(), $attributes);
+
+        $returnString .= $this->getHtmlErrorMsg();
+        return $returnString;
     }
 }

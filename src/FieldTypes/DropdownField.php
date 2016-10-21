@@ -63,9 +63,7 @@ class DropdownField extends Field{
 	public function getFormView($form, $clientSideValidationActivated = true){
 		$html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
-		$html .=static::select($this->getHtmlId(),$this->getPostName(), $this->getOptions(),$this->getValue());
-
-        $html.=$this->getHtmlErrorMsg();
+        $html.= $this->getInputHtml($form, $clientSideValidationActivated);
 		return $html;
 	}
 
@@ -128,6 +126,17 @@ class DropdownField extends Field{
 		}
 	}
 
+    /**
+     * @param $html
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $this->getValue());
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
 
 
 }
