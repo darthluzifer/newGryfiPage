@@ -62,7 +62,7 @@ class EmailField extends Field
         }
 
 
-        $returnString = $form->text($this->getPostName(), $this->getValue(), $attributes);
+        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $this->getValue(), $attributes, $form);
 
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
