@@ -40,7 +40,7 @@ class PostalAddressFormView extends AbstractFormView
                 <div class = 'col-xs-12 col-sm-6'>
                     <div class='row'>
                         <div class='col-sm-12 col-md-2'>
-                            ".$variables['organisation']['label'] ."
+                            <label>".$variables['organisation']['label'] ."</label>
                         </div>
                         <div class='col-sm-12 col-md-10'>
                             ".$variables['organisation']['input'] ."
@@ -53,7 +53,7 @@ class PostalAddressFormView extends AbstractFormView
                             <div class = 'col-xs-12 col-sm-6'>
                                 <div class='row'>
                                     <div class='col-sm-12 col-md-2'>
-                                        " . $variables['info']['label'] . "
+                                        <label>" . $variables['info']['label'] . "</label>
                                     </div>
                                     <div class='col-sm-12 col-md-10'>
                                         " . $variables['info']['input'] . "
@@ -66,7 +66,7 @@ class PostalAddressFormView extends AbstractFormView
                             <div class = 'col-xs-12'>
                                 <div class='row'>
                                     <div class='col-sm-12 col-md-1'>
-                                        " . $variables['address']['label'] . "
+                                        <label>" . $variables['address']['label'] . "</label>
                                     </div>
                                     <div class='col-sm-12 col-md-11'>
                                         " . $variables['address']['input'] . "
@@ -80,7 +80,7 @@ class PostalAddressFormView extends AbstractFormView
                                          <div class = 'col-xs-12'>
                                              <div class='row'>
                                                  <div class='col-sm-12 col-md-1'>
-                                                     " . $variables['additionalinfo']['label'] . "
+                                                     <label>" . $variables['additionalinfo']['label'] . "</label>
                                                  </div>
                                                  <div class='col-sm-12 col-md-11'>
                                                      " . $variables['additionalinfo']['input'] . "
@@ -94,7 +94,7 @@ class PostalAddressFormView extends AbstractFormView
                                <div class = 'col-xs-12 col-sm-4'>
                                    <div class='row'>
                                        <div class='col-sm-12 col-md-3 '>
-                                           " . $variables['floor']['label'] . "
+                                           <label>" . $variables['floor']['label'] . "</label>
                                        </div>
                                        <div class='col-sm-12 col-md-9 '>
                                            " . $variables['floor']['input'] . "
@@ -104,7 +104,7 @@ class PostalAddressFormView extends AbstractFormView
                                <div class = 'col-xs-12 col-sm-4'>
                                    <div class='row'>
                                        <div class='col-sm-12 col-md-3 '>
-                                           " . $variables['postalcode']['label'] . "
+                                           <label>" . $variables['postalcode']['label'] . "</label>
                                        </div>
                                        <div class='col-sm-12 col-md-9 '>
                                            " . $variables['postalcode']['input'] . "
@@ -114,7 +114,7 @@ class PostalAddressFormView extends AbstractFormView
                                <div class = 'col-xs-12 col-sm-4'>
                                    <div class='row'>
                                        <div class='col-sm-12 col-md-3 '>
-                                           " . $variables['city']['label'] . "
+                                           <label>" . $variables['city']['label'] . "</label>
                                        </div>
                                        <div class='col-sm-12 col-md-9 '>
                                            " . $variables['city']['input'] . "
@@ -126,7 +126,7 @@ class PostalAddressFormView extends AbstractFormView
                               <div class = 'col-xs-12 col-sm-6'>
                                   <div class='row'>
                                       <div class='col-sm-12 col-md-2 '>
-                                          " . $variables['state']['label'] . "
+                                          <label>" . $variables['state']['label'] . "</label>
                                       </div>
                                       <div class='col-sm-12 col-md-10 '>
                                           " . $variables['state']['input'] . "
@@ -136,7 +136,7 @@ class PostalAddressFormView extends AbstractFormView
                               <div class = 'col-xs-12 col-sm-6'>
                                   <div class='row'>
                                       <div class='col-sm-12 col-md-2'>
-                                          " . $variables['country']['label'] . "
+                                          <label>" . $variables['country']['label'] . "</label>
                                       </div>
                                       <div class='col-sm-12 col-md-10'>
                                           " . $variables['country']['input'] . "
