@@ -56,6 +56,11 @@ abstract class BaseEntity
 
     public function __construct(){
        // $this->setDefaultFieldTypes();
+        $this->setDefaultFormViews();
+    }
+
+    public function setDefaultFormViews(){
+
     }
 
     public static function getFullClassName(){
@@ -265,18 +270,20 @@ abstract class BaseEntity
     }
 
 
-    public function getDefaultFormView($form){
+    public function getDefaultFormView($form, $clientSideValidationActivated = true){
         if($this->defaultFormView !== false){
-            return $this->defaultFormView->getFormView($form);
+            return $this->defaultFormView;
         }
+        return false;
+
     }
 
 
-    public function getDefaultSubFormView($form){
+    public function getDefaultSubFormView($form,$clientSideValidationActivated = true){
         if($this->defaultSubFormView !== false){
-            return $this->defaultSubFormView->getFormView($form);
+            return $this->defaultSubFormView->getFormView($form,$clientSideValidationActivated);
         }
-        return $this->getDefaultFormView($form);
+        return $this->getDefaultFormView($form,$clientSideValidationActivated);
 
     }
 

@@ -10,7 +10,9 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
 use Concrete\Core\Session\SessionFactory;
+use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Doctrine\ORM\Proxy\Proxy;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Concrete\Core\Support\Facade\Application;
 
@@ -36,7 +38,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         <div class='subentityedit col-xs-12'>
 
             <label>".$this->getLabel()."</label>
-            <div class='row'>
+            <div class='row subentityrow'>
         ";
 
 
@@ -181,6 +183,12 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
     {
         $html='';
         $value = $this->getSQLValue();
+
+        if($value instanceof Proxy){
+            $value = $this->getEntityManager()
+                ->getRepository($this->targetEntity)
+                ->find($value->getId());
+        }
         $this->loadSubErrorMsg();
         $classname = $this->targetEntity;
 
@@ -194,32 +202,45 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
 
         $fields = $entityForFields->getFieldTypes();
 //build the form
+
+        $value->setDefaultFormViews();
         /**
          * @var Field $field
+         * @var AbstractFormView $defaultFormView
          */
-        foreach ($fields as $field) {
-            //if id or another directedit possibility, skip (because of possible circle)
-            if ($field instanceof DirectEditInterface || !$field->showInForm()) {
-                continue;
-            }
+        $defaultFormView = $value->getDefaultFormView($form,$clientSideValidationActivated);
 
-            if (is_null($value)) {
-                $setValue = null;
-            } else {
-                $setValue = $value->get($field->getSQLFieldName());
-            }
-            //set the value
-            $field->setSQLValue($setValue);
-            //change the post name
-            $field->setPostName($this->getPostName() . "[" . $field->getPostName() . "]");
+        if($defaultFormView===false) {
+            //display default form with all fields under each other
+            foreach ($fields as $field) {
+                //if id or another directedit possibility, skip (because of possible circle)
+                if ($field instanceof DirectEditInterface || !$field->showInForm()) {
+                    continue;
+                }
 
-            if (isset($this->subErrorMsg[$field->getPostName()])) {
-                $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
-            }
+                if (is_null($value)) {
+                    $setValue = null;
+                } else {
+                    $setValue = $value->get($field->getSQLFieldName());
+                }
+                //set the value
+                $field->setSQLValue($setValue);
+                //change the post name
+                $field->setPostName($this->getPostName() . "[" . $field->getPostName() . "]");
 
-            //get the form view
-            $html .= $field->getFormView($form, $clientSideValidationActivated);
-            $field->setErrorMessage(null);
+                if (isset($this->subErrorMsg[$field->getPostName()])) {
+                    $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
+                }
+
+                //get the form view
+                $html .= $field->getFormView($form, $clientSideValidationActivated);
+                $field->setErrorMessage(null);
+            }
+        }else{
+            $defaultFormView->setErrorMsg($this->subErrorMsg);
+            $defaultFormView->setParentPostName($this->getPostName());
+            $html.= $defaultFormView->getFormView($form,$clientSideValidationActivated);
+
         }
         $idNewEntryCheckbox = $this->getPostName()
             . static::REPLACE_BRACE_IN_ID_WITH

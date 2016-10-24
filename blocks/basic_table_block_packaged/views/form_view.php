@@ -11,9 +11,12 @@
 	 */
 	$model = $controller->getModel();
 
-	$defaultView = $model->getDefaultFormView($form);
+	/**
+	 * @var \Concrete\Package\BasicTablePackage\Src\AbstractFormView $defaultView
+	 */
+	$defaultView = $model->getDefaultFormView($form,$controller->isClientSideValidationActivated());
 
-	if(strlen($defaultView)==0) {
+	if($defaultView===false) {
 		$fields = $controller->getFields();
 		$rowValues = $controller->getRowValues();
 		$errorFields = $controller->getErrorFields();
@@ -32,14 +35,15 @@
 						$FieldObject->setErrorMessage($errorFields[$FieldObject->getPostName()]->getErrorMsg());
 					}
 					$FieldObject->setView($this);
-					echo $FieldObject->getFormView($form, true, $controller->isClientSideValidationActivated());
+					echo $FieldObject->getFormView($form, $controller->isClientSideValidationActivated());
 				}
 
 			}
 
 		}
 	}else{
-		print($defaultView);
+		$defaultView->setErrorMsg($errorFields);
+		print($defaultView->getFormView($form,$controller->isClientSideValidationActivated()));
 	}
 	echo $form->submit('submit', t("save"));
 	echo $form->submit('cancel', t("cancel"));

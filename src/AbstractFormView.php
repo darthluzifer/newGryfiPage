@@ -36,7 +36,7 @@ abstract class AbstractFormView
         return $this;
     }
 
-    public function getFilledVariables(){
+    public function getFilledVariables($clientSideValidationActivated = true){
         $fields =$this->entity->getFieldTypes();
         $variables =array();
         foreach ($fields as $field){
@@ -58,14 +58,14 @@ abstract class AbstractFormView
 
             if(strlen($this->parentpostname)>0) {
                 //change the post name
-                $field->setPostName($this->getPostName() . "[" . $field->getPostName() . "]");
+                $field->setPostName($this->parentpostname . "[" . $field->getPostName() . "]");
             }
             if(isset($this->errorMsg[$field->getPostName()])){
                 $field->setErrorMessage($this->errorMsg[$field->getPostName()]);
             }
 
             //get the form view
-            $variables[$field->getSQLFieldName()]['input'] = $field->getInputHtml($this->form, $this->clientSideValidationActivated);
+            $variables[$field->getSQLFieldName()]['input'] = $field->getInputHtml($this->form, $clientSideValidationActivated);
             $variables[$field->getSQLFieldName()]['label']=$field->getLabel();
             $field->setErrorMessage(null);
         }
