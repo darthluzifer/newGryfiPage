@@ -260,6 +260,12 @@ abstract class BaseEntity
                 if($sqlValue instanceof BaseEntity){
                     $jsonObj->{$value->getPostname()}=$sqlValue->getId();
                 }else {
+                    if($sqlValue === true){
+                        $sqlValue = 1;
+                    }
+                    if($sqlValue === false){
+                        $sqlValue = 0;
+                    }
                     $jsonObj->{$value->getPostname()} = $value->setSQLValue($sqlValue)->getTableView();
                 }
             }
