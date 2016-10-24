@@ -305,7 +305,7 @@ class DateField extends Field{
 				</div>
 				<script>
 					$(function(e){
-						$("#' . $this->getPostName() . '").datepicker({format:"' . static::$currentFormat['bootstrapdatepicker'] . '"});
+						$("#' . $this->getHtmlId() . '").datepicker({format:"' . static::$currentFormat['bootstrapdatepicker'] . '"});
 
 					});
 
