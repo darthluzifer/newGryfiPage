@@ -38,7 +38,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         <div class='subentityedit col-xs-12'>
 
             <label>".$this->getLabel()."</label>
-            <div class='row subentityrow'>
+            <div class='row subentityrowedit'>
         ";
 
 

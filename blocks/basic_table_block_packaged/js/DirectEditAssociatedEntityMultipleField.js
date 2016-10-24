@@ -58,7 +58,7 @@
                 }
             )
                 .on('typeahead:select', function (e, object) {
-                    var row = $(this).closest('div.row.subentityrow');
+                    var row = $(this).closest('div.row.subentityrowedit');
                     for (var i in object) {
                         row.find('[name*="[' + i + ']"]').val(object[i]);
                         row.find('[name*="[' + i + ']"]').typeahead('val', object[i]);

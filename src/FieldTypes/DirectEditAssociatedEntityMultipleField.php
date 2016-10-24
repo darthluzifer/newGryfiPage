@@ -11,6 +11,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
+use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
@@ -219,44 +220,64 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
             foreach ($values as $value) {
                 $html .= "<div class='col-xs-12'>
-                    <div class='subentityrowedit row'>
+                    <div class='subentityrowedit  row'>
                 ";
+
+                if($value instanceof Proxy){
+                    $value = $this->getEntityManager()
+                        ->getRepository($this->targetEntity)
+                        ->find($value->getId());
+                }
+                $value->setDefaultFormViews();
+
                 /**
-                 * @var Field $field
+                 * @var AbstractFormView $defaultFormView
                  */
-                foreach ($fields as $field) {
-                    //if id or another directedit possibility, skip (because of possible circle)
-                    if ($field instanceof DirectEditInterface || !$field->showInForm()) {
-                        continue;
+                $defaultFormView = $value->getDefaultFormView($form,$clientSideValidationActivated);
+
+                if($defaultFormView===false) {
+                    /**
+                     * @var Field $field
+                     */
+                    foreach ($fields as $field) {
+                        //if id or another directedit possibility, skip (because of possible circle)
+                        if ($field instanceof DirectEditInterface || !$field->showInForm()) {
+                            continue;
+                        }
+
+                        if (is_null($value)) {
+                            $setValue = null;
+                        } else {
+                            $setValue = $value->get($field->getSQLFieldName());
+                        }
+                        //set the value
+                        $field->setSQLValue($setValue);
+
+                        $oldpostname = $field->getPostName();
+                        //change the post name
+                        $field->setPostName($this->getPostName() . "[" . $rownum . "][" . $field->getPostName() . "]");
+
+                        if (isset($this->subErrorMsg[$rownum][$oldpostname])) {
+                            $field->setErrorMessage($this->subErrorMsg[$rownum][$oldpostname]);
+                        }
+
+                        //get the form view
+                        $html .= $field->getFormView($form, $clientSideValidationActivated);
+                        //reset the post name
+                        $field->setPostName($oldpostname);
+                        $field->setErrorMessage(null);
                     }
+                }else{
+                    $defaultFormView->setErrorMsg($this->subErrorMsg[$rownum]);
+                    $defaultFormView->setParentPostName($this->getPostName(). "[" . $rownum . "]");
+                    $html.= $defaultFormView->getFormView($form,$clientSideValidationActivated);
 
-                    if (is_null($value)) {
-                        $setValue = null;
-                    } else {
-                        $setValue = $value->get($field->getSQLFieldName());
-                    }
-                    //set the value
-                    $field->setSQLValue($setValue);
-
-                    $oldpostname = $field->getPostName();
-                    //change the post name
-                    $field->setPostName($this->getPostName() . "[" . $rownum . "][" . $field->getPostName() . "]");
-
-                    if (isset($this->subErrorMsg[$rownum][$oldpostname])) {
-                        $field->setErrorMessage($this->subErrorMsg[$rownum][$oldpostname]);
-                    }
-
-                    //get the form view
-                    $html .= $field->getFormView($form, $clientSideValidationActivated);
-                    //reset the post name
-                    $field->setPostName($oldpostname);
-                    $field->setErrorMessage(null);
                 }
                 $idNewEntryCheckbox = $this->getPostName()
                     . static::REPLACE_BRACE_IN_ID_WITH
                     . $rownum
                     . static::REPLACE_BRACE_IN_ID_WITH . static::REPLACE_BRACE_IN_ID_WITH
-                    . $field->getPostName() . static::REPLACE_BRACE_IN_ID_WITH;
+                    . "newentrycheckbox" . static::REPLACE_BRACE_IN_ID_WITH;
                 $nameNewEntryCheckbox = $this->getPostName() . "[" . $rownum . "][newentrycheckbox]";
 
 
@@ -286,20 +307,33 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $html .= "<div class='col-xs-12'>
                     <div class='subentityrowedit row'>
                 ";
-        foreach ($fields as $field) {
-            //if id or another directedit possibility, skip (because of possible circle)
-            if ($field instanceof DirectEditInterface || !$field->showInForm()) {
+
+        $emptyEdit = new $classname();
+        $emptyEdit->setDefaultFormViews();
+
+        /**
+         * @var AbstractFormView $defaultFormView
+         */
+        $defaultFormView = $emptyEdit->getDefaultFormView($form,$clientSideValidationActivated);
+        if($defaultFormView === false) {
+            foreach ($fields as $field) {
+                //if id or another directedit possibility, skip (because of possible circle)
+                if ($field instanceof DirectEditInterface || !$field->showInForm()) {
 
 
-                continue;
+                    continue;
+                }
+                //set the value
+                $field->setSQLValue(null);
+                //change the post name
+                $field->setPostName(static::PREPEND_BEFORE_REALNAME . $field->getPostName());
+
+                //get the form view
+                $html .= $field->getFormView($form, $clientSideValidationActivated);
             }
-            //set the value
-            $field->setSQLValue(null);
-            //change the post name
-            $field->setPostName(static::PREPEND_BEFORE_REALNAME . $field->getPostName());
-
-            //get the form view
-            $html .= $field->getFormView($form, $clientSideValidationActivated);
+        }else{
+            $defaultFormView->setParentPostName(static::PREPEND_BEFORE_REALNAME );
+            $html.= $defaultFormView->getFormView($form,$clientSideValidationActivated);
         }
         $idNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME . "newentrycheckbox";
         $nameNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME . "newentrycheckbox";
@@ -307,7 +341,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
         $html .= "
                 <div class='basic-table-newentrycheckbox'>
-                <label for='$idNewEntryCheckbox'>" . t("Create new entry of%s", $this->getLabel()) . "</label>
+                <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
                 <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
                 </div>
                 ";
