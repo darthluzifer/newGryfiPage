@@ -35,6 +35,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAsso
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Proxy\Proxy;
 
 
 /**
@@ -255,8 +256,12 @@ abstract class BaseEntity
         $jsonObj = new \stdClass();
         if(count($this->fieldTypes)>0){
             foreach ($this->fieldTypes as $sqlfieldname => $value){
-
-                $jsonObj->{$value->getPostname()}=$value->setSQLValue($this->get($sqlfieldname))->getTableView();
+                $sqlValue = $this->get($sqlfieldname);
+                if($sqlValue instanceof BaseEntity){
+                    $jsonObj->{$value->getPostname()}=$sqlValue->getId();
+                }else {
+                    $jsonObj->{$value->getPostname()} = $value->setSQLValue($sqlValue)->getTableView();
+                }
             }
         }
         return $jsonObj;
@@ -285,6 +290,21 @@ abstract class BaseEntity
         }
         return $this->getDefaultFormView($form,$clientSideValidationActivated);
 
+    }
+
+    public static function getBaseEntityFromProxy(BaseEntity $item){
+        if(!($item instanceof Proxy)){
+            return $item;
+        }
+        //to get em, we need package first
+        $pkg = Package::getByHandle("basic_table_package");
+        $em = $pkg->getEntityManager();
+        return $em->getRepository(get_class($item))
+            ->findOneBy(
+                array(
+                    $item->getIdFieldName()=>$item->getId()
+                )
+            );
     }
 
 }
