@@ -60,7 +60,11 @@ class EmailAddress extends Address
             $this->People = new ArrayCollection();
         }
 
+    }
 
+    public function setDefaultFormViews()
+    {
+        $this->defaultFormView = new EmailAddressFormView($this);
     }
 
     public function setDefaultFieldTypes()
