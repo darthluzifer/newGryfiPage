@@ -4,8 +4,23 @@
 	<form action=<?php echo $this->action('save_row') ?> method='POST' class="
 	<?php echo $controller->isClientSideValidationActivated()?'bacluc-client-side-validation':'';  ?>
 	">
+
+
+
 	
 	<?php
+	//print consistency error messages
+
+	$consistencyErrors = $controller->getConsistencyErrors();
+	if(count($consistencyErrors)>0){
+		foreach($consistencyErrors as $error){
+			print("
+			<div class='alert alert-danger'>$error</div>
+			");
+		}
+	}
+
+
 	/**
 	 * @var \Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged\Controller $controller
 	 */
@@ -45,6 +60,8 @@
 		$defaultView->setErrorMsg($errorFields);
 		print($defaultView->getFormView($form,$controller->isClientSideValidationActivated()));
 	}
+
+
 	echo $form->submit('submit', t("save"));
 	echo $form->submit('cancel', t("cancel"));
 	?>

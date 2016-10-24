@@ -141,7 +141,10 @@ class Controller extends BlockController
 
     protected $clientSideValidationActivated = true;
 
-
+    /**
+     * @var array
+     */
+    protected $consistencyErrors = array();
 
     /**
      *
@@ -372,31 +375,6 @@ class Controller extends BlockController
     function action_save_row()
     {
 
-//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
-//        $EventGroup = new EventGroup();
-//
-//        //$otherEntityManager = Package::getByHandle('bacluc_event_package')->getEntityManager();
-//
-//
-//        $this->getEntityManager()->persist($Event);
-//        $Group = $this->getEntityManager()->getRepository(get_class(new Group()))->findOneBy(array("gID" => 6));
-//        $EventGroup->Group = $Group;
-//        $this->getEntityManager()->persist($Group);
-//        $EventGroup->Event = $Event;
-//
-//        foreach($Event->EventGroups as $key => $groupAssociation){
-//            $Event->EventGroups->removeElement($groupAssociation);
-//            $this->entityManager->remove($groupAssociation);
-//        }
-//
-//
-//        $Event->EventGroups->add($EventGroup);
-//        $this->getEntityManager()->persist($EventGroup);
-//        $this->getEntityManager()->flush();
-//        $this->getEntityManager()->detach($Event);
-//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
-//
-//        return;
 
 
         //form view is over
@@ -502,6 +480,13 @@ class Controller extends BlockController
 
             //if the data is inserted, the saveself fields can only save afterwards
 
+            $this->consistencyErrors = $this->getModel()->checkConsistency();
+            if (count($this->consistencyErrors)>0) {
+                //TODO send error msg to client
+                $this->prepareFormEdit();
+                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
+                return false;
+            }
 
             $this->getEntityManager()->flush();
 
@@ -517,6 +502,10 @@ class Controller extends BlockController
             $this->redirect($c->getCollectionPath());
         }
 
+    }
+
+    public function getConsistencyErrors(){
+        return $this->consistencyErrors;
     }
 
     /**

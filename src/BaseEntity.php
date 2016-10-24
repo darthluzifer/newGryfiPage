@@ -24,6 +24,7 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
+use Concrete\Package\BasicTablePackage\Src\Exceptions\ConsistencyCheckException;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
@@ -54,6 +55,7 @@ abstract class BaseEntity
     protected $em;
     protected $defaultFormView = false;
     protected $defaultSubFormView = false;
+    protected $checkingConsistency = false;
 
     public function __construct(){
        // $this->setDefaultFieldTypes();
@@ -311,6 +313,20 @@ abstract class BaseEntity
                     $item->getIdFieldName()=>$item->getId()
                 )
             );
+    }
+
+    /**
+     * Because of possible cycles, checkConsistency Function of every Entity must be a semaphore
+     * @return array
+     * @throws ConsistencyCheckException
+     */
+    public function checkConsistency(){
+        if($this->checkingConsistency){
+            throw new ConsistencyCheckException("Already checking Consistency of this Entity");
+        }
+        $this->checkingConsistency = true;
+        $this->checkingConsistency = false;
+        return array();
     }
 
 }
