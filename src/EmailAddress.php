@@ -7,6 +7,7 @@
  */
 
 namespace Concrete\Package\BaclucPersonPackage\Src;
+use Concrete\Package\BaclucPersonPackage\Src\EntityViews\EmailAddressFormView;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\EmailField;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -58,6 +59,7 @@ class EmailAddress extends Address
         if($this->People == null){
             $this->People = new ArrayCollection();
         }
+
 
     }
 

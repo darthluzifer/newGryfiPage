@@ -7,6 +7,7 @@
  */
 
 namespace Concrete\Package\BaclucPersonPackage\Src;
+use Concrete\Package\BaclucPersonPackage\Src\EntityViews\PostalAddressFormView;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -86,6 +87,13 @@ class PostalAddress extends Address
             $this->People = new ArrayCollection();
         }
 
+
+
+    }
+
+    public function setDefaultFormViews()
+    {
+        $this->defaultFormView = new PostalAddressFormView($this);
     }
 
     public function setDefaultFieldTypes()
