@@ -22,7 +22,10 @@
                     return tokens;
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                prefetch: options_url
+                prefetch: {
+                    url: options_url,
+                    cache:false
+                }
             });
             values.initialize();
             //eval("templatefunction = "+options_template+";");
