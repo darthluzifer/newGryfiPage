@@ -104,10 +104,10 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                     ));
                 $associationEntity = new $this->associationEntity;
                 $associationEntity->set($this->sourceEntityAssociationField,$this->sourceEntity);
-                //$this->getEntityManager()->persist($this->sourceEntity);
+                $this->getEntityManager()->persist($this->sourceEntity);
                 $associationEntity->set($this->targetFieldAssociationEntity,$findItem);
-                //$this->getEntityManager()->persist($findItem);
-               // $this->getEntityManager()->persist($associationEntity);
+                $this->getEntityManager()->persist($findItem);
+                $this->getEntityManager()->persist($associationEntity);
                 $sqlArray->add($associationEntity);
             }else{
                //TODO throw exception, if invalid values should produce an error message
@@ -194,83 +194,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         $html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
 
-
-        $associations = $this->getValues();
-        if($associations instanceof  ArrayCollection){
-
-            $associations =$associations->toArray();
-        }elseif(is_array($associations)){
-
-        }else{
-
-            $associations = array();
-        }
-
-        $valueStrings = array();
-
-        //to display the associations, we have to convert them to strings with our getDisplayString function
-        $displayFunction = $this->getDisplayString;
-        foreach($associations as $num => $association){
-            $realEntity = $association->get($this->targetFieldAssociationEntity);
-            if($realEntity instanceof  Proxy){
-                $realEntity->__load();
-            }
-            $valueStrings[]= $displayFunction($realEntity);
-        }
-
-
-        $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
-
-
-        $options = $this->getOptions();
-        $sourcetext = "'".implode("', '", $options)."'";
-        $allowadd = 'false';
-        if($this->allowAdd){
-            $allowadd = 'true';
-        }
-
-
-        $html .="
-				<script type = 'text/javascript'>
-					$(document).ready(function(e){
-					    var values = [$sourcetext];
-					    values = new Bloodhound({
-                          datumTokenizer: Bloodhound.tokenizers.whitespace,
-                          queryTokenizer: Bloodhound.tokenizers.whitespace,
-                          local: values
-                        });
-                        values.initialize();
-
-                        $('#".$this->getHtmlId()."').tagsinput({
-                          freeInput: $allowadd,
-                          typeaheadjs: [{
-                           
-                            minLength:0,
-                            highlight:true,
-                            limit:10000,
-                          },{
-                           name: '".$this->getPostName()."',
-                            source: function (q, sync) {
-                                  if (q === '' ||q === '*' ) {
-                                    sync(values.index.all());
-                                  }
-                                
-                                  else {
-                                    values.search(q, sync);
-                                }
-                               },
-                            limit:10000,
-                          }]
-                        });
-                        
-					});
-					
-				</script>
-				";
-
-
-        $html.=$this->getHtmlErrorMsg();
+        $html .= $this->getInputHtml($form, $clientSideValidationActivated);
         return $html;
     }
 
@@ -313,6 +237,91 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
         return $string;
     }
 
+    /**
+     * @param $form
+     * @param bool $clientSideValidationActivated
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        $associations = $this->getValues();
+        if ($associations instanceof ArrayCollection) {
+
+            $associations = $associations->toArray();
+        } elseif (is_array($associations)) {
+
+        } else {
+
+            $associations = array();
+        }
+
+        $valueStrings = array();
+
+        //to display the associations, we have to convert them to strings with our getDisplayString function
+        $displayFunction = $this->getDisplayString;
+        foreach ($associations as $num => $association) {
+            $realEntity = $association->get($this->targetFieldAssociationEntity);
+            if ($realEntity instanceof Proxy) {
+                $realEntity->__load();
+            }
+            $valueStrings[] = $displayFunction($realEntity);
+        }
+
+
+        $valuestring = implode(", ", $valueStrings);
+        $html = "<input type='text' width = '100%' id='" . $this->getHtmlId() . "' name ='" . $this->getPostName() . "' value='$valuestring'/>";
+
+
+        $options = $this->getOptions();
+        $sourcetext = "'" . implode("', '", $options) . "'";
+        $allowadd = 'false';
+        if ($this->allowAdd) {
+            $allowadd = 'true';
+        }
+
+
+        $html .= "
+				<script type = 'text/javascript'>
+					$(document).ready(function(e){
+					    var values = [$sourcetext];
+					    values = new Bloodhound({
+                          datumTokenizer: Bloodhound.tokenizers.whitespace,
+                          queryTokenizer: Bloodhound.tokenizers.whitespace,
+                          local: values
+                        });
+                        values.initialize();
+
+                        $('#" . $this->getHtmlId() . "').tagsinput({
+                          freeInput: $allowadd,
+                          typeaheadjs: [{
+                           
+                            minLength:0,
+                            highlight:true,
+                            limit:10000,
+                          },{
+                           name: '" . $this->getPostName() . "',
+                            source: function (q, sync) {
+                                  if (q === '' ||q === '*' ) {
+                                    sync(values.index.all());
+                                  }
+                                
+                                  else {
+                                    values.search(q, sync);
+                                }
+                               },
+                            limit:10000,
+                          }]
+                        });
+                        
+					});
+					
+				</script>
+				";
+
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
 
 
 }

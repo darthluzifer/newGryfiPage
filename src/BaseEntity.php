@@ -24,6 +24,7 @@
 
 namespace Concrete\Package\BasicTablePackage\Src;
 
+use Concrete\Package\BasicTablePackage\Src\Exceptions\ConsistencyCheckException;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
 use Concrete\Core\Package\Package;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
@@ -32,9 +33,14 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\FloatField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\BooleanField;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Proxy\Proxy;
 
 
 /**
@@ -51,9 +57,17 @@ abstract class BaseEntity
     protected $protectWrite = array();
     protected $fieldTypes = array();
     protected $em;
+    protected $defaultFormView = false;
+    protected $defaultSubFormView = false;
+    protected $checkingConsistency = false;
 
     public function __construct(){
        // $this->setDefaultFieldTypes();
+        $this->setDefaultFormViews();
+    }
+
+    public function setDefaultFormViews(){
+
     }
 
     public static function getFullClassName(){
@@ -162,8 +176,17 @@ abstract class BaseEntity
                 $mapping = $metadata->getFieldMapping($fieldname);
                 switch ($mapping['type']) {
 
+                    case 'boolean':
+                        $this->fieldTypes[$fieldname] = new BooleanField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
                     case 'date':
                         $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
+                    case 'integer':
+                        $this->fieldTypes[$fieldname] = new IntegerField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
+                    case 'float':
+                        $this->fieldTypes[$fieldname] = new FloatField($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
                     default:
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
@@ -188,7 +211,7 @@ abstract class BaseEntity
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
 
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
                  //create instance of targetentity to check wether it is a assocationentity or a direct assocation
                 $targetEntityInstance = new $associationMeta['targetEntity'];
@@ -199,7 +222,7 @@ abstract class BaseEntity
                 }else {
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 }
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],null,$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
             }
         }
 
@@ -248,8 +271,18 @@ abstract class BaseEntity
         $jsonObj = new \stdClass();
         if(count($this->fieldTypes)>0){
             foreach ($this->fieldTypes as $sqlfieldname => $value){
-
-                $jsonObj->{$value->getPostname()}=$value->setSQLValue($this->get($sqlfieldname))->getTableView();
+                $sqlValue = $this->get($sqlfieldname);
+                if($sqlValue instanceof BaseEntity){
+                    $jsonObj->{$value->getPostname()}=$sqlValue->getId();
+                }else {
+                    if($sqlValue === true){
+                        $sqlValue = 1;
+                    }
+                    if($sqlValue === false){
+                        $sqlValue = 0;
+                    }
+                    $jsonObj->{$value->getPostname()} = $value->setSQLValue($sqlValue)->getTableView();
+                }
             }
         }
         return $jsonObj;
@@ -260,6 +293,53 @@ abstract class BaseEntity
         $template = "<div>{{uniqueIdString}}</div>";
 
         return $template;
+    }
+
+
+    public function getDefaultFormView($form, $clientSideValidationActivated = true){
+        if($this->defaultFormView !== false){
+            return $this->defaultFormView;
+        }
+        return false;
+
+    }
+
+
+    public function getDefaultSubFormView($form,$clientSideValidationActivated = true){
+        if($this->defaultSubFormView !== false){
+            return $this->defaultSubFormView->getFormView($form,$clientSideValidationActivated);
+        }
+        return $this->getDefaultFormView($form,$clientSideValidationActivated);
+
+    }
+
+    public static function getBaseEntityFromProxy(BaseEntity $item){
+        if(!($item instanceof Proxy)){
+            return $item;
+        }
+        //to get em, we need package first
+        $pkg = Package::getByHandle("basic_table_package");
+        $em = $pkg->getEntityManager();
+        return $em->getRepository(get_class($item))
+            ->findOneBy(
+                array(
+                    $item->getIdFieldName()=>$item->getId()
+                )
+            );
+    }
+
+    /**
+     * Because of possible cycles, checkConsistency Function of every Entity must be a semaphore
+     * @return array
+     * @throws ConsistencyCheckException
+     */
+    public function checkConsistency(){
+        if($this->checkingConsistency){
+            throw new ConsistencyCheckException("Already checking Consistency of this Entity");
+        }
+        $this->checkingConsistency = true;
+        $this->checkingConsistency = false;
+        return array();
     }
 
 }

@@ -10,7 +10,9 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
 use Concrete\Core\Session\SessionFactory;
+use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Doctrine\ORM\Proxy\Proxy;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Concrete\Core\Support\Facade\Application;
 
@@ -31,81 +33,16 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         /**
          * @var BaseEntity $value
          */
-        $value = $this->getSQLValue();
-        $this->loadSubErrorMsg();
+
         $html = "
         <div class='subentityedit col-xs-12'>
 
             <label>".$this->getLabel()."</label>
-            <div class='row'>
-        ";
-
-        $classname = $this->targetEntity;
-
-        /**
-         * @var BaseEntity $entityForFields
-         */
-        $entityForFields = new $classname();
-
-
-        //get the fields to show in the form
-
-        $fields = $entityForFields->getFieldTypes();
-
-
-        //build the form
-        /**
-         * @var Field $field
-         */
-        foreach ($fields as $field){
-            //if id or another directedit possibility, skip (because of possible circle)
-            if($field instanceof DirectEditInterface){
-                continue;
-            }
-
-            if(is_null($value)){
-                $setValue = null;
-            }else{
-                $setValue = $value->get($field->getSQLFieldName());
-            }
-            //set the value
-            $field->setSQLValue($setValue);
-            //change the post name
-            $field->setPostName($this->getPostName()."[".$field->getPostName()."]");
-
-            if(isset($this->subErrorMsg[$field->getPostName()])){
-                $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
-            }
-
-            //get the form view
-            $html.=$field->getFormView($form, $clientSideValidationActivated);
-            $field->setErrorMessage(null);
-        }
-        $idNewEntryCheckbox = $this->getPostName()
-            .static::REPLACE_BRACE_IN_ID_WITH
-            ."newentrycheckbox"
-            .static::REPLACE_BRACE_IN_ID_WITH;
-        $nameNewEntryCheckbox = $this->getPostName()."[newentrycheckbox]";
-        $html.="
-        <div class='basic-table-newentrycheckbox'>
-            <label for='$idNewEntryCheckbox'>".t("Create new entry of %s",$this->getLabel())."</label>
-            <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
-            </div>
+            <div class='row subentityrowedit'>
         ";
 
 
-
-        $html.="<div class='parent_postname hiddenforminfo'>".$this->getPostName()."</div>";
-        $html.="<div class='parent_idname hiddenforminfo'>".$this->getHtmlId()."</div>";
-        $html.="<div class='replace_brace_in_id_with hiddenforminfo'>".static::REPLACE_BRACE_IN_ID_WITH."</div>";
-        $html.="<div class='prepended_before_realname hiddenforminfo'>".static::PREPEND_BEFORE_REALNAME."</div>";
-        $html.="<div class='options_url hiddenforminfo'>".$this->view->action("get_options_of_field")."?fieldname=".$this->getPostName()."</div>";
-        $html.="<div class='options_template hiddenforminfo'>".$entityForFields->getTypeaheadTemplate()."</div>";
-
-
-
-
-
+        $html .= $this->getInputHtml($form, $clientSideValidationActivated);
 
 
         // TODO put the id in the form somehow
@@ -160,7 +97,22 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
          * @var Field $field
          */
         foreach ($fields as $field){
-            if($field->getSQLFieldName() == $toSaveModel->getIdFieldName() || $field instanceof DirectEditInterface){
+            if($field->getSQLFieldName() == $toSaveModel->getIdFieldName()
+                || $this->targetField == $field->getSQLFieldName()
+                || $field instanceof DirectEditInterface){
+                if($this->targetField == $field->getSQLFieldName()){
+                    //first determine if targetfield is arraycollection
+                    $currentValue = $toSaveModel->get($this->targetField);
+                    if(is_object($currentValue)){
+
+                        if($currentValue instanceof  \Doctrine\Common\Collections\Collection){
+                            $currentValue->add($this->sourceEntity);
+                            $toSaveModel->set($this->targetField,$currentValue);
+                        }
+                    }elseif($currentValue == null){
+                        $toSaveModel->set($this->targetField,$this->sourceEntity);
+                    }
+                }
                 continue;
             }
             if($field->validatePost($value[$field->getPostName()])){
@@ -216,6 +168,100 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $session->remove($this->postName."subformerrors");
         return $this->subErrorMsg;
 
+    }
+
+    /**
+     * @param $form
+     * @param $clientSideValidationActivated
+     * @param $fields
+     * @param $value
+     * @param $html
+     * @param $entityForFields
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated)
+    {
+        $html='';
+        $value = $this->getSQLValue();
+
+        if($value instanceof Proxy){
+            $value = $this->getEntityManager()
+                ->getRepository($this->targetEntity)
+                ->find($value->getId());
+        }
+        $this->loadSubErrorMsg();
+        $classname = $this->targetEntity;
+
+        /**
+         * @var BaseEntity $entityForFields
+         */
+        $entityForFields = new $classname();
+
+
+        //get the fields to show in the form
+
+        $fields = $entityForFields->getFieldTypes();
+//build the form
+
+        $value->setDefaultFormViews();
+        /**
+         * @var Field $field
+         * @var AbstractFormView $defaultFormView
+         */
+        $defaultFormView = $value->getDefaultFormView($form,$clientSideValidationActivated);
+
+        if($defaultFormView===false) {
+            //display default form with all fields under each other
+            foreach ($fields as $field) {
+                //if id or another directedit possibility, skip (because of possible circle)
+                if ($field instanceof DirectEditInterface || !$field->showInForm()) {
+                    continue;
+                }
+
+                if (is_null($value)) {
+                    $setValue = null;
+                } else {
+                    $setValue = $value->get($field->getSQLFieldName());
+                }
+                //set the value
+                $field->setSQLValue($setValue);
+                //change the post name
+                $field->setPostName($this->getPostName() . "[" . $field->getPostName() . "]");
+
+                if (isset($this->subErrorMsg[$field->getPostName()])) {
+                    $field->setErrorMessage($this->subErrorMsg[$field->getPostName()]);
+                }
+
+                //get the form view
+                $html .= $field->getFormView($form, $clientSideValidationActivated);
+                $field->setErrorMessage(null);
+            }
+        }else{
+            $defaultFormView->setErrorMsg($this->subErrorMsg);
+            $defaultFormView->setParentPostName($this->getPostName());
+            $html.= $defaultFormView->getFormView($form,$clientSideValidationActivated);
+
+        }
+        $idNewEntryCheckbox = $this->getPostName()
+            . static::REPLACE_BRACE_IN_ID_WITH
+            . "newentrycheckbox"
+            . static::REPLACE_BRACE_IN_ID_WITH;
+        $nameNewEntryCheckbox = $this->getPostName() . "[newentrycheckbox]";
+        $html .= "
+        <div class='basic-table-newentrycheckbox'>
+            <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
+            <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+            </div>
+        ";
+
+
+        $html .= "<div class='parent_postname hiddenforminfo'>" . $this->getPostName() . "</div>";
+        $html .= "<div class='parent_idname hiddenforminfo'>" . $this->getHtmlId() . "</div>";
+        $html .= "<div class='replace_brace_in_id_with hiddenforminfo'>" . static::REPLACE_BRACE_IN_ID_WITH . "</div>";
+        $html .= "<div class='prepended_before_realname hiddenforminfo'>" . static::PREPEND_BEFORE_REALNAME . "</div>";
+        $html .= "<div class='options_url hiddenforminfo'>" . $this->view->action("get_options_of_field") . "?fieldname=" . $this->getPostName() . "</div>";
+        $html .= "<div class='options_template hiddenforminfo'>" . $entityForFields->getTypeaheadTemplate() . "</div>";
+        return $html;
     }
 }
 

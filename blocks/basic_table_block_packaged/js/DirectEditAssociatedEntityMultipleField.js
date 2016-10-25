@@ -22,7 +22,10 @@
                     return tokens;
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                prefetch: options_url
+                prefetch: {
+                    url: options_url,
+                    cache:false
+                }
             });
             values.initialize();
             //eval("templatefunction = "+options_template+";");
@@ -58,7 +61,7 @@
                 }
             )
                 .on('typeahead:select', function (e, object) {
-                    var row = $(this).closest('div.row');
+                    var row = $(this).closest('div.row.subentityrowedit');
                     for (var i in object) {
                         row.find('[name*="[' + i + ']"]').val(object[i]);
                         row.find('[name*="[' + i + ']"]').typeahead('val', object[i]);
@@ -138,8 +141,17 @@
                         });
                     }
                     if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]')  ) {
-                        addTypeaheadMultipleRemote(this,options_url,options_template);
+                        if($(this).hasClass('date') || $(this).parent().hasClass('date')){
+                            if($(this).parent().hasClass('date')) {
+                                $(this).datepicker({format: $(this).parent().attr('data-date-format')});
+                            }else{
+                                $(this).datepicker({format: $(this).attr('data-date-format')});
+                            }
 
+                        }else {
+
+                            addTypeaheadMultipleRemote(this, options_url, options_template);
+                        }
                     }
                 }
 
@@ -158,6 +170,8 @@
         //go through the single DirectEdit Areas and add autocompletion there:
         $('div.subentityedit').each(function(){
 
+
+
             //first read information
 
             var parentpostname = $(this).find('div.parent_postname.hiddenforminfo').text();
@@ -168,8 +182,24 @@
             var options_template = $(this).find('div.options_template.hiddenforminfo').html();
             //now loop through the input fields
             $(this).find("input,textarea").each(function(){
+                if($(this).parents('.hidden_form_row').length != 0){
+                    return;
+                }
                 if(($(this).is('input[name]') || $(this).is('textarea[name]')) &&!$(this).is('input[type="hidden"]') ) {
-                    addTypeaheadMultipleRemote(this,options_url,options_template);
+
+
+
+                    if($(this).hasClass('date') || $(this).parent().hasClass('date')){
+                        if($(this).parent().hasClass('date')) {
+                            $(this).datepicker({format: $(this).parent().attr('data-date-format')});
+                        }else{
+                            $(this).datepicker({format: $(this).attr('data-date-format')});
+                        }
+
+                    }else {
+
+                        addTypeaheadMultipleRemote(this, options_url, options_template);
+                    }
 
                 }
             });

@@ -172,33 +172,8 @@ class DateField extends Field{
 
 
 	public function getFormView($form, $clientSideValidationActivated = true){
-		$returnString = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
-        $validationAttributes = array();
-        if($clientSideValidationActivated) {
-            $validationAttributes = $this->addValidationAttributes(array());
-        }
-        $returnString .= '
-				<div  class="input-append date datepickerdiv" data-date-format="'.static::$currentFormat['bootstrapdatepicker'].'" data-date="' . $this->getTableView() . '">
-				<input id="'.$this->getHtmlId().'" name="'.$this->getPostName().'"  type="text" value="' . $this->getTableView() . '" size="16"
-				';
-        if(count($validationAttributes)>0){
-            foreach($validationAttributes as $key => $value){
-                $returnString.= " $key = \"$value\" ";
-            }
-        }
-
-			$returnString.='	>
-
-				</div>
-				<script>
-					$(function(e){
-						$("#'.$this->getPostName().'").datepicker({format:"'.static::$currentFormat['bootstrapdatepicker'].'"});
-
-					});
-
-				</script>
-				';
-		$returnString.=$this->getHtmlErrorMsg();		
+        $returnString = $this->getLabelHtml();
+        $returnString .= $this->getInputHtml($form,$clientSideValidationActivated);
 		return $returnString;
 	}
 
@@ -294,7 +269,51 @@ class DateField extends Field{
         );
     }
 
+    /**
+     * @return string
+     */
+    public function getLabelHtml()
+    {
+        $returnString = "<label for='" . $this->getHtmlId() . "'>" . $this->getLabel() . "</label>";
+        return $returnString;
+    }
 
+    /**
+     * @param $clientSideValidationActivated
+     * @param $returnString
+     * @return string
+     */
+    public function getInputHtml($form,$clientSideValidationActivated)
+    {
+        $returnString = '';
+        $validationAttributes = array();
+        if ($clientSideValidationActivated) {
+            $validationAttributes = $this->addValidationAttributes(array());
+        }
+        $returnString .= '
+				<div  class="input-append date datepickerdiv" data-date-format="' . static::$currentFormat['bootstrapdatepicker'] . '" data-date="' . $this->getTableView() . '">
+				<input id="' . $this->getHtmlId() . '" name="' . $this->getPostName() . '"  type="text" value="' . $this->getTableView() . '" size="16"
+				';
+        if (count($validationAttributes) > 0) {
+            foreach ($validationAttributes as $key => $value) {
+                $returnString .= " $key = \"$value\" ";
+            }
+        }
+
+        $returnString .= '	>
+
+				</div>
+				<script>
+					$(function(e){
+						$("#' . $this->getHtmlId() . '").datepicker({format:"' . static::$currentFormat['bootstrapdatepicker'] . '"});
+
+					});
+
+				</script>
+				';
+        $returnString .= $this->getHtmlErrorMsg();
+        return $returnString;
+    }
 
 
 }

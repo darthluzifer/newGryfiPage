@@ -63,9 +63,7 @@ class DropdownField extends Field{
 	public function getFormView($form, $clientSideValidationActivated = true){
 		$html = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
-		$html .=static::select($this->getHtmlId(),$this->getPostName(), $this->getOptions(),$this->getValue());
-
-        $html.=$this->getHtmlErrorMsg();
+        $html.= $this->getInputHtml($form, $clientSideValidationActivated);
 		return $html;
 	}
 
@@ -80,7 +78,7 @@ class DropdownField extends Field{
      *@param Form $form
      * @return $html
      */
-    public static function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array(), $form)
+    public static function select($id,$key, $optionValues, $valueOrMiscFields = '', $miscFields = array())
     {
         if (!is_array($optionValues)) {
             $optionValues = array();
@@ -92,7 +90,7 @@ class DropdownField extends Field{
             $selectedValue = (string) $valueOrMiscFields;
         }
         if ($selectedValue !== '') {
-            $miscFields['ccm-passed-value'] = $selectedValue;
+           // $miscFields['ccm-passed-value'] = $selectedValue;
         }
 
 
@@ -100,7 +98,7 @@ class DropdownField extends Field{
         foreach ($optionValues as $k => $text) {
             $str .= '<option value="' . $k . '"';
             if ((string) $k === (string) $selectedValue) {
-                $str .= ' selected="selected"';
+                $str .= ' selected="true"';
             }
             $str .= '>' . $text . '</option>';
         }
@@ -128,6 +126,17 @@ class DropdownField extends Field{
 		}
 	}
 
+    /**
+     * @param $html
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $this->getValue());
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
 
 
 }

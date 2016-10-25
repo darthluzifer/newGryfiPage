@@ -52,26 +52,14 @@ class FileField extends Field
 
     public function getFormView($form, $clientSideValidationActivated = true)
     {
-        /**
-         * @var FileManager $al
-         */
-        $al = Loader::helper('concrete/asset_library');
-        $bf = null;
-        if ($this->getValue() > 0) {
-            $bf = $this->getFileObject();
-        }
-        $c = Page::getCurrentPage();
+
 
         $returnString = "
 		<div class=\"form-group\">
-		" . $form->label($this->getHtmlId(), t($this->getLabel())) . "
-		" . $al->file($this->getHtmlId(), $this->getPostName(), t('Choose File'), $bf) . "
-		</div>";
-        $valt = Loader::helper('validation/token');
-        $token = $valt->generate();
-        //$form->addHeaderItem('<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>');
-        $returnString .= '<script type="text/javascript">var CCM_SECURITY_TOKEN = \'' . $token . '\';</script>';
-        $returnString .= $this->getHtmlErrorMsg();
+		" . $form->label($this->getHtmlId(), t($this->getLabel())) ;
+        $returnString .= $this->getInputHtml($form, $clientSideValidationActivated);
+
+
         return $returnString;
     }
 
@@ -106,5 +94,31 @@ class FileField extends Field
             return t("no File");
         }
 
+    }
+
+    /**
+     * @param $returnString
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        /**
+         * @var FileManager $al
+         */
+        $al = Loader::helper('concrete/asset_library');
+        $bf = null;
+        if ($this->getValue() > 0) {
+            $bf = $this->getFileObject();
+        }
+        $c = Page::getCurrentPage();
+        $returnString =
+            $al->file($this->getHtmlId(), $this->getPostName(), t('Choose File'), $bf) . "
+		</div>";
+        $valt = Loader::helper('validation/token');
+        $token = $valt->generate();
+        //$form->addHeaderItem('<script type="text/javascript">var CCM_SECURITY_TOKEN = \''.$token.'\';</script>');
+        $returnString .= '<script type="text/javascript">var CCM_SECURITY_TOKEN = \'' . $token . '\';</script>';
+        $returnString .= $this->getHtmlErrorMsg();
+        return $returnString;
     }
 }

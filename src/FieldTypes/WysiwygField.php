@@ -66,18 +66,14 @@ class WysiwygField extends Field{
 
 
 	public function getFormView($form, $clientSideValidationActivated = true){
-		$fp = FilePermissions::getGlobal();
-		$tp = new TaskPermission();
 
-//		$this->blockController->edit();
-		$controller = $this->blockController;
+
 		$html = '';
 		//$html = "<label for='".$this->getPostName()."'>".$this->getPostName()."</label>";
 		$html.=$form->label($this->getHtmlId(), t($this->getLabel()));
-		$editor = new RedactorEditor();
-		$html.=$editor->outputStandardEditor($this->getPostName(), $this->getValue());
 
-	  $html.=$this->getHtmlErrorMsg();
+
+        $html .= $this->getInputHtml($form, $clientSideValidationActivated);
 		return $html;
 	}
 
@@ -88,5 +84,18 @@ class WysiwygField extends Field{
 
 		return $this->value;
 	}
+
+    /**
+     * @param $html
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        $editor = new RedactorEditor();
+        $html = $editor->outputStandardEditor($this->getPostName(), $this->getValue());
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
 
 }

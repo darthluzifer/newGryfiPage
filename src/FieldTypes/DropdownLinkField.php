@@ -294,11 +294,12 @@ class DropdownLinkField extends DropdownField{
             $modelForIdField = new $this->targetEntity;
             $model = $this->getEntityManager()
                 ->getRepository($this->targetEntity)
-                ->findOne(array(
+                ->findOneBy(array(
                     $modelForIdField->getIdFieldName() => $value
                 ));
 
             if($model != null && $model!=false){
+                $this->getEntityManager()->persist($model);
                 $this->setSQLValue($model);
             }else{
                 $this->setSQLValue(null);
@@ -307,6 +308,9 @@ class DropdownLinkField extends DropdownField{
         }else{
             return false;
         }
+        //because of directeditfield references of referenced object could have been changed, persist them too
+
+
         return true;
     }
 
@@ -332,6 +336,21 @@ class DropdownLinkField extends DropdownField{
 
     public function getFilter(){
         return $this->filter;
+    }
+
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        if($this->value != null){
+            $setValue = $this->value->getId();
+        }else{
+
+            $setValue = "";
+
+        }
+        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $setValue);
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
     }
 
 
