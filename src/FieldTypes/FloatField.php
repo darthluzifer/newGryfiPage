@@ -103,7 +103,7 @@ class FloatField extends IntegerField {
             $this->errMsg = $this->getLabel().t(static::NOFLOATERRORMSG);
             return false;
         }
-        $value = filter_var($value, FILTER_VALIDATE_INT);
+        $value = filter_var($value, FILTER_VALIDATE_FLOAT);
         if(strlen($this->min)>0){
             if($value < $this->min){
                 $this->errMsg = $this->getLabel().t(static::MINERRORMSG,$this->min);
