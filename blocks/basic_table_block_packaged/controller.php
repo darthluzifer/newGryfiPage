@@ -387,7 +387,7 @@ class Controller extends BlockController
      * if save is pressed, the data is saved to the sql table
      * @throws \Exception
      */
-    function action_save_row()
+    function action_save_row($redirectOnSuccess = true)
     {
 
 
@@ -514,7 +514,9 @@ class Controller extends BlockController
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
             $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
             unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
-            $this->redirect($c->getCollectionPath());
+            if($redirectOnSuccess) {
+                $this->redirect($c->getCollectionPath());
+            }
         }
 
     }
