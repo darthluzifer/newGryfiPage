@@ -36,7 +36,9 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAsso
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\FloatField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\BooleanField;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
 
@@ -174,6 +176,9 @@ abstract class BaseEntity
                 $mapping = $metadata->getFieldMapping($fieldname);
                 switch ($mapping['type']) {
 
+                    case 'boolean':
+                        $this->fieldTypes[$fieldname] = new BooleanField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
                     case 'date':
                         $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
