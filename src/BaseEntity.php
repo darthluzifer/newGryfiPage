@@ -33,7 +33,9 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\FloatField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
@@ -174,6 +176,12 @@ abstract class BaseEntity
 
                     case 'date':
                         $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
+                    case 'integer':
+                        $this->fieldTypes[$fieldname] = new IntegerField($fieldname, t($fieldname), t("post" . $fieldname));
+                        break;
+                    case 'float':
+                        $this->fieldTypes[$fieldname] = new FloatField($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
                     default:
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
