@@ -100,21 +100,7 @@ class Field{
 	public function getFormView($form, $clientSideValidationActivated = true){
 		$returnString = "<label for='".$this->getHtmlId()."'>".$this->getLabel()."</label>";
 
-        $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
-            'id' => $this->getHtmlId(),
-        );
-
-        if($clientSideValidationActivated){
-            $attributes = $this->addValidationAttributes($attributes);
-        }
-
-
-        /**
-         * @var Form $form
-         */
-        $returnString.=static::inputType($this->getHtmlId(),$this->getPostName(),"text",$this->getValue(),$attributes,$form);
-		$returnString.=$this->getHtmlErrorMsg();
+        $returnString .= $this->getInputHtml($form, $clientSideValidationActivated);
 		return $returnString;
 	}
 
@@ -288,6 +274,32 @@ class Field{
         $value = h($value);
 
         return "<input type=\"$type\" id=\"$id\" name=\"$key\" value=\"$value\"" . static::parseMiscFields("form-control ccm-input-$type", $miscFields) . ' />';
+    }
+
+    /**
+     * @param $form
+     * @param $clientSideValidationActivated
+     * @param $returnString
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated)
+    {
+        $attributes = array('title' => $this->getPostName(),
+            'value' => $this->getValue(),
+            'id' => $this->getHtmlId(),
+        );
+
+        if ($clientSideValidationActivated) {
+            $attributes = $this->addValidationAttributes($attributes);
+        }
+
+
+        /**
+         * @var Form $form
+         */
+        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $this->getValue(), $attributes, $form);
+        $returnString .= $this->getHtmlErrorMsg();
+        return $returnString;
     }
 
 

@@ -62,3 +62,14 @@ div.hidden_form_row{
 div.hiddenforminfo{
     display:none;
 }
+
+.basic_table_package label {
+    line-height: 1;
+    margin-top: 5px;
+    word-wrap: normal;
+}
+
+.basic_table_package .subentityedit.col-xs-12 {
+    padding-left: 40px;
+    padding-right: 40px;
+}

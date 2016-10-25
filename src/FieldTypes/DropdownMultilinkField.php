@@ -149,81 +149,7 @@ class DropdownMultilinkField extends DropdownLinkField{
         $html = "<label for='".$this->getPostName()."'>".$this->getLabel()."</label>";
 
 
-
-        $values = $this->getValues();
-        if($values instanceof  ArrayCollection || $values instanceof PersistentCollection){
-
-            $values =$values->toArray();
-        }elseif(is_array($values)){
-
-        }else{
-
-            $values = array();
-        }
-
-        $valueStrings = array();
-
-        //to display the values, we have to convert them to strings with our getDisplayString function
-        $displayFunction = $this->getDisplayString;
-        foreach($values as $num => $entity){
-            if($entity instanceof  Proxy){
-                $entity->__load();
-            }
-
-            $valueStrings[]= $displayFunction($entity);
-        }
-
-
-        $valuestring = implode(", ", $valueStrings);
-        $html .= "<input type='text' width = '100%' id='".$this->getHtmlId()."' name ='".$this->getPostName()."' value='$valuestring'/>";
-
-
-        $options = $this->getOptions();
-        $sourcetext = "'".implode("', '", $options)."'";
-        $allowadd = 'false';
-        if($this->allowAdd){
-            $allowadd = 'true';
-        }
-
-        $html .="
-				<script type = 'text/javascript'>
-					$(document).ready(function(e){
-					    var values = [$sourcetext];
-					    values = new Bloodhound({
-                          datumTokenizer: Bloodhound.tokenizers.whitespace,
-                          queryTokenizer: Bloodhound.tokenizers.whitespace,
-                          local: values
-                        });
-                        values.initialize();
-                        
-
-                         $('#".$this->getHtmlId()."').tagsinput({
-                          freeInput: $allowadd,
-                          typeaheadjs: [{
-                           
-                            minLength:0,
-                            highlight:true,
-                            limit:0,
-                          },{
-                           name: '".$this->getPostName()."',
-                            source: function (q, sync) {
-                                  if (q === '' ||q === '*' ) {
-                                    sync(values.get($sourcetext));
-                                  }
-                                
-                                  else {
-                                    values.search(q, sync);
-                                }
-                               },
-                          }]
-                        });
-                        
-					});
-				</script>
-				";
-
-
-	      $html.=$this->getHtmlErrorMsg();
+        $html .= $this->getInputHtml($form, $clientSideValidationActivated);
         return $html;
     }
 
@@ -255,12 +181,14 @@ class DropdownMultilinkField extends DropdownLinkField{
                     ->findOneBy(array(
                         $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
                     ));
+                $this->getEntityManager()->persist($findItem);
                 $sqlArray->add($findItem);
             }else{
                //TODO throw exception, if invalid values should produce an error message
             }
         }
         $this->setSQLValue($sqlArray);
+
         return true;
     }
 
@@ -337,6 +265,88 @@ class DropdownMultilinkField extends DropdownLinkField{
 
     }
 
+    /**
+     * @param $html
+     * @return string
+     */
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        $values = $this->getValues();
+        if ($values instanceof ArrayCollection || $values instanceof PersistentCollection) {
+
+            $values = $values->toArray();
+        } elseif (is_array($values)) {
+
+        } else {
+
+            $values = array();
+        }
+
+        $valueStrings = array();
+
+        //to display the values, we have to convert them to strings with our getDisplayString function
+        $displayFunction = $this->getDisplayString;
+        foreach ($values as $num => $entity) {
+            if ($entity instanceof Proxy) {
+                $entity->__load();
+            }
+
+            $valueStrings[] = $displayFunction($entity);
+        }
+
+
+        $valuestring = implode(", ", $valueStrings);
+        $html = "<input type='text' width = '100%' id='" . $this->getHtmlId() . "' name ='" . $this->getPostName() . "' value='$valuestring'/>";
+
+
+        $options = $this->getOptions();
+        $sourcetext = "'" . implode("', '", $options) . "'";
+        $allowadd = 'false';
+        if ($this->allowAdd) {
+            $allowadd = 'true';
+        }
+
+        $html .= "
+				<script type = 'text/javascript'>
+					$(document).ready(function(e){
+					    var values = [$sourcetext];
+					    values = new Bloodhound({
+                          datumTokenizer: Bloodhound.tokenizers.whitespace,
+                          queryTokenizer: Bloodhound.tokenizers.whitespace,
+                          local: values
+                        });
+                        values.initialize();
+                        
+
+                         $('#" . $this->getHtmlId() . "').tagsinput({
+                          freeInput: $allowadd,
+                          typeaheadjs: [{
+                           
+                            minLength:0,
+                            highlight:true,
+                            limit:0,
+                          },{
+                           name: '" . $this->getPostName() . "',
+                            source: function (q, sync) {
+                                  if (q === '' ||q === '*' ) {
+                                    sync(values.get($sourcetext));
+                                  }
+                                
+                                  else {
+                                    values.search(q, sync);
+                                }
+                               },
+                          }]
+                        });
+                        
+					});
+				</script>
+				";
+
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
 
 
 }

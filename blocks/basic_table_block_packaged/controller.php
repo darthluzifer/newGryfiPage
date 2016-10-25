@@ -141,7 +141,10 @@ class Controller extends BlockController
 
     protected $clientSideValidationActivated = true;
 
-
+    /**
+     * @var array
+     */
+    protected $consistencyErrors = array();
 
     /**
      *
@@ -171,7 +174,22 @@ class Controller extends BlockController
         }else{
             if($this->editKey == null){
             }else{
-                $this->model = $this->getEntityManager()->find(get_class($this->model), $this->editKey);
+                $query = $this->getBuildQueryWithJoinedAssociations();
+                $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+                try {
+                    $model = $query->getQuery()->getSingleResult();
+                    $model = self::setModelFieldTypes($model);
+                    if ($model) {
+                        $this->model = $model;
+                    } else {
+
+                        //dummy function because we have no values
+                        throw new \Exception;
+                    }
+                } catch (\Exception $e) {
+
+                }
+
             }
         }
 
@@ -369,34 +387,9 @@ class Controller extends BlockController
      * if save is pressed, the data is saved to the sql table
      * @throws \Exception
      */
-    function action_save_row()
+    function action_save_row($redirectOnSuccess = true)
     {
 
-//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
-//        $EventGroup = new EventGroup();
-//
-//        //$otherEntityManager = Package::getByHandle('bacluc_event_package')->getEntityManager();
-//
-//
-//        $this->getEntityManager()->persist($Event);
-//        $Group = $this->getEntityManager()->getRepository(get_class(new Group()))->findOneBy(array("gID" => 6));
-//        $EventGroup->Group = $Group;
-//        $this->getEntityManager()->persist($Group);
-//        $EventGroup->Event = $Event;
-//
-//        foreach($Event->EventGroups as $key => $groupAssociation){
-//            $Event->EventGroups->removeElement($groupAssociation);
-//            $this->entityManager->remove($groupAssociation);
-//        }
-//
-//
-//        $Event->EventGroups->add($EventGroup);
-//        $this->getEntityManager()->persist($EventGroup);
-//        $this->getEntityManager()->flush();
-//        $this->getEntityManager()->detach($Event);
-//        $Event = $this->getEntityManager()->getRepository("Concrete\\Package\\BaclucEventPackage\\Src\\Event")->find(1);
-//
-//        return;
 
 
         //form view is over
@@ -502,6 +495,13 @@ class Controller extends BlockController
 
             //if the data is inserted, the saveself fields can only save afterwards
 
+            $this->consistencyErrors = $this->getModel()->checkConsistency();
+            if (count($this->consistencyErrors)>0) {
+                //TODO send error msg to client
+                $this->prepareFormEdit();
+                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
+                return false;
+            }
 
             $this->getEntityManager()->flush();
 
@@ -514,9 +514,15 @@ class Controller extends BlockController
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
             $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
             unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
-            $this->redirect($c->getCollectionPath());
+            if($redirectOnSuccess) {
+                $this->redirect($c->getCollectionPath());
+            }
         }
 
+    }
+
+    public function getConsistencyErrors(){
+        return $this->consistencyErrors;
     }
 
     /**
