@@ -334,6 +334,21 @@ class DropdownLinkField extends DropdownField{
         return $this->filter;
     }
 
+    public function getInputHtml($form, $clientSideValidationActivated=true)
+    {
+        if($this->value != null){
+            $setValue = $this->value->getId();
+        }else{
+
+            $setValue = "";
+
+        }
+        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $setValue);
+
+        $html .= $this->getHtmlErrorMsg();
+        return $html;
+    }
+
 
 
 }

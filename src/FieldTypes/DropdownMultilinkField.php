@@ -187,6 +187,7 @@ class DropdownMultilinkField extends DropdownLinkField{
             }
         }
         $this->setSQLValue($sqlArray);
+
         return true;
     }
 
