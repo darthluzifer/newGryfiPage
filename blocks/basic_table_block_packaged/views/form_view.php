@@ -33,7 +33,7 @@
 
 	if($defaultView===false) {
 		$fields = $controller->getFields();
-		$rowValues = $controller->getRowValues();
+		//$rowValues = $controller->getRowValues();
 		$errorFields = $controller->getErrorFields();
 		/**
 		 * @var \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $FieldObject
@@ -44,7 +44,7 @@
 			} else {
 				if ($FieldObject->showInForm()) {
 
-					$FieldObject->setSQLValue($rowValues[$FieldObject->getSQLFieldName()]);
+					$FieldObject->setSQLValue($model->get($FieldObject->getSQLFieldName()));
 
 					if (isset($errorFields[$FieldObject->getPostName()])) {
 						$FieldObject->setErrorMessage($errorFields[$FieldObject->getPostName()]->getErrorMsg());

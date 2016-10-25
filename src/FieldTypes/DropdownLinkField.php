@@ -299,6 +299,7 @@ class DropdownLinkField extends DropdownField{
                 ));
 
             if($model != null && $model!=false){
+                $this->getEntityManager()->persist($model);
                 $this->setSQLValue($model);
             }else{
                 $this->setSQLValue(null);
@@ -307,6 +308,9 @@ class DropdownLinkField extends DropdownField{
         }else{
             return false;
         }
+        //because of directeditfield references of referenced object could have been changed, persist them too
+
+
         return true;
     }
 

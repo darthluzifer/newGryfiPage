@@ -10,6 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src;
 
 
 use Concrete\Core\Form\Service\Form;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
 abstract class AbstractFormView
@@ -56,13 +57,19 @@ abstract class AbstractFormView
             //set the value
             $field->setSQLValue($setValue);
 
-            if(strlen($this->parentpostname)>0) {
-                //change the post name
-                $field->setPostName($this->parentpostname . "[" . $field->getPostName() . "]");
-            }
             if(isset($this->errorMsg[$field->getPostName()])){
                 $field->setErrorMessage($this->errorMsg[$field->getPostName()]);
             }
+            if(strlen($this->parentpostname)>0) {
+                if($this->parentpostname == DirectEditAssociatedEntityMultipleField::PREPEND_BEFORE_REALNAME){
+                    $field->setPostName($this->parentpostname . "" . $field->getPostName() . "");
+                }else{
+                    $field->setPostName($this->parentpostname . "[" . $field->getPostName() . "]");
+                }
+                    //change the post name
+
+            }
+
 
             //get the form view
             $variables[$field->getSQLFieldName()]['input'] = $field->getInputHtml($this->form, $clientSideValidationActivated);

@@ -181,6 +181,7 @@ class DropdownMultilinkField extends DropdownLinkField{
                     ->findOneBy(array(
                         $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
                     ));
+                $this->getEntityManager()->persist($findItem);
                 $sqlArray->add($findItem);
             }else{
                //TODO throw exception, if invalid values should produce an error message

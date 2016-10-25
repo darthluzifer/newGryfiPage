@@ -174,7 +174,22 @@ class Controller extends BlockController
         }else{
             if($this->editKey == null){
             }else{
-                $this->model = $this->getEntityManager()->find(get_class($this->model), $this->editKey);
+                $query = $this->getBuildQueryWithJoinedAssociations();
+                $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+                try {
+                    $model = $query->getQuery()->getSingleResult();
+                    $model = self::setModelFieldTypes($model);
+                    if ($model) {
+                        $this->model = $model;
+                    } else {
+
+                        //dummy function because we have no values
+                        throw new \Exception;
+                    }
+                } catch (\Exception $e) {
+
+                }
+
             }
         }
 

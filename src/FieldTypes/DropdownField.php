@@ -90,7 +90,7 @@ class DropdownField extends Field{
             $selectedValue = (string) $valueOrMiscFields;
         }
         if ($selectedValue !== '') {
-            $miscFields['ccm-passed-value'] = $selectedValue;
+           // $miscFields['ccm-passed-value'] = $selectedValue;
         }
 
 
@@ -98,7 +98,7 @@ class DropdownField extends Field{
         foreach ($optionValues as $k => $text) {
             $str .= '<option value="' . $k . '"';
             if ((string) $k === (string) $selectedValue) {
-                $str .= ' selected="selected"';
+                $str .= ' selected="true"';
             }
             $str .= '>' . $text . '</option>';
         }
