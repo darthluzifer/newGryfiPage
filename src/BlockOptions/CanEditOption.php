@@ -21,6 +21,7 @@ use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry
  * TODO add functionality, that users which are not in this group get false on  a funciton checkCondition
  * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption")
  */
 class CanEditOption extends TableBlockOption{
     use EntityGetterSetter;

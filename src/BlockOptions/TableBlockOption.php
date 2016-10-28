@@ -25,6 +25,7 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption")
  * @Table(name="TableBlockOption")
  */
 class TableBlockOption extends BaseEntity{

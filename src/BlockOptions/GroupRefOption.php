@@ -18,6 +18,7 @@ use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry
  * @IgnoreAnnotation("package")
  * @IgnoreAnnotation("package")\n*  Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption")
  */
 class GroupRefOption extends TableBlockOption{
     use EntityGetterSetter;

@@ -24,6 +24,7 @@ use Doctrine\ORM\Mapping\Table;
  * @IgnoreAnnotation("package")\n*  Application\Block\BasicTableBlock
  * @Entity
  * @Table(name="TextBlockOptions")
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\TextBlockOption")
  */
 class TextBlockOption extends TableBlockOption{
     use EntityGetterSetter;

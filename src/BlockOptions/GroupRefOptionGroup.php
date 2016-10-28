@@ -27,6 +27,9 @@ use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorEntry
  *  Concrete\Package\BasicTablePackage\Src\BlockOptions
  * @Entity
  * @Table(name="grouprefoption_group")
+ * @InheritanceType("JOINED")
+ * @DiscriminatorColumn(name="discr", type="string")
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup")
  *
  */
 class GroupRefOptionGroup extends AssociationBaseEntity
