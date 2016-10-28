@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping\Table;
  * @IgnoreAnnotation("package")\n*  Application\Block\BasicTableBlock
  * @Entity
  * @Table(name="DropDownBlockOptions")
- * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption"
+ * @DiscriminatorEntry(value="Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption")
  */
 class DropdownBlockOption extends TableBlockOption{
 
