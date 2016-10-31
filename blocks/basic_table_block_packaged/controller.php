@@ -392,132 +392,36 @@ class Controller extends BlockController
 
 
 
-        //form view is over
-        $this->isFormview = false;
-        $u = new User();
-
-
-        $bo = $this->getBlockObject();
-
-
         if ($this->post('rcID')) {
             // we pass the rcID through the form so we can deal with stacks
             $c = Page::getByID($this->post('rcID'));
         } else {
             $c = $this->getCollectionObject();
         }
+        //form view is over
+        $v =  $this->checkPostValues();
+        if($v === false){
+            return false;
+        }
+
+        if ($this->editKey == null) {
+            $model = $this->model;
+        } else {
+            $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+        }
+
+        if($this->persistValues($model, $v) === false){
+            return false;
+        }
+
+        $this->getEntityManager()->flush();
 
 
-        if (isset($_POST['cancel'])) {
-            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
-                unset($_SESSION[$this->getHTMLId() . "rowid"]);
-            }
-            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+        $this->finishFormView();
+        if($redirectOnSuccess) {
             $this->redirect($c->getCollectionPath());
-            return;
         }
 
-        if ($this->requiresRegistration()) {
-            if (!$u->isRegistered()) {
-                $this->redirect('/login');
-            }
-        }
-
-
-        $antispam = Loader::helper('validation/antispam');
-        if ($antispam->check('', 'survey_block')) { // we do a blank check which will still check IP and UserAgent's
-            $duID = 0;
-            if ($u->getUserID() > 0) {
-                $duID = $u->getUserID();
-            }
-
-            /** @var \Concrete\Core\Permission\IPService $iph */
-            $iph = Core::make('helper/validation/ip');
-            $ip = $iph->getRequestIP();
-            $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
-            $v = array();
-
-
-            $error = false;
-            //test
-            $errormsg = "";
-            $savevalues = $_REQUEST;
-
-            //add additional fields
-            if (count($this->addFields) > 0) {
-                foreach ($this->addFields as $key => $value) {
-                    $savevalues[$key] = $value;
-                }
-            }
-            //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
-            $selfsavefields = array();
-
-            foreach ($this->getFields() as $key => $value) {
-                if ($key == 'id') {
-                } else {
-                    $fieldname = $this->postFieldMap[$value->getPostName()];
-                    if ($value->validatePost($savevalues[$value->getPostName()])) {
-                        $v[$key] = $value->getSQLValue();
-                    } else {
-                        $error = true;
-                        $this->errorFields[$value->getPostName()] = $value;
-                    }
-                }
-            }
-
-            if ($error) {
-                //TODO send error msg to client
-                $this->prepareFormEdit();
-                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
-                return false;
-            }
-            if ($this->editKey == null) {
-                $model = $this->model;
-            } else {
-                $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
-            }
-
-            $this->getEntityManager()->persist($model);
-            //save values
-            foreach ($this->getFields() as $key => $value) {
-                if ($key != $model->getIdFieldName()) {
-                    if ($v[$key] instanceof BaseEntity) {
-                        $this->getEntityManager()->persist($v[$key]);
-                    } elseif ($v[$key] instanceof ArrayCollection) {
-                        foreach ($v[$key]->toArray() as $refnum => $refObject) {
-                            $this->getEntityManager()->persist($refObject);
-                        }
-                    }
-                    $model->set($key, $v[$key]);
-                }
-            }
-
-
-            //if the data is inserted, the saveself fields can only save afterwards
-
-            $this->consistencyErrors = $this->getModel()->checkConsistency();
-            if (count($this->consistencyErrors)>0) {
-                //TODO send error msg to client
-                $this->prepareFormEdit();
-                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
-                return false;
-            }
-
-            $this->getEntityManager()->flush();
-
-
-            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
-                unset($_SESSION[$this->getHTMLId() . "rowid"]);
-            }
-            //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
-
-            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
-            $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
-            unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
-            if($redirectOnSuccess) {
-                $this->redirect($c->getCollectionPath());
-            }
-        }
 
     }
 
@@ -1112,6 +1016,164 @@ class Controller extends BlockController
             throw new \InvalidArgumentException("Invalid field name");
         }
         return new \Symfony\Component\HttpFoundation\JsonResponse($options);
+    }
+
+    /**
+     * @return bool
+     */
+    public function handleFormError()
+    {
+//TODO send error msg to client
+        $this->prepareFormEdit();
+        $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
+        return false;
+    }
+
+    /**
+     * @param $u
+     * @return bool
+     */
+    public function validateRequest($u)
+    {
+        if ($this->requiresRegistration()) {
+            if (!$u->isRegistered()) {
+                $this->redirect('/login');
+                return false;
+            }
+
+        }
+
+
+        $antispam = Loader::helper('validation/antispam');
+        if ($antispam->check('', 'survey_block')) { // we do a blank check which will still check IP and UserAgent's
+            return true;
+        } else {
+            return $this->handleFormError();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkPostValues()
+    {
+        $this->isFormview = false;
+        $u = new User();
+
+
+        $bo = $this->getBlockObject();
+
+
+        if ($this->post('rcID')) {
+            // we pass the rcID through the form so we can deal with stacks
+            $c = Page::getByID($this->post('rcID'));
+        } else {
+            $c = $this->getCollectionObject();
+        }
+
+        if ($this->validateRequest($u) === false) {
+            return $this->handleFormError();
+        }
+
+
+        if (isset($_POST['cancel'])) {
+            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
+                unset($_SESSION[$this->getHTMLId() . "rowid"]);
+            }
+            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+            $this->redirect($c->getCollectionPath());
+            return true;
+        }
+
+
+        $duID = 0;
+        if ($u->getUserID() > 0) {
+            $duID = $u->getUserID();
+        }
+
+        /** @var \Concrete\Core\Permission\IPService $iph */
+        $iph = Core::make('helper/validation/ip');
+        $ip = $iph->getRequestIP();
+        $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
+        $v = array();
+
+
+        $error = false;
+        //test
+        $errormsg = "";
+        $savevalues = $_REQUEST;
+
+        //add additional fields
+        if (count($this->addFields) > 0) {
+            foreach ($this->addFields as $key => $value) {
+                $savevalues[$key] = $value;
+            }
+        }
+        //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
+        $selfsavefields = array();
+
+        foreach ($this->getFields() as $key => $value) {
+            if ($key == 'id') {
+            } else {
+                $fieldname = $this->postFieldMap[$value->getPostName()];
+                if ($value->validatePost($savevalues[$value->getPostName()])) {
+                    $v[$key] = $value->getSQLValue();
+                } else {
+                    $error = true;
+                    $this->errorFields[$value->getPostName()] = $value;
+                }
+            }
+        }
+
+        if ($error) {
+            return $this->handleFormError();
+
+        }
+
+        return $v;
+    }
+
+    /**
+     * @param $model
+     * @param $v
+     * @return bool
+     */
+    public function persistValues($model, $v)
+    {
+        $this->getEntityManager()->persist($model);
+        //save values
+        foreach ($this->getFields() as $key => $value) {
+            if ($key != $model->getIdFieldName()) {
+                if ($v[$key] instanceof BaseEntity) {
+                    $this->getEntityManager()->persist($v[$key]);
+                } elseif ($v[$key] instanceof ArrayCollection) {
+                    foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                        $this->getEntityManager()->persist($refObject);
+                    }
+                }
+                $model->set($key, $v[$key]);
+            }
+        }
+
+
+        //if the data is inserted, the saveself fields can only save afterwards
+
+        $this->consistencyErrors = $this->getModel()->checkConsistency();
+        if (count($this->consistencyErrors) > 0) {
+            return $this->handleFormError();
+        }
+        return true;
+    }
+
+    public function finishFormView()
+    {
+        if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
+            unset($_SESSION[$this->getHTMLId() . "rowid"]);
+        }
+
+        $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+        $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
+        unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
     }
 
 
