@@ -705,7 +705,7 @@ class Controller extends BlockController
             }
         }
         $this->getEntityManager()->persist($this->basicTableInstance);
-        $this->getEntityManager()->flush($this->basicTableInstance);
+        $this->getEntityManager()->flush();
 
     }
 
