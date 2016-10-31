@@ -1113,7 +1113,10 @@ class Controller extends BlockController
         $selfsavefields = array();
 
         foreach ($this->getFields() as $key => $value) {
-            if ($key == 'id') {
+            /**
+             * @var Field $value
+             */
+            if ($key == 'id' || $value->showInForm() === false) {
             } else {
                 $fieldname = $this->postFieldMap[$value->getPostName()];
                 if ($value->validatePost($savevalues[$value->getPostName()])) {
