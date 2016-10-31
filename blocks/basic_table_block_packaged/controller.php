@@ -1161,7 +1161,7 @@ class Controller extends BlockController
 
         //if the data is inserted, the saveself fields can only save afterwards
 
-        $this->consistencyErrors = $this->getModel()->checkConsistency();
+        $this->consistencyErrors = $model->checkConsistency();
         if (count($this->consistencyErrors) > 0) {
             return $this->handleFormError();
         }
