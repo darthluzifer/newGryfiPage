@@ -2,7 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry;
 use Concrete\Flysystem\Exception;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
-use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 
@@ -124,7 +124,7 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
             try {
                 $PersistentMetadataParent = $event->getEntityManager()->getMetadataFactory()->getMetadataFor($parent);
                 $eventArgs = new LoadClassMetadataEventArgs($PersistentMetadataParent, $event->getEntityManager());
-                $this->overrideMetadata($event, $parent, true);
+                $this->overrideMetadata($eventArgs, $parent, true);
                 $this->cachedMap[$parent]['map'] = $this->cachedMap[$class]['map'];
                 $PersistentMetadataParent->discriminatorMap = $this->cachedMap[$class]['map'];
                 $event->getEntityManager()->getMetadataFactory()->setMetadataFor($parent,$PersistentMetadataParent);
@@ -139,7 +139,7 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
                 if($recursive === false) {
                     $cacheDriver->save(
                         $class . '$CLASSMETADATA',
-                        $PersistentMetadataParent,
+                        $event->getClassMetadata(),
                         null
                     );
                 }

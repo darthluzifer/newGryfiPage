@@ -50,11 +50,6 @@ class Controller extends BlockController
      */
     public $options = array();
 
-    /**
-     * the table where the options are linked to
-     * @var string
-     */
-    protected $btTable = 'btBasicTableInstance';
 
     /**
      * @var string
@@ -216,14 +211,10 @@ class Controller extends BlockController
 
         //load the current options
 
-        if ($obj instanceof Block) {
-
-
-            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
-
-            $this->basicTableInstance = $bt;
+        $this->basicTableInstance = $this->getBasicTableInstance();
+        if(!isset($this->requiredOptions)) {
+            $this->requiredOptions = array();
         }
-        $this->requiredOptions = array();
 
 
     }
@@ -244,15 +235,36 @@ class Controller extends BlockController
     }
 
 
-    public function getBasicTableInstance()
+    public function getBasicTableInstance($obj = null)
     {
         if ($this->basicTableInstance == null) {
-            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
+            if($obj == null){
+                $bID = $this->bID;
+            }else{
+                $bID = $obj->getBlockID();
+            }
+            /**
+             * dont know why the normal approach does not work.
+             * using now directly dql instead
+             */
+//            $query = $this->getEntityManager()->createQueryBuilder();
+//
+//            $query->select("bt,o")
+//                ->from(get_class(new BasicTableInstance()), "bt")
+//                ->leftJoin("bt.tableBlockOptions", "o")
+//                ->where($query->expr()->eq( "bt.bID",":id"));
+//            $query->setParameter(":id",$bID);
+
+            $dql = $this->getEntityManager()->createQuery("SELECT bt,o FROM Concrete\Package\BasicTablePackage\Src\BasicTableInstance bt LEFT JOIN bt.tableBlockOptions o WHERE bt.bID = :id");
+            $dql->setParameter(":id",$bID);
+            $result = $dql->getResult(\Doctrine\ORM\Query::HYDRATE_OBJECT);
+            if(is_array($result)){
+                $bt = reset($result);
+            }
             if ($bt == null) {
                 $bt = new BasicTableInstance();
-                $bt->set("bID", $this->bID);
-                $this->getEntityManager()->persist($bt);
-                $this->getEntityManager()->flush($bt);
+                $bt->set("bID", $bID);
+
             }
             $this->basicTableInstance = $bt;
         }
@@ -935,6 +947,22 @@ class Controller extends BlockController
                 foreach ($currentBlockOptions->toArray() as $currentBlockOption) {
                     if ($currentBlockOption->optionName == $requOption->optionName) {
                         $currentBlockOption->setPossibleValues($requOption->getPossibleValues());
+                        //load the right optiontype
+                        if(get_class($currentBlockOption) == get_class($requOption)){
+
+                        }else{
+                            //load the right current option
+                            $realBlockOption = $this->getEntityManager()
+                                ->getRepository(get_class($requOption))
+                                ->findOneBy(
+                                    array($currentBlockOption->getIdFieldName() => $currentBlockOption->getId())
+                                );
+                            if($realBlockOption != null){
+                                $currentBlockOption = $realBlockOption;
+                            }
+                        }
+
+
                         $this->requiredOptions[$optionNum] = $currentBlockOption;
                     }
                 }

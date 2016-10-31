@@ -41,6 +41,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 
 /**
@@ -341,5 +343,68 @@ abstract class BaseEntity
         $this->checkingConsistency = false;
         return array();
     }
+
+    public static function getEntityManagerStatic(){
+        $pkg = Package::getByHandle("basic_table_package");
+        return $pkg->getEntityManager();
+    }
+
+    /**
+     * @param string
+     * @return QueryBuilder
+     */
+    public static function getBuildQueryWithJoinedAssociations($classname){
+        $selectEntities = array($classname=>null);
+
+
+        /**
+         * @var ClassMetadata $metadata
+         */
+        $metadata = static::getEntityManagerStatic()->getMetadataFactory()->getMetadataFor($classname);
+        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
+            $targetEntityInstance = new $mapping['targetEntity'];
+            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
+
+        }
+
+
+        /**
+         * @var QueryBuilder $query
+         */
+        $query = static::getEntityManagerStatic()->createQueryBuilder();
+
+        //add select
+
+        $entities = $selectEntities;
+
+        $selectString = "";
+        $entityCounter = 0;
+        foreach($entities as $fieldname => $entityName){
+            if($entityCounter > 0){
+                $selectString.=",";
+            }
+            $selectString.=" e".$entityCounter++;
+        }
+        $query->select($selectString);
+
+
+        $query->from(reset(array_keys($entities)), "e0");
+
+        $entityCounter = 1;
+        $first = true;
+        foreach($selectEntities as $fieldName => $entityName){
+            if($first){
+                //first entity is the from clause, so no join required
+                $first = false;
+                continue;
+            }
+            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
+
+        }
+
+        return $query;
+    }
+
+
 
 }
