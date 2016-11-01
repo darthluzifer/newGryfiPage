@@ -369,10 +369,10 @@ abstract class BaseEntity
      *  array of:
      * array(
     'fromEntityStart' => array('shortname'=> 'e0'
-     *                                                       , 'classname'=>get_class($this->model)
+     *                                                       , 'class'=>get_class($this->model)
      *                                             )
      *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
-     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
+     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
      *
      * );
      * @return QueryBuilder
@@ -381,7 +381,7 @@ abstract class BaseEntity
      * @return QueryBuilder
      */
     public static function getBuildQueryWithJoinedAssociations($classname = null, callable $addFilterFunction =null){
-        $selectEntities = array($classname=>null);
+
         if($classname == null){
             $classname = static::getFullClassName();
         }
@@ -395,16 +395,8 @@ abstract class BaseEntity
         //TODO check if addFilterFunciton has the right signature
 
         //
+        $selectEntities = static::getSelectEntitiesOf($classname);
 
-        /**
-         * @var ClassMetadata $metadata
-         */
-        $metadata = static::getEntityManagerStatic()->getMetadataFactory()->getMetadataFor($classname);
-        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
-            $targetEntityInstance = new $mapping['targetEntity'];
-            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
-
-        }
 
 
         /**
@@ -436,30 +428,95 @@ abstract class BaseEntity
          * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
          * first entry is fromEntityStart
          */
-        $associations = array();
         foreach($selectEntities as $fieldName => $entityName){
             if($first){
-                $associations['fromEntityStart']= array('shortname'=> "e0"
+
+                //first entity is the from clause, so no join required
+                $first = false;
+                continue;
+            }
+            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
+
+        }
+
+        $queryConfig = static::getQueryConfigOf($classname);
+
+
+        if($addFilterFunction != null){
+          $query = $addFilterFunction($query,$queryConfig);
+        }
+
+        return $query;
+    }
+
+
+    /**
+     * @param $classname
+     * @return array of the associated entities with $classname, or static::getFullClassName if $classname is null
+     * is in form of:
+     * array(
+        Namespace\To\StartEntity\Classname => null,
+     * 'associationfieldname' => Namespace\To\Association\Classname
+     * );
+     */
+    public static function getSelectEntitiesOf($classname){
+        if($classname == null){
+            $classname = static::getFullClassName();
+        }
+        $selectEntities = array($classname=>null);
+
+        /**
+         * @var ClassMetadata $metadata
+         */
+        $metadata = static::getEntityManagerStatic()->getMetadataFactory()->getMetadataFor($classname);
+        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
+            $targetEntityInstance = new $mapping['targetEntity'];
+            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
+
+        }
+
+        return $selectEntities;
+
+    }
+
+    /**
+     * @param string $classname
+     * @return array
+     * array(
+    'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'class'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     */
+    public static function getQueryConfigOf($classname=null){
+        if($classname == null){
+            $classname = static::getFullClassName();
+        }
+
+        $selectEntities = static::getSelectEntitiesOf($classname);
+        $first = true;
+        $entityCounter = 1;
+        foreach($selectEntities as $fieldName => $entityName){
+            if($first){
+                $queryConfig['fromEntityStart']= array('shortname'=> "e0"
                 ,'class' => $classname
                 );
                 //first entity is the from clause, so no join required
                 $first = false;
                 continue;
             }else{
-                $associations[$fieldName]= array('shortname'=> "e".$entityCounter
+                $queryConfig[$fieldName]= array('shortname'=> "e".$entityCounter
                 ,'class' => $entityName
                 );
             }
-            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
 
         }
 
+        return $queryConfig;
 
-        if($addFilterFunction != null){
-          $query = $addFilterFunction($query,$associations);
-        }
-
-        return $query;
     }
 
 
