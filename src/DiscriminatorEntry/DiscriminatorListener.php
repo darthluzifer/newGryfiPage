@@ -121,29 +121,35 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
 
         if($parentClass!= false) {
             $parent = $parentClass->getName();
-            try {
-                $PersistentMetadataParent = $event->getEntityManager()->getMetadataFactory()->getMetadataFor($parent);
-                $eventArgs = new LoadClassMetadataEventArgs($PersistentMetadataParent, $event->getEntityManager());
-                $this->overrideMetadata($eventArgs, $parent, true);
-                $this->cachedMap[$parent]['map'] = $this->cachedMap[$class]['map'];
-                $PersistentMetadataParent->discriminatorMap = $this->cachedMap[$class]['map'];
-                $event->getEntityManager()->getMetadataFactory()->setMetadataFor($parent,$PersistentMetadataParent);
-                $cacheDriver = $event->getEntityManager()->getMetadataFactory()->getCacheDriver();
-                //because doctrine caches before we refactor the discriminatorMap,
-                //we override the cache
-                $cacheDriver->save(
-                    $parent . '$CLASSMETADATA',
-                    $PersistentMetadataParent,
-                    null
-                );
-                if($recursive === false) {
-                    $cacheDriver->save(
-                        $class . '$CLASSMETADATA',
-                        $event->getClassMetadata(),
-                        null
-                    );
-                }
-                //refresh cache
+
+                try {
+                    $cacheDriver = $event->getEntityManager()->getMetadataFactory()->getCacheDriver();
+
+                    if($parent == BaseEntity::class){
+
+                    }else {
+                        $PersistentMetadataParent = $event->getEntityManager()->getMetadataFactory()->getMetadataFor($parent);
+                        $eventArgs = new LoadClassMetadataEventArgs($PersistentMetadataParent, $event->getEntityManager());
+                        $this->overrideMetadata($eventArgs, $parent, true);
+                        $this->cachedMap[$parent]['map'] = $this->cachedMap[$class]['map'];
+                        $PersistentMetadataParent->discriminatorMap = $this->cachedMap[$class]['map'];
+                        $event->getEntityManager()->getMetadataFactory()->setMetadataFor($parent, $PersistentMetadataParent);
+                        //because doctrine caches before we refactor the discriminatorMap,
+                        //we override the cache
+                        $cacheDriver->save(
+                            $parent . '$CLASSMETADATA',
+                            $PersistentMetadataParent,
+                            null
+                        );
+                    }
+                    if($recursive === false) {
+                        $cacheDriver->save(
+                            $class . '$CLASSMETADATA',
+                            $event->getClassMetadata(),
+                            null
+                        );
+                    }
+                    //refresh cache
 
             }catch (\Exception $e){
 
@@ -155,9 +161,12 @@ class DiscriminatorListener implements \Doctrine\Common\EventSubscriber {
         $rc     = new \ReflectionClass( $class );
         $parent = $rc->getParentClass()->name;
 
-        if( $parent !== null) { //if no parent class is there, its null, not false
+        if( $parent !== null && $parent != BaseEntity::class) { //if no parent class is there, its null, not false
             // Also check all the children of our parent
+            //but only if not BaseEntity
             $this->checkFamily( $parent );
+
+
         } else {
             // This is the top-most parent, used in overrideMetadata
             $this->cachedMap[$class]['isParent'] = true;
