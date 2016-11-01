@@ -38,6 +38,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\BooleanField;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
@@ -383,7 +384,7 @@ abstract class BaseEntity
     public static function getBuildQueryWithJoinedAssociations($classname, callable $addFilterFunction =null){
 
         if($classname == null){
-            $classname = static::getFullClassName();
+            throw new InvalidArgumentException("the first parameter cannot be null");
         }
 
         //if the staticEntityfilterfunction was passed, then use the staticEntityfilterFunciton of the Entity called
@@ -493,9 +494,9 @@ abstract class BaseEntity
      *
      * );
      */
-    public static function getQueryConfigOf($classname=null){
+    public static function getQueryConfigOf($classname){
         if($classname == null){
-            $classname = static::getFullClassName();
+            throw new InvalidArgumentException("the parameter cannot be null");
         }
 
         $selectEntities = static::getSelectEntitiesOf($classname);
