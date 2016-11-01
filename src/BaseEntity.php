@@ -380,7 +380,7 @@ abstract class BaseEntity
      *
      * @return QueryBuilder
      */
-    public static function getBuildQueryWithJoinedAssociations($classname = null, callable $addFilterFunction =null){
+    public static function getBuildQueryWithJoinedAssociations($classname, callable $addFilterFunction =null){
 
         if($classname == null){
             $classname = static::getFullClassName();
@@ -388,7 +388,11 @@ abstract class BaseEntity
 
         //if the staticEntityfilterfunction was passed, then use the staticEntityfilterFunciton of the Entity called
         if($addFilterFunction == self::$staticEntityfilterfunction){
-            $addFilterFunction = static::$staticEntityfilterfunction;
+            $fullclassname = $classname;
+            if($classname[0]!='\\'){
+                $fullclassname = '\\'.$classname;
+            }
+            $addFilterFunction = $fullclassname::$staticEntityfilterfunction;
         }
 
 
@@ -460,9 +464,7 @@ abstract class BaseEntity
      * );
      */
     public static function getSelectEntitiesOf($classname){
-        if($classname == null){
-            $classname = static::getFullClassName();
-        }
+
         $selectEntities = array($classname=>null);
 
         /**

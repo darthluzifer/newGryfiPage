@@ -26,6 +26,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
@@ -736,69 +737,14 @@ class Controller extends BlockController
      * @return QueryBuilder
      */
     public function getBuildQueryWithJoinedAssociations(){
-        $selectEntities = array(get_class($this->model)=>null);
-
-        /**
-         * @var ClassMetadata $metadata
-         */
-        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($this->model));
-        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
-            $targetEntityInstance = new $mapping['targetEntity'];
-            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
-
-        }
+        $classname = get_class($this->model);
 
 
-        /**
-         * @var QueryBuilder $query
-         */
-        $query = $this->getEntityManager()->createQueryBuilder();
+        $query = BaseEntity::getBuildQueryWithJoinedAssociations($classname, BaseEntity::$staticEntityfilterfunction);
 
-        //add select
+        $queryConfig = BaseEntity::getQueryConfigOf($classname);
 
-        $entities = $selectEntities;
-
-        $selectString = "";
-        $entityCounter = 0;
-        foreach($entities as $fieldname => $entityName){
-            if($entityCounter > 0){
-                $selectString.=",";
-            }
-            $selectString.=" e".$entityCounter++;
-        }
-        $query->select($selectString);
-
-
-        $query->from(reset(array_keys($entities)), "e0");
-
-        $entityCounter = 1;
-        $first = true;
-
-        /**
-         * build an array with
-         * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
-         * first entry is fromEntityStart
-         */
-        $associations = array();
-        foreach($selectEntities as $fieldName => $entityName){
-            if($first){
-                $associations['fromEntityStart']= array('shortname'=> "e0"
-                                                                                        ,'class' => get_class($this->getModel())
-                                                                                );
-                //first entity is the from clause, so no join required
-                $first = false;
-                continue;
-            }else{
-
-                $associations[$fieldName]= array('shortname'=> "e".$entityCounter
-                ,'class' => $entityName
-                );
-            }
-            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
-
-        }
-
-        $query = $this->addFilterToQuery($query, $associations);
+        $query = $this->addFilterToQuery($query, $queryConfig);
 
         return $query;
     }
@@ -1248,6 +1194,8 @@ class Controller extends BlockController
      *
      * );
      * @return QueryBuilder
+     *
+     * always use andWhere to append the filter, because maybe the entity is already filtered
      */
     public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
         return $query;
