@@ -442,11 +442,21 @@ class Controller extends BlockController
     }
 
     /**
+     * that the view function of the subclasses is called
+     */
+    public function on_before_render()
+    {
+        $this->view();
+    }
+
+    /**
      * action display form for new entry
+     *
      */
     function action_add_new_row_form()
     {
         $this->prepareFormEdit();
+       // $this->view();
 
     }
 
@@ -1241,6 +1251,10 @@ class Controller extends BlockController
      */
     public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
         return $query;
+    }
+
+    public function view(){
+
     }
 
 
