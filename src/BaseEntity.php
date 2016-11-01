@@ -63,6 +63,9 @@ abstract class BaseEntity
     protected $defaultSubFormView = false;
     protected $checkingConsistency = false;
 
+    public static $staticEntityfilterfunction;
+    public static $baseEntityfilterFunction;
+
     public function __construct(){
        // $this->setDefaultFieldTypes();
         $this->setDefaultFormViews();
@@ -349,13 +352,49 @@ abstract class BaseEntity
         return $pkg->getEntityManager();
     }
 
+
     /**
-     * @param string
+     * @param null $classname if no classname is passed, the static classname is used
+     * @param callable|null $addFilterFunction
+     * if $addFilterFunciton is BaseEntity::$staticEntityfilterfunction, then
+     * the function gets switched to  $addFilterFunction = static::$staticEntityfilterfunction;
+     * null : no filter
+     * if you really want to use the filter of BaseEntity, use:
+     * BaseEntity::$baseEntityfilterFunction
+     *
+     * $addFilterFunction must be of signature and is called in this function:
+     * /**
+     * @param QueryBuilder $query
+     * @param array $queryConfig
+     *  array of:
+     * array(
+    'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'classname'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     * @return QueryBuilder
+
+     *
      * @return QueryBuilder
      */
-    public static function getBuildQueryWithJoinedAssociations($classname){
+    public static function getBuildQueryWithJoinedAssociations($classname = null, callable $addFilterFunction =null){
         $selectEntities = array($classname=>null);
+        if($classname == null){
+            $classname = static::getFullClassName();
+        }
 
+        //if the staticEntityfilterfunction was passed, then use the staticEntityfilterFunciton of the Entity called
+        if($addFilterFunction == self::$staticEntityfilterfunction){
+            $addFilterFunction = static::$staticEntityfilterfunction;
+        }
+
+
+        //TODO check if addFilterFunciton has the right signature
+
+        //
 
         /**
          * @var ClassMetadata $metadata
@@ -392,14 +431,32 @@ abstract class BaseEntity
 
         $entityCounter = 1;
         $first = true;
+        /**
+         * build an array with
+         * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
+         * first entry is fromEntityStart
+         */
+        $associations = array();
         foreach($selectEntities as $fieldName => $entityName){
             if($first){
+                $associations['fromEntityStart']= array('shortname'=> "e0"
+                ,'class' => $classname
+                );
                 //first entity is the from clause, so no join required
                 $first = false;
                 continue;
+            }else{
+                $associations[$fieldName]= array('shortname'=> "e".$entityCounter
+                ,'class' => $entityName
+                );
             }
             $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
 
+        }
+
+
+        if($addFilterFunction != null){
+          $query = $addFilterFunction($query,$associations);
         }
 
         return $query;
@@ -408,3 +465,24 @@ abstract class BaseEntity
 
 
 }
+
+/**
+ * @param QueryBuilder $query
+ * @param array $queryConfig
+ * @return QueryBuilder
+ * if you want to change the defaultFilterFunction of an Entity, put this statement under your class,
+ * but with your classname of course
+ */
+BaseEntity::$staticEntityfilterfunction = function(QueryBuilder $query, array $queryConfig = array()){
+    return $query;
+};
+
+/**
+ * @param QueryBuilder $query
+ * @param array $queryConfig
+ * @return QueryBuilder
+ * the filter funciton of base entity
+ */
+BaseEntity::$baseEntityfilterFunction = function(QueryBuilder $query, array $queryConfig = array()){
+    return $query;
+};

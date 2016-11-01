@@ -763,15 +763,32 @@ class Controller extends BlockController
 
         $entityCounter = 1;
         $first = true;
+
+        /**
+         * build an array with
+         * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
+         * first entry is fromEntityStart
+         */
+        $associations = array();
         foreach($selectEntities as $fieldName => $entityName){
             if($first){
+                $associations['fromEntityStart']= array('shortname'=> "e0"
+                                                                                        ,'class' => get_class($this->getModel())
+                                                                                );
                 //first entity is the from clause, so no join required
                 $first = false;
                 continue;
+            }else{
+
+                $associations[$fieldName]= array('shortname'=> "e".$entityCounter
+                ,'class' => $entityName
+                );
             }
             $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
 
         }
+
+        $query = $this->addFilterToQuery($query, $associations);
 
         return $query;
     }
@@ -1205,6 +1222,25 @@ class Controller extends BlockController
         $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
         $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
         unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
+    }
+
+
+    /**
+     * @param QueryBuilder $query
+     * @param array $queryConfig
+     *  array of:
+     * array(
+            'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'classname'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     * @return QueryBuilder
+     */
+    public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
+        return $query;
     }
 
 
