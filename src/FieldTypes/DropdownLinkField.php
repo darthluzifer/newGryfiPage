@@ -301,8 +301,13 @@ class DropdownLinkField extends DropdownField{
 
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
         if($this->value != null){
-            $setValue = $this->value->getId();
+            $setValue = $value->getId();
         }else{
 
             $setValue = "";
