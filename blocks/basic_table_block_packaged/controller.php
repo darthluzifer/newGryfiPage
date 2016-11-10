@@ -488,9 +488,11 @@ class Controller extends BlockController
         //save it in the session
         $_SESSION[$this->getHTMLId() . "rowid"] = $this->editKey;
 
-        if ($_POST['action'] == 'edit') {
+        $row = $this->getRowValues();
+
+        if ($_POST['action'] == 'edit' && strlen($this->getEditActionIcon($row))>0) {
             $this->prepareFormEdit();
-        } elseif ($_POST['action'] == 'delete') {
+        } elseif ($_POST['action'] == 'delete' && strlen($this->getDeleteActionIcon($row))>0 ) {
             $this->deleteRow();
         }
     }
@@ -832,7 +834,7 @@ class Controller extends BlockController
         } else {
             //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             $query = $this->getBuildQueryWithJoinedAssociations();
-            $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+            $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
 
             try {
