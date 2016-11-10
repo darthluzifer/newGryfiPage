@@ -290,10 +290,18 @@ class DateField extends Field{
         if ($clientSideValidationActivated) {
             $validationAttributes = $this->addValidationAttributes(array());
         }
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        //set value to default before displaying the form
+        if($value == null && $default != null){
+           $this->setSQLValue($default);
+        }
         $returnString .= '
 				<div  class="input-append date datepickerdiv" data-date-format="' . static::$currentFormat['bootstrapdatepicker'] . '" data-date="' . $this->getTableView() . '">
 				<input id="' . $this->getHtmlId() . '" name="' . $this->getPostName() . '"  type="text" value="' . $this->getTableView() . '" size="16"
 				';
+        //then set it back
+        $this->setSQLValue($value);
         if (count($validationAttributes) > 0) {
             foreach ($validationAttributes as $key => $value) {
                 $returnString .= " $key = \"$value\" ";
