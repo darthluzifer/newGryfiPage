@@ -234,6 +234,10 @@ abstract class BaseEntity
 
     }
 
+    public function setDefaultValues($fields){
+        return $fields;
+    }
+
     /**
      * @param ArrayCollection|PersistentCollection $coll1
      * @param ArrayCollection|PersistentCollection $coll2

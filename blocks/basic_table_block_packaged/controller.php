@@ -778,7 +778,10 @@ class Controller extends BlockController
     public function getFields()
     {
         if ($this->editKey == null) {
-            return $this->model->getFieldTypes();
+
+            $fields = $this->model->getFieldTypes();
+            //only if inserting-> editKey is 0, the default values are set
+            return $this->model->setDefaultValues($fields);
         }
         return $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey))->getFieldTypes();
 
