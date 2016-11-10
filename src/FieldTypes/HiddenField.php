@@ -31,9 +31,14 @@ class HiddenField extends Field
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $returnString = "";
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
 
 
-        $returnString .= '<input type="hidden" id="' . $this->getHtmlId() . '" name="' . $this->getPostName() . '" value="' . $this->getValue() . '" />';
+        $returnString .= '<input type="hidden" id="' . $this->getHtmlId() . '" name="' . $this->getPostName() . '" value="' . $value . '" />';
 
         return $returnString;
     }
