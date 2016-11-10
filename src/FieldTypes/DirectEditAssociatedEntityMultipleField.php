@@ -24,6 +24,12 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
     protected $subErrorMsg = array();
 
+    public function __construct($sqlFieldname, $label, $postName)
+    {
+        parent::__construct($sqlFieldname, $label, $postName);
+        $this->default = new ArrayCollection();
+    }
+
     public function getFormView($form, $clientSideValidationActivated = true){
         $html = "
         <div class='subentityedit col-xs-12'>
@@ -189,6 +195,10 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
          * @var BaseEntity $value
          */
         $values = $this->getSQLValue();
+
+        if(($values == null || count($values)==0) && count($this->getDefault())>0){
+            $values = $this->getDefault();
+        }
 
         $this->loadSubErrorMsg();
 
