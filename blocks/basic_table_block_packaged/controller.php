@@ -26,6 +26,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
@@ -50,11 +51,6 @@ class Controller extends BlockController
      */
     public $options = array();
 
-    /**
-     * the table where the options are linked to
-     * @var string
-     */
-    protected $btTable = 'btBasicTableInstance';
 
     /**
      * @var string
@@ -216,14 +212,10 @@ class Controller extends BlockController
 
         //load the current options
 
-        if ($obj instanceof Block) {
-
-
-            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $obj->getBlockID()));
-
-            $this->basicTableInstance = $bt;
+        $this->basicTableInstance = $this->getBasicTableInstance();
+        if(!isset($this->requiredOptions)) {
+            $this->requiredOptions = array();
         }
-        $this->requiredOptions = array();
 
 
     }
@@ -244,15 +236,36 @@ class Controller extends BlockController
     }
 
 
-    public function getBasicTableInstance()
+    public function getBasicTableInstance($obj = null)
     {
         if ($this->basicTableInstance == null) {
-            $bt = $this->getEntityManager()->getRepository('\Concrete\Package\BasicTablePackage\Src\BasicTableInstance')->findOneBy(array('bID' => $this->bID));
+            if($obj == null){
+                $bID = $this->bID;
+            }else{
+                $bID = $obj->getBlockID();
+            }
+            /**
+             * dont know why the normal approach does not work.
+             * using now directly dql instead
+             */
+//            $query = $this->getEntityManager()->createQueryBuilder();
+//
+//            $query->select("bt,o")
+//                ->from(get_class(new BasicTableInstance()), "bt")
+//                ->leftJoin("bt.tableBlockOptions", "o")
+//                ->where($query->expr()->eq( "bt.bID",":id"));
+//            $query->setParameter(":id",$bID);
+
+            $dql = $this->getEntityManager()->createQuery("SELECT bt,o FROM Concrete\Package\BasicTablePackage\Src\BasicTableInstance bt LEFT JOIN bt.tableBlockOptions o WHERE bt.bID = :id");
+            $dql->setParameter(":id",$bID);
+            $result = $dql->getResult(\Doctrine\ORM\Query::HYDRATE_OBJECT);
+            if(is_array($result)){
+                $bt = reset($result);
+            }
             if ($bt == null) {
                 $bt = new BasicTableInstance();
-                $bt->set("bID", $this->bID);
-                $this->getEntityManager()->persist($bt);
-                $this->getEntityManager()->flush($bt);
+                $bt->set("bID", $bID);
+
             }
             $this->basicTableInstance = $bt;
         }
@@ -392,132 +405,36 @@ class Controller extends BlockController
 
 
 
-        //form view is over
-        $this->isFormview = false;
-        $u = new User();
-
-
-        $bo = $this->getBlockObject();
-
-
         if ($this->post('rcID')) {
             // we pass the rcID through the form so we can deal with stacks
             $c = Page::getByID($this->post('rcID'));
         } else {
             $c = $this->getCollectionObject();
         }
+        //form view is over
+        $v =  $this->checkPostValues();
+        if($v === false){
+            return false;
+        }
+
+        if ($this->editKey == null) {
+            $model = $this->model;
+        } else {
+            $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+        }
+
+        if($this->persistValues($model, $v) === false){
+            return false;
+        }
+
+        $this->getEntityManager()->flush();
 
 
-        if (isset($_POST['cancel'])) {
-            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
-                unset($_SESSION[$this->getHTMLId() . "rowid"]);
-            }
-            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+        $this->finishFormView();
+        if($redirectOnSuccess) {
             $this->redirect($c->getCollectionPath());
-            return;
         }
 
-        if ($this->requiresRegistration()) {
-            if (!$u->isRegistered()) {
-                $this->redirect('/login');
-            }
-        }
-
-
-        $antispam = Loader::helper('validation/antispam');
-        if ($antispam->check('', 'survey_block')) { // we do a blank check which will still check IP and UserAgent's
-            $duID = 0;
-            if ($u->getUserID() > 0) {
-                $duID = $u->getUserID();
-            }
-
-            /** @var \Concrete\Core\Permission\IPService $iph */
-            $iph = Core::make('helper/validation/ip');
-            $ip = $iph->getRequestIP();
-            $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
-            $v = array();
-
-
-            $error = false;
-            //test
-            $errormsg = "";
-            $savevalues = $_REQUEST;
-
-            //add additional fields
-            if (count($this->addFields) > 0) {
-                foreach ($this->addFields as $key => $value) {
-                    $savevalues[$key] = $value;
-                }
-            }
-            //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
-            $selfsavefields = array();
-
-            foreach ($this->getFields() as $key => $value) {
-                if ($key == 'id') {
-                } else {
-                    $fieldname = $this->postFieldMap[$value->getPostName()];
-                    if ($value->validatePost($savevalues[$value->getPostName()])) {
-                        $v[$key] = $value->getSQLValue();
-                    } else {
-                        $error = true;
-                        $this->errorFields[$value->getPostName()] = $value;
-                    }
-                }
-            }
-
-            if ($error) {
-                //TODO send error msg to client
-                $this->prepareFormEdit();
-                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
-                return false;
-            }
-            if ($this->editKey == null) {
-                $model = $this->model;
-            } else {
-                $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
-            }
-
-            $this->getEntityManager()->persist($model);
-            //save values
-            foreach ($this->getFields() as $key => $value) {
-                if ($key != $model->getIdFieldName()) {
-                    if ($v[$key] instanceof BaseEntity) {
-                        $this->getEntityManager()->persist($v[$key]);
-                    } elseif ($v[$key] instanceof ArrayCollection) {
-                        foreach ($v[$key]->toArray() as $refnum => $refObject) {
-                            $this->getEntityManager()->persist($refObject);
-                        }
-                    }
-                    $model->set($key, $v[$key]);
-                }
-            }
-
-
-            //if the data is inserted, the saveself fields can only save afterwards
-
-            $this->consistencyErrors = $this->getModel()->checkConsistency();
-            if (count($this->consistencyErrors)>0) {
-                //TODO send error msg to client
-                $this->prepareFormEdit();
-                $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
-                return false;
-            }
-
-            $this->getEntityManager()->flush();
-
-
-            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
-                unset($_SESSION[$this->getHTMLId() . "rowid"]);
-            }
-            //setcookie("ccmPoll" . $this->bID . '-' . $this->cID, "voted", time() + 1296000, DIR_REL . '/');
-
-            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
-            $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
-            unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
-            if($redirectOnSuccess) {
-                $this->redirect($c->getCollectionPath());
-            }
-        }
 
     }
 
@@ -526,11 +443,21 @@ class Controller extends BlockController
     }
 
     /**
+     * that the view function of the subclasses is called
+     */
+    public function on_before_render()
+    {
+        $this->view();
+    }
+
+    /**
      * action display form for new entry
+     *
      */
     function action_add_new_row_form()
     {
         $this->prepareFormEdit();
+       // $this->view();
 
     }
 
@@ -801,7 +728,7 @@ class Controller extends BlockController
             }
         }
         $this->getEntityManager()->persist($this->basicTableInstance);
-        $this->getEntityManager()->flush($this->basicTableInstance);
+        $this->getEntityManager()->flush();
 
     }
 
@@ -810,52 +737,14 @@ class Controller extends BlockController
      * @return QueryBuilder
      */
     public function getBuildQueryWithJoinedAssociations(){
-        $selectEntities = array(get_class($this->model)=>null);
-
-        /**
-         * @var ClassMetadata $metadata
-         */
-        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor(get_class($this->model));
-        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
-            $targetEntityInstance = new $mapping['targetEntity'];
-            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
-
-        }
+        $classname = get_class($this->model);
 
 
-        /**
-         * @var QueryBuilder $query
-         */
-        $query = $this->getEntityManager()->createQueryBuilder();
+        $query = BaseEntity::getBuildQueryWithJoinedAssociations($classname, BaseEntity::$staticEntityfilterfunction);
 
-        //add select
+        $queryConfig = BaseEntity::getQueryConfigOf($classname);
 
-        $entities = $selectEntities;
-
-        $selectString = "";
-        $entityCounter = 0;
-        foreach($entities as $fieldname => $entityName){
-            if($entityCounter > 0){
-                $selectString.=",";
-            }
-            $selectString.=" e".$entityCounter++;
-        }
-        $query->select($selectString);
-
-
-        $query->from(reset(array_keys($entities)), "e0");
-
-        $entityCounter = 1;
-        $first = true;
-        foreach($selectEntities as $fieldName => $entityName){
-            if($first){
-                //first entity is the from clause, so no join required
-                $first = false;
-                continue;
-            }
-            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
-
-        }
+        $query = $this->addFilterToQuery($query, $queryConfig);
 
         return $query;
     }
@@ -1031,6 +920,22 @@ class Controller extends BlockController
                 foreach ($currentBlockOptions->toArray() as $currentBlockOption) {
                     if ($currentBlockOption->optionName == $requOption->optionName) {
                         $currentBlockOption->setPossibleValues($requOption->getPossibleValues());
+                        //load the right optiontype
+                        if(get_class($currentBlockOption) == get_class($requOption)){
+
+                        }else{
+                            //load the right current option
+                            $realBlockOption = $this->getEntityManager()
+                                ->getRepository(get_class($requOption))
+                                ->findOneBy(
+                                    array($currentBlockOption->getIdFieldName() => $currentBlockOption->getId())
+                                );
+                            if($realBlockOption != null){
+                                $currentBlockOption = $realBlockOption;
+                            }
+                        }
+
+
                         $this->requiredOptions[$optionNum] = $currentBlockOption;
                     }
                 }
@@ -1112,6 +1017,192 @@ class Controller extends BlockController
             throw new \InvalidArgumentException("Invalid field name");
         }
         return new \Symfony\Component\HttpFoundation\JsonResponse($options);
+    }
+
+    /**
+     * @return bool
+     */
+    public function handleFormError()
+    {
+//TODO send error msg to client
+        $this->prepareFormEdit();
+        $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = $_REQUEST;
+        return false;
+    }
+
+    /**
+     * @param $u
+     * @return bool
+     */
+    public function validateRequest($u)
+    {
+        if ($this->requiresRegistration()) {
+            if (!$u->isRegistered()) {
+                $this->redirect('/login');
+                return false;
+            }
+
+        }
+
+
+        $antispam = Loader::helper('validation/antispam');
+        if ($antispam->check('', 'survey_block')) { // we do a blank check which will still check IP and UserAgent's
+            return true;
+        } else {
+            return $this->handleFormError();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkPostValues()
+    {
+        $this->isFormview = false;
+        $u = new User();
+
+
+        $bo = $this->getBlockObject();
+
+
+        if ($this->post('rcID')) {
+            // we pass the rcID through the form so we can deal with stacks
+            $c = Page::getByID($this->post('rcID'));
+        } else {
+            $c = $this->getCollectionObject();
+        }
+
+        if ($this->validateRequest($u) === false) {
+            return $this->handleFormError();
+        }
+
+
+        if (isset($_POST['cancel'])) {
+            if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
+                unset($_SESSION[$this->getHTMLId() . "rowid"]);
+            }
+            $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+            $this->redirect($c->getCollectionPath());
+            return true;
+        }
+
+
+        $duID = 0;
+        if ($u->getUserID() > 0) {
+            $duID = $u->getUserID();
+        }
+
+        /** @var \Concrete\Core\Permission\IPService $iph */
+        $iph = Core::make('helper/validation/ip');
+        $ip = $iph->getRequestIP();
+        $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
+        $v = array();
+
+
+        $error = false;
+        //test
+        $errormsg = "";
+        $savevalues = $_REQUEST;
+
+        //add additional fields
+        if (count($this->addFields) > 0) {
+            foreach ($this->addFields as $key => $value) {
+                $savevalues[$key] = $value;
+            }
+        }
+        //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
+        $selfsavefields = array();
+
+        foreach ($this->getFields() as $key => $value) {
+            /**
+             * @var Field $value
+             */
+            if ($key == 'id' || $value->showInForm() === false) {
+            } else {
+                $fieldname = $this->postFieldMap[$value->getPostName()];
+                if ($value->validatePost($savevalues[$value->getPostName()])) {
+                    $v[$key] = $value->getSQLValue();
+                } else {
+                    $error = true;
+                    $this->errorFields[$value->getPostName()] = $value;
+                }
+            }
+        }
+
+        if ($error) {
+            return $this->handleFormError();
+
+        }
+
+        return $v;
+    }
+
+    /**
+     * @param $model
+     * @param $v
+     * @return bool
+     */
+    public function persistValues($model, $v)
+    {
+        $this->getEntityManager()->persist($model);
+        //save values
+        foreach ($this->getFields() as $key => $value) {
+            if ($key != $model->getIdFieldName()) {
+                if ($v[$key] instanceof BaseEntity) {
+                    $this->getEntityManager()->persist($v[$key]);
+                } elseif ($v[$key] instanceof ArrayCollection) {
+                    foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                        $this->getEntityManager()->persist($refObject);
+                    }
+                }
+                $model->set($key, $v[$key]);
+            }
+        }
+
+
+        //if the data is inserted, the saveself fields can only save afterwards
+
+        $this->consistencyErrors = $model->checkConsistency();
+        if (count($this->consistencyErrors) > 0) {
+            return $this->handleFormError();
+        }
+        return true;
+    }
+
+    public function finishFormView()
+    {
+        if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
+            unset($_SESSION[$this->getHTMLId() . "rowid"]);
+        }
+
+        $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
+        $_SESSION['BasicTableFormData'][$this->bID]['inputValues'] = null;
+        unset($_SESSION['BasicTableFormData'][$this->bID]['inputValues']);
+    }
+
+
+    /**
+     * @param QueryBuilder $query
+     * @param array $queryConfig
+     *  array of:
+     * array(
+            'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'classname'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     * @return QueryBuilder
+     *
+     * always use andWhere to append the filter, because maybe the entity is already filtered
+     */
+    public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
+        return $query;
+    }
+
+    public function view(){
+
     }
 
 

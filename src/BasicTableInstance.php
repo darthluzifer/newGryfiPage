@@ -33,7 +33,6 @@ class BasicTableInstance extends BaseEntity
     /**
      * @var int
      * @Id @Column(type="integer")
-     * @GEneratedValue(strategy="AUTO")
      */
     protected $bID;
 
