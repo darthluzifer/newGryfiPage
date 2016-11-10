@@ -52,8 +52,14 @@ class EmailField extends Field
      */
     public function getInputHtml($form, $clientSideValidationActivated)
     {
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
+
         $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
+            'value' => $value,
             'id' => $this->getHtmlId(),
         );
 
@@ -62,7 +68,7 @@ class EmailField extends Field
         }
 
 
-        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $this->getValue(), $attributes, $form);
+        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $value, $attributes, $form);
 
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
