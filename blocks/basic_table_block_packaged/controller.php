@@ -779,9 +779,7 @@ class Controller extends BlockController
     {
         if ($this->editKey == null) {
 
-            $fields = $this->model->getFieldTypes();
-            //only if inserting-> editKey is 0, the default values are set
-            return $this->model->setDefaultValues($fields);
+            return $this->model->getFieldTypes();
         }
         return $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey))->getFieldTypes();
 
@@ -989,6 +987,16 @@ class Controller extends BlockController
      * @return BaseEntity|null|object
      */
     public function getModel(){
+        if($this->model->getId() != $this->editKey && $this->editKey != null){
+            $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->model));
+            $query->andWhere($query->expr()->eq("e0.".$this->model->getIdFieldName(), ":basicTableControllerId"));
+            $query->setParameter(":basicTableControllerId", $this->editKey);
+            $result =$query->getQuery()->execute();
+            if(count($result)==1){
+                $this->model = reset($result);
+            }
+
+        }
         return $this->model;
     }
 

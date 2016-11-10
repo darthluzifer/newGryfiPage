@@ -40,6 +40,12 @@ class DropdownMultilinkField extends DropdownLinkField{
 
 
 
+    public function __construct($sqlFieldname, $label, $postName)
+    {
+        parent::__construct($sqlFieldname, $label, $postName);
+        $this->default = new ArrayCollection();
+    }
+
     /**
      * set the tablename of the n to m table
      * @param String $tablename
@@ -272,6 +278,9 @@ class DropdownMultilinkField extends DropdownLinkField{
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $values = $this->getValues();
+        if(($values == null || count($values)==0) && count($this->getDefault())>0){
+            $values = $this->getDefault();
+        }
         if ($values instanceof ArrayCollection || $values instanceof PersistentCollection) {
 
             $values = $values->toArray();

@@ -94,6 +94,7 @@ abstract class BaseEntity
     public function getFieldTypes(){
         if(count($this->fieldTypes) == 0){
             $this->setDefaultFieldTypes();
+
         }
         return $this->fieldTypes;
     }
@@ -232,10 +233,17 @@ abstract class BaseEntity
             }
         }
 
+        if($this->getId()==null){
+            $this->setDefaultValues();
+        }
+
     }
 
-    public function setDefaultValues($fields){
-        return $fields;
+    /**
+     * @return $this
+     */
+    public function setDefaultValues(){
+        return $this;
     }
 
     /**

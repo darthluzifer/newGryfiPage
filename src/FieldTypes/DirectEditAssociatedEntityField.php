@@ -184,6 +184,12 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $html='';
         $value = $this->getSQLValue();
 
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
+
         if($value instanceof Proxy){
             $value = $this->getEntityManager()
                 ->getRepository($this->targetEntity)

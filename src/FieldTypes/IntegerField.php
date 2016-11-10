@@ -157,11 +157,17 @@ class IntegerField extends Field {
             $attributes = $this->addValidationAttributes($attributes);
         }
 
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
+
 
         /**
          * @var Form $form
          */
-        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "number", $this->getValue(), $attributes, $form);
+        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "number", $value, $attributes, $form);
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
     }

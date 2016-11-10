@@ -241,15 +241,7 @@ class DropdownLinkField extends DropdownField{
 
 
     public function getValue(){
-        if(is_null($this->value)){
-            return "";
-        }
-
-        if($this->options == null){
-            $this->getOptions();
-        }
-
-        return $this->options[$this->value->getId()];
+        return $this->value;
     }
 
     public function validatePost($value){
@@ -301,8 +293,13 @@ class DropdownLinkField extends DropdownField{
 
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
         if($this->value != null){
-            $setValue = $this->value->getId();
+            $setValue = $value->getId();
         }else{
 
             $setValue = "";
