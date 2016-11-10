@@ -29,6 +29,7 @@ class Field{
 	protected $showInTable = true;
     protected $nullable = true;
     const REPLACE_BRACE_IN_ID_WITH='-';
+    protected $default = null;
     /**
      * @var BlockView
      */
@@ -84,6 +85,19 @@ class Field{
 	public function getTableView(){
 		return $this->getValue();
 	}
+
+    /**
+     * @param $default
+     * @return $this
+     */
+	public function setDefault($default){
+	    $this->default = $default;
+        return $this;
+    }
+
+    public function getDefault(){
+        return $this->default;
+    }
 
 	public function addValidationAttributes($attributes){
 
@@ -293,11 +307,15 @@ class Field{
             $attributes = $this->addValidationAttributes($attributes);
         }
 
-
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
         /**
          * @var Form $form
          */
-        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $this->getValue(), $attributes, $form);
+        $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $value, $attributes, $form);
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
     }

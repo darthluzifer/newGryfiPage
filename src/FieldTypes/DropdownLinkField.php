@@ -52,7 +52,7 @@ class DropdownLinkField extends DropdownField{
     protected $targetField;
 
     /**
-     * @var array
+     * @var callable
      */
     protected $filter;
 
@@ -68,7 +68,7 @@ class DropdownLinkField extends DropdownField{
      * @param callable|null $getDisplayString to overrride the default getDisplayStringFunction provided by the Entity
      * @param array|null $filter
      */
-    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, callable $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
         $this->targetEntity = $targetEntity;
@@ -100,9 +100,13 @@ class DropdownLinkField extends DropdownField{
         return $this;
     }
 
-    public function setFilter(array $filter){
+    public function setFilter(callable $filter){
         $this->filter = $filter;
         return $this;
+    }
+
+    public function getFilter(){
+        return $this->filter;
     }
 
     public function setIsBidirectional($bool){
@@ -114,34 +118,10 @@ class DropdownLinkField extends DropdownField{
         return $this->isBidirectional;
     }
 
-    /**
-     * set the tablename of the linktable (Table, the foreign key points to
-     * @param String $tablename
-     */
-    public function setLinkTable( $tablename){
-        $this->linktable = $tablename;
-        return $this;
-    }
 
-    /**
-     * sets the sql filter string for prepare and the vars to insert
-     * @param String $sqlfilter
-     * @param array $sqlvars
-     */
-    public function setSQLFilter( $sqlfilter, array $sqlvars = array()){
-        $this->sqlfilter = $sqlfilter;
-        $this->sqlvars = $sqlvars;
-        return $this;
-    }
 
-    /**
-     * sets the columnname which should be shown
-     * @param String $showcolumnname
-     */
-    public function setShowColumn( $showcolumnname){
-        $this->showcolumn = $showcolumnname;
-        return $this;
-    }
+
+
 
     public function getTableView(){
         $value = $this->getSQLValue();
@@ -172,22 +152,7 @@ class DropdownLinkField extends DropdownField{
         return $this->isNullable;
     }
 
-    /**
-     * set the Fieldname of the idField to save in db
-     * @param String $idfieldname
-     */
-    public function setIdField( $idfieldname){
-        $this->idField = $idfieldname;
-        return $this;
-    }
 
-    /**
-     *
-     * @return string
-     */
-    public function getIdField(){
-        return $this->idField;
-    }
 
     /**
      * @return array of options
@@ -199,7 +164,6 @@ class DropdownLinkField extends DropdownField{
         $em = $this->getEntityManager();
 
 
-//TODO implement filter for options
         $modelList=$this->em->getRepository($this->targetEntity)->findAll();
 
         $options = array();
@@ -277,15 +241,7 @@ class DropdownLinkField extends DropdownField{
 
 
     public function getValue(){
-        if(is_null($this->value)){
-            return "";
-        }
-
-        if($this->options == null){
-            $this->getOptions();
-        }
-
-        return $this->options[$this->value->getId()];
+        return $this->value;
     }
 
     public function validatePost($value){
@@ -334,14 +290,16 @@ class DropdownLinkField extends DropdownField{
         return $this->getDisplayString;
     }
 
-    public function getFilter(){
-        return $this->filter;
-    }
 
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
         if($this->value != null){
-            $setValue = $this->value->getId();
+            $setValue = $value->getId();
         }else{
 
             $setValue = "";

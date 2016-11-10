@@ -38,9 +38,12 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\BooleanField;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 
 /**
@@ -60,6 +63,9 @@ abstract class BaseEntity
     protected $defaultFormView = false;
     protected $defaultSubFormView = false;
     protected $checkingConsistency = false;
+
+    public static $staticEntityfilterfunction;
+    public static $baseEntityfilterFunction;
 
     public function __construct(){
        // $this->setDefaultFieldTypes();
@@ -88,6 +94,7 @@ abstract class BaseEntity
     public function getFieldTypes(){
         if(count($this->fieldTypes) == 0){
             $this->setDefaultFieldTypes();
+
         }
         return $this->fieldTypes;
     }
@@ -226,6 +233,17 @@ abstract class BaseEntity
             }
         }
 
+        if($this->getId()==null){
+            $this->setDefaultValues();
+        }
+
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDefaultValues(){
+        return $this;
     }
 
     /**
@@ -342,4 +360,201 @@ abstract class BaseEntity
         return array();
     }
 
+    public static function getEntityManagerStatic(){
+        $pkg = Package::getByHandle("basic_table_package");
+        return $pkg->getEntityManager();
+    }
+
+
+    /**
+     * @param null $classname if no classname is passed, the static classname is used
+     * @param callable|null $addFilterFunction
+     * if $addFilterFunciton is BaseEntity::$staticEntityfilterfunction, then
+     * the function gets switched to  $addFilterFunction = static::$staticEntityfilterfunction;
+     * null : no filter
+     * if you really want to use the filter of BaseEntity, use:
+     * BaseEntity::$baseEntityfilterFunction
+     *
+     * $addFilterFunction must be of signature and is called in this function:
+     * /**
+     * @param QueryBuilder $query
+     * @param array $queryConfig
+     *  array of:
+     * array(
+    'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'class'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     * @return QueryBuilder
+
+     *
+     * @return QueryBuilder
+     */
+    public static function getBuildQueryWithJoinedAssociations($classname, callable $addFilterFunction =null){
+
+        if($classname == null){
+            throw new InvalidArgumentException("the first parameter cannot be null");
+        }
+
+        //if the staticEntityfilterfunction was passed, then use the staticEntityfilterFunciton of the Entity called
+        if($addFilterFunction == self::$staticEntityfilterfunction){
+            $fullclassname = $classname;
+            if($classname[0]!='\\'){
+                $fullclassname = '\\'.$classname;
+            }
+            $addFilterFunction = $fullclassname::$staticEntityfilterfunction;
+        }
+
+
+        //TODO check if addFilterFunciton has the right signature
+
+        //
+        $selectEntities = static::getSelectEntitiesOf($classname);
+
+
+
+        /**
+         * @var QueryBuilder $query
+         */
+        $query = static::getEntityManagerStatic()->createQueryBuilder();
+
+        //add select
+
+        $entities = $selectEntities;
+
+        $selectString = "";
+        $entityCounter = 0;
+        foreach($entities as $fieldname => $entityName){
+            if($entityCounter > 0){
+                $selectString.=",";
+            }
+            $selectString.=" e".$entityCounter++;
+        }
+        $query->select($selectString);
+
+
+        $query->from(reset(array_keys($entities)), "e0");
+
+        $entityCounter = 1;
+        $first = true;
+        /**
+         * build an array with
+         * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
+         * first entry is fromEntityStart
+         */
+        foreach($selectEntities as $fieldName => $entityName){
+            if($first){
+
+                //first entity is the from clause, so no join required
+                $first = false;
+                continue;
+            }
+            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
+
+        }
+
+        $queryConfig = static::getQueryConfigOf($classname);
+
+
+        if($addFilterFunction != null){
+          $query = $addFilterFunction($query,$queryConfig);
+        }
+
+        return $query;
+    }
+
+
+    /**
+     * @param $classname
+     * @return array of the associated entities with $classname, or static::getFullClassName if $classname is null
+     * is in form of:
+     * array(
+        Namespace\To\StartEntity\Classname => null,
+     * 'associationfieldname' => Namespace\To\Association\Classname
+     * );
+     */
+    public static function getSelectEntitiesOf($classname){
+
+        $selectEntities = array($classname=>null);
+
+        /**
+         * @var ClassMetadata $metadata
+         */
+        $metadata = static::getEntityManagerStatic()->getMetadataFactory()->getMetadataFor($classname);
+        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
+            $targetEntityInstance = new $mapping['targetEntity'];
+            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
+
+        }
+
+        return $selectEntities;
+
+    }
+
+    /**
+     * @param string $classname
+     * @return array
+     * array(
+    'fromEntityStart' => array('shortname'=> 'e0'
+     *                                                       , 'class'=>get_class($this->model)
+     *                                             )
+     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
+     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
+     *
+     * );
+     */
+    public static function getQueryConfigOf($classname){
+        if($classname == null){
+            throw new InvalidArgumentException("the parameter cannot be null");
+        }
+
+        $selectEntities = static::getSelectEntitiesOf($classname);
+        $first = true;
+        $entityCounter = 1;
+        foreach($selectEntities as $fieldName => $entityName){
+            if($first){
+                $queryConfig['fromEntityStart']= array('shortname'=> "e0"
+                ,'class' => $classname
+                );
+                //first entity is the from clause, so no join required
+                $first = false;
+                continue;
+            }else{
+                $queryConfig[$fieldName]= array('shortname'=> "e".$entityCounter
+                ,'class' => $entityName
+                );
+            }
+
+        }
+
+        return $queryConfig;
+
+    }
+
+
+
 }
+
+/**
+ * @param QueryBuilder $query
+ * @param array $queryConfig
+ * @return QueryBuilder
+ * if you want to change the defaultFilterFunction of an Entity, put this statement under your class,
+ * but with your classname of course
+ */
+BaseEntity::$staticEntityfilterfunction = function(QueryBuilder $query, array $queryConfig = array()){
+    return $query;
+};
+
+/**
+ * @param QueryBuilder $query
+ * @param array $queryConfig
+ * @return QueryBuilder
+ * the filter funciton of base entity
+ */
+BaseEntity::$baseEntityfilterFunction = function(QueryBuilder $query, array $queryConfig = array()){
+    return $query;
+};

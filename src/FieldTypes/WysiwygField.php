@@ -92,7 +92,12 @@ class WysiwygField extends Field{
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $editor = new RedactorEditor();
-        $html = $editor->outputStandardEditor($this->getPostName(), $this->getValue());
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
+        $html = $editor->outputStandardEditor($this->getPostName(), $value);
 
         $html .= $this->getHtmlErrorMsg();
         return $html;

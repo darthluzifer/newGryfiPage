@@ -132,7 +132,12 @@ class DropdownField extends Field{
      */
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
-        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $this->getValue());
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $value = $default;
+        }
+        $html = static::select($this->getHtmlId(), $this->getPostName(), $this->getOptions(), $value);
 
         $html .= $this->getHtmlErrorMsg();
         return $html;

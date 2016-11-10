@@ -245,6 +245,10 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $associations = $this->getValues();
+
+        if(($associations == null || count($associations)==0) && count($this->getDefault())>0){
+            $associations = $this->getDefault();
+        }
         if ($associations instanceof ArrayCollection) {
 
             $associations = $associations->toArray();
