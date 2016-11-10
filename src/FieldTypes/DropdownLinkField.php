@@ -241,15 +241,7 @@ class DropdownLinkField extends DropdownField{
 
 
     public function getValue(){
-        if(is_null($this->value)){
-            return "";
-        }
-
-        if($this->options == null){
-            $this->getOptions();
-        }
-
-        return $this->options[$this->value->getId()];
+        return $this->value;
     }
 
     public function validatePost($value){
