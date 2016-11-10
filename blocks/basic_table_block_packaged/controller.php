@@ -349,15 +349,10 @@ class Controller extends BlockController
      */
     function getEditActionIcon($row)
     {
-        return "<button type='submit'
-    					value = 'edit'
-    					class='btn inlinebtn actionbutton edit'
-    					onclick=\"
-    								$('#action_" . $row['id'] . "').val('edit');
-    			\">
-    								<i class ='fa fa-pencil'> </i>
-    			 </button>";
+        return static::getActionButton($row,"edit", "btn inlinebtn actionbutton edit", "edit","fa fa-pencil");
     }
+
+
 
     /**
      * Returns the HTML for the delete button
@@ -366,14 +361,29 @@ class Controller extends BlockController
      */
     function getDeleteActionIcon($row)
     {
+        return static::getActionButton($row,"delete", "btn inlinebtn actionbutton delete", "delete","fa fa-trash-o");
+
+    }
+
+    /**
+     * @param $row
+     * @param $value
+     * @param $buttonclass
+     * @param $title
+     * @param $iconclass
+     * @return string
+     */
+    public static function getActionButton($row,$value,$buttonclass,$title,$iconclass){
         return "<button type='submit'
-    					value = 'delete'
-    					class='btn inlinebtn actionbutton delete'
-    					onclick=\"
-    								$('#action_" . $row['id'] . "').val('delete');
-    			\">
-    								<i class ='fa fa-trash-o'> </i>
-    			 </button>";
+                            value = '$value'
+                            class='$buttonclass'
+                            title='".t($title)."'
+                            aria-label='".t($title)."'
+                            onclick=\"
+                                        $('#action_" . $row['id'] . "').val('$value');
+                    \">
+                                        <i class ='$iconclass'> </i>
+                     </button>";
     }
 
     /**
