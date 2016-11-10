@@ -107,9 +107,16 @@ class FileField extends Field
          */
         $al = Loader::helper('concrete/asset_library');
         $bf = null;
+        $value = $this->getValue();
+        $default = $this->getDefault();
+        if($value == null && $default != null){
+            $this->setSQLValue($default);
+        }
+
         if ($this->getValue() > 0) {
             $bf = $this->getFileObject();
         }
+        $this->setSQLValue($value);
         $c = Page::getCurrentPage();
         $returnString =
             $al->file($this->getHtmlId(), $this->getPostName(), t('Choose File'), $bf) . "
