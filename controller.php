@@ -34,9 +34,7 @@ class Controller extends Package
 
     public function install()
     {
-        $this->currentlyInstalling = true;
        $em = $this->getEntityManager();
-        $this->currentlyInstalling = false;
         //begin transaction, so when block install fails, but parent::install was successfully, you don't have to uninstall the package
         $em->getConnection()->beginTransaction();
         try {
