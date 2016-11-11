@@ -53,9 +53,9 @@ The normal live cycle of a table package is as follows
                2. else the fields of $controller->model are returned
            3. Iteration through the Fields to display the header column
            4. Iteration through the rows to display all the rows
-               1. Iteration through the fields: First instead of displaying the id, displayActions is called
-                  1. In DisplayAction the id of the row is saved, and the icons to edit or delete are displayed
-               2. Iteration through the fields: For all the other fields, the value of the row is set as the SQL Value of the field. Then the getTableView is called on the Field to get the HTML for the table cell
+                1. Iteration through the fields: First instead of displaying the id, displayActions is called
+                    1. In DisplayAction the id of the row is saved, and the icons to edit or delete are displayed
+                2. Iteration through the fields: For all the other fields, the value of the row is set as the SQL Value of the field. Then the getTableView is called on the Field to get the HTML for the table cell
            2. Icon to create Entry is created
          1. The Controller is set to executed
       1. The user is now possibly able to:
@@ -93,11 +93,11 @@ The normal live cycle of a table package is as follows
                    1. getFields is called (see 4.ii.b.c)
                    2. The former Errors are loaded
                    3. Iteration through each field
-                        1. check if it should be displayed
-                        2. SQL Value is set
-                        3. Error Messages are set
-                        4. View is handed over
-                        5. getFormView of the Field is called, which returns label and input 
+                        * check if it should be displayed
+                        * SQL Value is set
+                        * Error Messages are set
+                        * View is handed over
+                        * getFormView of the Field is called, which returns label and input 
                
                
 5. save row
