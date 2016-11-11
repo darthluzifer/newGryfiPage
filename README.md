@@ -15,16 +15,16 @@ Important Files/Folders:
 *  controller.php
     
     
- ##Package Controller controller.php
-    The Package Controller handles the installation or uninstallation of the Package.
-    First the Namespace:
+ ##Package Controller controller.php  
+  The Package Controller handles the installation or uninstallation of the Package.
+  First the Namespace:
   ```php
   <?php
      namespace Concrete\Package\BasicTablePackage;
-   ```
-     The namespace always starts with Concrete\Package for Packages.
-     Then follows the modified package folder name (in this case basic\_table\_package)
-     You start with camelcase, and when you have a underscore (\_), then you skip the underscore, but the next letter is camelcase.
+```
+  The namespace always starts with Concrete\Package for Packages.
+  Then follows the modified package folder name (in this case basic\_table\_package)
+  You start with camelcase, and when you have a underscore (\_), then you skip the underscore, but the next letter is uppercase.
      
      
 
