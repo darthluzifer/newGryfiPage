@@ -23,7 +23,8 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         </div>
         <form method="post" action="<?php  echo $this->action('add_new_row_form'); ?>">
 			
-			<?php  echo "<button type='submit' value='' class='btn inlinebtn actionbutton add'><i class ='fa fa-plus'> </i></button>"?>
+			<?php
+			echo "<button type='submit' value='' class='btn inlinebtn actionbutton add' aria-label='".t("new Entry")."' title='".t("new Entry")."'><i class ='fa fa-plus' aria-hidden='true'> </i></button>"?>
 		</form>
         <table id='<?php echo $controller->getHTMLId(); ?>' class="table table-striped table-bordered table-hover">
         <thead>

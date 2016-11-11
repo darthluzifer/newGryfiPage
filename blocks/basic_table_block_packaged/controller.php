@@ -349,15 +349,10 @@ class Controller extends BlockController
      */
     function getEditActionIcon($row)
     {
-        return "<button type='submit'
-    					value = 'edit'
-    					class='btn inlinebtn actionbutton edit'
-    					onclick=\"
-    								$('#action_" . $row['id'] . "').val('edit');
-    			\">
-    								<i class ='fa fa-pencil'> </i>
-    			 </button>";
+        return static::getActionButton($row,"edit", "btn inlinebtn actionbutton edit", "edit","fa fa-pencil");
     }
+
+
 
     /**
      * Returns the HTML for the delete button
@@ -366,14 +361,29 @@ class Controller extends BlockController
      */
     function getDeleteActionIcon($row)
     {
+        return static::getActionButton($row,"delete", "btn inlinebtn actionbutton delete", "delete","fa fa-trash");
+
+    }
+
+    /**
+     * @param $row
+     * @param $value
+     * @param $buttonclass
+     * @param $title
+     * @param $iconclass
+     * @return string
+     */
+    public static function getActionButton($row,$value,$buttonclass,$title,$iconclass){
         return "<button type='submit'
-    					value = 'delete'
-    					class='btn inlinebtn actionbutton delete'
-    					onclick=\"
-    								$('#action_" . $row['id'] . "').val('delete');
-    			\">
-    								<i class ='fa fa-trash-o'> </i>
-    			 </button>";
+                            value = '$value'
+                            class='$buttonclass'
+                            title='".t($title)."'
+                            aria-label='".t($title)."'
+                            onclick=\"
+                                        $('#action_" . $row['id'] . "').val('$value');
+                    \">
+                                        <i class ='$iconclass'> </i>
+                     </button>";
     }
 
     /**
@@ -478,11 +488,15 @@ class Controller extends BlockController
         //save it in the session
         $_SESSION[$this->getHTMLId() . "rowid"] = $this->editKey;
 
-        if ($_POST['action'] == 'edit') {
+        $row = $this->getRowValues();
+
+        if ($_POST['action'] == 'edit' && strlen($this->getEditActionIcon($row))>0) {
             $this->prepareFormEdit();
-        } elseif ($_POST['action'] == 'delete') {
+        } elseif ($_POST['action'] == 'delete' && strlen($this->getDeleteActionIcon($row))>0 ) {
             $this->deleteRow();
         }
+
+        $this->redirectToView();
     }
 
     public function prepareFormEdit()
@@ -822,7 +836,7 @@ class Controller extends BlockController
         } else {
             //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             $query = $this->getBuildQueryWithJoinedAssociations();
-            $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
+            $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
 
             try {
@@ -1214,6 +1228,17 @@ class Controller extends BlockController
 
     public function view(){
 
+    }
+
+    public function redirectToView()
+    {
+        if ($this->post('rcID')) {
+            // we pass the rcID through the form so we can deal with stacks
+            $c = Page::getByID($this->post('rcID'));
+        } else {
+            $c = $this->getCollectionObject();
+        }
+        $this->redirect($c->getCollectionPath());
     }
 
 

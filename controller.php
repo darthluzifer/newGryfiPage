@@ -21,10 +21,6 @@ class Controller extends Package
     protected $pkgVersion = '0.0.1';
 
 
-    protected $pkgAutoloaderRegistries = array(
-      //  'src/FieldTypes/Statistics' => '\BasicTablePackage\FieldTypes'
-           'src'                      => 'Concrete\Package\BasicTablePackage\Src'
-    );
 
     public function getPackageName()
     {
@@ -38,9 +34,7 @@ class Controller extends Package
 
     public function install()
     {
-        $this->currentlyInstalling = true;
        $em = $this->getEntityManager();
-        $this->currentlyInstalling = false;
         //begin transaction, so when block install fails, but parent::install was successfully, you don't have to uninstall the package
         $em->getConnection()->beginTransaction();
         try {
