@@ -101,5 +101,85 @@ The normal live cycle of a table package is as follows
                
                
 5. save row
+    1. first the page is loaded
+    2. Then, the post values are validated by calling checkPostValues
+        1. the request is validated (token, user permission) with validateRequest
+        2. if this failes, handleFormError is called
+            1. prepareFormEdit is called
+            2. the input values are saved in the request (that they can be put back in the form again) (exit)
+        3. else if cancel is set, delete isFormView and editkey and redirect (exit)
+        4. Possible additional fields are added which contain default values for the table (not yet used)
+        5. Then the fields are loaded
+        6. Iteration through all the fields
+            1. for each field, validatePost is called, which validates the input, and if valid, saves it in the field
+            2. If the input is not valid, the form is in error state and the error messages are collected
+            3. else the sql value is retrieved from the field by calling getSQLValue and saved in an array
+         7. If there was an error in one field, handleFormError is called (see 5.ii.b)
+         8. else the array is returned
+     1. Then, if editkey is set, the right model to edit is loaded, else a new entry has to be made
+     2. Then, persistValues($model,$v) is called to put the values into the model
+         1. the model is persistet
+         2. Iteration through all fields
+             1. If the value is an child of BaseEntity, it is persistet too
+             2. if it is an instance of Collection, all the values in the collection are persistet to
+             3. the value of the model is set to the value provided by the user
+          1. checkConsistency of the model is called, if it failes, consistencyerrors are saved and handleFormError is called
+          2. else true is returned
+      1. the entities are flushed by calling EntityManager::flush
+      2. finishFormView is called (session variables are deleted)
+      3. if $redirectonsuccess is true, redirectction is called
+      
+      
+## How are Javascript and css provided?
+In the function on_start, first register js and css files as assets. If you add a less file, it is interpreted by concrete5.
+```php
+<?php
+$package = Package::getByHandle("basic_table_package");
+        $al = \Concrete\Core\Asset\AssetList::getInstance();
 
-     
+        $al->register(
+            'javascript', 'typeahead', 'blocks/basic_table_block_packaged/js/typeahead.bundle.js',
+            array('minify' => false, 'combine' => true)
+            , $package
+        );
+```
+Then, you group the assets to a assetgroup with a name, that you have to just add a group to provide multiple css and js files
+```php
+<?php
+$groupAssets = array(
+            array('css', 'font-awesome'),
+            array('css', 'tagsinputcss'),
+            array('css', 'datepickercss'),
+            array('css', 'bootgridcss'),
+            array('css', 'basicTablecss'),
+            array('css', 'typeaheadcss'),
+            array('javascript', 'jquery'),
+            array('javascript', 'bootstrap'),
+            array('javascript', 'typeahead'),
+            array('javascript', 'datepicker'),
+            array('javascript', 'bootgrid'),
+            array('javascript', 'tagsinput'),
+            array('javascript', 'block_auto_js'),
+        );
+        $al->registerGroup('basictable', $groupAssets);
+```
+Then you have the function registerViewAssets, which tells concrete5 which assetgroups have to be provided that the block works
+```php
+<?php
+ function registerViewAssets($outputContent = '')
+    {
+        $this->requireAsset('basictable');
+    }
+```
+
+And that it is available in the block add/edit form to, you have to require it there too:
+```php
+<?php
+/**
+     * register also for add form
+     */
+     function add()
+    {
+        $this->requireAsset('basictable');
+    }
+```
