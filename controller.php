@@ -21,10 +21,6 @@ class Controller extends Package
     protected $pkgVersion = '0.0.1';
 
 
-    protected $pkgAutoloaderRegistries = array(
-      //  'src/FieldTypes/Statistics' => '\BasicTablePackage\FieldTypes'
-           'src'                      => 'Concrete\Package\BasicTablePackage\Src'
-    );
 
     public function getPackageName()
     {
