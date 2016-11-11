@@ -15,7 +15,7 @@ Important Files/Folders:
 *  controller.php
     
     
- ## Package Controller controller.php
+## Package Controller controller.php
 The Package Controller handles the installation or uninstallation of the Package.  
 First the Namespace:
 ```php
@@ -137,5 +137,5 @@ It adds the Support of the Annotation @DiscriminatorEntry to Doctrine. More in s
 
 And finally the getEntityManager function. After parent::install() is called, the autoloader finds the other classes in this Package, especially the Classes in src/DiscriminatorEntry, which are needed to add the DiscrmininatorListener to the EntityManager
 
- ## Package Icon icon.png
- icon.png can be any image. It is shown in extend Concrete5 left of the Package Name and Description. Use a small icon.
+## Package Icon icon.png
+icon.png can be any image. It is shown in extend Concrete5 left of the Package Name and Description. Use a small icon.
