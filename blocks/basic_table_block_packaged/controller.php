@@ -361,7 +361,7 @@ class Controller extends BlockController
      */
     function getDeleteActionIcon($row)
     {
-        return static::getActionButton($row,"delete", "btn inlinebtn actionbutton delete", "delete","fa fa-trash-o");
+        return static::getActionButton($row,"delete", "btn inlinebtn actionbutton delete", "delete","fa fa-trash");
 
     }
 
@@ -495,6 +495,8 @@ class Controller extends BlockController
         } elseif ($_POST['action'] == 'delete' && strlen($this->getDeleteActionIcon($row))>0 ) {
             $this->deleteRow();
         }
+
+        $this->redirectToView();
     }
 
     public function prepareFormEdit()
@@ -1226,6 +1228,17 @@ class Controller extends BlockController
 
     public function view(){
 
+    }
+
+    public function redirectToView()
+    {
+        if ($this->post('rcID')) {
+            // we pass the rcID through the form so we can deal with stacks
+            $c = Page::getByID($this->post('rcID'));
+        } else {
+            $c = $this->getCollectionObject();
+        }
+        $this->redirect($c->getCollectionPath());
     }
 
 
