@@ -93,11 +93,11 @@ The normal live cycle of a table package is as follows
                    1. getFields is called (see 4.ii.b.c)
                    2. The former Errors are loaded
                    3. Iteration through each field
-                       1. check if it should be displayed
-                       2. SQL Value is set
-                       3. Error Messages are set
-                       4. View is handed over
-                       5. getFormView of the Field is called, which returns label and input 
+                        1. check if it should be displayed
+                        2. SQL Value is set
+                        3. Error Messages are set
+                        4. View is handed over
+                        5. getFormView of the Field is called, which returns label and input 
                
                
 5. save row
