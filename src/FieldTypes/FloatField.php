@@ -120,13 +120,17 @@ class FloatField extends IntegerField {
 
         if(strlen($this->step)>0){
             if($this->step != 'any') {
-                $min = 0;
-                if(strlen($this->min)>0){
-                    $min = $this->min;
-                }
-                $interval = $value - $min;
 
-                if ($interval % $this->step == 0) {
+                if(strlen($this->min)>0){
+                    $min = 0;
+                    $min = $this->min;
+                    $interval = $value - $min;
+                }else{
+                    $interval = $value ;
+                }
+
+
+                if ($interval % $this->step != 0) {
                     $this->errMsg = $this->getLabel() . t(static::STEPERRORMSG, $this->step);
                     return false;
                 }

@@ -245,7 +245,11 @@ class DropdownLinkField extends DropdownField{
     }
 
     public function validatePost($value){
+
         $values = array_keys($this->getOptions());
+        if(count($values)==0){
+            return true;
+        }
         if(in_array($value, $values)){
             $modelForIdField = new $this->targetEntity;
             $model = $this->getEntityManager()
