@@ -46,17 +46,17 @@ The normal live cycle of a table package is as follows
      2. [view.php](view.php) is called
         1. Because view.php may be called several times, it is checked if the block has already been executed. if not, continue
         2. then, [views/table_view.php](views/table_view.php) is included
-           1. The table data is loaded with function displayTable() as 2 dimensional associative array.
-           2. Icon to create Entry is created
-           3. function getFields is called
-               1. if the editkey is set, the fields of a specified instance of the model are returned
-               2. else the fields of $controller->model are returned
-           3. Iteration through the Fields to display the header column
-           4. Iteration through the rows to display all the rows
+            1. The table data is loaded with function displayTable() as 2 dimensional associative array.
+            2. Icon to create Entry is created
+            3. function getFields is called
+                 1. if the editkey is set, the fields of a specified instance of the model are returned
+                 2. else the fields of $controller->model are returned
+            3. Iteration through the Fields to display the header column
+            4. Iteration through the rows to display all the rows
                 1. Iteration through the fields: First instead of displaying the id, displayActions is called
-                    1. In DisplayAction the id of the row is saved, and the icons to edit or delete are displayed
+                     1. In DisplayAction the id of the row is saved, and the icons to edit or delete are displayed
                 2. Iteration through the fields: For all the other fields, the value of the row is set as the SQL Value of the field. Then the getTableView is called on the Field to get the HTML for the table cell
-           2. Icon to create Entry is created
+            2. Icon to create Entry is created
          1. The Controller is set to executed
       1. The user is now possibly able to:
           1. Add a new Entry
