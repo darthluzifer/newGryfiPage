@@ -122,6 +122,10 @@ class DropdownField extends Field{
 		if(in_array($value, $values)){
 			return parent::validatePost($value);
 		}else{
+		    if($this->nullable !== false && $value == null){
+		        $this->setValue($value);
+		        return true;
+            }
 			return false;
 		}
 	}

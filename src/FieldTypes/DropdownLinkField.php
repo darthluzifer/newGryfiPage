@@ -266,6 +266,9 @@ class DropdownLinkField extends DropdownField{
             }
 
         }else{
+            if($this->nullable !== false && $value == null){
+                return true;
+            }
             return false;
         }
         //because of directeditfield references of referenced object could have been changed, persist them too
