@@ -13,6 +13,11 @@ use Concrete\Core\Form\Service\Form;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntityMultipleField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
+/**
+ * Class AbstractFormView
+ * package Concrete\Package\BasicTablePackage\Src
+ * Abstract class to provide common functionality for special form views for entites
+ */
 abstract class AbstractFormView
 {
     protected $entity;
