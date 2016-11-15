@@ -37,7 +37,7 @@ Entity to monitor from which entity to which entity associations exists, to show
 which entities are currently connected to this dataset
 
 #### BaseEntity.php
-Abstract class to provide common functionality for entities:
+Abstract class to provide common functionality for entities. All Entities used for packages dependend on BasicTablePackage have to be child classes of BaseEntity.php
 * getFieldTypes()  
  Returns an array of the FieldTypes of this Entity. If $this->fieldTypes is not yet set, $this->getDefaultFieldTypes is called.
 * getDefaultGetDisplayStringFunction()  
@@ -128,4 +128,11 @@ Abstract class to provide common functionality for entities:
  Returns a query builder instance with the entity itself and all associations left joined.
  for more, see phpdoc of function
  
+ #### BaseEntity.php
+ [BaseEntity.php](BaseEntity.php)  
+ Entity which holds the BlockOptions for a Block. Concists currently just of an id. bID of the BasicTableInstance has to be the same as the bID of the Block.
  
+ #### EntityGetterSetter.php
+ [EntityGetterSetter.php](EntityGetterSetter.php)  
+  Because the properties of child classes are not visible to parent classes, normally every class had to implement get($name), set($name,$value) and the magic functions __get($name) and __set($name,$value). These functions have been extracted to the trait EntityGetterSetter.php. Every Entity has to use this trait.
+  
