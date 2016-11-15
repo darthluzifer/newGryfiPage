@@ -23,8 +23,8 @@ We have the base class TableBlockOption, which is linked to the BasicTableInstan
   * getFieldType()  
   If you don't want to use the column value (which is a text column), you have to return the fieldtype of another Field.
   And set the Label and postname right.
-  And if the fieldTypes are not yet set, you have to set them.
-  ```php
+  And if the fieldTypes are not yet set, you have to set them.  
+```php
   <?php
   function getFieldType(){
           if($this->fieldTypes['optionValue']==null){
