@@ -181,7 +181,7 @@ class DropdownLinkField extends DropdownField{
             return $this->options;
         }
 
-        if($this->getNullable()){
+        if($this->getNullable() !==false){
             $options = array(""=>"")+$options;
         }
         $this->setOptions($options);
