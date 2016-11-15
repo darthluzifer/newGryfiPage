@@ -189,7 +189,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
      * @param $clientSideValidationActivated
      * @return string
      */
-    public function getInputHtml($form, $clientSideValidationActivated)
+    public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         /**
          * @var BaseEntity $value
