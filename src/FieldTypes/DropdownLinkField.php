@@ -25,7 +25,6 @@ class DropdownLinkField extends DropdownField{
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
     protected $showcolumn;
-    protected $isNullable = false;
     protected $idField = 'id';
     /**
      * @var BaseEntity
@@ -135,22 +134,7 @@ class DropdownLinkField extends DropdownField{
       return $displayStringFunction($value);
     }
 
-    /**
-     * set if the col is nullable
-     * @param Boolean $isNullable
-     */
-    public function setNullable($isNullable = true){
-        $this->isNullable = $isNullable;
-        return $this;
-    }
 
-    /**
-     *
-     * @return boolean
-     */
-    public function getNullable(){
-        return $this->isNullable;
-    }
 
 
 

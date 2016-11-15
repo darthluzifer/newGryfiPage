@@ -33,7 +33,6 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
     protected $showcolumn;
-    protected $isNullable = false;
     protected $linkfieldself;
     protected $linkfieldext;
     protected $rowid;

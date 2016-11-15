@@ -22,7 +22,7 @@ class DateField extends Field{
 	protected $postName;
 	protected $errMsg="";
 
-	protected $isNullable = true;
+	protected $nullable = true;
 
 
 
@@ -76,10 +76,10 @@ class DateField extends Field{
 
 	/**
 	 * set if the col is nullable
-	 * @param Boolean $isNullable
+	 * @param Boolean $nullable
 	 */
-	public function setNullable($isNullable = true){
-		$this->isNullable = $isNullable;
+	public function setNullable($nullable = true){
+		$this->nullable = $nullable;
         return $this;
 	}
 
@@ -88,7 +88,7 @@ class DateField extends Field{
 	 * @return boolean
 	 */
 	public function getNullable(){
-		return $this->isNullable;
+		return $this->nullable;
 	}
 
 	public function setValue($value){
@@ -188,7 +188,7 @@ class DateField extends Field{
 
     public function validatePost($value){
 		if(is_null($value) || $value == ''){
-			if($this->isNullable){
+			if($this->nullable){
 				return true;
 			}else{
 				$this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
