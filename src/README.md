@@ -128,11 +128,19 @@ Abstract class to provide common functionality for entities. All Entities used f
  Returns a query builder instance with the entity itself and all associations left joined.
  for more, see phpdoc of function
  
- #### BaseEntity.php
+#### BaseEntity.php
  [BaseEntity.php](BaseEntity.php)  
  Entity which holds the BlockOptions for a Block. Concists currently just of an id. bID of the BasicTableInstance has to be the same as the bID of the Block.
  
- #### EntityGetterSetter.php
+#### EntityGetterSetter.php
  [EntityGetterSetter.php](EntityGetterSetter.php)  
   Because the properties of child classes are not visible to parent classes, normally every class had to implement get($name), set($name,$value) and the magic functions __get($name) and __set($name,$value). These functions have been extracted to the trait EntityGetterSetter.php. Every Entity has to use this trait.
-  
+
+#### ExampleEntity.php
+ [ExampleEntity.php](ExampleEntity.php)  
+ If no entity is given for a block which extends basic_table_block_packaged, ExampleEntity is used which has just a key and value. It's also here to test the basic functionality.
+
+#### Group.php
+ [Group.php](Group.php)  
+ Because we need a reference to the concrete5 intern Group Table, and there is not yet an Entity for it, this Group class was programmed with the same columns as the original Group Table.
+ If the schema of concrete5 changes, this class has to be adapted.
