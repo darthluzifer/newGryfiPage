@@ -134,7 +134,7 @@ Then, we uninstall the Package itself. Again wrapped in a Transaction.
 
 #### Controller::addDiscriminatorListenerToEm
 Then we have the very important Function Controller::addDiscriminatorListenerToEm
-It adds the Support of the Annotation @DiscriminatorEntry to Doctrine. More in [src/DiscrminiatorEntry/README.md](src/DiscrminiatorEntry/README.md)
+It adds the Support of the Annotation @DiscriminatorEntry to Doctrine. More in [src/DiscriminatorEntry](src/DiscriminatorEntry/README.md)  
 
 And finally the getEntityManager function. After parent::install() is called, the autoloader finds the other classes in this Package, especially the Classes in src/DiscriminatorEntry, which are needed to add the DiscrmininatorListener to the EntityManager
 
