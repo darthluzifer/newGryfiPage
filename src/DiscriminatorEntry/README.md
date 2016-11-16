@@ -5,7 +5,7 @@ It works like this:
 #### [DiscriminatorEntry.php](DiscriminatorEntry.php)  
 You can attach EventListeners to the Entity Manager. The EventListener we need is the DiscriminatorListener,
 which is attached to the  \Doctrine\ORM\Events::loadClassMetadata Event. It is added in the function
-[\Concrete\Package\BasicTablePackage\Controller::addDiscriminatorListenerToEm](../../tree/develop#controlleradddiscriminatorlistenertoem).
+[\Concrete\Package\BasicTablePackage\Controller::addDiscriminatorListenerToEm](../..#controlleradddiscriminatorlistenertoem).
 As soon as the Metadata of a class is loaded, the DiscriminatorListener::loadClassMetadata function is called,
 which generates the DiscriminatorMap for the family (parents and childs) of the class.  And because the wrong discriminator map
 with only the Topmost parent class before BaseEntity was already generated and cached, this cache has to deleted and saved again in the function
