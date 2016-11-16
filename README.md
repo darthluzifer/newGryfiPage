@@ -132,6 +132,7 @@ class Controller extends Package
 In the uninstall Method, we just delete the entries in the table BlockType which reference our Package.
 Then, we uninstall the Package itself. Again wrapped in a Transaction.  
 
+### Controller::addDiscriminatorListenerToEm
 Then we have the very important Function Controller::addDiscriminatorListenerToEm
 It adds the Support of the Annotation @DiscriminatorEntry to Doctrine. More in src/DiscrminiatorEntry/README.md
 

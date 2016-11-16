@@ -21,7 +21,7 @@ class Annotation
 {
 
     /**
-     * @var SimpleAnnotationReader
+     * @var AnnotationReader
      */
     public static $reader;
 
