@@ -29,7 +29,6 @@ class DropdownMultilinkField extends DropdownLinkField{
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
     protected $showcolumn;
-    protected $isNullable = false;
     protected $linkfieldself;
     protected $linkfieldext;
     protected $rowid;
@@ -187,8 +186,11 @@ class DropdownMultilinkField extends DropdownLinkField{
                     ->findOneBy(array(
                         $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
                     ));
-                $this->getEntityManager()->persist($findItem);
-                $sqlArray->add($findItem);
+                if($findItem!=null) {
+                    $this->getEntityManager()->persist($findItem);
+
+                    $sqlArray->add($findItem);
+                }
             }else{
                //TODO throw exception, if invalid values should produce an error message
             }

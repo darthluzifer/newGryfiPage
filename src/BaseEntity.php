@@ -99,6 +99,10 @@ abstract class BaseEntity
         return $this->fieldTypes;
     }
 
+    /**
+     * @return \Closure
+     * @override
+     */
     public static function getDefaultGetDisplayStringFunction(){
         $function = function(BaseEntity $item){
             $returnString = "";
@@ -375,6 +379,8 @@ abstract class BaseEntity
      * if you really want to use the filter of BaseEntity, use:
      * BaseEntity::$baseEntityfilterFunction
      *
+     * @return QueryBuilder
+     *
      * $addFilterFunction must be of signature and is called in this function:
      * /**
      * @param QueryBuilder $query
@@ -391,7 +397,6 @@ abstract class BaseEntity
      * @return QueryBuilder
 
      *
-     * @return QueryBuilder
      */
     public static function getBuildQueryWithJoinedAssociations($classname, callable $addFilterFunction =null){
 

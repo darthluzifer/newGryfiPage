@@ -25,7 +25,6 @@ class DropdownLinkField extends DropdownField{
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
     protected $showcolumn;
-    protected $isNullable = false;
     protected $idField = 'id';
     /**
      * @var BaseEntity
@@ -135,22 +134,7 @@ class DropdownLinkField extends DropdownField{
       return $displayStringFunction($value);
     }
 
-    /**
-     * set if the col is nullable
-     * @param Boolean $isNullable
-     */
-    public function setNullable($isNullable = true){
-        $this->isNullable = $isNullable;
-        return $this;
-    }
 
-    /**
-     *
-     * @return boolean
-     */
-    public function getNullable(){
-        return $this->isNullable;
-    }
 
 
 
@@ -181,7 +165,7 @@ class DropdownLinkField extends DropdownField{
             return $this->options;
         }
 
-        if($this->getNullable()){
+        if($this->getNullable() !==false){
             $options = array(""=>"")+$options;
         }
         $this->setOptions($options);
@@ -266,6 +250,9 @@ class DropdownLinkField extends DropdownField{
             }
 
         }else{
+            if($this->nullable !== false && $value == null){
+                return true;
+            }
             return false;
         }
         //because of directeditfield references of referenced object could have been changed, persist them too

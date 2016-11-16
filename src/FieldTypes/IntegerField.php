@@ -92,14 +92,16 @@ class IntegerField extends Field {
 
 
 	public function validatePost($value){
+        if($this->nullable === false && strlen($value)==0) {
+            $this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
+            return false;
+        }
         if(strlen($value)==0){
-            $value = 0;
+            $this->setValue(null);
+            return true;
         }
 
-	    if(!$this->nullable && strlen($value)==0) {
-	        $this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
-	        return false;
-        }
+
 
         if(filter_var($value, FILTER_VALIDATE_INT)===false){
             $this->errMsg = $this->getLabel().t(static::NOINTERRORMSG);

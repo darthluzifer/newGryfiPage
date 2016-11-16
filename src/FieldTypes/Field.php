@@ -219,6 +219,11 @@ class Field{
         }
 
 
+        public function getNullable(){
+            return $this->nullable;
+        }
+
+
     /**
      * @return BlockView
      */

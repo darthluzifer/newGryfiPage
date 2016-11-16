@@ -53,7 +53,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         //TODO get javascript logic for editing existing object or create new one
 
 
-    		$html.=$this->getHtmlErrorMsg();  
+    		$html.=$this->getHtmlErrorMsg();
 
 
         return $html;
@@ -179,7 +179,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
      * @param $entityForFields
      * @return string
      */
-    public function getInputHtml($form, $clientSideValidationActivated)
+    public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $html='';
         $value = $this->getSQLValue();
@@ -270,4 +270,3 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         return $html;
     }
 }
-

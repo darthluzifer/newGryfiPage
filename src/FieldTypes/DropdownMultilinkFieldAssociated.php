@@ -33,7 +33,6 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
     protected $showcolumn;
-    protected $isNullable = false;
     protected $linkfieldself;
     protected $linkfieldext;
     protected $rowid;
@@ -46,7 +45,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $sourceEntityAssociationField;
 
 
-    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, array $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, callable $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
 
@@ -298,7 +297,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                         $('#" . $this->getHtmlId() . "').tagsinput({
                           freeInput: $allowadd,
                           typeaheadjs: [{
-                           
+
                             minLength:0,
                             highlight:true,
                             limit:10000,
@@ -308,7 +307,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                                   if (q === '' ||q === '*' ) {
                                     sync(values.index.all());
                                   }
-                                
+
                                   else {
                                     values.search(q, sync);
                                 }
@@ -316,9 +315,9 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
                             limit:10000,
                           }]
                         });
-                        
+
 					});
-					
+
 				</script>
 				";
 
