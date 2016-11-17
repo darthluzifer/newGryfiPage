@@ -23,6 +23,9 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
 
     protected $subErrorMsg = array();
+    protected $alwaysCreateNewInstance = false;
+
+
 
     public function __construct($sqlFieldname, $label, $postName)
     {
@@ -82,7 +85,9 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                 $fields = $instanceforidfield->getFieldTypes();
                 $idpostname = $fields[$idfieldname]->getPostName();
                 $toSaveModel = null;
-                if($postvalues['newentrycheckbox'] || filter_var($postvalues[$idpostname], FILTER_VALIDATE_INT) === false) {
+                if($postvalues['newentrycheckbox']
+                    || filter_var($postvalues[$idpostname], FILTER_VALIDATE_INT) === false
+                    || $this->isAlwaysCreateNewInstance()) {
                     //create entity or modify it
                     $toSaveModel = new $this->targetEntity;
                 }else{
@@ -163,6 +168,24 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $session = $app['session'];
 
         $session->set($this->postName."subformerrors", $this->subErrorMsg);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAlwaysCreateNewInstance()
+    {
+        return $this->alwaysCreateNewInstance;
+    }
+
+    /**
+     * @param boolean $alwaysCreateNewInstance
+     * @return $this
+     */
+    public function setAlwaysCreateNewInstance($alwaysCreateNewInstance)
+    {
+        $this->alwaysCreateNewInstance = $alwaysCreateNewInstance;
+        return $this;
     }
 
     protected function loadSubErrorMsg(){
@@ -290,14 +313,14 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     . "newentrycheckbox" . static::REPLACE_BRACE_IN_ID_WITH;
                 $nameNewEntryCheckbox = $this->getPostName() . "[" . $rownum . "][newentrycheckbox]";
 
-
-                $html .= "
-                <div class='basic-table-newentrycheckbox'>
-                <label for=''>" . t("Create new entry of %s", $this->getLabel()) . "</label>
-                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
-                </div>
-                ";
-
+                if($this->isAlwaysCreateNewInstance()!== true) {
+                    $html .= "
+                    <div class='basic-table-newentrycheckbox'>
+                    <label for=''>" . t("Create new entry of %s", $this->getLabel()) . "</label>
+                    <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                    </div>
+                    ";
+                }
                 //add delete button
                 $html .= "<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
@@ -348,13 +371,14 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $idNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME . "newentrycheckbox";
         $nameNewEntryCheckbox = static::PREPEND_BEFORE_REALNAME . "newentrycheckbox";
 
-
-        $html .= "
-                <div class='basic-table-newentrycheckbox'>
-                <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
-                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
-                </div>
-                ";
+        if($this->isAlwaysCreateNewInstance()!== true) {
+            $html .= "
+                    <div class='basic-table-newentrycheckbox'>
+                    <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
+                    <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                    </div>
+                    ";
+        }
         $html .= "<button type='button' value='' class='btn bacluc-inlineform actionbutton delete'><i class ='fa fa-trash'></i></button>";
 
         //now add information to add new row
