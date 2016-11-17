@@ -23,6 +23,25 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
     const SUBFORMERROR = " has an Error.";
 
     protected $subErrorMsg = array();
+    protected $alwaysCreateNewInstance = false;
+
+    /**
+     * @return boolean
+     */
+    public function isAlwaysCreateNewInstance()
+    {
+        return $this->alwaysCreateNewInstance;
+    }
+
+    /**
+     * @param boolean $alwaysCreateNewInstance
+     * @return $this
+     */
+    public function setAlwaysCreateNewInstance($alwaysCreateNewInstance)
+    {
+        $this->alwaysCreateNewInstance = $alwaysCreateNewInstance;
+        return $this;
+    }
 
     /**
      * @param $form
@@ -76,7 +95,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $error = false;
         $idpostname = $fields[$idfieldname]->getPostName();
         $toSaveModel = null;
-        if($value['newentrycheckbox'] || filter_var($value[$idpostname], FILTER_VALIDATE_INT) === false) {
+        if($value['newentrycheckbox'] || filter_var($value[$idpostname], FILTER_VALIDATE_INT) === false || $this->isAlwaysCreateNewInstance()) {
             //create entity or modify it
             $toSaveModel = new $this->targetEntity;
         }else{
@@ -253,13 +272,14 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             . "newentrycheckbox"
             . static::REPLACE_BRACE_IN_ID_WITH;
         $nameNewEntryCheckbox = $this->getPostName() . "[newentrycheckbox]";
-        $html .= "
-        <div class='basic-table-newentrycheckbox'>
-            <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
-            <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
-            </div>
-        ";
-
+         if($this->isAlwaysCreateNewInstance()!== true) {
+             $html .= "
+            <div class='basic-table-newentrycheckbox'>
+                <label for='$idNewEntryCheckbox'>" . t("Create new entry of %s", $this->getLabel()) . "</label>
+                <input type='checkbox' value='Off' id='$idNewEntryCheckbox' name='$nameNewEntryCheckbox'/>
+                </div>
+            ";
+         }
 
         $html .= "<div class='parent_postname hiddenforminfo'>" . $this->getPostName() . "</div>";
         $html .= "<div class='parent_idname hiddenforminfo'>" . $this->getHtmlId() . "</div>";
