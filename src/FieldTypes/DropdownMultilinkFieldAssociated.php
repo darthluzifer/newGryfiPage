@@ -45,7 +45,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
     protected $sourceEntityAssociationField;
 
 
-    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, callable $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, $associationType = null, callable $getDisplayString = null, callable $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
 
@@ -77,8 +77,15 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
             }
         }
 
+
+
         $this->targetField = $targetField;
         $targetClassName =  $this->targetEntity;
+
+        if($associationType == null){
+            $this->associationType = static::DEFAULT_ASSOCIATION_TYPE;
+        }
+
         $this->getDisplayString =$targetClassName::getDefaultgetDisplayStringFunction();
         $this->filter = $filter;
     }

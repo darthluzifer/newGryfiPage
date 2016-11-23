@@ -6,6 +6,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Loader;
 use Page;
 use User;
@@ -57,6 +58,11 @@ class DropdownLinkField extends DropdownField{
 
     protected $isBidirectional = false;
 
+    protected $associationType;
+
+    const DEFAULT_ASSOCIATION_TYPE = ClassMetadataInfo::MANY_TO_ONE;
+
+
     //TODO check if $callable's first parameter is of class Entity
     /**
      * set the Info for the Link table
@@ -64,14 +70,22 @@ class DropdownLinkField extends DropdownField{
      * @param $sourceField
      * @param $targetEntity
      * @param null $targetField
+     * @param null $associationType
      * @param callable|null $getDisplayString to overrride the default getDisplayStringFunction provided by the Entity
-     * @param array|null $filter
+     * @param array|callable|null $filter
+     * @return $this
      */
-    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, callable $getDisplayString=null, callable $filter = null){
+    public function setLinkInfo($sourceEntity, $sourceField, $targetEntity, $targetField = null, $associationType = null, callable $getDisplayString = null, callable $filter = null){
         $this->sourceEntity = $sourceEntity;
         $this->sourceField = $sourceField;
         $this->targetEntity = $targetEntity;
         $this->targetField = $targetField;
+
+        if($associationType == null){
+            $this->associationType = static::DEFAULT_ASSOCIATION_TYPE;
+        }
+
+
         $this->getDisplayString = $getDisplayString;
         if($this->getDisplayString == null){
             $this->getDisplayString = $targetEntity::getDefaultgetDisplayStringFunction();
@@ -85,12 +99,14 @@ class DropdownLinkField extends DropdownField{
      * @param DropdownLinkField $target
      */
     public static function copyLinkInfo(DropdownLinkField $source, DropdownLinkField &$target){
-        $target->setLinkInfo($source->getSourceEntity()
+        $target->setLinkInfo(
+            $source->getSourceEntity()
             , $source->getSourceField()
-            ,$source->getTargetEntity()
+            , $source->getTargetEntity()
             , $source->getTargetField()
-            ,$source->getGetDisplayStringFunction()
-            ,$source->getFilter()
+            , $source->getAssociationType()
+            , $source->getGetDisplayStringFunction()
+            , $source->getFilter()
         );
     }
 
@@ -300,6 +316,16 @@ class DropdownLinkField extends DropdownField{
 
         $html .= $this->getHtmlErrorMsg();
         return $html;
+    }
+
+
+    public function setAssociationType($type){
+        $this->associationType = $type;
+        return $this;
+    }
+
+    public function getAssociationType(){
+        return $this->associationType;
     }
 
 

@@ -6,6 +6,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use Loader;
 use Page;
@@ -36,6 +37,8 @@ class DropdownMultilinkField extends DropdownLinkField{
     protected $idfieldself;
     protected $values = array();
     protected $allowAdd = false;
+
+    const DEFAULT_ASSOCIATION_TYPE = ClassMetadataInfo::MANY_TO_MANY;
 
 
 
