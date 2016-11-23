@@ -84,6 +84,8 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
 
         if($associationType == null){
             $this->associationType = static::DEFAULT_ASSOCIATION_TYPE;
+        }else{
+            $this->associationType = $associationType;
         }
 
         $this->getDisplayString =$targetClassName::getDefaultgetDisplayStringFunction();

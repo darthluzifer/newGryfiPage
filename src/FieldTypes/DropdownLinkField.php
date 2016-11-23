@@ -83,6 +83,8 @@ class DropdownLinkField extends DropdownField{
 
         if($associationType == null){
             $this->associationType = static::DEFAULT_ASSOCIATION_TYPE;
+        }else{
+            $this->associationType = $associationType;
         }
 
 
@@ -344,17 +346,20 @@ class DropdownLinkField extends DropdownField{
 
             $subquery->select("sub0." . $this->getSourceEntity()->getIdFieldName())
                 ->from(get_class($this->getSourceEntity()), "sub0")
-                ->where($subquery->expr()->eq("sub0." . $this->getSourceField()), $targetEntityAlias);
+                ->leftJoin("sub0." . $this->getSourceField(), "sub1")
+                ->where($subquery->expr()->eq("sub1", $targetEntityAlias));
 
             //if sourceentity already exists, its value can be in the options too
             if ($this->getSourceEntity()->getId() != null) {
                 $subquery
                     ->andWhere($subquery->expr()->neq("sub0." . $this->getSourceEntity()->getIdFieldName(), ":sourceEntityId"))
-                    ->setParameter(":sourceEntityId", $this->getSourceEntity()->getId());
+                    ;
+                    $queryBuilder->setParameter(":sourceEntityId", $this->getSourceEntity()->getId());
             }
             $queryBuilder->andWhere(
-                $queryBuilder->expr()->exists(
-                    $subquery
+                $queryBuilder->expr()->not($queryBuilder->expr()->exists(
+                        $subquery
+                    )
                 )
             );
         }
