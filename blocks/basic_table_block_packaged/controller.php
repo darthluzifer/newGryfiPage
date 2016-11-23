@@ -430,7 +430,7 @@ class Controller extends BlockController
         if ($this->editKey == null) {
             $model = $this->model;
         } else {
-            $model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
+            $model = BaseEntity::getEntityById(get_class($this->model), $this->editKey);
         }
 
         if($this->persistValues($model, $v) === false){
@@ -795,7 +795,7 @@ class Controller extends BlockController
 
             return $this->model->getFieldTypes();
         }
-        return $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey))->getFieldTypes();
+        return BaseEntity::getEntityById(get_class($this->model), $this->editKey)->getFieldTypes();
 
     }
 
@@ -834,7 +834,6 @@ class Controller extends BlockController
             }
 
         } else {
-            //$model = $this->getEntityManager()->getRepository(get_class($this->model))->findOneBy(array($this->model->getIdFieldName() => $this->editKey));
             $query = $this->getBuildQueryWithJoinedAssociations();
             $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
@@ -940,11 +939,8 @@ class Controller extends BlockController
 
                         }else{
                             //load the right current option
-                            $realBlockOption = $this->getEntityManager()
-                                ->getRepository(get_class($requOption))
-                                ->findOneBy(
-                                    array($currentBlockOption->getIdFieldName() => $currentBlockOption->getId())
-                                );
+                            $realBlockOption = BaseEntity::getEntityById(get_class($requOption), $currentBlockOption->getId());
+
                             if($realBlockOption != null){
                                 $currentBlockOption = $realBlockOption;
                             }
@@ -1079,7 +1075,7 @@ class Controller extends BlockController
     }
 
     /**
-     * @return bool
+     * @return bool|array
      */
     public function checkPostValues()
     {

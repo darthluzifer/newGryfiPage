@@ -94,7 +94,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $options = $this->getOptions();
 
                     if(isset($options[$postvalues[$idpostname]])){
-                        $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($postvalues[$idpostname]);
+                        $model = BaseEntity::getEntityById($this->targetEntity, $postvalues[$idpostname]);
                         if($model != null && $model instanceof BaseEntity){
                             $toSaveModel = $model;
                         }

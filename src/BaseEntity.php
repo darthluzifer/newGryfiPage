@@ -222,7 +222,7 @@ abstract class BaseEntity
             if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
 
                 $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
             }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
                  //create instance of targetentity to check wether it is a assocationentity or a direct assocation
                 $targetEntityInstance = new $associationMeta['targetEntity'];
@@ -233,7 +233,7 @@ abstract class BaseEntity
                 }else {
                     $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
                 }
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
+                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
             }
         }
 
@@ -342,12 +342,8 @@ abstract class BaseEntity
         //to get em, we need package first
         $pkg = Package::getByHandle("basic_table_package");
         $em = $pkg->getEntityManager();
-        return $em->getRepository(get_class($item))
-            ->findOneBy(
-                array(
-                    $item->getIdFieldName()=>$item->getId()
-                )
-            );
+        return BaseEntity::getEntityById(get_class($item), $item->getId());
+
     }
 
     /**
@@ -536,6 +532,28 @@ abstract class BaseEntity
         }
 
         return $queryConfig;
+
+    }
+
+    /**
+     * @param $classname
+     * @param $id
+     * @param callable|null $addFilterFunction
+     * @return BaseEntity
+     */
+    public static function getEntityById($classname, $id, callable $addFilterFunction =null){
+        $queryBuilder = static::getBuildQueryWithJoinedAssociations($classname,$addFilterFunction);
+        $queryConfig = static::getQueryConfigOf($classname);
+        $idFieldName = $classname::getIdFieldName();
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq($queryConfig['fromEntityStart']['shortname'].".".$idFieldName,":getEntityById")
+        );
+        $queryBuilder->setParameter(":getEntityById",$id);
+        $models = $queryBuilder->getQuery()->getResult();
+        if($models!=null){
+            return $models[0];
+        }
+        return null;
 
     }
 
