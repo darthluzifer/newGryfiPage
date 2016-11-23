@@ -161,10 +161,7 @@ class DropdownLinkField extends DropdownField{
         /**
          * @var $em EntityManager
          */
-        $em = $this->getEntityManager();
-
-
-        $modelList=$this->em->getRepository($this->targetEntity)->findAll();
+        $modelList = $this->getOptionsModelList();
 
         $options = array();
         if(count($this->options)==0) {
@@ -198,8 +195,7 @@ class DropdownLinkField extends DropdownField{
         $em = $this->getEntityManager();
 
 
-//TODO implement filter for options
-        $modelList=$this->em->getRepository($this->targetEntity)->findAll();
+        $modelList=$this->getOptionsModelList();
 
         $options = array();
         if (count($modelList) > 0) {
@@ -252,11 +248,9 @@ class DropdownLinkField extends DropdownField{
         }
         if(in_array($value, $values)){
             $modelForIdField = new $this->targetEntity;
-            $model = $this->getEntityManager()
-                ->getRepository($this->targetEntity)
-                ->findOneBy(array(
-                    $modelForIdField->getIdFieldName() => $value
-                ));
+
+            //TODO check if is to refactor
+            $model = BaseEntity::getEntityById($this->targetEntity,$value);
 
             if($model != null && $model!=false){
                 $this->getEntityManager()->persist($model);
@@ -328,6 +322,46 @@ class DropdownLinkField extends DropdownField{
         return $this->associationType;
     }
 
+    /**
+     * @return array
+     */
+    public function getOptionsModelList()
+    {
+        $em = $this->getEntityManager();
+
+
+
+        $queryBuilder = BaseEntity::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
+
+
+        if ($this->getAssociationType() == ClassMetadataInfo::ONE_TO_ONE
+            || $this->getAssociationType() == ClassMetadataInfo::ONE_TO_MANY) {
+            //if it is a one to one relation, we have to remove the target entities which already have a relation to another source entity
+            $queryConfig = BaseEntity::getQueryConfigOf($this->getTargetEntity());
+            $targetEntityAlias = $queryConfig['fromEntityStart']['shortname'];
+
+            $subquery = $this->getEntityManager()->createQueryBuilder();
+
+            $subquery->select("sub0." . $this->getSourceEntity()->getIdFieldName())
+                ->from(get_class($this->getSourceEntity()), "sub0")
+                ->where($subquery->expr()->eq("sub0." . $this->getSourceField()), $targetEntityAlias);
+
+            //if sourceentity already exists, its value can be in the options too
+            if ($this->getSourceEntity()->getId() != null) {
+                $subquery
+                    ->andWhere($subquery->expr()->neq("sub0." . $this->getSourceEntity()->getIdFieldName(), ":sourceEntityId"))
+                    ->setParameter(":sourceEntityId", $this->getSourceEntity()->getId());
+            }
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->exists(
+                    $subquery
+                )
+            );
+        }
+
+        $modelList = $queryBuilder->getQuery()->getResult();
+        return $modelList;
+    }
 
 
 }

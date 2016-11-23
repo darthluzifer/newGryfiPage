@@ -48,65 +48,7 @@ class DropdownMultilinkField extends DropdownLinkField{
         $this->default = new ArrayCollection();
     }
 
-    /**
-     * set the tablename of the n to m table
-     * @param String $tablename
-     */
-    public function setNtoMTable( $tablename){
-        $this->ntomtable = $tablename;
-        return $this;
-    }
 
-    /**
-     * set the colname of the column that points to the self table
-     * @param String $colname
-     */
-    public function setLinkFieldSelf( $colname){
-        $this->linkfieldself = $colname;
-        return $this;
-    }
-
-    /**
-     * set the colname of the column that points to the extern table
-     * @param String $colname
-     */
-    public function setLinkFieldExt( $colname){
-        $this->linkfieldext = $colname;
-        return $this;
-    }
-
-
-    /**
-     * set the colname of the idfield of the own table
-     * @param String $colname
-     */
-    public function setIdFieldSelf( $colname){
-        $this->idfieldself = $colname;
-        return $this;
-    }
-
-    public function getIdFieldSelf(){
-        return $this->idfieldself;
-    }
-
-    /**
-     * set the colname id Field in the linktable
-     * @param String $colname
-     */
-    public function setIdFieldExt( $colname){
-        $this->idfieldext = $colname;
-        return $this;
-    }
-
-    /**
-     * set the id of the row the col is in
-     * @param String $colname
-     */
-    public function setRowId( $id){
-        $this->rowid = $id;
-        $this->value = array();
-        return $this;
-    }
 
     public function setAllowAdd($isAllowed = true){
         $this->allowAdd = $isAllowed;
@@ -184,15 +126,17 @@ class DropdownMultilinkField extends DropdownLinkField{
         foreach($postvalues as $num => $postvalue){
             $postvalue = trim($postvalue);
             if(in_array($postvalue, $options) ){
-                $findItem = $this->getEntityManager()
-                    ->getRepository($this->targetEntity)
-                    ->findOneBy(array(
-                        $targetModelForIdField->getIdFieldname()=>$flipoptions[$postvalue]
-                    ));
+                $findItem = BaseEntity::getEntityById($this->targetEntity,$flipoptions[$postvalue]);
+
                 if($findItem!=null) {
                     $this->getEntityManager()->persist($findItem);
 
                     $sqlArray->add($findItem);
+                    if(strlen($this->targetField)>0){
+                        if($this->associationType == ClassMetadataInfo::ONE_TO_MANY){
+                            $findItem->set($this->targetField,$this->sourceEntity);
+                        }
+                    }
                 }
             }else{
                //TODO throw exception, if invalid values should produce an error message
@@ -208,16 +152,13 @@ class DropdownMultilinkField extends DropdownLinkField{
      * @return ArrayCollection
      */
     private function getValues(){
-        if(count($this->value)==0 && !is_null($this->rowid)) {
+        if(count($this->value)==0 && !is_null($this->getSourceEntity()->getId())) {
             $modelForIdField = new $this->targetEntity;
             /**
              * @var $model \Entity
              */
-            $model = $this->getEntityManager()
-                ->getRepository($this->targetEntity)
-                ->findOneBy(array(
-                    $modelForIdField->getIdFieldName() => $this->rowid
-                ));
+            $model = BaseEntity::getEntityById(get_class($this->sourceEntity),$this->getSourceEntity()->getId());
+
             $values = $model->get($this->sourceField);
             if(count($values)>0 && $values != null) {
                 foreach ($model->get($this->sourceField) as $valnum => $value) {

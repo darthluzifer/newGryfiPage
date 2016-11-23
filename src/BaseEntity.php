@@ -539,6 +539,22 @@ abstract class BaseEntity
 
     }
 
+    public static function getEntityById($classname, $id, callable $addFilterFunction =null){
+        $queryBuilder = static::getBuildQueryWithJoinedAssociations($classname,$addFilterFunction);
+        $queryConfig = static::getQueryConfigOf($classname);
+        $idFieldName = $classname::getIdFieldName();
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq($queryConfig['fromEntityStart']['shortname'].".".$idFieldName,":getEntityById")
+        );
+        $queryBuilder->setParameter(":getEntityById",$id);
+        $models = $queryBuilder->getQuery()->getResult();
+        if($models!=null){
+            return $models[0];
+        }
+        return null;
+
+    }
+
 
 
 }
