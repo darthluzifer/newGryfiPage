@@ -102,7 +102,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $options = $this->getOptions();
 
             if(isset($options[$value[$idpostname]])){
-                $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($value[$idpostname]);
+                $model = BaseEntity::getEntityById($this->targetEntity,$value[$idpostname]);
                 if($model != null && $model instanceof BaseEntity){
                     $toSaveModel = $model;
                 }

@@ -342,12 +342,8 @@ abstract class BaseEntity
         //to get em, we need package first
         $pkg = Package::getByHandle("basic_table_package");
         $em = $pkg->getEntityManager();
-        return $em->getRepository(get_class($item))
-            ->findOneBy(
-                array(
-                    $item->getIdFieldName()=>$item->getId()
-                )
-            );
+        return BaseEntity::getEntityById(get_class($item), $item->getId());
+
     }
 
     /**
@@ -539,6 +535,12 @@ abstract class BaseEntity
 
     }
 
+    /**
+     * @param $classname
+     * @param $id
+     * @param callable|null $addFilterFunction
+     * @return BaseEntity
+     */
     public static function getEntityById($classname, $id, callable $addFilterFunction =null){
         $queryBuilder = static::getBuildQueryWithJoinedAssociations($classname,$addFilterFunction);
         $queryConfig = static::getQueryConfigOf($classname);
