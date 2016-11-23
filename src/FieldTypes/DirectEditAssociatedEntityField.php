@@ -208,6 +208,9 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         if($value == null && $default != null){
             $value = $default;
         }
+        if($value == null){
+            $value = new $this->targetEntity;
+        }
 
         if($value instanceof Proxy){
             $value = $this->getEntityManager()
