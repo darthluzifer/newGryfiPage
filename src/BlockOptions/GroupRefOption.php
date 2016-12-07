@@ -1,5 +1,6 @@
 <?php
 namespace Concrete\Package\BasicTablePackage\Src\BlockOptions;
+use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\ORM\Mapping\Table;
@@ -65,11 +66,11 @@ class GroupRefOption extends TableBlockOption{
         if($GroupAssociations instanceof  Entity){
 
             $idfieldname =$GroupAssociations->getIdFieldName();
-            $optionValue = $this->getEntityManager()
-                ->getRepository($GroupAssociations::getFullClassName())
-                ->findOne(array(
-                    $GroupAssociations->getIdFieldName() => $GroupAssociations->$idfieldname
-                ));
+            $optionValue = BaseEntity::getEntityById(
+                $GroupAssociations::getFullClassName()
+                ,$GroupAssociations->$idfieldname
+            );
+
         }elseif($GroupAssociations instanceof ArrayCollection){
 
             foreach($this->GroupAssociations->toArray() as $key => $value){

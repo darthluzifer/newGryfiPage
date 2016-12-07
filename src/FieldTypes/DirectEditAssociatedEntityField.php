@@ -102,7 +102,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             $options = $this->getOptions();
 
             if(isset($options[$value[$idpostname]])){
-                $model = $this->getEntityManager()->getRepository($this->targetEntity)->find($value[$idpostname]);
+                $model = BaseEntity::getEntityById($this->targetEntity,$value[$idpostname]);
                 if($model != null && $model instanceof BaseEntity){
                     $toSaveModel = $model;
                 }
@@ -207,6 +207,9 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;
+        }
+        if($value == null){
+            $value = new $this->targetEntity;
         }
 
         if($value instanceof Proxy){
