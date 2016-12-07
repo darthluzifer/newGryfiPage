@@ -43,6 +43,8 @@ use Doctrine\ORM\Mapping\Table;
 class Event extends BaseEntity
 {
     use EntityGetterSetter;
+    //dontchange
+    public static $staticEntityfilterfunction; //that you have a filter that is only for this entity
     /**
      * @var int
      * @Id @Column(type="integer", nullable=false, options={"unsigned":true})
