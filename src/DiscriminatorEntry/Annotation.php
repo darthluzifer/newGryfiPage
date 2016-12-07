@@ -50,7 +50,7 @@ AnnotationRegistry::registerLoader(function($class){
         $class = new $class;
          return true;
      }catch (\Exception $e){
-        if($e instanceof  \ClassNotFoundException){
+        if($e instanceof  ClassNotFoundException){
 
         }else{
             return true;
