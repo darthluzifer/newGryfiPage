@@ -34,6 +34,8 @@ use Doctrine\ORM\Mapping\Table;
 class Address extends BaseEntity implements  AddressInterface
 {
     use EntityGetterSetter;
+    //dontchange
+    public static $staticEntityfilterfunction; //that you have a filter that is only for this entity
     /**
      * @var int
      * @Id @Column(type="integer")

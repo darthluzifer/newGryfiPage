@@ -7,6 +7,7 @@
  */
 
 namespace Concrete\Package\BaclucPersonPackage\Src;
+use Concrete\Package\BaclucPersonPackage\Src\EntityViews\PostalAddressFormView;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,6 +33,8 @@ use Doctrine\ORM\Mapping\Table;
 class PostalAddress extends Address
 {
     use EntityGetterSetter;
+    //dontchange
+    public static $staticEntityfilterfunction; //that you have a filter that is only for this entity
     /**
      * @var int
      * @Id @Column(type="integer")
@@ -86,6 +89,13 @@ class PostalAddress extends Address
             $this->People = new ArrayCollection();
         }
 
+
+
+    }
+
+    public function setDefaultFormViews()
+    {
+        $this->defaultFormView = new PostalAddressFormView($this);
     }
 
     public function setDefaultFieldTypes()
