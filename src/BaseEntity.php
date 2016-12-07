@@ -203,7 +203,7 @@ abstract class BaseEntity
                         $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
                         break;
                 }
-                if($fieldname == static::getIdFieldName()){
+                if($fieldname == $this->getIdFieldName()){
                     $this->fieldTypes[$fieldname] = new HiddenField($fieldname, t($fieldname), t("post" . $fieldname));
                 }
             }catch(MappingException $e){
@@ -544,7 +544,8 @@ abstract class BaseEntity
     public static function getEntityById($classname, $id, callable $addFilterFunction =null){
         $queryBuilder = static::getBuildQueryWithJoinedAssociations($classname,$addFilterFunction);
         $queryConfig = static::getQueryConfigOf($classname);
-        $idFieldName = $classname::getIdFieldName();
+        $instanceForId = new $classname;
+        $idFieldName = $instanceForId->getIdFieldName();
         $queryBuilder->andWhere(
             $queryBuilder->expr()->eq($queryConfig['fromEntityStart']['shortname'].".".$idFieldName,":getEntityById")
         );
