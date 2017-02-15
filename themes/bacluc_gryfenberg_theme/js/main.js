@@ -1,7 +1,7 @@
-(function($){
+(function($, window){
 
 	//the code...
-
+    "use strict";
     $(function(e){
         $(".dropdown").each(function(e){
             //if a dropdown is active, it should also be open
@@ -14,7 +14,7 @@
                     //a click on an already active child should open the submenu
                     $(this).hasClass("active")
                     //but because the whole path is active, that should only happen to menu items, which don't have a active child
-                    && $(this).find(".active").length == 0){
+                    && $(this).find(".active").length === 0){
                     $(this).toggleClass("open");
                     return false;
                 }
@@ -27,8 +27,11 @@
         });
         //that the submenu click work again ( we canceled their click event with the toggle open/not open functionality)
         $(".nochildren").click(function(e){
-            window.location = $(this).attr("href")+"?menuopen=1";
-        })
+            if( $(this).attr("target")==="_self"){
+
+                window.location = $(this).attr("href") + "?menuopen=1";
+            }
+        });
     });
 
-})(jQuery);
+})(jQuery, window);
