@@ -61,29 +61,29 @@ foreach ($navItems as $ni) {
 	$classesA = array();
 	$attributesA = array();
 
-	if ($ni->isCurrent || $ni->inPath) {
+	if ($ni->isCurrent ) {
 		//class for the page currently being viewed
 		$classesLi[] = 'active';
 	}
 
-	// if ($ni->inPath) {
+	 if ($ni->inPath) {
 		//class for parent items of the page currently being viewed
-		// $classes[] = 'nav-path-selected';
-	// }
+		 $classes[] = 'nav-path-selected';
+	 }
 
-	/*
+
 	if ($ni->isFirst) {
 		//class for the first item in each menu section (first top-level item, and first item of each dropdown sub-menu)
 		$classes[] = 'nav-first';
 	}
-	*/
 
-	/*
+
+
 	if ($ni->isLast) {
 		//class for the last item in each menu section (last top-level item, and last item of each dropdown sub-menu)
 		$classes[] = 'nav-last';
 	}
-	*/
+
 
 	
 	if ($ni->hasSubmenu) {
@@ -101,6 +101,11 @@ foreach ($navItems as $ni) {
         }else{
 
             $classesLi[] = 'dropdown-submenu';
+
+            if($ni->isCurrent){
+                $classesLi[] ="open";
+            }
+
         }
 
 	}else{

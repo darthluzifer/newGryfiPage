@@ -42,7 +42,7 @@ use Concrete\Core\User\User;
                     </div>
                     
                     <!-- nav items -->
-                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <div class="collapse navbar-collapse <?php if($_GET['menuopen']){echo " in ";} ?>" id="navbar-collapse-1">
 
                         <?php
                         $a = new GlobalArea('Global Navigation');
