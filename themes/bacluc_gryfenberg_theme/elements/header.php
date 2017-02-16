@@ -49,7 +49,7 @@ use Concrete\Core\User\User;
                         $a->display();
                         ?>
 
-                        <div class="navbar-form navbar-right loginpanel">
+                        <div class="navbar-form loginpanel navbar-right">
                             <?php
                             if (!id(new User)->isLoggedIn()) {
                                 ?>
@@ -75,7 +75,7 @@ use Concrete\Core\User\User;
                             ?>
                         </div>
 
-                        <div class="navbar-form navbar-right">
+                        <div class="navbar-form">
                             <?php
                             $a = new GlobalArea('Global Search');
                             $a->display();
