@@ -48,9 +48,9 @@ use Concrete\Core\User\User;
                         $a = new GlobalArea('Global Navigation');
                         $a->display();
                         ?>
-
-                        <div class="navbar-form loginpanel navbar-right">
+                        <div class="navbar-form navbar-right loginpanel">
                             <?php
+                            /*
                             if (!id(new User)->isLoggedIn()) {
                                 ?>
                                 <a href="<?php echo URL::to('/login')?>">
@@ -71,11 +71,11 @@ use Concrete\Core\User\User;
                                     </a>
                                 </form>
                                 <?php
-                            }
+                            }*/
                             ?>
                         </div>
 
-                        <div class="navbar-form">
+                        <div class="navbar-form navbar-right">
                             <?php
                             $a = new GlobalArea('Global Search');
                             $a->display();

@@ -144,7 +144,7 @@ foreach ($navItems as $ni) {
 //*** Step 2 of 2: Output menu HTML ***/
 
 
-echo '<ul class="nav navbar-nav">'; //opens the top-level menu
+echo '<ul class="nav navbar-nav navbar-right">'; //opens the top-level menu
 
 	foreach ($navItems as $ni) {
 
