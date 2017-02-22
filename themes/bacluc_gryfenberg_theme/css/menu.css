@@ -18,10 +18,11 @@
     padding-bottom:2.5px;
 }
 
+
 .navbar-brand img{
-    height: 120px;
+    height: 100px;
     position: relative;
-    top: -25px;
+    top: -20px;
 }
 
 
@@ -32,4 +33,8 @@
 
 .navbar.navbar-default{
     min-height: 70px;
+}
+
+.navbar-header{
+    height: 70px;
 }
