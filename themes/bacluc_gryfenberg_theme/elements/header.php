@@ -42,13 +42,45 @@ use Concrete\Core\User\User;
                     </div>
                     
                     <!-- nav items -->
-                    <div class="collapse navbar-collapse <?php if($_GET['menuopen']){echo " in ";} ?>" id="navbar-collapse-1">
+                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
 
                         <?php
                         $a = new GlobalArea('Global Navigation');
                         $a->display();
                         ?>
 
+                        <div class="navbar-form navbar-right loginpanel">
+                            <?php
+                            if (!id(new User)->isLoggedIn()) {
+                                ?>
+                                <a href="<?php echo URL::to('/login')?>">
+                                    <button class="btn btn-default">
+                                    <?php echo t('Log in') ?>
+                                        </button>
+                                </a>
+                                <?php
+                            } else {
+                                $token = new Token();
+                                ?>
+                                <form action="<?php echo URL::to('/login', 'logout') ?>">
+                                    <?php id(new Token())->output('logout'); ?>
+                                    <a href="#" onclick="$(this).closest('form').submit();return false">
+                                        <button class="btn btn-default">
+                                            <?php echo t('Log out') ?>
+                                        </button>
+                                    </a>
+                                </form>
+                                <?php
+                            }
+                            ?>
+                        </div>
+
+                        <div class="navbar-form navbar-right">
+                            <?php
+                            $a = new GlobalArea('Global Search');
+                            $a->display();
+                            ?>
+                        </div>
 
 
 
