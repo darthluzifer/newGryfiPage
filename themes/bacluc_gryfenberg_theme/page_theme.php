@@ -41,6 +41,28 @@ class PageTheme extends Theme{
         );
     }
 
+    public function getThemeAreaClasses()
+    {
+        return array(
+            'Main' => 'same-height-container'
+        );
+    }
+
+    public function getThemeBlockClasses()
+    {
+        return array(
+            '*' => array(
+                'same-height',
+            ),
+            'core_area_layout' => array(
+                'same-height-container',
+            ),
+
+
+
+        );
+    }
+
 
 } //end of class extend
 
