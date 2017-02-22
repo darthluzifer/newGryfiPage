@@ -57,6 +57,14 @@ class PageTheme extends Theme{
             'core_area_layout' => array(
                 'same-height-container',
             ),
+            'feature' => array(
+                'fa-lg'
+                ,'fa-2x'
+                ,'fa-3x'
+                ,'fa-4x'
+                ,'fa-5x'
+
+            ),
 
 
 
