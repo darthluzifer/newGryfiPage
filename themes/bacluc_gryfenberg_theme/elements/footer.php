@@ -3,8 +3,12 @@
 			<footer class="site-footer">
 				<div class="container">
 					<div class="row">
-						<div class="col-md-12">
-							<p class="footer-copyright"><?php echo '&copy; ' . Config::get('concrete.site') . ' ' . date('Y'); ?></p>
+						<div class="col-xs-12">
+							<p class="footer-copyright"><?php
+                                $a = new \Concrete\Core\Area\GlobalArea('Footer');
+
+                                $a->display();
+                                ?></p>
 						</div>
 					</div>
 				</div>
