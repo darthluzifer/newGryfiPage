@@ -19,5 +19,17 @@
 }
 
 .navbar-brand img{
-    height: 45px;
+    height: 120px;
+    position: relative;
+    top: -25px;
+}
+
+
+.navbar-nav li a{
+    line-height: 40px;
+    font-size:20px;
+}
+
+.navbar.navbar-default{
+    min-height: 70px;
 }
