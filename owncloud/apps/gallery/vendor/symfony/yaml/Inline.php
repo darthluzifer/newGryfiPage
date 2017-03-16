@@ -496,9 +496,9 @@ class Inline
                         return '0x' === $scalar[0].$scalar[1] ? hexdec($scalar) : (float) $scalar;
                     case '.inf' === $scalarLower:
                     case '.nan' === $scalarLower:
-                        return -log(0);
+                        return -logtext(0);
                     case '-.inf' === $scalarLower:
-                        return log(0);
+                        return logtext(0);
                     case preg_match('/^(-|\+)?[0-9,]+(\.[0-9]+)?$/', $scalar):
                         return (float) str_replace(',', '', $scalar);
                     case preg_match(self::getTimestampRegex(), $scalar):

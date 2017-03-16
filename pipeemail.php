@@ -3,27 +3,76 @@
 defined('C5_EXECUTE') or die("Access Denied.");
 //vars
 chdir(__DIR__);
-$dbprop = (include('concrete5.7.3.1/application/config/database.php'));
+
+$logfile = "emaillog.txt";
+
+//open database properties of concrete5
+$logtext = "";
+$dbprop = (include('concrete5/application/config/database.php'));
 
 $dbprop = $dbprop['connections']['concrete'];
-
+//open stream
 $fd = fopen("php://stdin", "r");
+
+
+
+//comment for productive use:
+//file_put_contents($logfile, " ");
+
+
+logtext("
+---------------------------------------------------------------------
+date: ".date("Y-m-d H:i:s")."
+");
+
+//define attachment dir
+if(!is_dir("mailattachements")){
+	if(!mkdir("mailattachements")) {
+
+		logtext("Failure on creating directory mailattachements");
+		exit();
+	}
+}
+
+$uniqueid = uniqid();
+$attachementDir = "mailattachements/".$uniqueid."/";
+if(!mkdir("mailattachements/$uniqueid")){
+
+	logtext("Failure on creating directory $attachementDir");
+	exit();
+}
+
+
+
+
+
+
+//load php mailparser
+require_once __DIR__.'/vendor/autoload.php';
+
+
 $message = "";
 while (!feof($fd)) {
 	$message .= fread($fd, 1024);
 }
 fclose($fd);
 
+$Parser = new PhpMimeMailParser\Parser();
+$message2 = $message;
+$Parser->setText($message);
+
 //split the string into array of strings, each of the string represents a single line, received
-$lines = explode("\n", $message);
+$lines = explode("\n", $message2);
 
 // initialize variable which will assigned later on
-$from = "emailFrom@example.com";
+$from = "";
 $subject = "";
 $headers = "";
 $message = "";
 $is_header= true;
 
+
+//because their parsing of addresses does not work, we use the old one
 //loop through each line
 for ($i=0; $i < count($lines); $i++) {
 	if ($is_header) {
@@ -56,6 +105,29 @@ for ($i=0; $i < count($lines); $i++) {
 	}
 }
 
+$subject = $Parser->getHeader("subject");
+
+
+$message = $Parser->getMessageBody("html");
+$messageplain = $Parser->getMessageBody("text");
+
+if(strlen(trim($message))==0){
+	$message = $messageplain;
+}
+logtext("Attachement dir ist $attachementDir");
+$attachements = $Parser->saveAttachments($attachementDir);
+
+$result = array();
+//now get the email out of the header of the email
+preg_match_all('/\b[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}\b/i', $from, $result, PREG_PATTERN_ORDER);
+logtext("Result of regex is ".json_encode($result));
+if(is_array($result)){
+	if(isset($result[0])){
+		$from = $result[0][0];
+	}
+}
+
+
 
 //now get the users where the mail should be sendt to:
 $explodeFrom = explode("@", $to);
@@ -75,38 +147,74 @@ for($i = 0; $i < strlen($groupWithName);$i++){
 $dsn = 'mysql:host=localhost;dbname='.$dbprop['database'];
 $username = $dbprop['username'];
 $password = $dbprop['password'];
-/*
-$options = array(
-	PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-);*/
 
 $dbh = new PDO($dsn, $username, $password/*, $options*/);
 
 //TODO first check if from is in user table (to prevent spam)
 
-//get the emails of the group
-$sql = "SELECT u.uEmail FROM Groups g JOIN UserGroups ug ON g.gID = ug.gID JOIN Users u ON u.uID = ug.uID WHERE LOWER(g.gName) = LOWER(?)";
-
+$sql = "SELECT count(*) as number FROM Users u WHERE LOWER(u.uEmail) = LOWER(?)";
 $statement = $dbh->prepare($sql);
-$statement->bindParam(1, $group);
+logtext("Parameter of Emailcheck is: $from");
+$statement->bindParam(1, $from);
 $statement->execute();
 if($statement->errorCode() != '00000'){
 	exit();
 }
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+logtext("Result of emailcheck is ".json_encode($result));
+/*
+if($result[0]['number']< 1){
+	logtext("Misuse of email forwarding from address $from");
+	exit();
+}*/
+//get the emails of the group
+$sql = "SELECT u.uEmail FROM Groups g JOIN UserGroups ug ON g.gID = ug.gID JOIN Users u ON u.uID = ug.uID WHERE LOWER(g.gName) = LOWER(?)";
+
+
+
+
+
+logtext("SQL STATEMENT: $sql");
+
+$statement = $dbh->prepare($sql);
+
+logtext("Group is: $group");
+
+$group = checkgroup($group);
+
+logtext("Checked Group is: $group");
+
+
+$statement->bindParam(1, $group);
+
+
+$statement->execute();
+if($statement->errorCode() != '00000'){
+	exit();
+}
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if(count($result)==0){
+	exit();
+}
+
+
+
+logtext("SQL Result: ".json_encode($result));
+
 $emails = array();
 $skipped = false;
 foreach($result as $rownum => $value){
 	if(!($value['uEmail'] == $to)){
 		$emails[]=$value['uEmail'];
-		send_mail( $value['uEmail'], $subject,$message, $from, $headers );
+		//send_mail( $value['uEmail'], $subject,$message, $from, $headers );
 	}else{
 		$skipped = true;
 	}
 }
 
 
-$headers.= "Bcc: ".implode(",",$emails)."\n";
 
 
 
@@ -116,45 +224,108 @@ $headers.= "Bcc: ".implode(",",$emails)."\n";
 //now confirm send of email
 
 $confirmtext = "
-Hey $from
+
+
 The Following Message was sendt to: ".implode(",",$emails)."
+
+Header was:
 
 Subject: $subject
 
+Message:
 $message
+
+
+Messageplain:
+$messageplain
+
+
+
+----------------------------------------------------------------------
 
 ";
 
-send_mail($from, "Confirmation of Email forwarding of $subject ", $confirmtext, "lucius.bachmann@clubpage.ch");
+$logtext .= $confirmtext;
 
 
-function send_mail($to, $subject, $message, $from, $headers){
+logtext($logtext);
+
+
+
+send_mail("lucius.bachmann@clubpage.ch", $subject, $message,$from, $emails, $messageplain, $attachements);
+
+
+function send_mail($to, $subject, $message, $from, $emails, $messageplain, $attachements){
 	require 'class.phpmailer.php';
 
-	$mail = new PHPMailer;
+
+
+
+
+	//$mail->addCustomHeader("Content-Type", 'multipart/mixed');
+	foreach ($emails as $email) {
+		$mail = new PHPMailer;
 
 //$mail->SMTPDebug = 3;                               // Enable verbose debug output
-	$mail->wrapText()
+		$mail->wrapText();
 
-	$mail->setFrom($from);
-	$mail->addAddress($to);     // Add a recipient
-	/*$mail->addAddress('ellen@example.com');               // Name is optional
-	$mail->addReplyTo('info@example.com', 'Information');
-	$mail->addCC('cc@example.com');
-	$mail->addBCC('bcc@example.com');
-*/
-	                                // Set email format to HTML
+		$mail->addAddress($email);
+		$mail->setFrom($from);  // Add a recipient
+		/*$mail->addAddress('ellen@example.com');               // Name is optional
+        $mail->addReplyTo('info@example.com', 'Information');
+        $mail->addCC('cc@example.com');
+        $mail->addBCC('bcc@example.com');
+    */
+		// Set email format to HTML
 
-	$mail->Subject = $subject;
-	$mail->Body    = $message;
-	$mail->addCustomHeader("Content-Type", 'multipart/mixed');
 
-	if(!$mail->send()) {
-		echo 'Message could not be sent.';
-		echo 'Mailer Error: ' . $mail->ErrorInfo;
-	} else {
-		echo 'Message has been sent';
+
+
+		$mail->Subject = $subject;
+
+		$mail->Body=$message;
+
+		$mail->AltBody = $messageplain;
+
+		$attachmentdir = "";
+		foreach ($attachements as $path) {
+			$attachmentdir = dir($path);
+			$mail->addAttachment($path);
+		}
+
+		$mail->CharSet = "utf8";
+		if (!$mail->send()) {
+			logtext("Sending to $email failed");
+		} else {
+			logtext("Sending to $email successful");
+		}
 	}
+	foreach($attachements as $path){
+		unlink($path);
+	}
+
+	rmdir($attachmentdir);
+}
+
+
+function checkgroup($group){
+	/*
+	for($i=0;$i < strlen($group); $i++){
+		if(preg_match("/[a-zA-Z]/", $group[$i])){
+			break;
+		}
+	}
+	return substr($group,$i);
+	*/
+	$group = str_replace('"', "", $group);
+	$group = trim($group);
+
+	return $group;
+}
+
+function logtext($text){
+	global $logfile;
+	file_put_contents($logfile, file_get_contents($logfile)."\n".$text);
 }
 
 ?>

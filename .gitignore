@@ -15,6 +15,10 @@ files/tmp/*
 concrete5/application/config/generated_overrides/concrete.php
 concrete5/application/config/generated_overrides/*
 owncloud/data/*
-/concrete5/application/config/
+/concrete5/application/config/doctrine/*
+/concrete5/application/config/generated_overrides/*
+/concrete5/application/config/database.php
+/concrete5/application/files/*
 /concrete5/application/files/
 /concrete5/application/config/generated_overrides/concrete.php
+/_intellij_phpdebug_validator.php
