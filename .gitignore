@@ -4,7 +4,6 @@ owncloud/config/config.php
 .settings/
 .gitignore~
 concrete5/application/config/database.php
-concrete5/application/config/doctrine/*
 concrete5/application/files/cache/*
 .idea/*
 .idea/
