@@ -887,25 +887,33 @@ class Controller extends BlockController
 
         $assocResult = array();
         $fieldTypes = array();
-
-        foreach ($result as $key => $value){
-            /**
-             * @var BaseEntity $value
-             */
-            $value = BaseEntity::getBaseEntityFromProxy($value);
-
-            if(count($assocResult)==0){
-                $fieldTypes = $value->getFieldTypes();
-            }
-            $assocRow = array();
-            foreach ($fieldTypes as $num => $fieldType){
+        if(count($result)>0) {
+            foreach ($result as $key => $value) {
                 /**
-                 * @var Field $fieldType
+                 * @var BaseEntity $value
                  */
-                $assocRow[$fieldType->getSQLFieldName()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
-            }
-            $assocResult[]=$assocRow;
+                $value = BaseEntity::getBaseEntityFromProxy($value);
 
+                if (count($assocResult) == 0) {
+                    $fieldTypes = $value->getFieldTypes();
+                }
+                $assocRow = array();
+                foreach ($fieldTypes as $num => $fieldType) {
+                    /**
+                     * @var Field $fieldType
+                     */
+                    $assocRow[$fieldType->getLabel()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+                }
+                $assocResult[] = $assocRow;
+
+            }
+        }else{
+            //if table is empty, export field names
+            $fieldTypes = $this->getModel()->getFieldTypes();
+            $fieldLabels = array();
+            foreach($fieldTypes as $num => $fieldType){
+                $assocResult[0][]=$fieldType->getLabel();
+            }
         }
 
         $response = new CsvResponse($assocResult);
