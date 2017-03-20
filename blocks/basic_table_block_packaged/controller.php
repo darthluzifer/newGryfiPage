@@ -24,6 +24,7 @@ use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Base;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
@@ -442,7 +443,8 @@ class Controller extends BlockController
 
         $this->finishFormView();
         if($redirectOnSuccess) {
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
+
         }
 
 
@@ -874,6 +876,40 @@ class Controller extends BlockController
         exit();
     }
 
+
+    function action_exportCSV(){
+        //first get table data
+        $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
+        $result =$query->getQuery()->execute();
+        //convert it to assoc array
+
+        $assocResult = array();
+        $fieldTypes = array();
+
+        foreach ($result as $key => $value){
+            /**
+             * @var BaseEntity $value
+             */
+            $value = BaseEntity::getBaseEntityFromProxy($value);
+
+            if(count($assocResult)==0){
+                $fieldTypes = $value->getFieldTypes();
+            }
+            $assocRow = array();
+            foreach ($fieldTypes as $num => $fieldType){
+                /**
+                 * @var Field $fieldType
+                 */
+                $assocRow[$fieldType->getSQLFieldName()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+            }
+            $assocResult[]=$assocRow;
+
+        }
+        print_r($assocResult);
+        exit();
+
+    }
+
     function getHeader()
     {
         return $this->header;
@@ -1103,7 +1139,7 @@ class Controller extends BlockController
                 unset($_SESSION[$this->getHTMLId() . "rowid"]);
             }
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
             return true;
         }
 
@@ -1234,7 +1270,19 @@ class Controller extends BlockController
         } else {
             $c = $this->getCollectionObject();
         }
-        $this->redirect($c->getCollectionPath());
+        $this->redirectToPage($c);
+    }
+
+    /**
+     * @param $c
+     */
+    protected function redirectToPage($c)
+    {
+        if (strlen($c->getCollectionPath()) == 0) {
+            $this->redirect("");
+        } else {
+            $this->redirect($c->getCollectionPath());
+        }
     }
 
 
