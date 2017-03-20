@@ -19,17 +19,20 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntity
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
+use Concrete\Package\BasicTablePackage\Src\Helpers\CsvResponse;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Base;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use User;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
@@ -442,7 +445,8 @@ class Controller extends BlockController
 
         $this->finishFormView();
         if($redirectOnSuccess) {
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
+
         }
 
 
@@ -874,6 +878,43 @@ class Controller extends BlockController
         exit();
     }
 
+
+    function action_exportCSV(){
+        //first get table data
+        $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
+        $result =$query->getQuery()->execute();
+        //convert it to assoc array
+
+        $assocResult = array();
+        $fieldTypes = array();
+
+        foreach ($result as $key => $value){
+            /**
+             * @var BaseEntity $value
+             */
+            $value = BaseEntity::getBaseEntityFromProxy($value);
+
+            if(count($assocResult)==0){
+                $fieldTypes = $value->getFieldTypes();
+            }
+            $assocRow = array();
+            foreach ($fieldTypes as $num => $fieldType){
+                /**
+                 * @var Field $fieldType
+                 */
+                $assocRow[$fieldType->getSQLFieldName()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+            }
+            $assocResult[]=$assocRow;
+
+        }
+
+        $response = new CsvResponse($assocResult);
+        $response->setDelimiter(";");
+        $response->send();
+        exit();
+
+    }
+
     function getHeader()
     {
         return $this->header;
@@ -1103,7 +1144,7 @@ class Controller extends BlockController
                 unset($_SESSION[$this->getHTMLId() . "rowid"]);
             }
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
             return true;
         }
 
@@ -1234,7 +1275,37 @@ class Controller extends BlockController
         } else {
             $c = $this->getCollectionObject();
         }
-        $this->redirect($c->getCollectionPath());
+        $this->redirectToPage($c);
+    }
+
+    /**
+     * @param $c
+     */
+    protected function redirectToPage($c)
+    {
+        if (strlen($c->getCollectionPath()) == 0) {
+            $this->redirect("");
+        } else {
+            $this->redirect($c->getCollectionPath());
+        }
+    }
+
+    public function getTableControlButtons($view){
+        return '
+        <form method="post" action="' . $view->action('add_new_row_form') . ' ">
+
+                    
+                    <button type="submit" value="" class="btn inlinebtn actionbutton add" aria-label="' . t("new Entry") . '" title="' . t("new Entry") . '">
+                                <i class ="fa fa-plus" aria-hidden="true"> </i>
+                     </button>
+                     <a href="' . $view->action('exportCSV') . '" >
+                        <button type="button" value=""  class="btn inlinebtn actionbutton exportcsv" aria-label="' . t("export CSV") . '" title="' . t("export CSV") . '">
+                                <i class ="fa fa-download" aria-hidden="true"> </i>
+                        </button>
+                    </a>
+        </form>
+        
+        ';
     }
 
 
