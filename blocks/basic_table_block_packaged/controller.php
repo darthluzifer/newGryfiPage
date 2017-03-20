@@ -19,6 +19,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntity
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
+use Concrete\Package\BasicTablePackage\Src\Helpers\CsvResponse;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,6 +32,7 @@ use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use User;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
@@ -905,7 +907,10 @@ class Controller extends BlockController
             $assocResult[]=$assocRow;
 
         }
-        print_r($assocResult);
+
+        $response = new CsvResponse($assocResult);
+        $response->setDelimiter(";");
+        $response->send();
         exit();
 
     }
