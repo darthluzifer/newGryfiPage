@@ -21,11 +21,7 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         <div>
         <?php echo $controller->getHeader($view);?>
         </div>
-        <form method="post" action="<?php  echo $this->action('add_new_row_form'); ?>">
-			
-			<?php
-			echo "<button type='submit' value='' class='btn inlinebtn actionbutton add' aria-label='".t("new Entry")."' title='".t("new Entry")."'><i class ='fa fa-plus' aria-hidden='true'> </i></button>"?>
-		</form>
+        <?php echo $controller->getTableControlButtons($this);?>
         <table id='<?php echo $controller->getHTMLId(); ?>' class="table table-striped table-bordered table-hover">
         <thead>
 	        <tr>
@@ -82,10 +78,7 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
        	
         ?>
         
-       <form method="post" action="<?php  echo $this->action('add_new_row_form'); ?>">
-			
-			<?php  echo "<button type='submit' value='' class='btn inlinebtn actionbutton add'><i class ='fa fa-plus'> </i></button>"?>
-		</form>
+       <?php echo $controller->getTableControlButtons($this); ?>
         
 
     
