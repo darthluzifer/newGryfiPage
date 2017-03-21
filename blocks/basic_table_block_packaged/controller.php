@@ -1300,18 +1300,32 @@ class Controller extends BlockController
 
     public function getTableControlButtons($view){
         return '
-        <form method="post" action="' . $view->action('add_new_row_form') . ' ">
-
-                    
-                    <button type="submit" value="" class="btn inlinebtn actionbutton add" aria-label="' . t("new Entry") . '" title="' . t("new Entry") . '">
-                                <i class ="fa fa-plus" aria-hidden="true"> </i>
-                     </button>
-                     <a href="' . $view->action('exportCSV') . '" >
-                        <button type="button" value=""  class="btn inlinebtn actionbutton exportcsv" aria-label="' . t("export CSV") . '" title="' . t("export CSV") . '">
-                                <i class ="fa fa-download" aria-hidden="true"> </i>
-                        </button>
-                    </a>
-        </form>
+        <div class="tablecontrols">
+            <form method="post" action="' . $view->action('add_new_row_form') . ' ">
+    
+                        
+                        <button type="submit" value="" class="btn inlinebtn actionbutton add" aria-label="' . t("new Entry") . '" title="' . t("new Entry") . '">
+                                    <i class ="fa fa-plus" aria-hidden="true"> </i>
+                         </button>
+                         <a href="' . $view->action('exportCSV') . '" >
+                            <button type="button" value=""  class="btn inlinebtn actionbutton exportcsv" aria-label="' . t("export CSV") . '" title="' . t("export CSV") . '">
+                                    <i class ="fa fa-download" aria-hidden="true"> </i>
+                            </button>
+                        </a>
+                        <div class="csvimport">
+                            <button type="button" value=""  class="btn inlinebtn actionbutton importcsv" aria-label="' . t("import CSV") . '" title="' . t("import CSV") . '">
+                                    <i class ="fa fa-upload" aria-hidden="true"> </i>
+                            </button>
+                            
+                         </div>
+                        
+            </form>
+            <div class="hidden">
+                        <form method="post" action="' . $view->action('importCSV') . ' " class="importcsv-form">
+                                <input type="file" name="csvfile" class="csvfile-field"/>
+                        </form>      
+             </div>
+           </div>  
         
         ';
     }

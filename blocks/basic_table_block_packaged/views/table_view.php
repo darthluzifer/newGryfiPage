@@ -3,7 +3,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\FileField;
 ?>
 
-<div class="table-responsive basic_table_package">
+<div class="table-responsive basic_table_package" id="<?php echo $controller->getHTMLId(); ?>div">
  
  
 
@@ -118,6 +118,17 @@ $(document).ready(function(e){
 							}
 					}
 	});
+    $('#<?php echo $controller->getHTMLId();?>div div.tablecontrols .actionbutton.importcsv').click(function (e) {
+        $(this).parents(".tablecontrols").find(".csvfile-field")
+            .click()
+            .change(function (e) {
+                if($(this).val().length>0){
+                    $(this).parent().submit();
+                }
+                $(this).off("change");
+            })
+    });
+
 });
 
 </script>
