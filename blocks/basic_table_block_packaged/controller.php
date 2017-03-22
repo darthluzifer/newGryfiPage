@@ -2,7 +2,13 @@
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
 use Concrete\Controller\Search\Groups;
+use Concrete\Controller\Dialog\Block\Permissions as BlockPermissions;
+use Concrete\Core\Block\Block;
+use Concrete\Core\File\Event\FileSet;
+use Concrete\Core\File\Set\Set;
 use Concrete\Core\Package\Package;
+use Concrete\Core\Permission\Checker;
+use Concrete\Core\Permission\Response\BlockResponse;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
@@ -66,7 +72,7 @@ class Controller extends BlockController
      * if the block is already executed
      * @var bool
      */
-    protected $executed = false;
+    protected static $executed = false;
 
     /**
      * If the block is in form view
@@ -809,7 +815,7 @@ class Controller extends BlockController
      */
     public function setExecuted()
     {
-        $this->executed = true;
+        static::$executed=true;
     }
 
     /**
@@ -817,7 +823,7 @@ class Controller extends BlockController
      */
     public function isExecuted()
     {
-        return $this->executed;
+        return static::$executed;
     }
 
     /**
@@ -920,6 +926,64 @@ class Controller extends BlockController
         $response->setDelimiter(";");
         $response->send();
         exit();
+
+    }
+
+    public function action_importCSV(){
+
+
+        $block = Block::getByID($this->bID);
+        $checker = new Checker($block);
+
+        /**
+         * @var BlockResponse $response
+         */
+        $response = $checker->getResponseObject();
+
+        if (!$response->canRead()) {
+            // The current user can view the block
+            //TODO error handling
+            $this->render("view");
+            return;
+        }
+            $error = \Concrete\Core\File\Importer::E_PHP_FILE_ERROR_DEFAULT;
+            if (isset($_FILES['csvfile']) && is_uploaded_file($_FILES['csvfile']['tmp_name'])) {
+                $validator = Core::make('helper/file');
+                if ('csv'!=$validator->getExtension($_FILES['csvfile']['name'])) {
+                    $error = \Concrete\Core\File\Importer::E_FILE_INVALID_EXTENSION;
+                } else {
+                    //needed because block is executed twice
+                    if($this->isExecuted()){
+
+                    }else {
+                        $this->setExecuted();
+                        $file = $_FILES['csvfile']['tmp_name'];
+                        $filename = $_FILES['csvfile']['name'];
+                        $importer = new \Concrete\Core\File\Importer();
+                        $result = $importer->import($file, $filename);
+                        if ($result instanceof \Concrete\Core\File\Version) {
+
+                            $set = Set::getByName("Imported Files");
+                            if (is_null($set)) {
+                                $set = Set::createAndGetSet("Imported Files", Set::TYPE_PUBLIC);
+                            }
+                            $set->addFileToSet($result->getFile());
+
+                        } else {
+                            $error = $result;
+                        }
+
+                    }
+                    $this->render('../../../basic_table_package/blocks/basic_table_block_packaged/views/import_view');
+                    return;
+                }
+            } else if (isset($_FILES['csvfile'])) {
+                $error = $_FILES['csvfile']['error'];
+            }
+
+            $this->set('errorMessage', \Concrete\Core\File\Importer::getErrorMessage($error));
+            $this->render('view');
+            return;
 
     }
 
@@ -1298,6 +1362,8 @@ class Controller extends BlockController
         }
     }
 
+
+
     public function getTableControlButtons($view){
         return '
         <div class="tablecontrols">
@@ -1321,7 +1387,7 @@ class Controller extends BlockController
                         
             </form>
             <div class="hidden">
-                        <form method="post" action="' . $view->action('importCSV') . ' " class="importcsv-form">
+                        <form method="post" action="' . $view->action('importCSV') . ' " class="importcsv-form" enctype="multipart/form-data">
                                 <input type="file" name="csvfile" class="csvfile-field"/>
                         </form>      
              </div>
