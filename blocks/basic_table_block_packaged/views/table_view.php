@@ -22,6 +22,15 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         <?php echo $controller->getHeader($view);?>
         </div>
         <?php echo $controller->getTableControlButtons($this);?>
+
+        <?php
+        if(strlen($errorMessage)>0){
+            echo '<div class="errormessage alert-danger">
+                '.$errorMessage.'
+                </div>
+            ';
+        }
+         ?>
         <table id='<?php echo $controller->getHTMLId(); ?>' class="table table-striped table-bordered table-hover">
         <thead>
 	        <tr>

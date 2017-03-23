@@ -941,8 +941,9 @@ class Controller extends BlockController
         $response = $checker->getResponseObject();
 
         if (!$response->canRead()) {
+            $this->requiresRegistration();
             // The current user can view the block
-            //TODO error handling
+            $this->set("errorMessage", t("You are not allowed to perform this operation."));
             $this->render("view");
             return;
         }
