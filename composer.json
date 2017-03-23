@@ -1,0 +1,6 @@
+{
+  "require": {
+    "portphp/steps": "1.0.x-dev",
+    "portphp/portphp": "1.0.x-dev"
+  }
+}
