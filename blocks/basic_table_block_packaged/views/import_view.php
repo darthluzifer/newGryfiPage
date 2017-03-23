@@ -10,5 +10,5 @@
 <h1><?php echo t('Import View for %s', $controller->getHeader())?></h1>
 
 <?php
-
+print_r($comparisondata);
 ?>

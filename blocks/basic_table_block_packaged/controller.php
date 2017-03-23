@@ -988,7 +988,7 @@ class Controller extends BlockController
                             $comparer = new EntityDataComparer($this->getModel(),$reader);
                             $comparer->compare();
 
-                            $this->setViewVar("csvdata", $comparer->getCSVData());
+                            $this->setViewVar("comparisondata", $comparer->getComparisonData());
 
                         } else {
                             $error = $result;

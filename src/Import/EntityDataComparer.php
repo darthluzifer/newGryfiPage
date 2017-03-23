@@ -10,6 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src\Import;
 
 
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityFactory;
 use Port\Reader;
 
 class EntityDataComparer
@@ -24,7 +25,7 @@ class EntityDataComparer
      */
     protected $reader;
 
-    protected $csvdata;
+    protected $comparisonData;
 
     public function __construct(BaseEntity $model, Reader $reader)
     {
@@ -32,14 +33,40 @@ class EntityDataComparer
         $this->reader = $reader;
     }
 
+
+
     public function compare(){
+
+
+        //then get all existing data and create a uniquestring -> object map
+        $modelList = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->model))->getQuery()->execute();
+        $uniqueStringMap = array();
+        $classname = get_class($this->model);
+        $uniqueFunction = $classname::getDefaultGetDisplayStringFunction();
+
+        foreach($modelList as $num => $model){
+            /**
+             * @var BaseEntity $model
+             */
+            $uniqueStringMap[$uniqueFunction($model)]=$model;
+        }
+
+
+        $factory = new BaseEntityFactory($this->model);
         foreach ($this->reader as $row) {
-            $this->csvdata[]=$row;
+            $importModel =$factory->createFromLabelArray($row);
+            $comparisonSet = new ComparisonSet();
+            if(isset($uniqueStringMap[$uniqueFunction($importModel)])){
+                $comparisonSet->setCurrentModel($uniqueStringMap[$uniqueFunction($importModel)]);
+            }
+            $comparisonSet->setImportModel($importModel);
+            $comparisonSet->compareAndCreateResultModel();
+            $this->comparisonData[]=$comparisonSet;
         }
     }
 
-    public function getCSVData(){
-        return $this->csvdata;
+    public function getComparisonData(){
+        return $this->comparisonData;
     }
 
 }
