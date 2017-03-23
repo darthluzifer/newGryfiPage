@@ -154,6 +154,8 @@ class Controller extends BlockController
      */
     protected $consistencyErrors = array();
 
+    protected static $viewvars = array();
+
     /**
      *
      * Controller constructor.
@@ -986,6 +988,8 @@ class Controller extends BlockController
                             $comparer = new EntityDataComparer($this->getModel(),$reader);
                             $comparer->compare();
 
+                            $this->setViewVar("csvdata", $comparer->getCSVData());
+
                         } else {
                             $error = $result;
                         }
@@ -1353,7 +1357,9 @@ class Controller extends BlockController
     }
 
     public function view(){
-
+            foreach(static::$viewvars as $key => $value){
+                $this->set($key, $value);
+            }
     }
 
     public function redirectToView()
@@ -1411,6 +1417,19 @@ class Controller extends BlockController
            </div>  
         
         ';
+    }
+
+    public function setViewVar($key, $value){
+        static::$viewvars[$key]=$value;
+        return $this;
+    }
+
+    public function getViewVar($key){
+        return static::$viewvars[$key];
+    }
+
+    public function getViewVars(){
+        return static::$viewvars;
     }
 
 

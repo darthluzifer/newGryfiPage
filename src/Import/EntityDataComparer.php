@@ -24,6 +24,8 @@ class EntityDataComparer
      */
     protected $reader;
 
+    protected $csvdata;
+
     public function __construct(BaseEntity $model, Reader $reader)
     {
         $this->model = $model;
@@ -32,8 +34,12 @@ class EntityDataComparer
 
     public function compare(){
         foreach ($this->reader as $row) {
-            print_r($row);
+            $this->csvdata[]=$row;
         }
+    }
+
+    public function getCSVData(){
+        return $this->csvdata;
     }
 
 }

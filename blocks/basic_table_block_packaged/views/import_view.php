@@ -7,4 +7,8 @@
  */
 
 ?>
-<h1>import view</h1>
+<h1><?php echo t('Import View for %s', $controller->getHeader())?></h1>
+
+<?php
+
+?>
