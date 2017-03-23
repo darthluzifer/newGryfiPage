@@ -5,6 +5,7 @@ use Concrete\Controller\Search\Groups;
 use Concrete\Controller\Dialog\Block\Permissions as BlockPermissions;
 use Concrete\Core\Block\Block;
 use Concrete\Core\File\Event\FileSet;
+use Concrete\Core\File\File;
 use Concrete\Core\File\Set\Set;
 use Concrete\Core\Package\Package;
 use Concrete\Core\Permission\Checker;
@@ -26,6 +27,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Concrete\Package\BasicTablePackage\Src\Helpers\CsvResponse;
+use Concrete\Package\BasicTablePackage\Src\Import\EntityDataComparer;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,6 +40,7 @@ use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
+use Port\Csv\CsvReader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use User;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
@@ -932,6 +935,7 @@ class Controller extends BlockController
     public function action_importCSV(){
 
 
+
         $block = Block::getByID($this->bID);
         $checker = new Checker($block);
 
@@ -957,7 +961,9 @@ class Controller extends BlockController
                     if($this->isExecuted()){
 
                     }else {
+                        $debugMessage = "";
                         $this->setExecuted();
+
                         $file = $_FILES['csvfile']['tmp_name'];
                         $filename = $_FILES['csvfile']['name'];
                         $importer = new \Concrete\Core\File\Importer();
@@ -970,11 +976,21 @@ class Controller extends BlockController
                             }
                             $set->addFileToSet($result->getFile());
 
+
+
+                            $fileObject = new \SplFileObject("php://memory", "w+");
+                            $fileObject->fwrite($result->getFileContents());
+                            $reader = new CsvReader($fileObject, ';', '"', "\\");
+                            $reader->setHeaderRowNumber(0);
+
+                            $comparer = new EntityDataComparer($this->getModel(),$reader);
+                            $comparer->compare();
+
                         } else {
                             $error = $result;
                         }
-
                     }
+
                     $this->render('../../../basic_table_package/blocks/basic_table_block_packaged/views/import_view');
                     return;
                 }

@@ -16,5 +16,11 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Port\\Tests\\' => array($vendorDir . '/portphp/portphp/tests'),
     'Port\\Steps\\' => array($vendorDir . '/portphp/steps/src'),
+    'Port\\Excel\\' => array($vendorDir . '/portphp/excel/src'),
+    'Port\\Doctrine\\' => array($vendorDir . '/portphp/doctrine/src'),
+    'Port\\Csv\\' => array($vendorDir . '/portphp/csv/src'),
     'Port\\' => array($vendorDir . '/portphp/portphp/src'),
+    'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
+    'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib/Doctrine/Common/Annotations'),
+    'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),
 );

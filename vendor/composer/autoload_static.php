@@ -28,7 +28,16 @@ class ComposerStaticInit2fed44a4e444af35861c0c4a039c494f
             'Psr\\Log\\' => 8,
             'Port\\Tests\\' => 11,
             'Port\\Steps\\' => 11,
+            'Port\\Excel\\' => 11,
+            'Port\\Doctrine\\' => 14,
+            'Port\\Csv\\' => 9,
             'Port\\' => 5,
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Cache\\' => 22,
+            'Doctrine\\Common\\Annotations\\' => 28,
+            'Doctrine\\Common\\' => 16,
         ),
     );
 
@@ -73,9 +82,58 @@ class ComposerStaticInit2fed44a4e444af35861c0c4a039c494f
         array (
             0 => __DIR__ . '/..' . '/portphp/steps/src',
         ),
+        'Port\\Excel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/portphp/excel/src',
+        ),
+        'Port\\Doctrine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/portphp/doctrine/src',
+        ),
+        'Port\\Csv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/portphp/csv/src',
+        ),
         'Port\\' => 
         array (
             0 => __DIR__ . '/..' . '/portphp/portphp/src',
+        ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
+        'Doctrine\\Common\\Annotations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
+        ),
+        'Doctrine\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Lexer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
+            ),
+            'Doctrine\\Common\\Inflector\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
+            ),
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
+            ),
         ),
     );
 
@@ -93,6 +151,7 @@ class ComposerStaticInit2fed44a4e444af35861c0c4a039c494f
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2fed44a4e444af35861c0c4a039c494f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2fed44a4e444af35861c0c4a039c494f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit2fed44a4e444af35861c0c4a039c494f::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit2fed44a4e444af35861c0c4a039c494f::$classMap;
 
         }, null, ClassLoader::class);
