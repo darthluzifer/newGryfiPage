@@ -108,5 +108,20 @@ class ComparisonSet
 
     }
 
+    public function isCurrentAndResultSame(){
+        if($this->resultModel == null){
+            //TODO maybe throw exception instead
+            $this->compareAndCreateResultModel();
+        }
+        $fieldTypes = $this->resultModel->getFieldTypes();
+        foreach($fieldTypes as $sqlFieldName => $field){
+            if($this->currentModel->get($sqlFieldName) != $this->resultModel->get($sqlFieldName)){
+                return false;
+            }
+        }
+        return true;
+
+    }
+
 
 }

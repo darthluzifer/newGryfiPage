@@ -8,7 +8,11 @@
 
 ?>
 <h1><?php echo t('Import View for %s', $controller->getHeader())?></h1>
+<form action="<?php echo $this->action("persistImport") ?>" method="post" >
+    <input type="hidden" name="ccm_token" value="<?php echo $token ?>" />
 
 <?php
 print_r($comparisondata);
 ?>
+
+</form>

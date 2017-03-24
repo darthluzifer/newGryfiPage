@@ -61,10 +61,15 @@ class EntityDataComparer
             }
             $comparisonSet->setImportModel($importModel);
             $comparisonSet->compareAndCreateResultModel();
-            $this->comparisonData[]=$comparisonSet;
+            if(!$comparisonSet->isCurrentAndResultSame()){
+                $this->comparisonData[]=$comparisonSet;
+            }
         }
     }
 
+    /**
+     * @return ComparisonSet[]
+     */
     public function getComparisonData(){
         return $this->comparisonData;
     }

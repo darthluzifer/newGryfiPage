@@ -12,6 +12,7 @@ use Concrete\Core\Permission\Checker;
 use Concrete\Core\Permission\Response\BlockResponse;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntitySerializer;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
@@ -991,6 +992,29 @@ class Controller extends BlockController
                             $comparer->compare();
 
                             $this->setViewVar("comparisondata", $comparer->getComparisonData());
+                            $token = Core::make("token")->generate("perform_persistImport");
+                            $this->setViewVar("token", $token);
+                            //now serialise the data in the session
+                            $app = Application::getFacadeApplication();
+
+                            /**
+                             * @var Session $session
+                             */
+                            $session = $app['session'];
+
+
+                            $serializeddata = array();
+                            foreach($comparer->getComparisonData() as $num => $comparisonSet){
+                                $serializer = new BaseEntitySerializer($comparisonSet->getResultModel());
+                                $serializeddata = $serializer->convertTo(
+                                    BaseEntitySerializer::KEYTYPE_SQL_FIELDNAME
+                                        , BaseEntitySerializer::VALUE_TYPE_SQL
+                                        , true);
+                            }
+
+                            $sessiondata[$token]=$serializeddata;
+                            $session->set("import", $sessiondata);
+
 
                         } else {
                             $error = $result;

@@ -91,6 +91,9 @@ abstract class BaseEntity
         }
     }
 
+    /**
+     * @return Field[]
+     */
     public function getFieldTypes(){
         if(count($this->fieldTypes) == 0){
             $this->setDefaultFieldTypes();

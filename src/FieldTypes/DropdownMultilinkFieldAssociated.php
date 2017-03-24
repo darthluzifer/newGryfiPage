@@ -28,7 +28,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Field for an n;m relation with bootstrap tagsinput
  * TODO change to twitter tagsinput, bootstrap tagsinput is depricated
  */
-class DropdownMultilinkFieldAssociated extends DropdownMultilinkField{
+class DropdownMultilinkFieldAssociated extends DropdownMultilinkField implements AssociationFieldInterface {
     protected $linktable;
     protected $ntomtable;
     protected $sqlfilter = " 1=1 ";
