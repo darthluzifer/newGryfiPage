@@ -27,7 +27,7 @@ class BaseEntitySerializer
     const VALUE_TYPE_HUMAN = 'humanreadablevalue';
     public function __construct(BaseEntity $baseEntity)
     {
-        $this->baseEntity;
+        $this->baseEntity = $baseEntity;
     }
 
     public function convertTo($keytype , $valuetype, $associationHuman=false){

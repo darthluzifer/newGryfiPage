@@ -12,8 +12,12 @@ namespace Concrete\Package\BasicTablePackage\Src\Import;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Doctrine\ORM\Query\Expr\Base;
 
-class ComparisonSet
+class ComparisonSet implements \Countable, \SeekableIterator
 {
+    /**
+     * @var int
+     */
+    protected $position = 0;
     /**
      * @var BaseEntity
      */
@@ -84,15 +88,17 @@ class ComparisonSet
     }
 
     public function compareAndCreateResultModel(){
+        $classname = get_class($this->importModel);
         if($this->currentModel == null){
+            $this->currentModel = new $classname;
             $this->resultModel = $this->importModel;
             return $this;
         }
 
         //TODO what happens if importmodel is null
 
-        $classname = get_class($this->currentModel);
-        $resultModel = new $classname;
+
+        $this->resultModel = new $classname;
         foreach ($this->currentModel->getFieldTypes() as $sqlFieldName => $fieldType){
             switch ($fieldType) {
 
@@ -124,4 +130,116 @@ class ComparisonSet
     }
 
 
+    /**
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     * @since 5.0.0
+     */
+    public function current()
+    {
+       switch ($this->position){
+           case 0:
+               return $this->currentModel;
+               break;
+           case 1:
+               return $this->importModel;
+               break;
+           case 2:
+               return $this->resultModel;
+               break;
+
+       }
+    }
+
+    /**
+     * Move forward to next element
+     * @link http://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function next()
+    {
+        $this->position++;
+
+    }
+
+    /**
+     * Return the key of the current element
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     * @since 5.0.0
+     */
+    public function key()
+    {
+        switch ($this->position){
+            case 0:
+                return 'current';
+                break;
+            case 1:
+                return 'imported';
+                break;
+            case 2:
+                return 'result';
+                break;
+
+        }
+    }
+
+    /**
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return $this->position >=0 && $this->position <3;
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     * @link http://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+       return 3;
+    }
+
+    /**
+     * Seeks to a position
+     * @link http://php.net/manual/en/seekableiterator.seek.php
+     * @param int $position <p>
+     * The position to seek to.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function seek($position)
+    {
+        $tempposition = $this->position;
+        $this->position = $position;
+        if($this->valid()){
+            return;
+        }
+        $this->position = $tempposition;
+        throw new \OutOfBoundsException("invalid seek position ($position)");
+    }
 }

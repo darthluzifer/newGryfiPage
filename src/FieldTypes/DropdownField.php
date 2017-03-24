@@ -119,9 +119,13 @@ class DropdownField extends Field{
 
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
-		if(in_array($value, $values)){
+		if(in_array($value, $values, true)){
 			return parent::validatePost($value);
-		}else{
+		}elseif (in_array($value, $this->getOptions(),true)){
+            $reversedOptions = array_flip($this->getOptions());
+            $value = $reversedOptions[$value];
+            return parent::validatePost($value);
+        }else{
 		    if($this->nullable !== false && $value == null){
 		        $this->setValue($value);
 		        return true;

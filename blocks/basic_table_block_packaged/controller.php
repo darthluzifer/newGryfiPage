@@ -4,6 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 use Concrete\Controller\Search\Groups;
 use Concrete\Controller\Dialog\Block\Permissions as BlockPermissions;
 use Concrete\Core\Block\Block;
+use Concrete\Core\Support\Facade\Application;
 use Concrete\Core\File\Event\FileSet;
 use Concrete\Core\File\File;
 use Concrete\Core\File\Set\Set;
@@ -940,7 +941,7 @@ class Controller extends BlockController
     public function action_importCSV(){
 
 
-
+        $goBackToTableView = false;
         $block = Block::getByID($this->bID);
         $checker = new Checker($block);
 
@@ -952,7 +953,7 @@ class Controller extends BlockController
         if (!$response->canRead()) {
             $this->requiresRegistration();
             // The current user can view the block
-            $this->set("errorMessage", t("You are not allowed to perform this operation."));
+            $this->setViewVar("errorMessage", t("You are not allowed to perform this operation."));
             $this->render("view");
             return;
         }
@@ -1004,12 +1005,17 @@ class Controller extends BlockController
 
 
                             $serializeddata = array();
-                            foreach($comparer->getComparisonData() as $num => $comparisonSet){
-                                $serializer = new BaseEntitySerializer($comparisonSet->getResultModel());
-                                $serializeddata = $serializer->convertTo(
-                                    BaseEntitySerializer::KEYTYPE_SQL_FIELDNAME
+                            if(count($comparer->getComparisonData())>0) {
+                                foreach ($comparer->getComparisonData() as $num => $comparisonSet) {
+                                    $serializer = new BaseEntitySerializer($comparisonSet->getResultModel());
+                                    $serializeddata = $serializer->convertTo(
+                                        BaseEntitySerializer::KEYTYPE_SQL_FIELDNAME
                                         , BaseEntitySerializer::VALUE_TYPE_SQL
                                         , true);
+                                }
+                            }else{
+                                $goBackToTableView = true;
+                                $this->setViewVar('errorMessage', t("Imported data and current data are the same."));
                             }
 
                             $sessiondata[$token]=$serializeddata;
@@ -1018,17 +1024,22 @@ class Controller extends BlockController
 
                         } else {
                             $error = $result;
+                            $this->setViewVar('errorMessage', $importer->getErrorMessage($error));
                         }
                     }
+                    if($goBackToTableView){
+                        $this->render('view');
+                    }else {
+                        $this->render('../../../basic_table_package/blocks/basic_table_block_packaged/views/import_view');
 
-                    $this->render('../../../basic_table_package/blocks/basic_table_block_packaged/views/import_view');
+                    }
                     return;
                 }
             } else if (isset($_FILES['csvfile'])) {
                 $error = $_FILES['csvfile']['error'];
             }
 
-            $this->set('errorMessage', \Concrete\Core\File\Importer::getErrorMessage($error));
+
             $this->render('view');
             return;
 
