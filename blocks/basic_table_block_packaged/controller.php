@@ -910,10 +910,12 @@ class Controller extends BlockController
                 }
                 $assocRow = array();
                 foreach ($fieldTypes as $num => $fieldType) {
-                    /**
-                     * @var Field $fieldType
-                     */
-                    $assocRow[$fieldType->getLabel()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+                    if($fieldType->getSQLFieldName() != $value->getIdFieldName()) {
+                        /**
+                         * @var Field $fieldType
+                         */
+                        $assocRow[$fieldType->getLabel()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+                    }
                 }
                 $assocResult[] = $assocRow;
 
