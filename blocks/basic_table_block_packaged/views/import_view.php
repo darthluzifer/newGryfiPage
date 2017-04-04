@@ -25,6 +25,7 @@
 
         $classname = get_class($comparisondata[0]->getImportModel());
         $uniqueFunction = $classname::getDefaultGetDisplayStringFunction();
+
         foreach ($comparisondata as $num => $comparisonset) {
 
             ?>
@@ -106,10 +107,13 @@
             ';
 
                     ?>
+                    <div class="acceptchange">
+                        <label><?php echo t("Accept change");?></label><input type="checkbox" name="acceptImport[<?php echo $num;?>]"/>
+                    </div>
             </div>
             <?php
         }
     }
         ?>
-
+<input class='btn btn-primary' type="submit" value="<?php echo t("Submit selected changes");?>">
 </form>

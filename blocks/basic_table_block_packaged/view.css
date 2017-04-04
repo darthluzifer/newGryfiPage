@@ -77,3 +77,8 @@ div.hiddenforminfo{
 .basic_table_package div.csvimport{
     display:inline;
 }
+
+.importrow div.acceptchange input {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
