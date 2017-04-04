@@ -22,6 +22,9 @@
     <?php
     $fields = $controller->getFields();
     if(count($comparisondata)>0) {
+
+        $classname = get_class($comparisondata[0]->getImportModel());
+        $uniqueFunction = $classname::getDefaultGetDisplayStringFunction();
         foreach ($comparisondata as $num => $comparisonset) {
 
             ?>
@@ -51,7 +54,9 @@
 
                             }
                         } ?>
-
+                    <!-- add column for unique string-->
+                        <th data-column-id='uniquestring'
+                            data-formatter="text"><?php echo t("Unique String");?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,9 +67,18 @@
                     /**
                      * @var \Concrete\Package\BasicTablePackage\Src\Import\ComparisonSet $comparisonset
                      */
+
+                    $isnewEntry = false;
                     foreach ($comparisonset as $modeltype => $model) {
                         echo '<tr>';
-                        echo '<th>' . $modeltype . '</th>';
+                        if($modeltype == \Concrete\Package\BasicTablePackage\Src\Import\ComparisonSet::KEY_CURRENT && is_null($model->get($model->getIdFieldName()))){
+                            $model = $comparisonset->getResultModel();
+                            echo '<th>' . \Concrete\Package\BasicTablePackage\Src\Import\ComparisonSet::KEY_NEWENTRY . '</th>';
+                            $isnewEntry = true;
+                        }else{
+                            echo '<th>' . $modeltype . '</th>';
+                        }
+
                         foreach ($fields as $colname => $field) {
                             if ($colname == $controller->getModel()->getIdFieldName()) {
 
@@ -78,6 +92,12 @@
                                 echo '<td>' . $field->getTableView() . '</td>';
                             }
 
+                        }
+
+                        echo '<td>' . $uniqueFunction($model) . '</td>';
+                        if($isnewEntry){
+                            //if it is a new entry, we need only one row
+                            break;
                         }
 
                     }

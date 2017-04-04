@@ -33,6 +33,11 @@ class ComparisonSet implements \Countable, \SeekableIterator
      */
     protected $resultModel;
 
+    const KEY_CURRENT = 'current';
+    const KEY_IMPORTED = 'imported';
+    const KEY_RESULT = 'result';
+    const KEY_NEWENTRY = 'newentry';
+
     /**
      * @return BaseEntity
      */
@@ -174,13 +179,13 @@ class ComparisonSet implements \Countable, \SeekableIterator
     {
         switch ($this->position){
             case 0:
-                return 'current';
+                return static::KEY_CURRENT;
                 break;
             case 1:
-                return 'imported';
+                return static::KEY_IMPORTED;
                 break;
             case 2:
-                return 'result';
+                return static::KEY_RESULT;
                 break;
 
         }
