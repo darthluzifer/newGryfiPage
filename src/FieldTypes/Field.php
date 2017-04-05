@@ -29,6 +29,14 @@ class Field{
 	protected $showInTable = true;
     protected $nullable = true;
     const REPLACE_BRACE_IN_ID_WITH='-';
+
+
+
+    /**
+     * @var bool
+     */
+    protected $notSet = false;
+
     protected $default = null;
     /**
      * @var BlockView
@@ -323,6 +331,22 @@ class Field{
         $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $value, $attributes, $form);
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotSet()
+    {
+        return $this->notSet;
+    }
+
+    /**
+     * @param bool $notSet
+     */
+    public function setNotSet($notSet)
+    {
+        $this->notSet = $notSet;
     }
 
 

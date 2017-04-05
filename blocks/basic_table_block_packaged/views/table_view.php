@@ -3,7 +3,7 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\FileField;
 ?>
 
-<div class="table-responsive basic_table_package">
+<div class="table-responsive basic_table_package" id="<?php echo $controller->getHTMLId(); ?>div">
  
  
 
@@ -22,6 +22,15 @@ use Application\Block\BasicTableBlock\FieldTypes\FileField;
         <?php echo $controller->getHeader($view);?>
         </div>
         <?php echo $controller->getTableControlButtons($this);?>
+
+        <?php
+        if(strlen($errorMessage)>0){
+            echo '<div class="errormessage alert-danger">
+                '.$errorMessage.'
+                </div>
+            ';
+        }
+         ?>
         <table id='<?php echo $controller->getHTMLId(); ?>' class="table table-striped table-bordered table-hover">
         <thead>
 	        <tr>
@@ -118,6 +127,18 @@ $(document).ready(function(e){
 							}
 					}
 	});
+    $('#<?php echo $controller->getHTMLId();?>div div.tablecontrols .actionbutton.importcsv').click(function (e) {
+        $(this).parents(".tablecontrols").find(".csvfile-field")
+            .click()
+            .change(function (e) {
+                if($(this).val().length>0){
+                    $(this).parent().submit();
+                }
+                $(this).off("change");
+            })
+        ;
+    });
+
 });
 
 </script>

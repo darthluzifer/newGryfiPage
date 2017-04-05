@@ -119,9 +119,18 @@ class DropdownField extends Field{
 
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
-		if(in_array($value, $values)){
+		//check if value is integer like
+        if(filter_var($value, FILTER_VALIDATE_INT) !== false){
+            //if it is integer like, convert to integer
+            $value = intval($value);
+        }
+		if(in_array($value, $values, true)){
 			return parent::validatePost($value);
-		}else{
+		}elseif (in_array($value, $this->getOptions(),true)){
+            $reversedOptions = array_flip($this->getOptions());
+            $value = $reversedOptions[$value];
+            return parent::validatePost($value);
+        }else{
 		    if($this->nullable !== false && $value == null){
 		        $this->setValue($value);
 		        return true;

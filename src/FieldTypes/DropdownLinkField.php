@@ -21,7 +21,7 @@ use Concrete\Core\Block\View\BlockView as View;
  *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A Dropdownfield which lists other instances
  */
-class DropdownLinkField extends DropdownField{
+class DropdownLinkField extends DropdownField implements AssociationFieldInterface {
     protected $linktable;
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();

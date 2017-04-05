@@ -73,3 +73,12 @@ div.hiddenforminfo{
     padding-left: 40px;
     padding-right: 40px;
 }
+
+.basic_table_package div.csvimport{
+    display:inline;
+}
+
+.importrow div.acceptchange input {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
