@@ -160,9 +160,10 @@ class DropdownMultilinkField extends DropdownLinkField implements AssociationFie
             $model = BaseEntity::getEntityById(get_class($this->sourceEntity),$this->getSourceEntity()->getId());
 
             $values = $model->get($this->sourceField);
+            $displayStringFunction = $this->getGetDisplayStringFunction();
             if(count($values)>0 && $values != null) {
                 foreach ($model->get($this->sourceField) as $valnum => $value) {
-                    $this->value[$value->getId()]=$this->getDisplayString($value);
+                    $this->value[$value->getId()]=$displayStringFunction($value);
                 }
             }
         }
