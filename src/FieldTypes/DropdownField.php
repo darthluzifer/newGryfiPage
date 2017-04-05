@@ -119,6 +119,11 @@ class DropdownField extends Field{
 
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
+		//check if value is integer like
+        if(filter_var($value, FILTER_VALIDATE_INT) !== false){
+            //if it is integer like, convert to integer
+            $value = intval($value);
+        }
 		if(in_array($value, $values, true)){
 			return parent::validatePost($value);
 		}elseif (in_array($value, $this->getOptions(),true)){
