@@ -58,6 +58,9 @@ abstract class BaseEntity
     protected $protect = array();
     protected $protectRead = array();
     protected $protectWrite = array();
+    /**
+     * @var Field[]
+     */
     protected $fieldTypes = array();
     protected $em;
     protected $defaultFormView = false;
@@ -361,6 +364,34 @@ abstract class BaseEntity
         $this->checkingConsistency = true;
         $this->checkingConsistency = false;
         return array();
+    }
+
+    /**
+     * @param string $sqlFieldName
+     * @param bool $value
+     * @throws \InvalidArgumentException if $sqlFieldname does not exist
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value){
+        $fieldTypes = $this->getFieldTypes();
+        if(isset($this->fieldTypes[$sqlFieldName])){
+            $this->fieldTypes[$sqlFieldName]->setNotSet($value);
+        }else{
+            throw new \InvalidArgumentException(sprintf("Property / Fieldtype %s does not exist in class %s", $sqlFieldName, static::class));
+        }
+    }
+
+    /**
+     * @param string $sqlFieldName
+     * @return bool
+     * @throws \InvalidArgumentException if $sqlFieldName does not exist
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName){
+        $this->getFieldTypes();
+        if(isset($this->fieldTypes[$sqlFieldName])){
+            return $this->fieldTypes[$sqlFieldName]->isNotSet();
+        }else{
+            throw new \InvalidArgumentException(sprintf("Property / Fieldtype %s does not exist in class %s", $sqlFieldName, static::class));
+        }
     }
 
     public static function getEntityManagerStatic(){

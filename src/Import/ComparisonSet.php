@@ -104,12 +104,15 @@ class ComparisonSet implements \Countable, \SeekableIterator
 
 
         $this->resultModel = new $classname;
+        $importModelFieldTypes = $this->importModel->getFieldTypes();
         foreach ($this->currentModel->getFieldTypes() as $sqlFieldName => $fieldType){
             switch ($fieldType) {
 
                 default:
                     if($sqlFieldName ==$this->currentModel->getIdFieldName()){
                         $this->resultModel->set($sqlFieldName, $this->currentModel->getId());
+                    }elseif ($this->importModel->getFieldTypeIsNotSet($sqlFieldName)){
+                        $this->resultModel->set($sqlFieldName, $this->currentModel->get($sqlFieldName));
                     }else{
                         $this->resultModel->set($sqlFieldName, $this->importModel->get($sqlFieldName));
                     }

@@ -72,6 +72,8 @@ class BaseEntityFactory
                 }else{
                     $errormsgs[]=$fieldType->getErrorMsg();
                 }
+            }else{
+                $targetModel->setFieldTypeIsNotSet($fieldType->getSQLFieldName(), true);
             }
         }
         if(count($errormsgs)>0){
@@ -109,6 +111,8 @@ class BaseEntityFactory
                     $targetModel->set($fieldType->getSQLFieldname(), $array[$fieldname]);
 
                 }
+            }else{
+                $targetModel->setFieldTypeIsNotSet($fieldType->getSQLFieldName(), true);
             }
         }
         if(count($errormsgs)>0){
