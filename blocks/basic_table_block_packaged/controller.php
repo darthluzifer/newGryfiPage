@@ -4,6 +4,7 @@ namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 use Concrete\Controller\Search\Groups;
 use Concrete\Controller\Dialog\Block\Permissions as BlockPermissions;
 use Concrete\Core\Block\Block;
+use Concrete\Core\Http\Request;
 use Concrete\Core\Support\Facade\Application;
 use Concrete\Core\File\Event\FileSet;
 use Concrete\Core\File\File;
@@ -13,6 +14,7 @@ use Concrete\Core\Permission\Checker;
 use Concrete\Core\Permission\Response\BlockResponse;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityFactory;
 use Concrete\Package\BasicTablePackage\Src\BaseEntitySerializer;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
@@ -993,7 +995,7 @@ class Controller extends BlockController
                             $comparer->compare();
 
                             $this->setViewVar("comparisondata", $comparer->getComparisonData());
-                            $token = Core::make("token")->generate("perform_persistImport");
+                            $token = Core::make("token")->generate("persistImport");
                             $this->setViewVar("token", $token);
                             //now serialise the data in the session
                             $app = Application::getFacadeApplication();
@@ -1008,7 +1010,7 @@ class Controller extends BlockController
                             if(count($comparer->getComparisonData())>0) {
                                 foreach ($comparer->getComparisonData() as $num => $comparisonSet) {
                                     $serializer = new BaseEntitySerializer($comparisonSet->getResultModel());
-                                    $serializeddata = $serializer->convertTo(
+                                    $serializeddata[$num] = $serializer->convertTo(
                                         BaseEntitySerializer::KEYTYPE_SQL_FIELDNAME
                                         , BaseEntitySerializer::VALUE_TYPE_SQL
                                         , true);
@@ -1042,6 +1044,92 @@ class Controller extends BlockController
 
             $this->render('view');
             return;
+
+    }
+
+    public function  action_persistImport(){
+
+        if(static::isExecuted()){
+            return;
+        }
+        static::setExecuted();
+        //first get request
+        /**
+         * @var Request $request
+         */
+        $validator = \Core::make("token");
+
+        //validate token
+        if(!$validator->validate("persistImport")){
+            $this->setViewVar("errorMessage", t("Your request is invalid due to inactivity, please retry."));
+
+            //if token not valid, cancel
+            $this->render("view");
+            $this->redirectToView();
+            return;
+        }
+
+        $postdata = Request::post();
+        $token = $postdata['ccm_token'];
+
+        $session = Core::make("session");
+
+
+        $importDataWithtoken =$session->get("import");
+        $importData = $importDataWithtoken[$token];
+        if(count($importData)==0){
+            $this->setViewVar("errorMessage", t("Nothing to import."));
+
+            //if token not valid, cancel
+            $this->render("view");
+            $this->redirectToView();
+            return;
+        }
+
+        $baseEntityFactory = new BaseEntityFactory($this->getModel());
+        $this->getEntityManager()->beginTransaction();
+
+//        $ids = array();
+//        //get the ids of the entities to update
+//        foreach($postdata['acceptImport'] as $num => $accepted){
+//            if($accepted){
+//                if(count($importData[$num])>0){
+//                    if($importData[$num][$this->getModel()->getIdFieldName()] != null){
+//                        $ids[]=$importData[$num][$this->getModel()->getIdFieldName()];
+//                    }
+//                }
+//            }
+//        }
+//
+//        //now retrieve the models
+//
+
+        foreach($postdata['acceptImport'] as $num => $accepted){
+            if($accepted){
+                if(count($importData[$num])>0){
+                    $model = $baseEntityFactory->createFromSQLFieldNameSQLValue($importData[$num], true);
+                    if($model->getId() != null){
+                      $this->getEntityManager()->merge($model);
+                    }else {
+                        $this->getEntityManager()->persist($model);
+                    }
+                }
+            }
+        }
+        try{
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->commit();
+        }catch (Exception $e){
+            $this->getEntityManager()->rollback();
+            Core::make("log")->log("ERROR", get_class($e)." ".$e->getMessage()." ".__FILE__." ".__LINE__);
+            $this->setViewVar("errorMessage", t("Something went wrong with the import."));
+        }
+
+        $this->render("view");
+        $this->redirectToView();
+        return;
+
+
 
     }
 
