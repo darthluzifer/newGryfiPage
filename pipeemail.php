@@ -254,6 +254,15 @@ logtext($logtext);
 
 send_mail("lucius.bachmann@clubpage.ch", $subject, $message,$from, $emails, $messageplain, $attachements);
 
+function isHtml($string)
+{
+    if ( $string != strip_tags($string) )
+    {
+        return true; // Contains HTML
+    }
+    return false; // Does not contain HTML
+}
+
 
 function send_mail($to, $subject, $message, $from, $emails, $messageplain, $attachements){
 	require 'class.phpmailer.php';
@@ -270,7 +279,8 @@ function send_mail($to, $subject, $message, $from, $emails, $messageplain, $atta
 		$mail->wrapText();
 
 		$mail->addAddress($email);
-		$mail->setFrom($from);  // Add a recipient
+		$mail->setFrom("mailverteiler@gryfenberg.ch");  // Add a recipient
+		$mail->addReplyTo($from);
 		/*$mail->addAddress('ellen@example.com');               // Name is optional
         $mail->addReplyTo('info@example.com', 'Information');
         $mail->addCC('cc@example.com');
@@ -283,10 +293,16 @@ function send_mail($to, $subject, $message, $from, $emails, $messageplain, $atta
 
 		$mail->Subject = $subject;
 
-		$mail->Body=$message;
+		if(isHtml($message)) {
 
-		$mail->AltBody = $messageplain;
+            $mail->Body = $message;
 
+            $mail->AltBody = $messageplain;
+            $mail->isHTML(true);
+        }else{
+			$mail->Body = $message;
+			$mail->isHTML(false);
+		}
 		$attachmentdir = "";
 		foreach ($attachements as $path) {
 			$attachmentdir = dir($path);

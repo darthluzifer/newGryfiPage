@@ -20,3 +20,4 @@ owncloud/data/*
 /concrete5/application/files/
 /concrete5/application/config/generated_overrides/concrete.php
 /_intellij_phpdebug_validator.php
+/emaillog.txt
