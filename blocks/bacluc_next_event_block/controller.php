@@ -1,8 +1,13 @@
 <?php
 namespace Concrete\Package\BaclucEventPackage\Block\BaclucNextEventBlock;
 
+use Concrete\Core\Form\Service\Widget\DateTime;
+use Concrete\Core\Http\Request;
 use Concrete\Core\Package\Package;
+use Concrete\Core\User\Group\Group;
+use Concrete\Core\User\UserInfo;
 use Concrete\Package\BaclucEventPackage\Src\Event;
+use Concrete\Package\BaclucEventPackage\Src\UserAttendsEvent;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\TableBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption as GroupRefOption;
@@ -123,7 +128,59 @@ class Controller extends \Concrete\Package\BasicTablePackage\Block\BasicTableBlo
     }
 
     public function view(){
-        $this->getNextEvent();
+        $event = $this->getNextEvent();
+        $this->set("event", $event);
+
+        $showAttend = false;
+        $showApologize = false;
+        /**
+         * @var \DateTime $startDate
+         */
+        $startDate = new \DateTime($event->get("date_from")->format("Y-m-d")." ".$event->get("time_from"));
+
+        if($startDate> new \DateTime()) {
+            if (\Concrete\Core\User\User::isLoggedIn()) {
+                $user = new User();
+                $eventgroups = $event->get("EventGroups");
+                $canAttend = false;
+                foreach ($eventgroups as $num => $eventgroup) {
+                    if ($user->inGroup(Group::getByID($eventgroup->get("Group")->get("gID")))) {
+                        $canAttend = true;
+                        break;
+                    }
+                }
+                if($canAttend){
+                    $userAttends = UserAttendsEvent::getCurrentAttendance($event, $user->getUserID());
+                    if ($userAttends == null) {
+                        $showApologize = true;
+                        $showAttend = true;
+                    }elseif($userAttends->get("state") == UserAttendsEvent::STATE_APOLOGIZED){
+                        $showApologize = false;
+                        $showAttend = true;
+                    }elseif($userAttends->get("state") == UserAttendsEvent::STATE_ATTENDING){
+                        $showApologize = true;
+                        $showAttend = false;
+                    }
+                }
+
+            }
+        }
+
+        $this->set("showApologize", $showApologize);
+        $this->set("showAttend", $showAttend);
+
+    }
+
+    public function action_changeAttendance(){
+        $post = Request::post();
+        if(strlen($post['newstate'])>0 && User::isLoggedIn()){
+            $newstate = $post['newstate'];
+            if($newstate == UserAttendsEvent::STATE_APOLOGIZED || $newstate == UserAttendsEvent::STATE_ATTENDING){
+                $event = $this->getNextEvent();
+                $user = new User();
+                UserAttendsEvent::changeUserAttendanceState($event,$user->getUserID(),$newstate);
+            }
+        }
     }
 
 }

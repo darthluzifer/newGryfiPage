@@ -47,6 +47,32 @@ if($event != null) {
 					class="col-xs-12 filelink info"><?php echo " <span class='prefix info_prefix'>" . t("Informationen:") . "</span> " . $infofile ?></div>
 			<?php } ?>
 		</div>
+        <div class="row">
+                <?php
+            if($showAttend || $showApologize) {
+                ?>
+                <form action="<?php echo $this->action("changeAttendance") ?>" method="post">
+                    <?php
+                        if($showAttend){
+                    ?>
+                            <button class="btn btn-success" type="submit" name="newstate" value="<?php echo \Concrete\Package\BaclucEventPackage\Src\UserAttendsEvent::STATE_ATTENDING?>"><i class="fa fa-check"></i></button>
+                    <?php
+                        }
+                    ?>
+                    <?php
+                        if($showApologize){
+                    ?>
+                            <button class="btn btn-danger" type="submit" name="newstate" value="<?php echo \Concrete\Package\BaclucEventPackage\Src\UserAttendsEvent::STATE_APOLOGIZED?>"><i class="fa fa-close"></i></button>
+                    <?php
+                        }
+                    ?>
+
+                </form>
+                <?php
+            }
+                ?>
+
+        </div>
 
 
 	</div>
