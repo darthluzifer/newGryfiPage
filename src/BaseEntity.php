@@ -394,6 +394,25 @@ abstract class BaseEntity
         }
     }
 
+
+    /**
+     * @param string|object $classname or object where the constants need to be extracted
+     * @param string $constant_starts_with First part of the constant (if there are multiple constanted options)
+     * @return array
+     */
+    public static function getOptionsOfConstants($classname, $constant_starts_with)
+    {
+        $refl = new \ReflectionClass($classname);
+        $constants = $refl->getConstants();
+        $userConstants = array();
+        foreach ($constants as $key => $value) {
+            if (mb_strpos($value, $constant_starts_with) !== null) {
+                $userConstants[$value] = $value;
+            }
+        }
+        return $userConstants;
+    }
+
     public static function getEntityManagerStatic(){
         $pkg = Package::getByHandle("basic_table_package");
         return $pkg->getEntityManager();
