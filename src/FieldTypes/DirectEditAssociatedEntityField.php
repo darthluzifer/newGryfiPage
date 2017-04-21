@@ -16,67 +16,13 @@ use Doctrine\ORM\Proxy\Proxy;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Concrete\Core\Support\Facade\Application;
 
-class DirectEditAssociatedEntityField extends DropdownLinkField implements DirectEditInterface
+class DirectEditAssociatedEntityField extends AbstractDirectEditField
 {
 
 
-    const SUBFORMERROR = " has an Error.";
-
-    protected $subErrorMsg = array();
-    protected $alwaysCreateNewInstance = false;
-
-    /**
-     * @return boolean
-     */
-    public function isAlwaysCreateNewInstance()
-    {
-        return $this->alwaysCreateNewInstance;
-    }
-
-    /**
-     * @param boolean $alwaysCreateNewInstance
-     * @return $this
-     */
-    public function setAlwaysCreateNewInstance($alwaysCreateNewInstance)
-    {
-        $this->alwaysCreateNewInstance = $alwaysCreateNewInstance;
-        return $this;
-    }
-
-    /**
-     * @param $form
-     * @param bool $clientSideValidationActivated
-     * @return string
-     */
-    public function getFormView($form, $clientSideValidationActivated = true){
-        /**
-         * @var BaseEntity $value
-         */
-
-        $html = "
-        <div class='subentityedit col-xs-12'>
-
-            <label>".$this->getLabel()."</label>
-            <div class='row subentityrowedit'>
-        ";
 
 
-        $html .= $this->getInputHtml($form, $clientSideValidationActivated);
 
-
-        // TODO put the id in the form somehow
-
-        $html.="</div>
-           </div>
-        ";
-        //TODO get javascript logic for editing existing object or create new one
-
-
-    		$html.=$this->getHtmlErrorMsg();
-
-
-        return $html;
-    }
 
     public function validatePost($value)
     {
@@ -90,12 +36,13 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $instanceforidfield = new $this->targetEntity;
         $idfieldname = $instanceforidfield->getIdFieldName();
 
-
-        $fields = $instanceforidfield->getFieldTypes();
+       $fields = $instanceforidfield->getFieldTypes();
         $error = false;
         $idpostname = $fields[$idfieldname]->getPostName();
         $toSaveModel = null;
-        if($value['newentrycheckbox'] || filter_var($value[$idpostname], FILTER_VALIDATE_INT) === false || $this->isAlwaysCreateNewInstance()) {
+        if($value['newentrycheckbox']
+            || filter_var($value[$idpostname], FILTER_VALIDATE_INT) === false
+            || $this->isAlwaysCreateNewInstance()) {
             //create entity or modify it
             $toSaveModel = new $this->targetEntity;
         }else{
@@ -148,10 +95,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
             return false;
         }
 
-
-
         //persist it
-
         $this->getEntityManager()->persist($toSaveModel);
         //set the value
         $this->setSQLValue($toSaveModel);
@@ -159,35 +103,6 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
     }
 
 
-    protected function saveSubErrorMsg(){
-        $app = Application::getFacadeApplication();
-
-        /**
-         * @var Session $session
-         */
-        $session = $app['session'];
-
-        $session->set($this->postName."subformerrors", $this->subErrorMsg);
-    }
-
-    protected function loadSubErrorMsg(){
-        $app = Application::getFacadeApplication();
-
-        /**
-         * @var Session $session
-         */
-        $session = $app['session'];
-        if(count($this->subErrorMsg)>0){
-            $session->remove($this->postName."subformerrors");
-            return $this->subErrorMsg;
-        }
-
-
-        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
-        $session->remove($this->postName."subformerrors");
-        return $this->subErrorMsg;
-
-    }
 
     /**
      * @param $form
@@ -201,6 +116,8 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $html='';
+        $html.='
+            <div class=\'subentityrowedit\'>';
         $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
@@ -288,6 +205,7 @@ class DirectEditAssociatedEntityField extends DropdownLinkField implements Direc
         $html .= "<div class='prepended_before_realname hiddenforminfo'>" . static::PREPEND_BEFORE_REALNAME . "</div>";
         $html .= "<div class='options_url hiddenforminfo'>" . $this->view->action("get_options_of_field") . "?fieldname=" . $this->getPostName() . "</div>";
         $html .= "<div class='options_template hiddenforminfo'>" . $entityForFields->getTypeaheadTemplate() . "</div>";
+        $html.='</div>';
         return $html;
     }
 }
