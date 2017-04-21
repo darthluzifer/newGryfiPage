@@ -97,7 +97,7 @@ class IntegerField extends Field {
             return false;
         }
         if(strlen($value)==0){
-            $this->setValue(null);
+            $this->value = null;
             return true;
         }
 
@@ -140,7 +140,7 @@ class IntegerField extends Field {
             }
         }
 
-		$this->setValue($value);
+		$this->value = $value;
 		return true;
 	}
 

@@ -56,7 +56,7 @@ class FloatField extends IntegerField {
             return false;
         }
         if(strlen($value)==0){
-            $this->setValue(null);
+            $this->value = null;
             return true;
         }
 
@@ -138,7 +138,7 @@ class FloatField extends IntegerField {
             }
         }
 
-        $this->setValue($value);
+        $this->value = null;
         return true;
     }
 

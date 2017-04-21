@@ -133,7 +133,7 @@ abstract class BaseEntity
                         }
                         $sqlvalue = $item->$fieldname;
                         $field->setSQLValue($sqlvalue);
-                        $returnString.=$field->getValue()." ";
+                        $returnString.=$field->getTableView()." ";
 
 
                     }catch(MappingException $e){

@@ -43,11 +43,6 @@ class DropdownField extends Field{
 	}
 
 
-	public function setValue($value){
-
-		$this->value = $value;
-        return $this;
-	}
 
 	public function getTableView(){
 		$options = $this->getOptions();
@@ -132,7 +127,7 @@ class DropdownField extends Field{
             return parent::validatePost($value);
         }else{
 		    if($this->nullable !== false && $value == null){
-		        $this->setValue($value);
+		        $this->value = $value;
 		        return true;
             }
 			return false;

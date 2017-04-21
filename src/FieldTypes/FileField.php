@@ -21,11 +21,6 @@ class FileField extends Field
 
     }
 
-    public function setValue($value)
-    {
-        $this->value = $value;
-        return $this;
-    }
 
     public function getTableView()
     {

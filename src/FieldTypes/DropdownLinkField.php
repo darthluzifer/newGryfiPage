@@ -238,9 +238,6 @@ class DropdownLinkField extends DropdownField implements AssociationFieldInterfa
     }
 
 
-    public function getValue(){
-        return $this->value;
-    }
 
     public function validatePost($value){
 
@@ -296,7 +293,7 @@ class DropdownLinkField extends DropdownField implements AssociationFieldInterfa
 
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

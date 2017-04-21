@@ -61,7 +61,7 @@ class EmailField extends Field
 
         }
 
-        $this->setValue($value);
+        $this->value = $value;
         return true;
     }
 

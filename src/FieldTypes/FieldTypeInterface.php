@@ -17,7 +17,6 @@ use Concrete\Core\Block\View\BlockView;
  */
 interface FieldTypeInterface
 {
-    public function setValue($value);
 
     public function setSQLValue($value);
 

@@ -61,10 +61,7 @@ class Field implements FieldTypeInterface
 
 	}
 
-	public function setValue($value){
-		$this->value = $value;
-        return $this;
-	}
+
 
 
 
@@ -108,6 +105,7 @@ class Field implements FieldTypeInterface
 
             if(!$this->nullable){
                 $attributes['required']='true';
+                //parsley dependendt, TODO extract
                 $attributes['data-parsley-required']='true';
             }
 
@@ -154,7 +152,7 @@ class Field implements FieldTypeInterface
 	        return false;
         }
 
-		$this->setValue($value);
+		$this->value = $value;
 		return true;
 	}
 
@@ -170,6 +168,7 @@ class Field implements FieldTypeInterface
 		return $this->showInTable;
 	}
 
+	//TODO use central getEntityManager funciton
     /**
      * @return EntityManager
      */
