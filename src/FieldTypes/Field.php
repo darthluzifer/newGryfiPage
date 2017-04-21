@@ -17,14 +17,13 @@ use Concrete\Core\Package\Package as Package;
  *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A normal textfield, provides most of the methods for subfieldTypes
  */
-class Field{
+class Field implements FieldTypeInterface
+{
 	protected $sqlFieldname;
 	protected $label;
-	protected $validation;
 	protected $value;
 	protected $postName;
 	protected $errMsg=null;
-	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
     protected $nullable = true;
@@ -63,7 +62,6 @@ class Field{
 	}
 
 	public function setValue($value){
-		$this->isSQLValue = false;
 		$this->value = $value;
         return $this;
 	}
@@ -71,7 +69,6 @@ class Field{
 
 
 	public function setSQLValue($value){
-		$this->isSQLValue = true;
 		$this->value = $value;
         return $this;
 	}
