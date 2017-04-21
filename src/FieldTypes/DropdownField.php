@@ -46,7 +46,7 @@ class DropdownField extends Field{
 
 	public function getTableView(){
 		$options = $this->getOptions();
-		return $options[$this->getValue()];
+		return $options[$this->getSQLValue()];
 	}
 
 
@@ -104,9 +104,6 @@ class DropdownField extends Field{
 
 
 
-	public function getValue(){
-		return $this->value;
-	}
 
 
 
@@ -140,7 +137,7 @@ class DropdownField extends Field{
      */
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

@@ -100,9 +100,6 @@ class DropdownMultilinkField extends DropdownLinkField implements AssociationFie
 
 
 
-    public function getValue(){
-        return $this->value;
-    }
 
 
 

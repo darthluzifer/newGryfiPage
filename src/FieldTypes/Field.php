@@ -85,7 +85,7 @@ class Field implements FieldTypeInterface
 	}
 
 	public function getTableView(){
-		return $this->getValue();
+		return $this->getSQLValue();
 	}
 
     /**
@@ -134,9 +134,6 @@ class Field implements FieldTypeInterface
 		return $this->label;
 	}
 
-	public function getValue(){
-		return $this->value;
-	}
 
 	public function getPostName(){
 		return $this->postName;
@@ -308,7 +305,7 @@ class Field implements FieldTypeInterface
     public function getInputHtml($form, $clientSideValidationActivated)
     {
         $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
+            'value' => $this->getSQLValue(),
             'id' => $this->getHtmlId(),
         );
 
@@ -316,7 +313,7 @@ class Field implements FieldTypeInterface
             $attributes = $this->addValidationAttributes($attributes);
         }
 
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

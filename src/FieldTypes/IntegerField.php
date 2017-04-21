@@ -154,7 +154,7 @@ class IntegerField extends Field {
     public function getInputHtml($form, $clientSideValidationActivated)
     {
         $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
+            'value' => $this->getSQLValue(),
             'id' => $this->getHtmlId(),
         );
 
@@ -162,7 +162,7 @@ class IntegerField extends Field {
             $attributes = $this->addValidationAttributes($attributes);
         }
 
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

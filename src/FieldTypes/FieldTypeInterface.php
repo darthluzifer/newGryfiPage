@@ -44,7 +44,6 @@ interface FieldTypeInterface
 
     public function getLabel();
 
-    public function getValue();
 
     public function getPostName();
 

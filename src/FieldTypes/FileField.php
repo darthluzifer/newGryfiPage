@@ -34,7 +34,7 @@ class FileField extends Field
                 $cID = $c->getCollectionID();
             }
 
-            $returnString = "<a href=\"" . View::url('/download_file', $this->getValue(), $cID) . "\" target='_blank'>" . stripslashes($this->getLinkText()) . "</a>";
+            $returnString = "<a href=\"" . View::url('/download_file', $this->getSQLValue(), $cID) . "\" target='_blank'>" . stripslashes($this->getLinkText()) . "</a>";
 
         } else {
             $returnString = t("permission denied");
@@ -59,10 +59,6 @@ class FileField extends Field
     }
 
 
-    public function getValue()
-    {
-        return $this->value;
-    }
 
 
     public function validatePost($value)
@@ -102,13 +98,13 @@ class FileField extends Field
          */
         $al = Loader::helper('concrete/asset_library');
         $bf = null;
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $this->setSQLValue($default);
         }
 
-        if ($this->getValue() > 0) {
+        if ($this->getSQLValue() > 0) {
             $bf = $this->getFileObject();
         }
         $this->setSQLValue($value);
