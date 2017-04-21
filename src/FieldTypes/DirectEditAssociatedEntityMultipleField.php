@@ -359,4 +359,39 @@ class DirectEditAssociatedEntityMultipleField extends AbstractDirectEditField
         }
     }
 
+
+    public function getTableView(){
+        $values = $this->getSQLValue();
+        if($values instanceof  PersistentCollection || $values instanceof  ArrayCollection){
+            $values = $values->toArray();
+        }
+
+        $string = "";
+        if(is_array($values)){
+            $first = true;
+
+            foreach($values as $valuenum => $value){
+                $appendString = "";
+                if(is_object($value)){
+                    $classname = get_class($value);
+                    if($value instanceof  BaseEntity){
+                        $function = $classname::getDefaultGetDisplayStringFunction();
+                        $appendString = $function($value);
+                    }
+                }else{
+                    $appendString = $value;
+                }
+
+                if($first){
+                    $first = false;
+                }else{
+                    $string.=", ";
+                }
+                $string.= $appendString;
+            }
+        }
+        return $string;
+    }
+
+
 }
