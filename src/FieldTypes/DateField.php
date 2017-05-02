@@ -259,7 +259,7 @@ class DateField extends Field{
 
 	public function setSQLValue($value){
 		//for now, save the value as Y-m-d, later change to save as DateTime
-		if(!($value instanceof \DateTime)){
+		if(!($value instanceof \DateTime) && !is_null($value)){
 			throw new \InvalidArgumentException('$value has to be instance of \DateTime, was '.$value);
 		}
 		$this->value = $value;

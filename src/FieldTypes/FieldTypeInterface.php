@@ -84,16 +84,16 @@ interface FieldTypeInterface
 
     public function getNullable();
 
-    /**
-     * @return BlockView
-     */
-    public function getView();
+//    /**
+//     * @return BlockView
+//     */
+//    public function getView();
 
-    /**
-     * @param BlockView $view
-     * @return $this
-     */
-    public function setView($view);
+//    /**
+//     * @param BlockView $view
+//     * @return $this
+//     */
+//    public function setView($view);
 
     public function getHtmlId();
 

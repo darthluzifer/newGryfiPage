@@ -100,7 +100,7 @@ class DropdownLinkField extends DropdownField implements AssociationFieldInterfa
      * @param DropdownLinkField $source
      * @param DropdownLinkField $target
      */
-    public static function copyLinkInfo(DropdownLinkField $source, DropdownLinkField &$target){
+    public static function copyLinkInfo(/*DropdownLinkField */$source, /*DropdownLinkField */&$target){
         $target->setLinkInfo(
             $source->getSourceEntity()
             , $source->getSourceField()
