@@ -7,7 +7,9 @@
  */
 
 namespace Concrete\Package\BasicTablePackage\Src;
+use Concrete\Package\BasicTablePackage\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class EntityGetterSetter
@@ -92,7 +94,7 @@ trait EntityGetterSetter
         foreach($coll1->toArray() as $key => $value){
             if(!$result->contains($value)){
                 if($value instanceof AssociationBaseEntity){
-                    $this->getEntityManager()->remove($value);
+                    Controller::getEntityManagerStatic()->remove($value);
                 }
             }
         }
