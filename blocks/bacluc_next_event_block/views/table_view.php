@@ -3,7 +3,6 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\FileField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
-$event = $controller->getNextEvent();
 if($event != null) {
 	/**
 	 * @var Field[] $fieldTypes
