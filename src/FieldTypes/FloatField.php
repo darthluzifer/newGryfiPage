@@ -138,7 +138,7 @@ class FloatField extends IntegerField {
             }
         }
 
-        $this->value = null;
+        $this->value = $value;
         return true;
     }
 
