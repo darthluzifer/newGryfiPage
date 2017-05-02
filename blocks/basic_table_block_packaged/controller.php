@@ -194,23 +194,16 @@ class Controller extends BlockController
                     //in case that really happens, stop application
                     throw new \Exception;
                 }
-
-
             }
         }
 
-
         $this->generatePostFieldMap();
-
 
         $c = Page::getCurrentPage();
 
         if (is_object($c)) {
             $this->cID = $c->getCollectionID();
         }
-
-        //if editkey is set in session, save in property
-
 
         //check if it is in form view
         if (isset($_SESSION[$this->getHTMLId()]['prepareFormEdit'])) {
@@ -219,14 +212,11 @@ class Controller extends BlockController
         //translate the header
         $this->header = t($this->header);
 
-
         //load the current options
-
         $this->basicTableInstance = $this->getBasicTableInstance();
         if(!isset($this->requiredOptions)) {
             $this->requiredOptions = array();
         }
-
 
     }
 
@@ -748,21 +738,19 @@ class Controller extends BlockController
      */
     public function displayTable()
     {
-
-
-
         $modelList  =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()))
             ->getQuery()->getResult();
 
-
-        $tabledata = array();
+       $tabledata = array();
         foreach ($modelList as $modelNum => $model) {
-            $model = self::setModelFieldTypes($model);
+            /**
+             * @var BaseEntity $model
+             */
+            $model = static::setModelFieldTypes($model);
             $tabledata[] = $model->getAsAssoc();
         }
 
         return $tabledata;
-
     }
 
     /**
@@ -813,12 +801,10 @@ class Controller extends BlockController
             }
 
         } else {
-            $query =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
-            $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
 
             try {
-                $model = $query->getQuery()->getSingleResult();
+                $model = BaseEntityRepository::getEntityById(get_class($this->getModel()), $this->editKey);
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
                     $returnArray = $model->getAsAssoc();
@@ -1074,9 +1060,6 @@ class Controller extends BlockController
         $this->render("view");
         $this->redirectToView();
         return;
-
-
-
     }
 
     function getHeader()
@@ -1203,13 +1186,7 @@ class Controller extends BlockController
      */
     public function getModel(){
         if($this->model->getId() != $this->editKey && $this->editKey != null){
-            $query = BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->model));
-            $query->andWhere($query->expr()->eq("e0.".$this->model->getIdFieldName(), ":basicTableControllerId"));
-            $query->setParameter(":basicTableControllerId", $this->editKey);
-            $result =$query->getQuery()->execute();
-            if(count($result)==1){
-                $this->model = reset($result);
-            }
+            $query = BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey);
 
         }
         return $this->model;
@@ -1287,9 +1264,7 @@ class Controller extends BlockController
         $this->isFormview = false;
         $u = new User();
 
-
         $bo = $this->getBlockObject();
-
 
         if ($this->post('rcID')) {
             // we pass the rcID through the form so we can deal with stacks
@@ -1302,7 +1277,6 @@ class Controller extends BlockController
             return $this->handleFormError();
         }
 
-
         if (isset($_POST['cancel'])) {
             if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
                 unset($_SESSION[$this->getHTMLId() . "rowid"]);
@@ -1312,32 +1286,16 @@ class Controller extends BlockController
             return true;
         }
 
-
         $duID = 0;
         if ($u->getUserID() > 0) {
             $duID = $u->getUserID();
         }
 
-        /** @var \Concrete\Core\Permission\IPService $iph */
-        $iph = Core::make('helper/validation/ip');
-        $ip = $iph->getRequestIP();
-        $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
         $v = array();
-
-
         $error = false;
         //test
         $errormsg = "";
-        $savevalues = $_REQUEST;
-
-        //add additional fields
-        if (count($this->addFields) > 0) {
-            foreach ($this->addFields as $key => $value) {
-                $savevalues[$key] = $value;
-            }
-        }
-        //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
-        $selfsavefields = array();
+        $savevalues = $_POST;
 
         foreach ($this->getFields() as $key => $value) {
             /**
@@ -1354,10 +1312,8 @@ class Controller extends BlockController
                 }
             }
         }
-
         if ($error) {
             return $this->handleFormError();
-
         }
 
         return $v;
@@ -1373,11 +1329,18 @@ class Controller extends BlockController
         $this->getEntityManager()->persist($model);
         //save values
         foreach ($this->getFields() as $key => $value) {
+            /**
+             * @var BaseEntity $model
+             */
             if ($key != $model->getIdFieldName()) {
                 if ($v[$key] instanceof BaseEntity) {
                     $this->getEntityManager()->persist($v[$key]);
                 } elseif ($v[$key] instanceof ArrayCollection) {
-                    foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                    /**
+                     * @var \Doctrine\Common\Collections\Collection $collection
+                     */
+                    $collection = $v[$key];
+                    foreach ($collection->toArray() as $refnum => $refObject) {
                         $this->getEntityManager()->persist($refObject);
                     }
                 }
@@ -1385,9 +1348,7 @@ class Controller extends BlockController
             }
         }
 
-
         //if the data is inserted, the saveself fields can only save afterwards
-
         $this->consistencyErrors = $model->checkConsistency();
         if (count($this->consistencyErrors) > 0) {
             return $this->handleFormError();
