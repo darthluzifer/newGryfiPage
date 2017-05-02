@@ -10,8 +10,10 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
 use Concrete\Package\BasicTablePackage\Controller;
+use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
+use Concrete\Package\BasicTablePackage\Src\ExtendedAssociationEntity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 class FieldTypeListFactory
