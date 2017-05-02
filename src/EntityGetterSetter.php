@@ -70,11 +70,22 @@ trait EntityGetterSetter
      * @return ArrayCollection;
      */
     public function mergeCollections($coll1, $coll2){
+        if($coll1 == null && $coll2 == null){
+            return new ArrayCollection();
+        }
         if($coll1 instanceof PersistentCollection){
             $coll1 = new ArrayCollection($coll1->toArray());
         }
         if($coll2 instanceof PersistentCollection){
             $coll2 = new ArrayCollection($coll2->toArray());
+        }
+
+        if($coll1 == null){
+            return $coll2;
+        }
+
+        if($coll2 == null){
+            return $coll1;
         }
         /**
          * @var ArrayCollection $coll1
