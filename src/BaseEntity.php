@@ -33,6 +33,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\FieldTypeListFactory;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\FloatField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
@@ -182,66 +183,8 @@ abstract class BaseEntity
     public function setDefaultFieldTypes(){
 
 
-        $className = get_class($this);
-        $em = $this->getEntityManager();
-
-        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor($className);
-
-        //get the default field types for fieldnames
-        foreach ($metadata->getFieldNames() as $fieldnum => $fieldname) {
-            try {
-                $mapping = $metadata->getFieldMapping($fieldname);
-                switch ($mapping['type']) {
-
-                    case 'boolean':
-                        $this->fieldTypes[$fieldname] = new BooleanField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'date':
-                        $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'integer':
-                        $this->fieldTypes[$fieldname] = new IntegerField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'float':
-                        $this->fieldTypes[$fieldname] = new FloatField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    default:
-                        $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                }
-                if($fieldname == $this->getIdFieldName()){
-                    $this->fieldTypes[$fieldname] = new HiddenField($fieldname, t($fieldname), t("post" . $fieldname));
-                }
-            }catch(MappingException $e){
-                //wenn das feld ein association mapping ist, dann gibts error
-               // $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
-            }
-        }
-        if(strpos(get_called_class(), "CanEditOption")!== false){
-            //var_dump($metadata->getAssociationMappings());
-        }
-        //get the default field types for associations:
-        foreach($metadata->getAssociationMappings() as $className => $associationMeta){
-            /*
-             * to get defaultDisplayfunction, you have to use the full namespace, because in $className the namespace is missing, but it is in $associationMeta['targetEntitty']
-             * */
-            if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
-
-                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
-            }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
-                 //create instance of targetentity to check wether it is a assocationentity or a direct assocation
-                $targetEntityInstance = new $associationMeta['targetEntity'];
-                if($targetEntityInstance instanceof  ExtendedAssociationEntity){
-
-                }elseif($targetEntityInstance instanceof AssociationBaseEntity){
-                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                }else {
-                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                }
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
-            }
-        }
+        $fieldFactory = new FieldTypeListFactory($this);
+        $this->fieldTypes = $fieldFactory->createFieldList();
 
         if($this->getId()==null){
             $this->setDefaultValues();
@@ -256,44 +199,7 @@ abstract class BaseEntity
         return $this;
     }
 
-    /**
-     * @param ArrayCollection|PersistentCollection $coll1
-     * @param ArrayCollection|PersistentCollection $coll2
-     * @return ArrayCollection;
-     */
-    public function mergeCollections($coll1, $coll2){
-        if($coll1 instanceof PersistentCollection){
-            $coll1 = new ArrayCollection($coll1->toArray());
-        }
-        if($coll2 instanceof PersistentCollection){
-            $coll2 = new ArrayCollection($coll2->toArray());
-        }
-        /**
-         * @var ArrayCollection $coll1
-         */
-        /**
-         * @var ArrayCollection $coll2;
-         */
-            $result = new ArrayCollection();
-            foreach($coll2->toArray() as $key => $value){
-                //wenn element in beiden Arrays
-                if(!$result->contains($value)){
-                    $result->add($value);
-                }
-            }
 
-            //now delete not anymore existent elements
-            foreach($coll1->toArray() as $key => $value){
-                if(!$result->contains($value)){
-                    if($value instanceof AssociationBaseEntity){
-                        $this->getEntityManager()->remove($value);
-                    }
-                }
-            }
-
-            return $result;
-
-    }
 
     public function toTableAssoc(){
         $jsonObj = new \stdClass();
