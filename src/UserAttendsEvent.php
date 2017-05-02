@@ -11,6 +11,7 @@ namespace Concrete\Package\BaclucEventPackage\Src;
 
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\Group;
 use Doctrine\ORM\Mapping as ORM;
@@ -84,7 +85,7 @@ class UserAttendsEvent extends AssociationBaseEntity
      */
     public static function getCurrentAttendance(Event $event, $userid)
     {
-        $query = BaseEntity::getBuildQueryWithJoinedAssociations(static::class);
+        $query = BaseEntityRepository::getBuildQueryWithJoinedAssociations(static::class);
         $query->andWhere(
             $query->expr()->andX(
                 $query->expr()->eq("e0.Event", ":event")
@@ -109,7 +110,7 @@ class UserAttendsEvent extends AssociationBaseEntity
     public function setDefaultFieldTypes()
     {
         $this->fieldTypes['state']=new DropdownField('state', 'State', 'poststate');
-        $userConstants = static::getOptionsOfConstants(static::class, "STATE_");
+        $userConstants = BaseEntityRepository::getOptionsOfConstants(static::class, "STATE_");
         /**
          * @var DropdownField
          */
@@ -124,7 +125,7 @@ class UserAttendsEvent extends AssociationBaseEntity
      */
     public static function changeUserAttendanceState(Event $event, $userid, $state){
 
-        $options = static::getOptionsOfConstants(static::class, "STATE_");
+        $options = BaseEntityRepository::getOptionsOfConstants(static::class, "STATE_");
         if(!in_array($state, $options)){
             throw new \InvalidArgumentException(sprintf("Invalid state (%s) supplied. State has to be one of %s", $state, implode(", ", $options)));
         }
