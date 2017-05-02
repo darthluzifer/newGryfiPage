@@ -263,24 +263,9 @@ class Controller extends BlockController
             }else{
                 $bID = $obj->getBlockID();
             }
-            /**
-             * dont know why the normal approach does not work.
-             * using now directly dql instead
-             */
-//            $query = $this->getEntityManager()->createQueryBuilder();
-//
-//            $query->select("bt,o")
-//                ->from(get_class(new BasicTableInstance()), "bt")
-//                ->leftJoin("bt.tableBlockOptions", "o")
-//                ->where($query->expr()->eq( "bt.bID",":id"));
-//            $query->setParameter(":id",$bID);
+            $bt = BaseEntityRepository::getEntityById(BasicTableInstance::class, $bID);
 
-            $dql = $this->getEntityManager()->createQuery("SELECT bt,o FROM Concrete\Package\BasicTablePackage\Src\BasicTableInstance bt LEFT JOIN bt.tableBlockOptions o WHERE bt.bID = :id");
-            $dql->setParameter(":id",$bID);
-            $result = $dql->getResult(\Doctrine\ORM\Query::HYDRATE_OBJECT);
-            if(is_array($result)){
-                $bt = reset($result);
-            }
+
             if ($bt == null) {
                 $bt = new BasicTableInstance();
                 $bt->set("bID", $bID);
@@ -1073,20 +1058,6 @@ class Controller extends BlockController
         $baseEntityFactory = new BaseEntityFactory($this->getModel());
         $this->getEntityManager()->beginTransaction();
 
-//        $ids = array();
-//        //get the ids of the entities to update
-//        foreach($postdata['acceptImport'] as $num => $accepted){
-//            if($accepted){
-//                if(count($importData[$num])>0){
-//                    if($importData[$num][$this->getModel()->getIdFieldName()] != null){
-//                        $ids[]=$importData[$num][$this->getModel()->getIdFieldName()];
-//                    }
-//                }
-//            }
-//        }
-//
-//        //now retrieve the models
-//
 
         foreach($postdata['acceptImport'] as $num => $accepted){
             if($accepted){
@@ -1256,7 +1227,7 @@ class Controller extends BlockController
     public function install($path)
     {
         $res = parent::install($path);
-        //throw model through AssociationCache to get Associations
+        //iterate through associations of model to fill association cache ?
     }
 
     public function action_get_options_of_field(){
@@ -1445,25 +1416,6 @@ class Controller extends BlockController
     }
 
 
-    /**
-     * @param QueryBuilder $query
-     * @param array $queryConfig
-     *  array of:
-     * array(
-            'fromEntityStart' => array('shortname'=> 'e0'
-     *                                                       , 'classname'=>get_class($this->model)
-     *                                             )
-     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
-     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
-     *
-     * );
-     * @return QueryBuilder
-     *
-     * always use andWhere to append the filter, because maybe the entity is already filtered
-     */
-    public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
-        return $query;
-    }
 
     public function view(){
             foreach(static::$viewvars as $key => $value){

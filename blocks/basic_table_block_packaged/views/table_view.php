@@ -105,6 +105,7 @@ $(document).ready(function(e){
 				rowCount:-1,
 				formatters : {
 					/**
+                     * TODO figure out what i hacked here and extract of library, when possible
 					 * Normally, bootgrid takes the text value of the td element. The library is changed that it takes the hmlt(). And the formatters again take the text() of the data, retrieved form the text elemet.
 					 * but for the commands, we need the html we provided.
 					 * @param column
