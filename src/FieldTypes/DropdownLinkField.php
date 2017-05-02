@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
@@ -249,7 +250,7 @@ class DropdownLinkField extends DropdownField implements AssociationFieldInterfa
             $modelForIdField = new $this->targetEntity;
 
             //TODO check if is to refactor
-            $model = BaseEntity::getEntityById($this->targetEntity,$value);
+            $model = BaseEntityRepository::getEntityById($this->targetEntity, $value);
 
             if($model != null && $model!=false){
                 $this->getEntityManager()->persist($model);
@@ -330,13 +331,13 @@ class DropdownLinkField extends DropdownField implements AssociationFieldInterfa
 
 
 
-        $queryBuilder = BaseEntity::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
+        $queryBuilder = BaseEntityRepository::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
 
 
         if ($this->getAssociationType() == ClassMetadataInfo::ONE_TO_ONE
             || $this->getAssociationType() == ClassMetadataInfo::ONE_TO_MANY) {
             //if it is a one to one relation, we have to remove the target entities which already have a relation to another source entity
-            $queryConfig = BaseEntity::getQueryConfigOf($this->getTargetEntity());
+            $queryConfig = BaseEntityRepository::getQueryConfigOf($this->getTargetEntity());
             $targetEntityAlias = $queryConfig['fromEntityStart']['shortname'];
 
             $subquery = $this->getEntityManager()->createQueryBuilder();

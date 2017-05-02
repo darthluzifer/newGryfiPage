@@ -13,6 +13,7 @@ use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
 use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Concrete\Core\Support\Facade\Application;
@@ -69,7 +70,7 @@ class DirectEditAssociatedEntityMultipleField extends AbstractDirectEditField
                     $options = $this->getOptions();
 
                     if(isset($options[$postvalues[$idpostname]])){
-                        $model = BaseEntity::getEntityById($this->targetEntity, $postvalues[$idpostname]);
+                        $model = BaseEntityRepository::getEntityById($this->targetEntity, $postvalues[$idpostname]);
                         if($model != null && $model instanceof BaseEntity){
                             $toSaveModel = $model;
                         }

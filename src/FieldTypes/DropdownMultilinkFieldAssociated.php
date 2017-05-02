@@ -5,6 +5,7 @@ use Concrete\Core\Block\BlockController;
 use Concrete\Flysystem\Exception;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
@@ -106,7 +107,7 @@ class DropdownMultilinkFieldAssociated extends DropdownMultilinkField implements
         foreach($postvalues as $num => $postvalue){
             $postvalue = trim($postvalue);
             if(in_array($postvalue, $options) ){
-                $findItem = BaseEntity::getEntityById($this->targetEntity,$flipoptions[$postvalue]);
+                $findItem = BaseEntityRepository::getEntityById($this->targetEntity, $flipoptions[$postvalue]);
 
                 $associationEntity = new $this->associationEntity;
                 $associationEntity->set($this->sourceEntityAssociationField,$this->sourceEntity);

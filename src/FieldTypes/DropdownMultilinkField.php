@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField as DropdownLinkField;
@@ -118,7 +119,7 @@ class DropdownMultilinkField extends DropdownLinkField implements AssociationFie
         foreach($postvalues as $num => $postvalue){
             $postvalue = trim($postvalue);
             if(in_array($postvalue, $options) ){
-                $findItem = BaseEntity::getEntityById($this->targetEntity,$flipoptions[$postvalue]);
+                $findItem = BaseEntityRepository::getEntityById($this->targetEntity, $flipoptions[$postvalue]);
 
                 if($findItem!=null) {
                     $this->getEntityManager()->persist($findItem);
@@ -149,7 +150,7 @@ class DropdownMultilinkField extends DropdownLinkField implements AssociationFie
             /**
              * @var $model \Entity
              */
-            $model = BaseEntity::getEntityById(get_class($this->sourceEntity),$this->getSourceEntity()->getId());
+            $model = BaseEntityRepository::getEntityById(get_class($this->sourceEntity), $this->getSourceEntity()->getId());
 
             $values = $model->get($this->sourceField);
             $displayStringFunction = $this->getGetDisplayStringFunction();

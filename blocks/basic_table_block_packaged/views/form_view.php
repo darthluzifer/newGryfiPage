@@ -49,7 +49,7 @@
 					if (isset($errorFields[$FieldObject->getPostName()])) {
 						$FieldObject->setErrorMessage($errorFields[$FieldObject->getPostName()]->getErrorMsg());
 					}
-					//$FieldObject->setView($this);
+					$FieldObject->setView($this);
 					echo $FieldObject->getFormView($form, $controller->isClientSideValidationActivated());
 				}
 

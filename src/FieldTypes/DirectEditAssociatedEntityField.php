@@ -12,6 +12,7 @@ namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 use Concrete\Core\Session\SessionFactory;
 use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Doctrine\ORM\Proxy\Proxy;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Concrete\Core\Support\Facade\Application;
@@ -49,7 +50,7 @@ class DirectEditAssociatedEntityField extends AbstractDirectEditField
             $options = $this->getOptions();
 
             if(isset($options[$value[$idpostname]])){
-                $model = BaseEntity::getEntityById($this->targetEntity,$value[$idpostname]);
+                $model = BaseEntityRepository::getEntityById($this->targetEntity, $value[$idpostname]);
                 if($model != null && $model instanceof BaseEntity){
                     $toSaveModel = $model;
                 }

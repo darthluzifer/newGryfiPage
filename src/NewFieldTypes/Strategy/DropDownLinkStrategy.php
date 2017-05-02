@@ -10,6 +10,7 @@ namespace Concrete\Package\BasicTablePackage\Src\NewFieldTypes\Strategy;
 
 
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\NewFieldTypes\AbstractAssociationField;
 use Concrete\Package\BasicTablePackage\Src\NewFieldTypes\AssociationFieldInterface;
 
@@ -30,7 +31,7 @@ class DropDownLinkStrategy extends DropdownStrategy implements Validator,EditRep
         if(in_array($value, $values)){
 
             //TODO check if is to refactor
-            $model = BaseEntity::getEntityById($this->fieldType->getTargetEntity(),$value);
+            $model = BaseEntityRepository::getEntityById($this->fieldType->getTargetEntity(), $value);
 
             if($model != null && $model!=false){
                 BaseEntity::getEntityManagerStatic()->persist($model);

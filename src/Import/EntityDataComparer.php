@@ -11,6 +11,7 @@ namespace Concrete\Package\BasicTablePackage\Src\Import;
 
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntityFactory;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Port\Reader;
 
 class EntityDataComparer
@@ -39,7 +40,7 @@ class EntityDataComparer
 
 
         //then get all existing data and create a uniquestring -> object map
-        $modelList = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->model))->getQuery()->execute();
+        $modelList = BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->model))->getQuery()->execute();
         $uniqueStringMap = array();
         $classname = get_class($this->model);
         $uniqueFunction = $classname::getDefaultGetDisplayStringFunction();

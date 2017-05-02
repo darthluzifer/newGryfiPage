@@ -114,6 +114,11 @@ class Controller extends Package
         return $em;
     }
 
+    public static function getEntityManagerStatic(){
+        $pkg = Package::getByHandle("basic_table_package");
+        return $pkg->getEntityManager();
+    }
+
 
 
 

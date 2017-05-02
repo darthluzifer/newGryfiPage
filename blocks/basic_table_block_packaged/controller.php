@@ -15,6 +15,7 @@ use Concrete\Core\Permission\Response\BlockResponse;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
 use Concrete\Package\BasicTablePackage\Src\BaseEntityFactory;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\BaseEntitySerializer;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
@@ -188,7 +189,7 @@ class Controller extends BlockController
         }else{
             if($this->editKey == null){
             }else{
-                $query = $this->getBuildQueryWithJoinedAssociations();
+                $query =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
                 $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
                 try {
                     $model = $query->getQuery()->getSingleResult();
@@ -448,7 +449,7 @@ class Controller extends BlockController
         if ($this->editKey == null) {
             $model = $this->model;
         } else {
-            $model = BaseEntity::getEntityById(get_class($this->model), $this->editKey);
+            $model = BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey);
         }
 
         if($this->persistValues($model, $v) === false){
@@ -765,24 +766,6 @@ class Controller extends BlockController
 
     }
 
-
-    /**
-     * @return QueryBuilder
-     */
-    public function getBuildQueryWithJoinedAssociations(){
-        $classname = get_class($this->model);
-
-
-        $query = BaseEntity::getBuildQueryWithJoinedAssociations($classname, BaseEntity::$staticEntityfilterfunction);
-
-        $queryConfig = BaseEntity::getQueryConfigOf($classname);
-
-        $query = $this->addFilterToQuery($query, $queryConfig);
-
-        return $query;
-    }
-
-
     /**
      * funciton to retrieve the table data
      * @return array
@@ -792,7 +775,8 @@ class Controller extends BlockController
 
 
 
-        $modelList = $this->getBuildQueryWithJoinedAssociations()->getQuery()->getResult();
+        $modelList  =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()))
+            ->getQuery()->getResult();
 
 
         $tabledata = array();
@@ -814,7 +798,7 @@ class Controller extends BlockController
 
             return $this->model->getFieldTypes();
         }
-        return BaseEntity::getEntityById(get_class($this->model), $this->editKey)->getFieldTypes();
+        return BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey)->getFieldTypes();
 
     }
 
@@ -853,7 +837,7 @@ class Controller extends BlockController
             }
 
         } else {
-            $query = $this->getBuildQueryWithJoinedAssociations();
+            $query =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
             $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
 
@@ -896,7 +880,7 @@ class Controller extends BlockController
 
     function action_exportCSV(){
         //first get table data
-        $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
+        $query = BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
         $result =$query->getQuery()->execute();
         //convert it to assoc array
 
@@ -907,7 +891,7 @@ class Controller extends BlockController
                 /**
                  * @var BaseEntity $value
                  */
-                $value = BaseEntity::getBaseEntityFromProxy($value);
+                $value = BaseEntityRepository::getBaseEntityFromProxy($value);
 
                 if (count($assocResult) == 0) {
                     $fieldTypes = $value->getFieldTypes();
@@ -1198,7 +1182,7 @@ class Controller extends BlockController
 
                         }else{
                             //load the right current option
-                            $realBlockOption = BaseEntity::getEntityById(get_class($requOption), $currentBlockOption->getId());
+                            $realBlockOption = BaseEntityRepository::getEntityById(get_class($requOption), $currentBlockOption->getId());
 
                             if($realBlockOption != null){
                                 $currentBlockOption = $realBlockOption;
@@ -1257,7 +1241,7 @@ class Controller extends BlockController
      */
     public function getModel(){
         if($this->model->getId() != $this->editKey && $this->editKey != null){
-            $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->model));
+            $query = BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->model));
             $query->andWhere($query->expr()->eq("e0.".$this->model->getIdFieldName(), ":basicTableControllerId"));
             $query->setParameter(":basicTableControllerId", $this->editKey);
             $result =$query->getQuery()->execute();

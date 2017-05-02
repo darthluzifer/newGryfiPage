@@ -9,7 +9,10 @@
 namespace Concrete\Package\BasicTablePackage\Src\NewFieldTypes;
 
 
+use Concrete\Core\Package\Package;
+use Concrete\Package\BasicTablePackage\Controller;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query\Expr\Base;
@@ -129,16 +132,16 @@ abstract class AbstractAssociationField extends AbstractField implements Associa
 
 
 
-        $queryBuilder = BaseEntity::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
+        $queryBuilder = BaseEntityRepository::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
 
 
         if ($this->getAssociationType() == ClassMetadataInfo::ONE_TO_ONE
             || $this->getAssociationType() == ClassMetadataInfo::ONE_TO_MANY) {
             //if it is a one to one relation, we have to remove the target entities which already have a relation to another source entity
-            $queryConfig = BaseEntity::getQueryConfigOf($this->getTargetEntity());
+            $queryConfig = BaseEntityRepository::getQueryConfigOf($this->getTargetEntity());
             $targetEntityAlias = $queryConfig['fromEntityStart']['shortname'];
 
-            $subquery = BaseEntity::getEntityManagerStatic()->createQueryBuilder();
+            $subquery = Controller::getEntityManagerStatic()->createQueryBuilder();
 
             $subquery->select("sub0." . $this->getSourceEntity()->getIdFieldName())
                 ->from(get_class($this->getSourceEntity()), "sub0")
