@@ -168,9 +168,6 @@ class Controller extends BlockController
      */
     function __construct($obj = null)
     {
-
-
-
         parent::__construct($obj);
         if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
             $this->editKey = $_SESSION[$this->getHTMLId() . "rowid"];
@@ -189,21 +186,15 @@ class Controller extends BlockController
         }else{
             if($this->editKey == null){
             }else{
-                $query =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
-                $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
-                try {
-                    $model = $query->getQuery()->getSingleResult();
-                    $model = self::setModelFieldTypes($model);
-                    if ($model) {
-                        $this->model = $model;
-                    } else {
+                $model = BaseEntityRepository::getEntityById(get_class($this->getModel()), $this->editKey);
+                if ($model) {
+                    $this->model = $model;
+                } else {
 
-                        //dummy function because we have no values
-                        throw new \Exception;
-                    }
-                } catch (\Exception $e) {
-
+                    //in case that really happens, stop application
+                    throw new \Exception;
                 }
+
 
             }
         }
