@@ -7,6 +7,9 @@
  */
 
 namespace Concrete\Package\BasicTablePackage\Src;
+use Concrete\Package\BasicTablePackage\Controller;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class EntityGetterSetter
@@ -59,5 +62,55 @@ trait EntityGetterSetter
     public function __set($name, $value)
     {
         $this->set($name, $value);
+    }
+
+    /**
+     * @param ArrayCollection|PersistentCollection $coll1
+     * @param ArrayCollection|PersistentCollection $coll2
+     * @return ArrayCollection;
+     */
+    public function mergeCollections($coll1, $coll2){
+        if($coll1 == null && $coll2 == null){
+            return new ArrayCollection();
+        }
+        if($coll1 instanceof PersistentCollection){
+            $coll1 = new ArrayCollection($coll1->toArray());
+        }
+        if($coll2 instanceof PersistentCollection){
+            $coll2 = new ArrayCollection($coll2->toArray());
+        }
+
+        if($coll1 == null){
+            return $coll2;
+        }
+
+        if($coll2 == null){
+            return $coll1;
+        }
+        /**
+         * @var ArrayCollection $coll1
+         */
+        /**
+         * @var ArrayCollection $coll2;
+         */
+        $result = new ArrayCollection();
+        foreach($coll2->toArray() as $key => $value){
+            //wenn element in beiden Arrays
+            if(!$result->contains($value)){
+                $result->add($value);
+            }
+        }
+
+        //now delete not anymore existent elements
+        foreach($coll1->toArray() as $key => $value){
+            if(!$result->contains($value)){
+                if($value instanceof AssociationBaseEntity){
+                    Controller::getEntityManagerStatic()->remove($value);
+                }
+            }
+        }
+
+        return $result;
+
     }
 }

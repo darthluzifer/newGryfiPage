@@ -13,17 +13,16 @@ use Concrete\Core\Device\DeviceInterface;
 use Concrete\Core\Html\Object\Collection;
 use Concrete\Package\BasicTablePackage\Src\AbstractFormView;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Concrete\Core\Support\Facade\Application;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField implements DirectEditInterface
+class DirectEditAssociatedEntityMultipleField extends AbstractDirectEditField
 {
 
 
-    protected $subErrorMsg = array();
-    protected $alwaysCreateNewInstance = false;
 
 
 
@@ -33,29 +32,6 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $this->default = new ArrayCollection();
     }
 
-    public function getFormView($form, $clientSideValidationActivated = true){
-        $html = "
-        <div class='subentityedit col-xs-12'>
-
-            <label>" . $this->getLabel() . "</label>
-            <div class='row'>
-
-        ";
-
-        $html.= $this->getInputHtml($form, $clientSideValidationActivated);
-
-
-
-        $html.="</div>
-           </div>
-        ";
-
-
-
-
-
-        return $html;
-    }
 
     public function validatePost($value)
     {
@@ -94,7 +70,7 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
                     $options = $this->getOptions();
 
                     if(isset($options[$postvalues[$idpostname]])){
-                        $model = BaseEntity::getEntityById($this->targetEntity, $postvalues[$idpostname]);
+                        $model = BaseEntityRepository::getEntityById($this->targetEntity, $postvalues[$idpostname]);
                         if($model != null && $model instanceof BaseEntity){
                             $toSaveModel = $model;
                         }
@@ -159,53 +135,6 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
 
     }
 
-    protected function saveSubErrorMsg(){
-        $app = Application::getFacadeApplication();
-
-        /**
-         * @var Session $session
-         */
-        $session = $app['session'];
-
-        $session->set($this->postName."subformerrors", $this->subErrorMsg);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAlwaysCreateNewInstance()
-    {
-        return $this->alwaysCreateNewInstance;
-    }
-
-    /**
-     * @param boolean $alwaysCreateNewInstance
-     * @return $this
-     */
-    public function setAlwaysCreateNewInstance($alwaysCreateNewInstance)
-    {
-        $this->alwaysCreateNewInstance = $alwaysCreateNewInstance;
-        return $this;
-    }
-
-    protected function loadSubErrorMsg(){
-        $app = Application::getFacadeApplication();
-
-        /**
-         * @var Session $session
-         */
-        $session = $app['session'];
-        if(count($this->subErrorMsg)>0){
-            $session->remove($this->postName."subformerrors");
-            return $this->subErrorMsg;
-        }
-
-
-        $this->subErrorMsg=$session->get($this->postName."subformerrors", array());
-        $session->remove($this->postName."subformerrors");
-        return $this->subErrorMsg;
-
-    }
 
     /**
      * @param $form
@@ -404,5 +333,66 @@ class DirectEditAssociatedEntityMultipleField extends DropdownMultilinkField imp
         $html .= $this->getHtmlErrorMsg();
         return $html;
     }
+
+    public function setSQLValue($value)
+    {
+        if($value == null){
+            $value = new $this->getDefault();
+            return $this;
+        }
+        if($value instanceof \Doctrine\Common\Collections\Collection){
+
+            if(count($value)==0){
+                //add empty collection
+                $this->value = $value;
+                return $this;
+            }
+            foreach($value->getIterator() as $num => $item){
+                if(!($item instanceof $this->targetEntity)){
+                    throw new \InvalidArgumentException(
+                        sprintf("Element in given collection was of type %s, but only elements of type %s are allowed"
+                        , get_class($item), $this->targetEntity)
+                    );
+                }
+            }
+            $this->value = $value;
+            return $this;
+        }
+    }
+
+
+    public function getTableView(){
+        $values = $this->getSQLValue();
+        if($values instanceof  PersistentCollection || $values instanceof  ArrayCollection){
+            $values = $values->toArray();
+        }
+
+        $string = "";
+        if(is_array($values)){
+            $first = true;
+
+            foreach($values as $valuenum => $value){
+                $appendString = "";
+                if(is_object($value)){
+                    $classname = get_class($value);
+                    if($value instanceof  BaseEntity){
+                        $function = $classname::getDefaultGetDisplayStringFunction();
+                        $appendString = $function($value);
+                    }
+                }else{
+                    $appendString = $value;
+                }
+
+                if($first){
+                    $first = false;
+                }else{
+                    $string.=", ";
+                }
+                $string.= $appendString;
+            }
+        }
+        return $string;
+    }
+
 
 }

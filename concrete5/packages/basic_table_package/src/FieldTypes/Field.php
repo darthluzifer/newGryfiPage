@@ -17,18 +17,25 @@ use Concrete\Core\Package\Package as Package;
  *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A normal textfield, provides most of the methods for subfieldTypes
  */
-class Field{
+class Field implements FieldTypeInterface
+{
 	protected $sqlFieldname;
 	protected $label;
-	protected $validation;
 	protected $value;
 	protected $postName;
 	protected $errMsg=null;
-	protected $isSQLValue = false;
 	protected $showInForm = true;
 	protected $showInTable = true;
     protected $nullable = true;
     const REPLACE_BRACE_IN_ID_WITH='-';
+
+
+
+    /**
+     * @var bool
+     */
+    protected $notSet = false;
+
     protected $default = null;
     /**
      * @var BlockView
@@ -54,16 +61,11 @@ class Field{
 
 	}
 
-	public function setValue($value){
-		$this->isSQLValue = false;
-		$this->value = $value;
-        return $this;
-	}
+
 
 
 
 	public function setSQLValue($value){
-		$this->isSQLValue = true;
 		$this->value = $value;
         return $this;
 	}
@@ -83,7 +85,7 @@ class Field{
 	}
 
 	public function getTableView(){
-		return $this->getValue();
+		return $this->getSQLValue();
 	}
 
     /**
@@ -103,6 +105,7 @@ class Field{
 
             if(!$this->nullable){
                 $attributes['required']='true';
+                //parsley dependendt, TODO extract
                 $attributes['data-parsley-required']='true';
             }
 
@@ -131,9 +134,6 @@ class Field{
 		return $this->label;
 	}
 
-	public function getValue(){
-		return $this->value;
-	}
 
 	public function getPostName(){
 		return $this->postName;
@@ -149,7 +149,7 @@ class Field{
 	        return false;
         }
 
-		$this->setValue($value);
+		$this->value = $value;
 		return true;
 	}
 
@@ -165,6 +165,7 @@ class Field{
 		return $this->showInTable;
 	}
 
+	//TODO use central getEntityManager funciton
     /**
      * @return EntityManager
      */
@@ -304,7 +305,7 @@ class Field{
     public function getInputHtml($form, $clientSideValidationActivated)
     {
         $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
+            'value' => $this->getSQLValue(),
             'id' => $this->getHtmlId(),
         );
 
@@ -312,7 +313,7 @@ class Field{
             $attributes = $this->addValidationAttributes($attributes);
         }
 
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;
@@ -323,6 +324,22 @@ class Field{
         $returnString = static::inputType($this->getHtmlId(), $this->getPostName(), "text", $value, $attributes, $form);
         $returnString .= $this->getHtmlErrorMsg();
         return $returnString;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotSet()
+    {
+        return $this->notSet;
+    }
+
+    /**
+     * @param bool $notSet
+     */
+    public function setNotSet($notSet)
+    {
+        $this->notSet = $notSet;
     }
 
 

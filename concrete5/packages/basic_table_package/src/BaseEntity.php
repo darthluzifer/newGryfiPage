@@ -33,6 +33,7 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownMultilinkFieldAssociated;
+use Concrete\Package\BasicTablePackage\Src\FieldTypes\FieldTypeListFactory;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\FloatField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\HiddenField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\IntegerField;
@@ -58,6 +59,9 @@ abstract class BaseEntity
     protected $protect = array();
     protected $protectRead = array();
     protected $protectWrite = array();
+    /**
+     * @var Field[]
+     */
     protected $fieldTypes = array();
     protected $em;
     protected $defaultFormView = false;
@@ -91,6 +95,9 @@ abstract class BaseEntity
         }
     }
 
+    /**
+     * @return Field[]
+     */
     public function getFieldTypes(){
         if(count($this->fieldTypes) == 0){
             $this->setDefaultFieldTypes();
@@ -127,7 +134,7 @@ abstract class BaseEntity
                         }
                         $sqlvalue = $item->$fieldname;
                         $field->setSQLValue($sqlvalue);
-                        $returnString.=$field->getValue()." ";
+                        $returnString.=$field->getTableView()." ";
 
 
                     }catch(MappingException $e){
@@ -176,66 +183,8 @@ abstract class BaseEntity
     public function setDefaultFieldTypes(){
 
 
-        $className = get_class($this);
-        $em = $this->getEntityManager();
-
-        $metadata = $this->getEntityManager()->getMetadataFactory()->getMetadataFor($className);
-
-        //get the default field types for fieldnames
-        foreach ($metadata->getFieldNames() as $fieldnum => $fieldname) {
-            try {
-                $mapping = $metadata->getFieldMapping($fieldname);
-                switch ($mapping['type']) {
-
-                    case 'boolean':
-                        $this->fieldTypes[$fieldname] = new BooleanField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'date':
-                        $this->fieldTypes[$fieldname] = new DateField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'integer':
-                        $this->fieldTypes[$fieldname] = new IntegerField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    case 'float':
-                        $this->fieldTypes[$fieldname] = new FloatField($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                    default:
-                        $this->fieldTypes[$fieldname] = new Field($fieldname, t($fieldname), t("post" . $fieldname));
-                        break;
-                }
-                if($fieldname == $this->getIdFieldName()){
-                    $this->fieldTypes[$fieldname] = new HiddenField($fieldname, t($fieldname), t("post" . $fieldname));
-                }
-            }catch(MappingException $e){
-                //wenn das feld ein association mapping ist, dann gibts error
-               // $this->fieldTypes[$field] = new Field($field, t($field), t("post" . $field));
-            }
-        }
-        if(strpos(get_called_class(), "CanEditOption")!== false){
-            //var_dump($metadata->getAssociationMappings());
-        }
-        //get the default field types for associations:
-        foreach($metadata->getAssociationMappings() as $className => $associationMeta){
-            /*
-             * to get defaultDisplayfunction, you have to use the full namespace, because in $className the namespace is missing, but it is in $associationMeta['targetEntitty']
-             * */
-            if($metadata->isSingleValuedAssociation($associationMeta['fieldName'])){
-
-                $this->fieldTypes[$associationMeta['fieldName']] = new DropdownLinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction() );
-            }elseif($metadata->isCollectionValuedAssociation($associationMeta['fieldName'])){
-                 //create instance of targetentity to check wether it is a assocationentity or a direct assocation
-                $targetEntityInstance = new $associationMeta['targetEntity'];
-                if($targetEntityInstance instanceof  ExtendedAssociationEntity){
-
-                }elseif($targetEntityInstance instanceof AssociationBaseEntity){
-                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkFieldAssociated($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                }else {
-                    $this->fieldTypes[$associationMeta['fieldName']] = new DropdownMultilinkField($associationMeta['fieldName'], t($associationMeta['fieldName']), t("post" . $associationMeta['fieldName']));
-                }
-                $this->fieldTypes[$associationMeta['fieldName']]->setLinkInfo($this,$associationMeta['fieldName'],$associationMeta['targetEntity'],$associationMeta['mappedBy'],$associationMeta['type'],$associationMeta['targetEntity']::getDefaultGetDisplayStringFunction());
-            }
-        }
+        $fieldFactory = new FieldTypeListFactory($this);
+        $this->fieldTypes = $fieldFactory->createFieldList();
 
         if($this->getId()==null){
             $this->setDefaultValues();
@@ -250,44 +199,7 @@ abstract class BaseEntity
         return $this;
     }
 
-    /**
-     * @param ArrayCollection|PersistentCollection $coll1
-     * @param ArrayCollection|PersistentCollection $coll2
-     * @return ArrayCollection;
-     */
-    public function mergeCollections($coll1, $coll2){
-        if($coll1 instanceof PersistentCollection){
-            $coll1 = new ArrayCollection($coll1->toArray());
-        }
-        if($coll2 instanceof PersistentCollection){
-            $coll2 = new ArrayCollection($coll2->toArray());
-        }
-        /**
-         * @var ArrayCollection $coll1
-         */
-        /**
-         * @var ArrayCollection $coll2;
-         */
-            $result = new ArrayCollection();
-            foreach($coll2->toArray() as $key => $value){
-                //wenn element in beiden Arrays
-                if(!$result->contains($value)){
-                    $result->add($value);
-                }
-            }
 
-            //now delete not anymore existent elements
-            foreach($coll1->toArray() as $key => $value){
-                if(!$result->contains($value)){
-                    if($value instanceof AssociationBaseEntity){
-                        $this->getEntityManager()->remove($value);
-                    }
-                }
-            }
-
-            return $result;
-
-    }
 
     public function toTableAssoc(){
         $jsonObj = new \stdClass();
@@ -335,17 +247,6 @@ abstract class BaseEntity
 
     }
 
-    public static function getBaseEntityFromProxy(BaseEntity $item){
-        if(!($item instanceof Proxy)){
-            return $item;
-        }
-        //to get em, we need package first
-        $pkg = Package::getByHandle("basic_table_package");
-        $em = $pkg->getEntityManager();
-        return BaseEntity::getEntityById(get_class($item), $item->getId());
-
-    }
-
     /**
      * Because of possible cycles, checkConsistency Function of every Entity must be a semaphore
      * @return array
@@ -360,204 +261,39 @@ abstract class BaseEntity
         return array();
     }
 
+    /**
+     * @param string $sqlFieldName
+     * @param bool $value
+     * @throws \InvalidArgumentException if $sqlFieldname does not exist
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value){
+        $fieldTypes = $this->getFieldTypes();
+        if(isset($this->fieldTypes[$sqlFieldName])){
+            $this->fieldTypes[$sqlFieldName]->setNotSet($value);
+        }else{
+            throw new \InvalidArgumentException(sprintf("Property / Fieldtype %s does not exist in class %s", $sqlFieldName, static::class));
+        }
+    }
+
+    /**
+     * @param string $sqlFieldName
+     * @return bool
+     * @throws \InvalidArgumentException if $sqlFieldName does not exist
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName){
+        $this->getFieldTypes();
+        if(isset($this->fieldTypes[$sqlFieldName])){
+            return $this->fieldTypes[$sqlFieldName]->isNotSet();
+        }else{
+            throw new \InvalidArgumentException(sprintf("Property / Fieldtype %s does not exist in class %s", $sqlFieldName, static::class));
+        }
+    }
+
+
     public static function getEntityManagerStatic(){
         $pkg = Package::getByHandle("basic_table_package");
         return $pkg->getEntityManager();
     }
-
-
-    /**
-     * @param null $classname if no classname is passed, the static classname is used
-     * @param callable|null $addFilterFunction
-     * if $addFilterFunciton is BaseEntity::$staticEntityfilterfunction, then
-     * the function gets switched to  $addFilterFunction = static::$staticEntityfilterfunction;
-     * null : no filter
-     * if you really want to use the filter of BaseEntity, use:
-     * BaseEntity::$baseEntityfilterFunction
-     *
-     * @return QueryBuilder
-     *
-     * $addFilterFunction must be of signature and is called in this function:
-     * /**
-     * @param QueryBuilder $query
-     * @param array $queryConfig
-     *  array of:
-     * array(
-    'fromEntityStart' => array('shortname'=> 'e0'
-     *                                                       , 'class'=>get_class($this->model)
-     *                                             )
-     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
-     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
-     *
-     * );
-     * @return QueryBuilder
-
-     *
-     */
-    public static function getBuildQueryWithJoinedAssociations($classname, callable $addFilterFunction =null){
-
-        if($classname == null){
-            throw new InvalidArgumentException("the first parameter cannot be null");
-        }
-
-        //if the staticEntityfilterfunction was passed, then use the staticEntityfilterFunciton of the Entity called
-        if($addFilterFunction == self::$staticEntityfilterfunction){
-            $fullclassname = $classname;
-            if($classname[0]!='\\'){
-                $fullclassname = '\\'.$classname;
-            }
-            $addFilterFunction = $fullclassname::$staticEntityfilterfunction;
-        }
-
-
-        //TODO check if addFilterFunciton has the right signature
-
-        //
-        $selectEntities = static::getSelectEntitiesOf($classname);
-
-
-
-        /**
-         * @var QueryBuilder $query
-         */
-        $query = static::getEntityManagerStatic()->createQueryBuilder();
-
-        //add select
-
-        $entities = $selectEntities;
-
-        $selectString = "";
-        $entityCounter = 0;
-        foreach($entities as $fieldname => $entityName){
-            if($entityCounter > 0){
-                $selectString.=",";
-            }
-            $selectString.=" e".$entityCounter++;
-        }
-        $query->select($selectString);
-
-
-        $query->from(reset(array_keys($entities)), "e0");
-
-        $entityCounter = 1;
-        $first = true;
-        /**
-         * build an array with
-         * array(sqlfieldname => array('shortname'=> e1, 'class'=> classname))
-         * first entry is fromEntityStart
-         */
-        foreach($selectEntities as $fieldName => $entityName){
-            if($first){
-
-                //first entity is the from clause, so no join required
-                $first = false;
-                continue;
-            }
-            $query->leftJoin("e0.".$fieldName, "e".$entityCounter++);
-
-        }
-
-        $queryConfig = static::getQueryConfigOf($classname);
-
-
-        if($addFilterFunction != null){
-          $query = $addFilterFunction($query,$queryConfig);
-        }
-
-        return $query;
-    }
-
-
-    /**
-     * @param $classname
-     * @return array of the associated entities with $classname, or static::getFullClassName if $classname is null
-     * is in form of:
-     * array(
-        Namespace\To\StartEntity\Classname => null,
-     * 'associationfieldname' => Namespace\To\Association\Classname
-     * );
-     */
-    public static function getSelectEntitiesOf($classname){
-
-        $selectEntities = array($classname=>null);
-
-        /**
-         * @var ClassMetadata $metadata
-         */
-        $metadata = static::getEntityManagerStatic()->getMetadataFactory()->getMetadataFor($classname);
-        foreach($metadata->getAssociationMappings() as $mappingnum => $mapping){
-            $targetEntityInstance = new $mapping['targetEntity'];
-            $selectEntities[$mapping['fieldName']] = $mapping['targetEntity'];
-
-        }
-
-        return $selectEntities;
-
-    }
-
-    /**
-     * @param string $classname
-     * @return array
-     * array(
-    'fromEntityStart' => array('shortname'=> 'e0'
-     *                                                       , 'class'=>get_class($this->model)
-     *                                             )
-     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
-     *                                                                           , 'class' => 'Namespace\To\Entity\Classname')
-     *
-     * );
-     */
-    public static function getQueryConfigOf($classname){
-        if($classname == null){
-            throw new InvalidArgumentException("the parameter cannot be null");
-        }
-
-        $selectEntities = static::getSelectEntitiesOf($classname);
-        $first = true;
-        $entityCounter = 1;
-        foreach($selectEntities as $fieldName => $entityName){
-            if($first){
-                $queryConfig['fromEntityStart']= array('shortname'=> "e0"
-                ,'class' => $classname
-                );
-                //first entity is the from clause, so no join required
-                $first = false;
-                continue;
-            }else{
-                $queryConfig[$fieldName]= array('shortname'=> "e".$entityCounter
-                ,'class' => $entityName
-                );
-            }
-
-        }
-
-        return $queryConfig;
-
-    }
-
-    /**
-     * @param $classname
-     * @param $id
-     * @param callable|null $addFilterFunction
-     * @return BaseEntity
-     */
-    public static function getEntityById($classname, $id, callable $addFilterFunction =null){
-        $queryBuilder = static::getBuildQueryWithJoinedAssociations($classname,$addFilterFunction);
-        $queryConfig = static::getQueryConfigOf($classname);
-        $instanceForId = new $classname;
-        $idFieldName = $instanceForId->getIdFieldName();
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->eq($queryConfig['fromEntityStart']['shortname'].".".$idFieldName,":getEntityById")
-        );
-        $queryBuilder->setParameter(":getEntityById",$id);
-        $models = $queryBuilder->getQuery()->getResult();
-        if($models!=null){
-            return $models[0];
-        }
-        return null;
-
-    }
-
 
 
 }

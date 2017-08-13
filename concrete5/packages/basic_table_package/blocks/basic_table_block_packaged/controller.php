@@ -2,9 +2,21 @@
 namespace Concrete\Package\BasicTablePackage\Block\BasicTableBlockPackaged;
 
 use Concrete\Controller\Search\Groups;
+use Concrete\Controller\Dialog\Block\Permissions as BlockPermissions;
+use Concrete\Core\Block\Block;
+use Concrete\Core\Http\Request;
+use Concrete\Core\Support\Facade\Application;
+use Concrete\Core\File\Event\FileSet;
+use Concrete\Core\File\File;
+use Concrete\Core\File\Set\Set;
 use Concrete\Core\Package\Package;
+use Concrete\Core\Permission\Checker;
+use Concrete\Core\Permission\Response\BlockResponse;
 use Concrete\Package\BaclucEventPackage\Src\EventGroup;
 use Concrete\Package\BasicTablePackage\Src\AssociationBaseEntity;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityFactory;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
+use Concrete\Package\BasicTablePackage\Src\BaseEntitySerializer;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\DropdownBlockOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOption;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\GroupRefOptionGroup;
@@ -19,17 +31,22 @@ use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditAssociatedEntity
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DirectEditInterface;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownLinkField;
 use Concrete\Package\BasicTablePackage\Src\Group;
+use Concrete\Package\BasicTablePackage\Src\Helpers\CsvResponse;
+use Concrete\Package\BasicTablePackage\Src\Import\EntityDataComparer;
 use Core;
 use Concrete\Package\BasicTablePackage\Src\BlockOptions\CanEditOption;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Expr\Base;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineProxies\__CG__\Concrete\Package\BaclucAccountingPackage\Src\Move;
 use GuzzleHttp\Query;
 use OAuth\Common\Exception\Exception;
 use Page;
+use Port\Csv\CsvReader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use User;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\SelfSaveInterface as SelfSaveInterface;
@@ -63,7 +80,7 @@ class Controller extends BlockController
      * if the block is already executed
      * @var bool
      */
-    protected $executed = false;
+    protected static $executed = false;
 
     /**
      * If the block is in form view
@@ -142,6 +159,8 @@ class Controller extends BlockController
      */
     protected $consistencyErrors = array();
 
+    protected static $viewvars = array();
+
     /**
      *
      * Controller constructor.
@@ -149,9 +168,6 @@ class Controller extends BlockController
      */
     function __construct($obj = null)
     {
-
-
-
         parent::__construct($obj);
         if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
             $this->editKey = $_SESSION[$this->getHTMLId() . "rowid"];
@@ -170,37 +186,24 @@ class Controller extends BlockController
         }else{
             if($this->editKey == null){
             }else{
-                $query = $this->getBuildQueryWithJoinedAssociations();
-                $query->where($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
-                try {
-                    $model = $query->getQuery()->getSingleResult();
-                    $model = self::setModelFieldTypes($model);
-                    if ($model) {
-                        $this->model = $model;
-                    } else {
+                $model = BaseEntityRepository::getEntityById(get_class($this->getModel()), $this->editKey);
+                if ($model) {
+                    $this->model = $model;
+                } else {
 
-                        //dummy function because we have no values
-                        throw new \Exception;
-                    }
-                } catch (\Exception $e) {
-
+                    //in case that really happens, stop application
+                    throw new \Exception;
                 }
-
             }
         }
 
-
         $this->generatePostFieldMap();
-
 
         $c = Page::getCurrentPage();
 
         if (is_object($c)) {
             $this->cID = $c->getCollectionID();
         }
-
-        //if editkey is set in session, save in property
-
 
         //check if it is in form view
         if (isset($_SESSION[$this->getHTMLId()]['prepareFormEdit'])) {
@@ -209,14 +212,11 @@ class Controller extends BlockController
         //translate the header
         $this->header = t($this->header);
 
-
         //load the current options
-
         $this->basicTableInstance = $this->getBasicTableInstance();
         if(!isset($this->requiredOptions)) {
             $this->requiredOptions = array();
         }
-
 
     }
 
@@ -244,24 +244,9 @@ class Controller extends BlockController
             }else{
                 $bID = $obj->getBlockID();
             }
-            /**
-             * dont know why the normal approach does not work.
-             * using now directly dql instead
-             */
-//            $query = $this->getEntityManager()->createQueryBuilder();
-//
-//            $query->select("bt,o")
-//                ->from(get_class(new BasicTableInstance()), "bt")
-//                ->leftJoin("bt.tableBlockOptions", "o")
-//                ->where($query->expr()->eq( "bt.bID",":id"));
-//            $query->setParameter(":id",$bID);
+            $bt = BaseEntityRepository::getEntityById(BasicTableInstance::class, $bID);
 
-            $dql = $this->getEntityManager()->createQuery("SELECT bt,o FROM Concrete\Package\BasicTablePackage\Src\BasicTableInstance bt LEFT JOIN bt.tableBlockOptions o WHERE bt.bID = :id");
-            $dql->setParameter(":id",$bID);
-            $result = $dql->getResult(\Doctrine\ORM\Query::HYDRATE_OBJECT);
-            if(is_array($result)){
-                $bt = reset($result);
-            }
+
             if ($bt == null) {
                 $bt = new BasicTableInstance();
                 $bt->set("bID", $bID);
@@ -430,7 +415,7 @@ class Controller extends BlockController
         if ($this->editKey == null) {
             $model = $this->model;
         } else {
-            $model = BaseEntity::getEntityById(get_class($this->model), $this->editKey);
+            $model = BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey);
         }
 
         if($this->persistValues($model, $v) === false){
@@ -442,7 +427,8 @@ class Controller extends BlockController
 
         $this->finishFormView();
         if($redirectOnSuccess) {
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
+
         }
 
 
@@ -746,44 +732,25 @@ class Controller extends BlockController
 
     }
 
-
-    /**
-     * @return QueryBuilder
-     */
-    public function getBuildQueryWithJoinedAssociations(){
-        $classname = get_class($this->model);
-
-
-        $query = BaseEntity::getBuildQueryWithJoinedAssociations($classname, BaseEntity::$staticEntityfilterfunction);
-
-        $queryConfig = BaseEntity::getQueryConfigOf($classname);
-
-        $query = $this->addFilterToQuery($query, $queryConfig);
-
-        return $query;
-    }
-
-
     /**
      * funciton to retrieve the table data
      * @return array
      */
     public function displayTable()
     {
+        $modelList  =BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()))
+            ->getQuery()->getResult();
 
-
-
-        $modelList = $this->getBuildQueryWithJoinedAssociations()->getQuery()->getResult();
-
-
-        $tabledata = array();
+       $tabledata = array();
         foreach ($modelList as $modelNum => $model) {
-            $model = self::setModelFieldTypes($model);
+            /**
+             * @var BaseEntity $model
+             */
+            $model = static::setModelFieldTypes($model);
             $tabledata[] = $model->getAsAssoc();
         }
 
         return $tabledata;
-
     }
 
     /**
@@ -795,7 +762,7 @@ class Controller extends BlockController
 
             return $this->model->getFieldTypes();
         }
-        return BaseEntity::getEntityById(get_class($this->model), $this->editKey)->getFieldTypes();
+        return BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey)->getFieldTypes();
 
     }
 
@@ -805,7 +772,7 @@ class Controller extends BlockController
      */
     public function setExecuted()
     {
-        $this->executed = true;
+        static::$executed=true;
     }
 
     /**
@@ -813,7 +780,7 @@ class Controller extends BlockController
      */
     public function isExecuted()
     {
-        return $this->executed;
+        return static::$executed;
     }
 
     /**
@@ -834,12 +801,10 @@ class Controller extends BlockController
             }
 
         } else {
-            $query = $this->getBuildQueryWithJoinedAssociations();
-            $query->andWhere($query->expr()->eq( "e0.".$this->model->getIdFieldName(),":id"))->setParameter(":id",$this->editKey);
 
 
             try {
-                $model = $query->getQuery()->getSingleResult();
+                $model = BaseEntityRepository::getEntityById(get_class($this->getModel()), $this->editKey);
                 $model = self::setModelFieldTypes($model);
                 if ($model) {
                     $returnArray = $model->getAsAssoc();
@@ -872,6 +837,229 @@ class Controller extends BlockController
     {
         echo json_encode(array('hi' => 'test'));
         exit();
+    }
+
+
+    function action_exportCSV(){
+        //first get table data
+        $query = BaseEntityRepository::getBuildQueryWithJoinedAssociations(get_class($this->getModel()));
+        $result =$query->getQuery()->execute();
+        //convert it to assoc array
+
+        $assocResult = array();
+        $fieldTypes = array();
+        if(count($result)>0) {
+            foreach ($result as $key => $value) {
+                /**
+                 * @var BaseEntity $value
+                 */
+                $value = BaseEntityRepository::getBaseEntityFromProxy($value);
+
+                if (count($assocResult) == 0) {
+                    $fieldTypes = $value->getFieldTypes();
+                }
+                $assocRow = array();
+                foreach ($fieldTypes as $num => $fieldType) {
+                    if($fieldType->getSQLFieldName() != $value->getIdFieldName()) {
+                        /**
+                         * @var Field $fieldType
+                         */
+                        $assocRow[$fieldType->getLabel()] = $fieldType->setSQLValue($value->get($fieldType->getSQLFieldName()))->getTableView();
+                    }
+                }
+                $assocResult[] = $assocRow;
+
+            }
+        }else{
+            //if table is empty, export field names
+            $fieldTypes = $this->getModel()->getFieldTypes();
+            $fieldLabels = array();
+            foreach($fieldTypes as $num => $fieldType){
+                $assocResult[0][]=$fieldType->getLabel();
+            }
+        }
+
+        $response = new CsvResponse($assocResult);
+        $response->setDelimiter(";");
+        $response->send();
+        exit();
+
+    }
+
+    public function action_importCSV(){
+
+
+        $goBackToTableView = false;
+        $block = Block::getByID($this->bID);
+        $checker = new Checker($block);
+
+        /**
+         * @var BlockResponse $response
+         */
+        $response = $checker->getResponseObject();
+
+        if (!$response->canRead()) {
+            $this->requiresRegistration();
+            // The current user can view the block
+            $this->setViewVar("errorMessage", t("You are not allowed to perform this operation."));
+            $this->render("view");
+            return;
+        }
+            $error = \Concrete\Core\File\Importer::E_PHP_FILE_ERROR_DEFAULT;
+            if (isset($_FILES['csvfile']) && is_uploaded_file($_FILES['csvfile']['tmp_name'])) {
+                $validator = Core::make('helper/file');
+                if ('csv'!=$validator->getExtension($_FILES['csvfile']['name'])) {
+                    $error = \Concrete\Core\File\Importer::E_FILE_INVALID_EXTENSION;
+                } else {
+                    //needed because block is executed twice
+                    if($this->isExecuted()){
+
+                    }else {
+                        $debugMessage = "";
+                        $this->setExecuted();
+
+                        $file = $_FILES['csvfile']['tmp_name'];
+                        $filename = $_FILES['csvfile']['name'];
+                        $importer = new \Concrete\Core\File\Importer();
+                        $result = $importer->import($file, $filename);
+                        if ($result instanceof \Concrete\Core\File\Version) {
+
+                            $set = Set::getByName("Imported Files");
+                            if (is_null($set)) {
+                                $set = Set::createAndGetSet("Imported Files", Set::TYPE_PUBLIC);
+                            }
+                            $set->addFileToSet($result->getFile());
+
+
+
+                            $fileObject = new \SplFileObject("php://memory", "w+");
+                            $fileObject->fwrite($result->getFileContents());
+                            $reader = new CsvReader($fileObject, ';', '"', "\\");
+                            $reader->setHeaderRowNumber(0);
+
+                            $comparer = new EntityDataComparer($this->getModel(),$reader);
+                            $comparer->compare();
+
+                            $this->setViewVar("comparisondata", $comparer->getComparisonData());
+                            $token = Core::make("token")->generate("persistImport");
+                            $this->setViewVar("token", $token);
+                            //now serialise the data in the session
+                            $app = Application::getFacadeApplication();
+
+                            /**
+                             * @var Session $session
+                             */
+                            $session = $app['session'];
+
+
+                            $serializeddata = array();
+                            if(count($comparer->getComparisonData())>0) {
+                                foreach ($comparer->getComparisonData() as $num => $comparisonSet) {
+                                    $serializer = new BaseEntitySerializer($comparisonSet->getResultModel());
+                                    $serializeddata[$num] = $serializer->convertTo(
+                                        BaseEntitySerializer::KEYTYPE_SQL_FIELDNAME
+                                        , BaseEntitySerializer::VALUE_TYPE_SQL
+                                        , true);
+                                }
+                            }else{
+                                $goBackToTableView = true;
+                                $this->setViewVar('errorMessage', t("Imported data and current data are the same."));
+                            }
+
+                            $sessiondata[$token]=$serializeddata;
+                            $session->set("import", $sessiondata);
+
+
+                        } else {
+                            $error = $result;
+                            $this->setViewVar('errorMessage', $importer->getErrorMessage($error));
+                        }
+                    }
+                    if($goBackToTableView){
+                        $this->render('view');
+                    }else {
+                        $this->render('../../../basic_table_package/blocks/basic_table_block_packaged/views/import_view');
+
+                    }
+                    return;
+                }
+            } else if (isset($_FILES['csvfile'])) {
+                $error = $_FILES['csvfile']['error'];
+            }
+
+
+            $this->render('view');
+            return;
+
+    }
+
+    public function  action_persistImport(){
+
+        if(static::isExecuted()){
+            return;
+        }
+        static::setExecuted();
+        //first get request
+        /**
+         * @var Request $request
+         */
+        $validator = \Core::make("token");
+
+        //validate token
+        if(!$validator->validate("persistImport")){
+            $this->setViewVar("errorMessage", t("Your request is invalid due to inactivity, please retry."));
+
+            //if token not valid, cancel
+            $this->render("view");
+            $this->redirectToView();
+            return;
+        }
+
+        $postdata = Request::post();
+        $token = $postdata['ccm_token'];
+
+        $session = Core::make("session");
+
+
+        $importDataWithtoken =$session->get("import");
+        $importData = $importDataWithtoken[$token];
+        if(count($importData)==0){
+            $this->setViewVar("errorMessage", t("Nothing to import."));
+
+            //if token not valid, cancel
+            $this->render("view");
+            $this->redirectToView();
+            return;
+        }
+
+        $baseEntityFactory = new BaseEntityFactory($this->getModel());
+        $this->getEntityManager()->beginTransaction();
+
+
+        foreach($postdata['acceptImport'] as $num => $accepted){
+            if($accepted){
+                if(count($importData[$num])>0){
+                    $model = $baseEntityFactory->createFromSQLFieldNameSQLValue($importData[$num], true);
+                    if($model->getId() != null){
+                      $this->getEntityManager()->merge($model);
+                    }else {
+                        $this->getEntityManager()->persist($model);
+                    }
+                }
+            }
+        }
+        try{
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->commit();
+        }catch (Exception $e){
+            $this->getEntityManager()->rollback();
+            Core::make("log")->log("ERROR", get_class($e)." ".$e->getMessage()." ".__FILE__." ".__LINE__);
+            $this->setViewVar("errorMessage", t("Something went wrong with the import."));
+        }
+
+        $this->render("view");
+        $this->redirectToView();
+        return;
     }
 
     function getHeader()
@@ -939,7 +1127,7 @@ class Controller extends BlockController
 
                         }else{
                             //load the right current option
-                            $realBlockOption = BaseEntity::getEntityById(get_class($requOption), $currentBlockOption->getId());
+                            $realBlockOption = BaseEntityRepository::getEntityById(get_class($requOption), $currentBlockOption->getId());
 
                             if($realBlockOption != null){
                                 $currentBlockOption = $realBlockOption;
@@ -998,13 +1186,7 @@ class Controller extends BlockController
      */
     public function getModel(){
         if($this->model->getId() != $this->editKey && $this->editKey != null){
-            $query = BaseEntity::getBuildQueryWithJoinedAssociations(get_class($this->model));
-            $query->andWhere($query->expr()->eq("e0.".$this->model->getIdFieldName(), ":basicTableControllerId"));
-            $query->setParameter(":basicTableControllerId", $this->editKey);
-            $result =$query->getQuery()->execute();
-            if(count($result)==1){
-                $this->model = reset($result);
-            }
+            $query = BaseEntityRepository::getEntityById(get_class($this->model), $this->editKey);
 
         }
         return $this->model;
@@ -1013,7 +1195,7 @@ class Controller extends BlockController
     public function install($path)
     {
         $res = parent::install($path);
-        //throw model through AssociationCache to get Associations
+        //iterate through associations of model to fill association cache ?
     }
 
     public function action_get_options_of_field(){
@@ -1082,9 +1264,7 @@ class Controller extends BlockController
         $this->isFormview = false;
         $u = new User();
 
-
         $bo = $this->getBlockObject();
-
 
         if ($this->post('rcID')) {
             // we pass the rcID through the form so we can deal with stacks
@@ -1097,42 +1277,25 @@ class Controller extends BlockController
             return $this->handleFormError();
         }
 
-
         if (isset($_POST['cancel'])) {
             if (isset($_SESSION[$this->getHTMLId() . "rowid"])) {
                 unset($_SESSION[$this->getHTMLId() . "rowid"]);
             }
             $_SESSION[$this->getHTMLId()]['prepareFormEdit'] = false;
-            $this->redirect($c->getCollectionPath());
+            $this->redirectToPage($c);
             return true;
         }
-
 
         $duID = 0;
         if ($u->getUserID() > 0) {
             $duID = $u->getUserID();
         }
 
-        /** @var \Concrete\Core\Permission\IPService $iph */
-        $iph = Core::make('helper/validation/ip');
-        $ip = $iph->getRequestIP();
-        $ip = ($ip === false) ? ('') : ($ip->getIp($ip::FORMAT_IP_STRING));
         $v = array();
-
-
         $error = false;
         //test
         $errormsg = "";
-        $savevalues = $_REQUEST;
-
-        //add additional fields
-        if (count($this->addFields) > 0) {
-            foreach ($this->addFields as $key => $value) {
-                $savevalues[$key] = $value;
-            }
-        }
-        //selfsavefields are for example n:m relations. They implement the SelfSaveInterface
-        $selfsavefields = array();
+        $savevalues = $_POST;
 
         foreach ($this->getFields() as $key => $value) {
             /**
@@ -1149,10 +1312,8 @@ class Controller extends BlockController
                 }
             }
         }
-
         if ($error) {
             return $this->handleFormError();
-
         }
 
         return $v;
@@ -1168,11 +1329,18 @@ class Controller extends BlockController
         $this->getEntityManager()->persist($model);
         //save values
         foreach ($this->getFields() as $key => $value) {
+            /**
+             * @var BaseEntity $model
+             */
             if ($key != $model->getIdFieldName()) {
                 if ($v[$key] instanceof BaseEntity) {
                     $this->getEntityManager()->persist($v[$key]);
                 } elseif ($v[$key] instanceof ArrayCollection) {
-                    foreach ($v[$key]->toArray() as $refnum => $refObject) {
+                    /**
+                     * @var \Doctrine\Common\Collections\Collection $collection
+                     */
+                    $collection = $v[$key];
+                    foreach ($collection->toArray() as $refnum => $refObject) {
                         $this->getEntityManager()->persist($refObject);
                     }
                 }
@@ -1180,9 +1348,7 @@ class Controller extends BlockController
             }
         }
 
-
         //if the data is inserted, the saveself fields can only save afterwards
-
         $this->consistencyErrors = $model->checkConsistency();
         if (count($this->consistencyErrors) > 0) {
             return $this->handleFormError();
@@ -1202,28 +1368,11 @@ class Controller extends BlockController
     }
 
 
-    /**
-     * @param QueryBuilder $query
-     * @param array $queryConfig
-     *  array of:
-     * array(
-            'fromEntityStart' => array('shortname'=> 'e0'
-     *                                                       , 'classname'=>get_class($this->model)
-     *                                             )
-     *       ,'firstAssociationFieldname'=> array('shortname' => 'e1'
-     *                                                                           , 'classname' => 'Namespace\To\Entity\Classname')
-     *
-     * );
-     * @return QueryBuilder
-     *
-     * always use andWhere to append the filter, because maybe the entity is already filtered
-     */
-    public function addFilterToQuery(QueryBuilder $query, array $queryConfig = array()){
-        return $query;
-    }
 
     public function view(){
-
+            foreach(static::$viewvars as $key => $value){
+                $this->set($key, $value);
+            }
     }
 
     public function redirectToView()
@@ -1234,7 +1383,66 @@ class Controller extends BlockController
         } else {
             $c = $this->getCollectionObject();
         }
-        $this->redirect($c->getCollectionPath());
+        $this->redirectToPage($c);
+    }
+
+    /**
+     * @param $c
+     */
+    protected function redirectToPage($c)
+    {
+        if (strlen($c->getCollectionPath()) == 0) {
+            $this->redirect("");
+        } else {
+            $this->redirect($c->getCollectionPath());
+        }
+    }
+
+
+
+    public function getTableControlButtons($view){
+        return '
+        <div class="tablecontrols">
+            <form method="post" action="' . $view->action('add_new_row_form') . ' ">
+    
+                        
+                        <button type="submit" value="" class="btn inlinebtn actionbutton add" aria-label="' . t("new Entry") . '" title="' . t("new Entry") . '">
+                                    <i class ="fa fa-plus" aria-hidden="true"> </i>
+                         </button>
+                         <a href="' . $view->action('exportCSV') . '" >
+                            <button type="button" value=""  class="btn inlinebtn actionbutton exportcsv" aria-label="' . t("export CSV") . '" title="' . t("export CSV") . '">
+                                    <i class ="fa fa-download" aria-hidden="true"> </i>
+                            </button>
+                        </a>
+                        <div class="csvimport">
+                            <button type="button" value=""  class="btn inlinebtn actionbutton importcsv" aria-label="' . t("import CSV") . '" title="' . t("import CSV") . '">
+                                    <i class ="fa fa-upload" aria-hidden="true"> </i>
+                            </button>
+                            
+                         </div>
+                        
+            </form>
+            <div class="hidden">
+                        <form method="post" action="' . $view->action('importCSV') . ' " class="importcsv-form" enctype="multipart/form-data">
+                                <input type="file" name="csvfile" class="csvfile-field"/>
+                        </form>      
+             </div>
+           </div>  
+        
+        ';
+    }
+
+    public function setViewVar($key, $value){
+        static::$viewvars[$key]=$value;
+        return $this;
+    }
+
+    public function getViewVar($key){
+        return static::$viewvars[$key];
+    }
+
+    public function getViewVars(){
+        return static::$viewvars;
     }
 
 

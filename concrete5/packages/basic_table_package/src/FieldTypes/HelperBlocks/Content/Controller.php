@@ -49,16 +49,7 @@ use Concrete\Core\Legacy\Loader;
                 $this->requireAsset('core/lightbox');
             }
         }
-        
-        public function setSQLParams(string $targetTable
-        							,string $targetCol
-        							,string $targetIdField
-        							,string $targetId){
-        	$this->targetTable = $targetTable;
-        	$this->targetCol = $targetCol;
-        	$this->targetIdField = $targetIdField;
-        	$this->targetId = $targetId;
-        }
+
         
         
         

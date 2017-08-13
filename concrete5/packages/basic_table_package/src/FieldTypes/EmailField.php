@@ -40,7 +40,7 @@ class EmailField extends Field
 
         }
 
-        $this->setValue($value);
+       $this->value = $value;
         return true;
     }
 
@@ -52,7 +52,7 @@ class EmailField extends Field
      */
     public function getInputHtml($form, $clientSideValidationActivated)
     {
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

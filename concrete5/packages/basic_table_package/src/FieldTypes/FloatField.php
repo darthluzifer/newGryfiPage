@@ -56,7 +56,7 @@ class FloatField extends IntegerField {
             return false;
         }
         if(strlen($value)==0){
-            $this->setValue(null);
+            $this->value = null;
             return true;
         }
 
@@ -138,7 +138,7 @@ class FloatField extends IntegerField {
             }
         }
 
-        $this->setValue($value);
+        $this->value = $value;
         return true;
     }
 
@@ -152,14 +152,14 @@ class FloatField extends IntegerField {
     public function getInputHtml($form, $clientSideValidationActivated)
     {
         $attributes = array('title' => $this->getPostName(),
-            'value' => $this->getValue(),
+            'value' => $this->getSQLValue(),
             'id' => $this->getHtmlId(),
         );
 
         if ($clientSideValidationActivated) {
             $attributes = $this->addValidationAttributes($attributes);
         }
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

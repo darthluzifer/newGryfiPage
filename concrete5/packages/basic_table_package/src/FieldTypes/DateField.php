@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Core\Form\Service\Widget\DateTime;
 use Concrete\Core\Localization\Service\Date;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Loader;
@@ -160,12 +161,15 @@ class DateField extends Field{
 	}
 
 	public function getTableView(){
-		if($this->getValue() == null){
+		if($this->getSQLValue() == null){
 			return null;
 		}
 		//var_dump($this->getValue());
 		//return $this->getValue();
-		return (new \DateTime($this->getValue()))->format(static::$currentFormat['phpdatetime']);
+        /**
+         * @var DateTime $this->value
+         */
+		return $this->value->format(static::$currentFormat['phpdatetime']);
 	}
 
 
@@ -189,6 +193,7 @@ class DateField extends Field{
     public function validatePost($value){
 		if(is_null($value) || $value == ''){
 			if($this->nullable){
+			    $this->value = null;
 				return true;
 			}else{
 				$this->errMsg = $this->getLabel().t(static::NULLERRORMSG);
@@ -203,21 +208,34 @@ class DateField extends Field{
 			$this->errMsg = static::$formatErrorMessage;
 			return false;
 		}
+		$day = null;
+		$month = null;
+		$year = null;
 		for($i = 0; $i < count($explodeValue);$i++){
+		    //first remove leading zeroes
+            $explodeValue[$i] = ltrim($explodeValue[$i],'0');
+
+		    if(false ===filter_var($explodeValue[$i], FILTER_VALIDATE_INT) || $explodeValue[$i]<=0){
+                $this->errMsg = t(static::$formatErrorMessage);
+                return false;
+            }
+            $explodeValue[$i] = intval($explodeValue[$i]);
+		    //prepend zero if only one digit
+            $setValue =strlen($explodeValue[$i]==1)?"0".$explodeValue[$i]:$explodeValue[$i];
 			switch ($explodePattern[$i]){
 				case 'd':
-					if(!(is_numeric($explodeValue[$i]+0)
-						 && $explodeValue[$i]+0<= 31) ){
+					if(( $explodeValue[$i]> 31) ){
 						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
+					$day = $setValue;
 				break;
 				case 'm':
-					if(!(is_numeric($explodeValue[$i]+0)
-						&& $explodeValue[$i]+0<= 12) ){
+					if($explodeValue[$i]> 12 ){
 						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
+                    $month = $setValue;
 					break;
 				case 'Y':
 					if(!(is_numeric($explodeValue[$i]+0)
@@ -226,31 +244,23 @@ class DateField extends Field{
 						$this->errMsg = t(static::$formatErrorMessage);
 						return false;
 					}
+                    $year = $setValue;
 					break;
 
 			}
 		}
-		//var_dump($value);
-		$this->setValue($value);
-		//var_dump($this->value);
-		//exit();
+		$this->value = new \DateTime($year."-".$month."-".$day);
 		return true;
 	}
 
 
 
 
-	public function getSQLValue(){
-		if($this->value == null){
-			return null;
-		}
-		return new \DateTime($this->value);
-	}
 
 	public function setSQLValue($value){
 		//for now, save the value as Y-m-d, later change to save as DateTime
-		if($value instanceof \DateTime){
-			$value = $value->format('Y-m-d');
+		if(!($value instanceof \DateTime) && !is_null($value)){
+			throw new \InvalidArgumentException('$value has to be instance of \DateTime, was '.$value);
 		}
 		$this->value = $value;
         return $this;
@@ -290,7 +300,7 @@ class DateField extends Field{
         if ($clientSideValidationActivated) {
             $validationAttributes = $this->addValidationAttributes(array());
         }
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         //set value to default before displaying the form
         if($value == null && $default != null){

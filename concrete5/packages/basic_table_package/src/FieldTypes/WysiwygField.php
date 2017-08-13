@@ -25,7 +25,7 @@ use Concrete\Core\Editor\RedactorEditor;
 class WysiwygField extends Field{
 	/**
 	 *
-	 * @var \ContentController
+	 * @var ContentController
 	 */
 	protected $blockController;
 	public function __construct($sqlFieldname,$label, $postName, $showInTable = false, $showInForm = true){
@@ -36,20 +36,12 @@ class WysiwygField extends Field{
 		$this->showInTable = $showInTable;
 		$this->showInForm = $showInForm;
 		$this->blockController = new ContentController();
-		//$this->blockController->setSQLParams($targetTable, $targetCol, $targetIdField, $targetId)
 
 	}
 
 
-	public function setValue($value){
-		$this->isSQLValue = false;
-		$this->value = $value;
-		$this->blockController->setValue($value);
-        return $this;
-	}
 
 	public function setSQLValue($value){
-		$this->isSQLValue = true;
 		$this->value = $value;
 		$this->blockController->setValue($value);
         return $this;
@@ -79,11 +71,6 @@ class WysiwygField extends Field{
 
 
 
-	public function getValue(){
-		$this->value = $this->blockController->getValue();
-
-		return $this->value;
-	}
 
     /**
      * @param $html
@@ -92,7 +79,7 @@ class WysiwygField extends Field{
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $editor = new RedactorEditor();
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

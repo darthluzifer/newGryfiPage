@@ -9,7 +9,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 
-interface DirectEditInterface
+interface DirectEditInterface extends AssociationFieldInterface
 {
 
     const PREPEND_BEFORE_REALNAME = "bacluc_inline_form";

@@ -31,7 +31,7 @@ class HiddenField extends Field
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
         $returnString = "";
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

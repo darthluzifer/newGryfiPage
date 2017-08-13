@@ -9,6 +9,7 @@ use Concrete\Core\Package\Package;
 use Concrete\Core\Foundation\ClassLoader;
 use Concrete\Package\BasicTablePackage\Src\DiscriminatorEntry\DiscriminatorListener;
 use Doctrine\ORM\EntityManager;
+use Port\Reader\ArrayReader;
 use Punic\Exception;
 use Loader;
 use Core;
@@ -30,6 +31,10 @@ class Controller extends Package
     public function getPackageDescription()
     {
         return t("Package to provide a basic CRUD from DB to GUI");
+    }
+
+    public function on_start(){
+        require $this->getPackagePath() . '/vendor/autoload.php';
     }
 
     public function install()
@@ -108,6 +113,13 @@ class Controller extends Package
         }
         return $em;
     }
+
+    public static function getEntityManagerStatic(){
+        $pkg = Package::getByHandle("basic_table_package");
+        return $pkg->getEntityManager();
+    }
+
+
 
 
 

@@ -43,15 +43,10 @@ class DropdownField extends Field{
 	}
 
 
-	public function setValue($value){
-
-		$this->value = $value;
-        return $this;
-	}
 
 	public function getTableView(){
 		$options = $this->getOptions();
-		return $options[$this->getValue()];
+		return $options[$this->getSQLValue()];
 	}
 
 
@@ -109,9 +104,6 @@ class DropdownField extends Field{
 
 
 
-	public function getValue(){
-		return $this->value;
-	}
 
 
 
@@ -119,11 +111,20 @@ class DropdownField extends Field{
 
 	public function validatePost($value){
 		$values = array_keys($this->getOptions());
-		if(in_array($value, $values)){
+		//check if value is integer like
+        if(filter_var($value, FILTER_VALIDATE_INT) !== false){
+            //if it is integer like, convert to integer
+            $value = intval($value);
+        }
+		if(in_array($value, $values, true)){
 			return parent::validatePost($value);
-		}else{
+		}elseif (in_array($value, $this->getOptions(),true)){
+            $reversedOptions = array_flip($this->getOptions());
+            $value = $reversedOptions[$value];
+            return parent::validatePost($value);
+        }else{
 		    if($this->nullable !== false && $value == null){
-		        $this->setValue($value);
+		        $this->value = $value;
 		        return true;
             }
 			return false;
@@ -136,7 +137,7 @@ class DropdownField extends Field{
      */
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;

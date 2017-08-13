@@ -2,6 +2,7 @@
 namespace Concrete\Package\BasicTablePackage\Src\FieldTypes;
 
 use Concrete\Core\Block\BlockController;
+use Concrete\Package\BasicTablePackage\Src\BaseEntityRepository;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field as Field;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DropdownField as DropdownField;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
@@ -21,7 +22,7 @@ use Concrete\Core\Block\View\BlockView as View;
  *  Concrete\Package\BasicTablePackage\Src\FieldTypes
  * A Dropdownfield which lists other instances
  */
-class DropdownLinkField extends DropdownField{
+class DropdownLinkField extends DropdownField implements AssociationFieldInterface {
     protected $linktable;
     protected $sqlfilter = " 1=1 ";
     protected $sqlvars = array();
@@ -100,7 +101,7 @@ class DropdownLinkField extends DropdownField{
      * @param DropdownLinkField $source
      * @param DropdownLinkField $target
      */
-    public static function copyLinkInfo(DropdownLinkField $source, DropdownLinkField &$target){
+    public static function copyLinkInfo(/*DropdownLinkField */$source, /*DropdownLinkField */&$target){
         $target->setLinkInfo(
             $source->getSourceEntity()
             , $source->getSourceField()
@@ -238,9 +239,6 @@ class DropdownLinkField extends DropdownField{
     }
 
 
-    public function getValue(){
-        return $this->value;
-    }
 
     public function validatePost($value){
 
@@ -252,7 +250,7 @@ class DropdownLinkField extends DropdownField{
             $modelForIdField = new $this->targetEntity;
 
             //TODO check if is to refactor
-            $model = BaseEntity::getEntityById($this->targetEntity,$value);
+            $model = BaseEntityRepository::getEntityById($this->targetEntity, $value);
 
             if($model != null && $model!=false){
                 $this->getEntityManager()->persist($model);
@@ -296,7 +294,7 @@ class DropdownLinkField extends DropdownField{
 
     public function getInputHtml($form, $clientSideValidationActivated=true)
     {
-        $value = $this->getValue();
+        $value = $this->getSQLValue();
         $default = $this->getDefault();
         if($value == null && $default != null){
             $value = $default;
@@ -333,13 +331,13 @@ class DropdownLinkField extends DropdownField{
 
 
 
-        $queryBuilder = BaseEntity::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
+        $queryBuilder = BaseEntityRepository::getBuildQueryWithJoinedAssociations($this->getTargetEntity());
 
 
         if ($this->getAssociationType() == ClassMetadataInfo::ONE_TO_ONE
             || $this->getAssociationType() == ClassMetadataInfo::ONE_TO_MANY) {
             //if it is a one to one relation, we have to remove the target entities which already have a relation to another source entity
-            $queryConfig = BaseEntity::getQueryConfigOf($this->getTargetEntity());
+            $queryConfig = BaseEntityRepository::getQueryConfigOf($this->getTargetEntity());
             $targetEntityAlias = $queryConfig['fromEntityStart']['shortname'];
 
             $subquery = $this->getEntityManager()->createQueryBuilder();
