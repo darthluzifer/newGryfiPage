@@ -3,7 +3,6 @@ use Application\Block\BasicTableBlock\FieldTypes\SelfSaveInterface;
 use Application\Block\BasicTableBlock\FieldTypes\FileField;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\Field;
 
-$event = $controller->getNextEvent();
 if($event != null) {
 	/**
 	 * @var Field[] $fieldTypes
@@ -47,6 +46,45 @@ if($event != null) {
 					class="col-xs-12 filelink info"><?php echo " <span class='prefix info_prefix'>" . t("Informationen:") . "</span> " . $infofile ?></div>
 			<?php } ?>
 		</div>
+        <div class="row">
+                <?php
+            if($showAttend || $showApologize) {
+                ?>
+                <form action="<?php echo $this->action("changeAttendance") ?>" method="post">
+                    <div class="col-xs-6">
+                    <?php
+                        if($showAttend){
+                    ?>
+                            <button class="btn btn-success btn-block"
+                                    type="submit"
+                                    name="newstate"
+                                    value="<?php echo \Concrete\Package\BaclucEventPackage\Src\UserAttendsEvent::STATE_ATTENDING?>"
+                                    aria-label="<?php echo t("enroll");?>" title="<?php echo t("enroll");?>'"
+                            ><i class="fa fa-check"></i></button>
+                    <?php
+                        }
+                    ?>
+                    </div>
+                    <div class="col-xs-6">
+                    <?php
+                        if($showApologize){
+                    ?>
+                            <button class="btn btn-danger btn-block"
+                                    type="submit"
+                                    name="newstate"
+                                    value="<?php echo \Concrete\Package\BaclucEventPackage\Src\UserAttendsEvent::STATE_APOLOGIZED?>"
+                                    aria-label="<?php echo t("cancel");?>" title="<?php echo t("cancel");?>'"
+                            ><i class="fa fa-close"></i></button>
+                    <?php
+                        }
+                    ?>
+                    </div>
+                </form>
+                <?php
+            }
+                ?>
+
+        </div>
 
 
 	</div>

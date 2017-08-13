@@ -6,6 +6,8 @@
  * Time: 23:08
  */
 namespace Concrete\Package\BaclucEventPackage\Src;
+use Concrete\Core\Form\Service\Widget\DateTime;
+use Concrete\Package\BaclucEventPackage\Block\BaclucNextEventBlock\Controller;
 use Concrete\Package\BasicTablePackage\Src\BaseEntity;
 use Concrete\Package\BasicTablePackage\Src\EntityGetterSetter;
 use Concrete\Package\BasicTablePackage\Src\FieldTypes\DateField as DateField;
@@ -156,16 +158,18 @@ class Event extends BaseEntity
         return $function;
     }
     public function getNextEvent(array  $groupids){
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = \Concrete\Package\BasicTablePackage\Controller::getEntityManagerStatic()->createQueryBuilder();
         $qb
             ->select( 'Event')
             ->from('Concrete\Package\BaclucEventPackage\Src\Event', 'Event')
-            ->join('Event.EventGroups','eg', Expr\Join::WITH, "1=1")
-            ->join('eg.Group','g', Expr\Join::WITH, "1=1")
+            ->join('Event.EventGroups','eg')
+            ->join('eg.Group','g')
             ->where($qb->expr()->in('g.gID', ':Groups'))
+            ->andWhere($qb->expr()->gte('Event.date_to', ":date"))
             ->orderBy('Event.date_from')
             ->setMaxResults(1)
             ->setParameter('Groups',$groupids)
+            ->setParameter('date', new \DateTime())
         ;
         $query = $qb->getQuery();
         $result = $query->getResult();
