@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-branch="develop";
+branch="master";
 git checkout -b create_release
 git subtree pull --prefix=concrete5/packages/basic_table_package/ git@github.com:BacLuc/basic_table_package.git $branch
 git subtree pull --prefix=concrete5/packages/bacluc_gryfenberg_theme/ git@github.com:BacLuc/bacluc_gryfenberg_theme.git $branch
