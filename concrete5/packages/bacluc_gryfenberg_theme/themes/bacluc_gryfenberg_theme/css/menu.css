@@ -1,0 +1,23 @@
+
+/*nav.navbar.navbar-default{*/
+    /*background-color: rgba(0, 128, 0, 0.76);*/
+/*}*/
+
+.navbar .btn-default{
+    background-color: transparent;
+    border:none;
+}
+
+.editmode .navbar-header button{
+    width:100px;
+    height:100px;
+}
+
+.navbar-brand{
+    padding-top:2.5px;
+    padding-bottom:2.5px;
+}
+
+.navbar-brand img{
+    height: 45px;
+}
