@@ -23,5 +23,5 @@ git commit -m "removed directory"
 git subtree add --prefix=concrete5/packages/bacluc_event_package/ git@github.com:BacLuc/bacluc_event_package.git $branch
 
 git checkout $branch
-git merge create_release -m "pulled latest commit from $branch of subtrees and merged into $branch"
+git merge create_release --squash
 git branch -d create_release
