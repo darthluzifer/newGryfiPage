@@ -8,12 +8,9 @@ concrete5/application/files/cache/*
 .idea/*
 .idea/
 .idea
-config/site.php
-files/cache/*
-files/tmp/*
 concrete5/application/config/generated_overrides/concrete.php
 concrete5/application/config/generated_overrides/*
-owncloud/data/*
+nextcloud/data/*
 /concrete5/application/config/generated_overrides/*
 /concrete5/application/config/database.php
 /concrete5/application/files/*
@@ -22,3 +19,4 @@ owncloud/data/*
 /_intellij_phpdebug_validator.php
 /emaillog.txt
 /nextcloud/config/config.php
+/nextcloud/data/nextcloud.log
