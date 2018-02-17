@@ -36,7 +36,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -57,7 +57,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
      */
     public function __get($name)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
 
         return parent::__get($name);
     }
@@ -69,7 +69,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
      */
     public function __set($name, $value)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', [$name, $value]);
 
         return parent::__set($name, $value);
     }
@@ -83,10 +83,10 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+            return ['__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+        return ['__isInitialized__', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gName', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationIsEnabled', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationMethod', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationSetDateTime', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationInterval', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gUserExpirationAction', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsBadge', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeFID', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeDescription', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gBadgeCommunityPointValue', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gIsAutomated', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnRegister', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnLogin', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gCheckAutomationOnJobRun', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'gPath', '' . "\0" . 'Concrete\\Package\\BasicTablePackage\\Src\\Group' . "\0" . 'pkgID', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
     }
 
     /**
@@ -116,7 +116,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -124,7 +124,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -198,7 +198,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getId()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -209,7 +209,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getIdFieldName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', []);
 
         return parent::getIdFieldName();
     }
@@ -220,7 +220,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function __toString()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__toString', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__toString', []);
 
         return parent::__toString();
     }
@@ -231,7 +231,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function setDefaultFormViews()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', []);
 
         return parent::setDefaultFormViews();
     }
@@ -242,7 +242,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', array($name, $field));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', [$name, $field]);
 
         return parent::setControllerFieldType($name, $field);
     }
@@ -253,7 +253,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', []);
 
         return parent::getFieldTypes();
     }
@@ -264,7 +264,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getAsAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', []);
 
         return parent::getAsAssoc();
     }
@@ -275,7 +275,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getEntityManager()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', []);
 
         return parent::getEntityManager();
     }
@@ -286,7 +286,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function setDefaultFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', []);
 
         return parent::setDefaultFieldTypes();
     }
@@ -297,20 +297,9 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function setDefaultValues()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', []);
 
         return parent::setDefaultValues();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mergeCollections($coll1, $coll2)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', array($coll1, $coll2));
-
-        return parent::mergeCollections($coll1, $coll2);
     }
 
     /**
@@ -319,7 +308,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function toTableAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', []);
 
         return parent::toTableAssoc();
     }
@@ -330,7 +319,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getTypeaheadTemplate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', []);
 
         return parent::getTypeaheadTemplate();
     }
@@ -341,7 +330,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getDefaultFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultFormView($form, $clientSideValidationActivated);
     }
@@ -352,7 +341,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function getDefaultSubFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultSubFormView($form, $clientSideValidationActivated);
     }
@@ -363,9 +352,31 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function checkConsistency()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', []);
 
         return parent::checkConsistency();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFieldTypeIsNotSet', [$sqlFieldName, $value]);
+
+        return parent::setFieldTypeIsNotSet($sqlFieldName, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypeIsNotSet', [$sqlFieldName]);
+
+        return parent::getFieldTypeIsNotSet($sqlFieldName);
     }
 
     /**
@@ -374,7 +385,7 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function get($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', [$name]);
 
         return parent::get($name);
     }
@@ -385,9 +396,20 @@ class Group extends \Concrete\Package\BasicTablePackage\Src\Group implements \Do
     public function set($name, $value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', [$name, $value]);
 
         return parent::set($name, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mergeCollections($coll1, $coll2)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', [$coll1, $coll2]);
+
+        return parent::mergeCollections($coll1, $coll2);
     }
 
 }

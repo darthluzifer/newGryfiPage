@@ -36,7 +36,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -57,7 +57,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
      */
     public function __get($name)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
 
         return parent::__get($name);
     }
@@ -69,7 +69,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
      */
     public function __set($name, $value)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', [$name, $value]);
 
         return parent::__set($name, $value);
     }
@@ -83,10 +83,10 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'email', 'type', 'organisation', 'info', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+            return ['__isInitialized__', 'id', 'email', 'type', 'organisation', 'info', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
         }
 
-        return array('__isInitialized__', 'id', 'email', 'type', 'organisation', 'info', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+        return ['__isInitialized__', 'id', 'email', 'type', 'organisation', 'info', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
     }
 
     /**
@@ -116,7 +116,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -124,7 +124,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -198,7 +198,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function setDefaultFormViews()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', []);
 
         return parent::setDefaultFormViews();
     }
@@ -209,7 +209,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function setDefaultFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', []);
 
         return parent::setDefaultFieldTypes();
     }
@@ -220,7 +220,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', array($name, $field));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', [$name, $field]);
 
         return parent::setControllerFieldType($name, $field);
     }
@@ -231,7 +231,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', []);
 
         return parent::getFieldTypes();
     }
@@ -242,7 +242,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getAsAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', []);
 
         return parent::getAsAssoc();
     }
@@ -253,7 +253,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getEntityManager()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', []);
 
         return parent::getEntityManager();
     }
@@ -264,7 +264,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getId()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -275,7 +275,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getIdFieldName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', []);
 
         return parent::getIdFieldName();
     }
@@ -286,20 +286,9 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function setDefaultValues()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', []);
 
         return parent::setDefaultValues();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mergeCollections($coll1, $coll2)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', array($coll1, $coll2));
-
-        return parent::mergeCollections($coll1, $coll2);
     }
 
     /**
@@ -308,7 +297,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function toTableAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', []);
 
         return parent::toTableAssoc();
     }
@@ -319,7 +308,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getTypeaheadTemplate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', []);
 
         return parent::getTypeaheadTemplate();
     }
@@ -330,7 +319,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getDefaultFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultFormView($form, $clientSideValidationActivated);
     }
@@ -341,7 +330,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function getDefaultSubFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultSubFormView($form, $clientSideValidationActivated);
     }
@@ -352,9 +341,31 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function checkConsistency()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', []);
 
         return parent::checkConsistency();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFieldTypeIsNotSet', [$sqlFieldName, $value]);
+
+        return parent::setFieldTypeIsNotSet($sqlFieldName, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypeIsNotSet', [$sqlFieldName]);
+
+        return parent::getFieldTypeIsNotSet($sqlFieldName);
     }
 
     /**
@@ -363,7 +374,7 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function get($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', [$name]);
 
         return parent::get($name);
     }
@@ -374,9 +385,20 @@ class EmailAddress extends \Concrete\Package\BaclucPersonPackage\Src\EmailAddres
     public function set($name, $value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', [$name, $value]);
 
         return parent::set($name, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mergeCollections($coll1, $coll2)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', [$coll1, $coll2]);
+
+        return parent::mergeCollections($coll1, $coll2);
     }
 
 }

@@ -36,7 +36,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -57,7 +57,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
      */
     public function __get($name)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
 
         return parent::__get($name);
     }
@@ -69,7 +69,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
      */
     public function __set($name, $value)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', [$name, $value]);
 
         return parent::__set($name, $value);
     }
@@ -83,10 +83,10 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'optionType', 'GroupAssociations', 'id', 'optionValue', 'BasicTableInstance', 'possibleValues', 'optionName', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+            return ['__isInitialized__', 'optionType', 'GroupAssociations', 'id', 'optionValue', 'BasicTableInstance', 'possibleValues', 'optionName', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
         }
 
-        return array('__isInitialized__', 'optionType', 'GroupAssociations', 'id', 'optionValue', 'BasicTableInstance', 'possibleValues', 'optionName', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+        return ['__isInitialized__', 'optionType', 'GroupAssociations', 'id', 'optionValue', 'BasicTableInstance', 'possibleValues', 'optionName', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
     }
 
     /**
@@ -116,7 +116,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -124,7 +124,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -198,7 +198,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getLabel()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLabel', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLabel', []);
 
         return parent::getLabel();
     }
@@ -209,7 +209,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getFieldType()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldType', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldType', []);
 
         return parent::getFieldType();
     }
@@ -220,7 +220,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getValue()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', []);
 
         return parent::getValue();
     }
@@ -231,7 +231,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setValue($GroupAssociations)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', array($GroupAssociations));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', [$GroupAssociations]);
 
         return parent::setValue($GroupAssociations);
     }
@@ -242,7 +242,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function set($name, $value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', [$name, $value]);
 
         return parent::set($name, $value);
     }
@@ -253,7 +253,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setPossibleValues($possibleValues)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPossibleValues', array($possibleValues));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPossibleValues', [$possibleValues]);
 
         return parent::setPossibleValues($possibleValues);
     }
@@ -264,7 +264,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getPossibleValues()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPossibleValues', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPossibleValues', []);
 
         return parent::getPossibleValues();
     }
@@ -275,7 +275,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getFormView($form)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFormView', array($form));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFormView', [$form]);
 
         return parent::getFormView($form);
     }
@@ -286,7 +286,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setDefaultFormViews()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', []);
 
         return parent::setDefaultFormViews();
     }
@@ -297,7 +297,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', array($name, $field));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', [$name, $field]);
 
         return parent::setControllerFieldType($name, $field);
     }
@@ -308,7 +308,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', []);
 
         return parent::getFieldTypes();
     }
@@ -319,7 +319,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getAsAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', []);
 
         return parent::getAsAssoc();
     }
@@ -330,7 +330,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getEntityManager()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', []);
 
         return parent::getEntityManager();
     }
@@ -341,7 +341,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getId()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -352,7 +352,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getIdFieldName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', []);
 
         return parent::getIdFieldName();
     }
@@ -363,7 +363,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setDefaultFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', []);
 
         return parent::setDefaultFieldTypes();
     }
@@ -374,20 +374,9 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function setDefaultValues()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', []);
 
         return parent::setDefaultValues();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mergeCollections($coll1, $coll2)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', array($coll1, $coll2));
-
-        return parent::mergeCollections($coll1, $coll2);
     }
 
     /**
@@ -396,7 +385,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function toTableAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', []);
 
         return parent::toTableAssoc();
     }
@@ -407,7 +396,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getTypeaheadTemplate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', []);
 
         return parent::getTypeaheadTemplate();
     }
@@ -418,7 +407,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getDefaultFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultFormView($form, $clientSideValidationActivated);
     }
@@ -429,7 +418,7 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function getDefaultSubFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultSubFormView($form, $clientSideValidationActivated);
     }
@@ -440,9 +429,31 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function checkConsistency()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', []);
 
         return parent::checkConsistency();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFieldTypeIsNotSet', [$sqlFieldName, $value]);
+
+        return parent::setFieldTypeIsNotSet($sqlFieldName, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypeIsNotSet', [$sqlFieldName]);
+
+        return parent::getFieldTypeIsNotSet($sqlFieldName);
     }
 
     /**
@@ -451,9 +462,20 @@ class GroupRefOption extends \Concrete\Package\BasicTablePackage\Src\BlockOption
     public function get($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', [$name]);
 
         return parent::get($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mergeCollections($coll1, $coll2)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', [$coll1, $coll2]);
+
+        return parent::mergeCollections($coll1, $coll2);
     }
 
 }

@@ -36,7 +36,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -57,7 +57,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
      */
     public function __get($name)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
 
         return parent::__get($name);
     }
@@ -69,7 +69,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
      */
     public function __set($name, $value)
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', [$name, $value]);
 
         return parent::__set($name, $value);
     }
@@ -83,10 +83,10 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'date_from', 'date_to', 'time_from', 'time_to', 'title', 'description', 'infofile', 'registerfile', 'EventGroups', 'PostalAddress', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+            return ['__isInitialized__', 'id', 'date_from', 'date_to', 'time_from', 'time_to', 'title', 'description', 'infofile', 'registerfile', 'EventGroups', 'PostalAddress', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
         }
 
-        return array('__isInitialized__', 'id', 'date_from', 'date_to', 'time_from', 'time_to', 'title', 'description', 'infofile', 'registerfile', 'EventGroups', 'PostalAddress', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency');
+        return ['__isInitialized__', 'id', 'date_from', 'date_to', 'time_from', 'time_to', 'title', 'description', 'infofile', 'registerfile', 'EventGroups', 'PostalAddress', 'protect', 'protectRead', 'protectWrite', 'fieldTypes', 'em', 'defaultFormView', 'defaultSubFormView', 'checkingConsistency'];
     }
 
     /**
@@ -116,7 +116,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -124,7 +124,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -198,7 +198,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function setDefaultFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFieldTypes', []);
 
         return parent::setDefaultFieldTypes();
     }
@@ -213,7 +213,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -224,7 +224,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getIdFieldName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIdFieldName', []);
 
         return parent::getIdFieldName();
     }
@@ -235,7 +235,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getNextEvent(array $groupids)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNextEvent', array($groupids));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNextEvent', [$groupids]);
 
         return parent::getNextEvent($groupids);
     }
@@ -246,7 +246,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function setDefaultFormViews()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultFormViews', []);
 
         return parent::setDefaultFormViews();
     }
@@ -257,7 +257,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function setControllerFieldType($name, \Concrete\Package\BasicTablePackage\Src\FieldTypes\Field $field)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', array($name, $field));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setControllerFieldType', [$name, $field]);
 
         return parent::setControllerFieldType($name, $field);
     }
@@ -268,7 +268,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getFieldTypes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypes', []);
 
         return parent::getFieldTypes();
     }
@@ -279,7 +279,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getAsAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsAssoc', []);
 
         return parent::getAsAssoc();
     }
@@ -290,7 +290,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getEntityManager()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEntityManager', []);
 
         return parent::getEntityManager();
     }
@@ -301,20 +301,9 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function setDefaultValues()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultValues', []);
 
         return parent::setDefaultValues();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mergeCollections($coll1, $coll2)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', array($coll1, $coll2));
-
-        return parent::mergeCollections($coll1, $coll2);
     }
 
     /**
@@ -323,7 +312,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function toTableAssoc()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toTableAssoc', []);
 
         return parent::toTableAssoc();
     }
@@ -334,7 +323,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getTypeaheadTemplate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeaheadTemplate', []);
 
         return parent::getTypeaheadTemplate();
     }
@@ -345,7 +334,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getDefaultFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultFormView($form, $clientSideValidationActivated);
     }
@@ -356,7 +345,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function getDefaultSubFormView($form, $clientSideValidationActivated = true)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', array($form, $clientSideValidationActivated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultSubFormView', [$form, $clientSideValidationActivated]);
 
         return parent::getDefaultSubFormView($form, $clientSideValidationActivated);
     }
@@ -367,9 +356,31 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function checkConsistency()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkConsistency', []);
 
         return parent::checkConsistency();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFieldTypeIsNotSet($sqlFieldName, $value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFieldTypeIsNotSet', [$sqlFieldName, $value]);
+
+        return parent::setFieldTypeIsNotSet($sqlFieldName, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldTypeIsNotSet($sqlFieldName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFieldTypeIsNotSet', [$sqlFieldName]);
+
+        return parent::getFieldTypeIsNotSet($sqlFieldName);
     }
 
     /**
@@ -378,7 +389,7 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function get($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'get', [$name]);
 
         return parent::get($name);
     }
@@ -389,9 +400,20 @@ class Event extends \Concrete\Package\BaclucEventPackage\Src\Event implements \D
     public function set($name, $value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', array($name, $value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'set', [$name, $value]);
 
         return parent::set($name, $value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function mergeCollections($coll1, $coll2)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'mergeCollections', [$coll1, $coll2]);
+
+        return parent::mergeCollections($coll1, $coll2);
     }
 
 }
