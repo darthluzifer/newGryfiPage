@@ -20,3 +20,4 @@ nextcloud/data/*
 /emaillog.txt
 /nextcloud/config/config.php
 /nextcloud/data/nextcloud.log
+/var/www/html/newGryfiPage/concrete5/application/config/doctrine/proxies
