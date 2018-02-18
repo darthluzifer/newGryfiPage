@@ -7,7 +7,11 @@ Version="1.0"
 
 
 RUN apt-get update
-RUN apt-get install -y php-zip php-mbstring
+RUN apt-get install -y php-zip php-mbstring dos2unix
+
+COPY docker/entrypoint.sh /usr/local/bin
+
+RUN dos2unix /usr/local/bin/entrypoint.sh
 
 VOLUME /var/www/html
 VOLUME /var/log/httpd
@@ -17,4 +21,4 @@ VOLUME /var/log/mysql
 EXPOSE 80
 EXPOSE 3306
 
-CMD ["/var/www/html/docker/entrypoint.sh"]
+ENTRYPOINT exec /usr/local/bin/entrypoint.sh

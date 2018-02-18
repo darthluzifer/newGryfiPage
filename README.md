@@ -10,7 +10,7 @@ docker build . -t bacluc/newgryfipage
 
 to start docker container (your previous data will be lost)
 
-docker run -d -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v /var/www/html/newGryfiPage:/var/www/html --name bacgr bacluc/newgryfipage
+docker run -d -p 8080:80 -e LOG_STDOUT=true -e LOG_STDERR=true -e LOG_LEVEL=debug -v $(pwd):/var/www/html --name bacgr bacluc/newgryfipage
 
 stop container
 
