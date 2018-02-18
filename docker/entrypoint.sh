@@ -93,6 +93,13 @@ mysql --execute "update mysql.user set password=PASSWORD('root'), plugin = NULL;
 
 service mysql restart
 
+#setup xdebug
+PHP_VERSION_FOLDER=$(php -r "echo phpversion();" | egrep -o -m 1 "[0-9]\.[0-9]" | head -n 1)
+XDEBUG_FILE=/etc/php/$PHP_VERSION_FOLDER/apache2/conf.d/20-xdebug.ini
+echo "zend_extension=xdebug.so" > $XDEBUG_FILE
+echo "xdebug.remote_enable=on" >> $XDEBUG_FILE
+echo "xdebug.remote_autostart=off" >> $XDEBUG_FILE
+
 
 
 
